@@ -1,0 +1,79 @@
+============================================================
+MUNDO_ARTIFICIAL - DEBUG RUNNER
+============================================================
+Mapa: 60x60
+Entidades: 7
+  Ana id=1 pos=(40, 7)
+  Bruno id=2 pos=(1, 47)
+  Clara id=3 pos=(17, 15)
+  David id=4 pos=(14, 8)
+  Eva id=5 pos=(47, 6)
+  Félix id=6 pos=(43, 47)
+  Michi id=7 pos=(57, 34)
+============================================================
+  Tick 1 Ana: explorar pos=(39, 7)
+  Tick 1 Bruno: explorar pos=(1, 48)
+  Tick 1 Clara: explorar pos=(16, 15)
+  Tick 1 David: explorar pos=(13, 8)
+  Tick 1 Eva: explorar pos=(46, 6)
+  Tick 1 Félix: explorar pos=(44, 47)
+  Tick 1 Michi: explorar pos=(58, 34)
+  Tick 2 Ana: explorar pos=(39, 8)
+  Tick 2 Bruno: explorar pos=(2, 48)
+  Tick 2 Clara: explorar pos=(16, 16)
+  Tick 2 David: explorar pos=(12, 8)
+  Tick 2 Eva: explorar pos=(46, 5)
+  Tick 2 Félix: explorar pos=(45, 47)
+  Tick 2 Michi: explorar pos=(58, 33)
+  Tick 3 Ana: explorar pos=(39, 7)
+  Tick 3 Bruno: explorar pos=(1, 48)
+  Tick 3 Clara: explorar pos=(17, 16)
+  Tick 3 David: explorar pos=(12, 9)
+  Tick 3 Eva: explorar pos=(46, 4)
+  Tick 3 Félix: explorar pos=(45, 46)
+  Tick 3 Michi: explorar pos=(57, 33)
+  Tick 10 Ana: explorar pos=(37, 4)
+  Tick 10 Bruno: explorar pos=(3, 49)
+  Tick 10 Clara: explorar pos=(16, 16)
+  Tick 10 David: explorar pos=(11, 9)
+  Tick 10 Eva: explorar pos=(45, 2)
+  Tick 10 Félix: explorar pos=(46, 50)
+  Tick 10 Michi: explorar pos=(57, 32)
+  Tick 20 Ana: explorar pos=(35, 6)
+  Tick 20 Bruno: explorar pos=(2, 52)
+  Tick 20 Clara: explorar pos=(16, 14)
+  Tick 20 David: explorar pos=(7, 11)
+  Tick 20 Eva: explorar pos=(44, 1)
+  Tick 20 Félix: explorar pos=(48, 48)
+  Tick 20 Michi: explorar pos=(58, 31)
+  Tick 30 Ana: explorar pos=(36, 7)
+  Tick 30 Bruno: explorar pos=(1, 51)
+  Tick 30 Clara: explorar pos=(16, 14)
+  Tick 30 David: descansar pos=(14, 9)
+  Tick 30 Eva: explorar pos=(46, 1)
+  Tick 30 Félix: explorar pos=(49, 49)
+  Tick 30 Michi: descansar pos=(55, 31)
+  Tick 40 Ana: explorar pos=(41, 7)
+  Tick 40 Bruno: explorar pos=(3, 52)
+  Tick 40 Clara: descansar pos=(13, 14)
+  Tick 40 David: mover pos=(16, 7)
+  Tick 40 Eva: mover pos=(40, 0)
+  Tick 40 Félix: mover pos=(43, 48)
+  Tick 40 Michi: descansar pos=(49, 31)
+  Tick 50 Ana: descansar pos=(37, 7)
+  Tick 50 Bruno: descansar pos=(1, 54)
+  Tick 50 Clara: mover pos=(9, 13)
+  Tick 50 David: descansar pos=(23, 7)
+  Tick 50 Eva: robar pos=(38, 0)
+  Tick 50 Félix: descansar pos=(41, 46)
+  Tick 50 Michi: descansar pos=(44, 31)
+============================================================
+ESTADO FINAL
+  Ana: pos=(37, 7) E=0.44 H=0.70
+  Bruno: pos=(1, 54) E=0.44 H=0.70
+  Clara: pos=(9, 13) E=0.36 H=0.70
+  David: pos=(23, 7) E=0.20 H=0.70
+  Eva: pos=(38, 0) E=0.40 H=1.00
+  Félix: pos=(41, 46) E=0.44 H=0.70
+  Michi: pos=(44, 31) E=0.30 H=1.00
+============================================================

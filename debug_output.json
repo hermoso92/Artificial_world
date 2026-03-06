@@ -1,0 +1,2079 @@
+{
+  "ticks_ejecutados": 50,
+  "snapshots": [
+    {
+      "tick": 1,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            39,
+            7
+          ],
+          "hambre": 0.02,
+          "energia": 0.97,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            1,
+            48
+          ],
+          "hambre": 0.02,
+          "energia": 0.97,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            16,
+            15
+          ],
+          "hambre": 0.02,
+          "energia": 0.97,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            13,
+            8
+          ],
+          "hambre": 0.02,
+          "energia": 0.97,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            46,
+            6
+          ],
+          "hambre": 0.02,
+          "energia": 0.97,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            44,
+            47
+          ],
+          "hambre": 0.02,
+          "energia": 0.97,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            58,
+            34
+          ],
+          "hambre": 0.02,
+          "energia": 0.97,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {},
+      "eventos_recientes": [],
+      "debug_pilladas": []
+    },
+    {
+      "tick": 2,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            39,
+            8
+          ],
+          "hambre": 0.04,
+          "energia": 0.94,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            2,
+            48
+          ],
+          "hambre": 0.04,
+          "energia": 0.94,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            16,
+            16
+          ],
+          "hambre": 0.04,
+          "energia": 0.94,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            12,
+            8
+          ],
+          "hambre": 0.04,
+          "energia": 0.94,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            46,
+            5
+          ],
+          "hambre": 0.04,
+          "energia": 0.94,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            45,
+            47
+          ],
+          "hambre": 0.04,
+          "energia": 0.94,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            58,
+            33
+          ],
+          "hambre": 0.04,
+          "energia": 0.94,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {},
+      "eventos_recientes": [],
+      "debug_pilladas": []
+    },
+    {
+      "tick": 5,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            38,
+            6
+          ],
+          "hambre": 0.1,
+          "energia": 0.85,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            1,
+            48
+          ],
+          "hambre": 0.1,
+          "energia": 0.85,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            15,
+            16
+          ],
+          "hambre": 0.1,
+          "energia": 0.85,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            11,
+            10
+          ],
+          "hambre": 0.1,
+          "energia": 0.85,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            45,
+            3
+          ],
+          "hambre": 0.1,
+          "energia": 0.85,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            44,
+            47
+          ],
+          "hambre": 0.1,
+          "energia": 0.85,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            57,
+            33
+          ],
+          "hambre": 0.1,
+          "energia": 0.85,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {},
+      "eventos_recientes": [],
+      "debug_pilladas": []
+    },
+    {
+      "tick": 10,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            37,
+            4
+          ],
+          "hambre": 0.2,
+          "energia": 0.7,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            3,
+            49
+          ],
+          "hambre": 0.2,
+          "energia": 0.7,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            16,
+            16
+          ],
+          "hambre": 0.2,
+          "energia": 0.7,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            11,
+            9
+          ],
+          "hambre": 0.2,
+          "energia": 0.7,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            45,
+            2
+          ],
+          "hambre": 0.2,
+          "energia": 0.7,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            46,
+            50
+          ],
+          "hambre": 0.2,
+          "energia": 0.7,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            57,
+            32
+          ],
+          "hambre": 0.2,
+          "energia": 0.7,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {},
+      "eventos_recientes": [],
+      "debug_pilladas": []
+    },
+    {
+      "tick": 15,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            37,
+            5
+          ],
+          "hambre": 0.3,
+          "energia": 0.55,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            3,
+            54
+          ],
+          "hambre": 0.3,
+          "energia": 0.55,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            14,
+            15
+          ],
+          "hambre": 0.3,
+          "energia": 0.55,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            9,
+            12
+          ],
+          "hambre": 0.3,
+          "energia": 0.55,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            46,
+            4
+          ],
+          "hambre": 0.3,
+          "energia": 0.55,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            47,
+            48
+          ],
+          "hambre": 0.3,
+          "energia": 0.55,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            59,
+            31
+          ],
+          "hambre": 0.3,
+          "energia": 0.55,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {},
+      "eventos_recientes": [],
+      "debug_pilladas": []
+    },
+    {
+      "tick": 20,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            35,
+            6
+          ],
+          "hambre": 0.4,
+          "energia": 0.4,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            2,
+            52
+          ],
+          "hambre": 0.4,
+          "energia": 0.4,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            16,
+            14
+          ],
+          "hambre": 0.4,
+          "energia": 0.4,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            7,
+            11
+          ],
+          "hambre": 0.4,
+          "energia": 0.4,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            44,
+            1
+          ],
+          "hambre": 0.4,
+          "energia": 0.4,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            48,
+            48
+          ],
+          "hambre": 0.4,
+          "energia": 0.4,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            58,
+            31
+          ],
+          "hambre": 0.4,
+          "energia": 0.4,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {},
+      "eventos_recientes": [],
+      "debug_pilladas": []
+    },
+    {
+      "tick": 25,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            35,
+            7
+          ],
+          "hambre": 0.5,
+          "energia": 0.41,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            3,
+            52
+          ],
+          "hambre": 0.5,
+          "energia": 0.41,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            17,
+            14
+          ],
+          "hambre": 0.5,
+          "energia": 0.41,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            10,
+            9
+          ],
+          "hambre": 0.5,
+          "energia": 0.25,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            45,
+            3
+          ],
+          "hambre": 0.5,
+          "energia": 0.41,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            50,
+            49
+          ],
+          "hambre": 0.5,
+          "energia": 0.41,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            59,
+            31
+          ],
+          "hambre": 0.5,
+          "energia": 0.25,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {
+        "descanso": 10
+      },
+      "eventos_recientes": [
+        {
+          "tipo": "descanso",
+          "origen": 6,
+          "desc": "Félix descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 5,
+          "desc": "Eva descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 3,
+          "desc": "Clara descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 2,
+          "desc": "Bruno descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 1,
+          "desc": "Ana descanso"
+        }
+      ],
+      "debug_pilladas": []
+    },
+    {
+      "tick": 30,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            36,
+            7
+          ],
+          "hambre": 0.6,
+          "energia": 0.42,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            1,
+            51
+          ],
+          "hambre": 0.6,
+          "energia": 0.42,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            16,
+            14
+          ],
+          "hambre": 0.6,
+          "energia": 0.42,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            14,
+            9
+          ],
+          "hambre": 0.6,
+          "energia": 0.18,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            46,
+            1
+          ],
+          "hambre": 0.6,
+          "energia": 0.42,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            49,
+            49
+          ],
+          "hambre": 0.6,
+          "energia": 0.42,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            55,
+            31
+          ],
+          "hambre": 0.6,
+          "energia": 0.18,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {
+        "descanso": 22
+      },
+      "eventos_recientes": [
+        {
+          "tipo": "descanso",
+          "origen": 7,
+          "desc": "Michi descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 4,
+          "desc": "David descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 6,
+          "desc": "Félix descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 5,
+          "desc": "Eva descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 3,
+          "desc": "Clara descanso"
+        }
+      ],
+      "debug_pilladas": []
+    },
+    {
+      "tick": 35,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            40,
+            7
+          ],
+          "hambre": 0.7,
+          "energia": 0.35,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            3,
+            51
+          ],
+          "hambre": 0.4,
+          "energia": 0.41,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            14,
+            13
+          ],
+          "hambre": 0.7,
+          "energia": 0.43,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            14,
+            8
+          ],
+          "hambre": 0.4,
+          "energia": 0.25,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            44,
+            0
+          ],
+          "hambre": 0.7,
+          "energia": 0.43,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            47,
+            48
+          ],
+          "hambre": 0.7,
+          "energia": 0.43,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            52,
+            31
+          ],
+          "hambre": 0.7,
+          "energia": 0.19,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {
+        "descanso": 34,
+        "recogio_recurso": 2,
+        "comio": 2
+      },
+      "eventos_recientes": [
+        {
+          "tipo": "descanso",
+          "origen": 7,
+          "desc": "Michi descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 6,
+          "desc": "Félix descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 5,
+          "desc": "Eva descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 4,
+          "desc": "David descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 3,
+          "desc": "Clara descanso"
+        }
+      ],
+      "debug_pilladas": []
+    },
+    {
+      "tick": 40,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            41,
+            7
+          ],
+          "hambre": 0.5,
+          "energia": 0.42,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            3,
+            52
+          ],
+          "hambre": 0.5,
+          "energia": 0.42,
+          "accion": "explorar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            13,
+            14
+          ],
+          "hambre": 0.5,
+          "energia": 0.42,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            16,
+            7
+          ],
+          "hambre": 0.5,
+          "energia": 0.26,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            40,
+            0
+          ],
+          "hambre": 0.8,
+          "energia": 0.36,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            43,
+            48
+          ],
+          "hambre": 0.8,
+          "energia": 0.36,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            49,
+            31
+          ],
+          "hambre": 0.8,
+          "energia": 0.2,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {
+        "descanso": 45,
+        "recogio_recurso": 4,
+        "comio": 4
+      },
+      "eventos_recientes": [
+        {
+          "tipo": "descanso",
+          "origen": 7,
+          "desc": "Michi descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 3,
+          "desc": "Clara descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 4,
+          "desc": "David descanso"
+        },
+        {
+          "tipo": "comio",
+          "origen": 3,
+          "desc": "Clara comio"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 2,
+          "desc": "Bruno descanso"
+        }
+      ],
+      "debug_pilladas": []
+    },
+    {
+      "tick": 45,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            40,
+            7
+          ],
+          "hambre": 0.6,
+          "energia": 0.43,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            3,
+            53
+          ],
+          "hambre": 0.6,
+          "energia": 0.43,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            12,
+            14
+          ],
+          "hambre": 0.6,
+          "energia": 0.43,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            20,
+            7
+          ],
+          "hambre": 0.6,
+          "energia": 0.19,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            38,
+            0
+          ],
+          "hambre": 0.9,
+          "energia": 0.4,
+          "accion": "robar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            43,
+            47
+          ],
+          "hambre": 0.6,
+          "energia": 0.43,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            47,
+            31
+          ],
+          "hambre": 0.9,
+          "energia": 0.29,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {
+        "descanso": 59,
+        "recogio_recurso": 5,
+        "comio": 5
+      },
+      "eventos_recientes": [
+        {
+          "tipo": "descanso",
+          "origen": 7,
+          "desc": "Michi descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 6,
+          "desc": "Félix descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 4,
+          "desc": "David descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 3,
+          "desc": "Clara descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 2,
+          "desc": "Bruno descanso"
+        }
+      ],
+      "debug_pilladas": []
+    },
+    {
+      "tick": 48,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            38,
+            7
+          ],
+          "hambre": 0.66,
+          "energia": 0.42,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            2,
+            54
+          ],
+          "hambre": 0.66,
+          "energia": 0.42,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            11,
+            13
+          ],
+          "hambre": 0.66,
+          "energia": 0.42,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            22,
+            7
+          ],
+          "hambre": 0.66,
+          "energia": 0.18,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            38,
+            0
+          ],
+          "hambre": 0.96,
+          "energia": 0.4,
+          "accion": "robar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            42,
+            46
+          ],
+          "hambre": 0.66,
+          "energia": 0.42,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            45,
+            31
+          ],
+          "hambre": 0.96,
+          "energia": 0.28,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {
+        "descanso": 65,
+        "recogio_recurso": 5,
+        "comio": 5
+      },
+      "eventos_recientes": [
+        {
+          "tipo": "descanso",
+          "origen": 7,
+          "desc": "Michi descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 4,
+          "desc": "David descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 6,
+          "desc": "Félix descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 3,
+          "desc": "Clara descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 2,
+          "desc": "Bruno descanso"
+        }
+      ],
+      "debug_pilladas": []
+    },
+    {
+      "tick": 49,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            37,
+            7
+          ],
+          "hambre": 0.68,
+          "energia": 0.39,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            1,
+            54
+          ],
+          "hambre": 0.68,
+          "energia": 0.39,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            10,
+            13
+          ],
+          "hambre": 0.68,
+          "energia": 0.39,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            23,
+            7
+          ],
+          "hambre": 0.68,
+          "energia": 0.15,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            38,
+            0
+          ],
+          "hambre": 0.98,
+          "energia": 0.4,
+          "accion": "robar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            41,
+            46
+          ],
+          "hambre": 0.68,
+          "energia": 0.39,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            44,
+            31
+          ],
+          "hambre": 0.98,
+          "energia": 0.25,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {
+        "descanso": 65,
+        "recogio_recurso": 5,
+        "comio": 5
+      },
+      "eventos_recientes": [
+        {
+          "tipo": "descanso",
+          "origen": 7,
+          "desc": "Michi descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 4,
+          "desc": "David descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 6,
+          "desc": "Félix descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 3,
+          "desc": "Clara descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 2,
+          "desc": "Bruno descanso"
+        }
+      ],
+      "debug_pilladas": []
+    },
+    {
+      "tick": 50,
+      "entidades": [
+        {
+          "id": 1,
+          "nombre": "Ana",
+          "tipo": "social",
+          "posicion": [
+            37,
+            7
+          ],
+          "hambre": 0.7,
+          "energia": 0.44,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Bruno",
+          "tipo": "social",
+          "posicion": [
+            1,
+            54
+          ],
+          "hambre": 0.7,
+          "energia": 0.44,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Clara",
+          "tipo": "social",
+          "posicion": [
+            9,
+            13
+          ],
+          "hambre": 0.7,
+          "energia": 0.36,
+          "accion": "mover",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 4,
+          "nombre": "David",
+          "tipo": "social",
+          "posicion": [
+            23,
+            7
+          ],
+          "hambre": 0.7,
+          "energia": 0.2,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Eva",
+          "tipo": "social",
+          "posicion": [
+            38,
+            0
+          ],
+          "hambre": 1.0,
+          "energia": 0.4,
+          "accion": "robar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 6,
+          "nombre": "Félix",
+          "tipo": "social",
+          "posicion": [
+            41,
+            46
+          ],
+          "hambre": 0.7,
+          "energia": 0.44,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        },
+        {
+          "id": 7,
+          "nombre": "Michi",
+          "tipo": "gato",
+          "posicion": [
+            44,
+            31
+          ],
+          "hambre": 1.0,
+          "energia": 0.3,
+          "accion": "descansar",
+          "inventario": {
+            "comida": 0,
+            "material": 0
+          }
+        }
+      ],
+      "metricas": {
+        "descanso": 70,
+        "recogio_recurso": 5,
+        "comio": 5
+      },
+      "eventos_recientes": [
+        {
+          "tipo": "descanso",
+          "origen": 7,
+          "desc": "Michi descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 6,
+          "desc": "Félix descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 4,
+          "desc": "David descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 2,
+          "desc": "Bruno descanso"
+        },
+        {
+          "tipo": "descanso",
+          "origen": 1,
+          "desc": "Ana descanso"
+        }
+      ],
+      "debug_pilladas": []
+    }
+  ],
+  "estado_final": {
+    "tick": 50,
+    "entidades": [
+      {
+        "id": 1,
+        "nombre": "Ana",
+        "tipo": "social",
+        "posicion": [
+          37,
+          7
+        ],
+        "hambre": 0.7,
+        "energia": 0.44,
+        "accion": "descansar",
+        "inventario": {
+          "comida": 0,
+          "material": 0
+        }
+      },
+      {
+        "id": 2,
+        "nombre": "Bruno",
+        "tipo": "social",
+        "posicion": [
+          1,
+          54
+        ],
+        "hambre": 0.7,
+        "energia": 0.44,
+        "accion": "descansar",
+        "inventario": {
+          "comida": 0,
+          "material": 0
+        }
+      },
+      {
+        "id": 3,
+        "nombre": "Clara",
+        "tipo": "social",
+        "posicion": [
+          9,
+          13
+        ],
+        "hambre": 0.7,
+        "energia": 0.36,
+        "accion": "mover",
+        "inventario": {
+          "comida": 0,
+          "material": 0
+        }
+      },
+      {
+        "id": 4,
+        "nombre": "David",
+        "tipo": "social",
+        "posicion": [
+          23,
+          7
+        ],
+        "hambre": 0.7,
+        "energia": 0.2,
+        "accion": "descansar",
+        "inventario": {
+          "comida": 0,
+          "material": 0
+        }
+      },
+      {
+        "id": 5,
+        "nombre": "Eva",
+        "tipo": "social",
+        "posicion": [
+          38,
+          0
+        ],
+        "hambre": 1.0,
+        "energia": 0.4,
+        "accion": "robar",
+        "inventario": {
+          "comida": 0,
+          "material": 0
+        }
+      },
+      {
+        "id": 6,
+        "nombre": "Félix",
+        "tipo": "social",
+        "posicion": [
+          41,
+          46
+        ],
+        "hambre": 0.7,
+        "energia": 0.44,
+        "accion": "descansar",
+        "inventario": {
+          "comida": 0,
+          "material": 0
+        }
+      },
+      {
+        "id": 7,
+        "nombre": "Michi",
+        "tipo": "gato",
+        "posicion": [
+          44,
+          31
+        ],
+        "hambre": 1.0,
+        "energia": 0.3,
+        "accion": "descansar",
+        "inventario": {
+          "comida": 0,
+          "material": 0
+        }
+      }
+    ],
+    "metricas": {
+      "descanso": 70,
+      "recogio_recurso": 5,
+      "comio": 5
+    },
+    "eventos_recientes": [
+      {
+        "tipo": "descanso",
+        "origen": 7,
+        "desc": "Michi descanso"
+      },
+      {
+        "tipo": "descanso",
+        "origen": 6,
+        "desc": "Félix descanso"
+      },
+      {
+        "tipo": "descanso",
+        "origen": 4,
+        "desc": "David descanso"
+      },
+      {
+        "tipo": "descanso",
+        "origen": 2,
+        "desc": "Bruno descanso"
+      },
+      {
+        "tipo": "descanso",
+        "origen": 1,
+        "desc": "Ana descanso"
+      }
+    ],
+    "debug_pilladas": []
+  },
+  "resumen": {
+    "entidades_con_movimiento": 7,
+    "metricas": {
+      "descanso": 70,
+      "recogio_recurso": 5,
+      "comio": 5
+    }
+  }
+}
