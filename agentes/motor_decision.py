@@ -219,8 +219,55 @@ class MotorDecision:
         return 0.0
 
     def aplicar_modificadores_por_relaciones(self, entidad, accion, contexto) -> float:
-        """Modificador por relaciones."""
-        return 0.0
+        """Modificador por relaciones sociales activas.
+
+        Reglas:
+        - Alta confianza con entidad cercana → bonus COMPARTIR/SEGUIR
+        - Alta hostilidad con entidad cercana → bonus HUIR/EVITAR, penaliza COMPARTIR
+        - Alto miedo a entidad cercana → bonus HUIR/IR_REFUGIO
+        """
+        relaciones = getattr(entidad, "relaciones", None)
+        if relaciones is None:
+            return 0.0
+        if contexto is None or contexto.percepcion_local is None:
+            return 0.0
+
+        entidades_cercanas = getattr(contexto.percepcion_local, "entidades_visibles", [])
+        if not entidades_cercanas:
+            return 0.0
+
+        mod = 0.0
+        for otra in entidades_cercanas:
+            rel = relaciones.obtener_relacion(otra.id_entidad)
+
+            confianza = rel.confianza
+            hostilidad = rel.hostilidad
+            miedo = rel.miedo
+
+            # Confianza alta → quiero cooperar
+            if confianza >= 0.4:
+                if accion.tipo_accion == TipoAccion.COMPARTIR:
+                    mod += 0.30 * confianza
+                elif accion.tipo_accion == TipoAccion.SEGUIR:
+                    mod += 0.20 * confianza
+
+            # Hostilidad alta → quiero evitar / huir / robar
+            if hostilidad >= 0.4:
+                if accion.tipo_accion in (TipoAccion.HUIR, TipoAccion.EVITAR):
+                    mod += 0.35 * hostilidad
+                elif accion.tipo_accion == TipoAccion.COMPARTIR:
+                    mod -= 0.40 * hostilidad  # no comparto con quien me tiene hostilidad
+                elif accion.tipo_accion == TipoAccion.ROBAR:
+                    mod += 0.15 * hostilidad  # oportunistas explotan la hostilidad
+
+            # Miedo alto → huir / ir al refugio
+            if miedo >= 0.3:
+                if accion.tipo_accion in (TipoAccion.HUIR, TipoAccion.IR_REFUGIO):
+                    mod += 0.25 * miedo
+                elif accion.tipo_accion == TipoAccion.MOVER:
+                    mod -= 0.10 * miedo  # el miedo frena el movimiento libre
+
+        return mod
 
     def aplicar_modificadores_por_directivas(self, entidad, accion, contexto) -> float:
         """Modificador por directivas activas. Las órdenes tienen prioridad alta."""

@@ -1,9 +1,25 @@
-"""Acción de robar recursos."""
+"""Acción de robar recursos a otra entidad.
 
-from agentes.pesos_utilidad import obtener_utilidad_base
-from tipos.enums import ResultadoAccion, TipoAccion
+Robo real con consecuencias:
+  - Quita comida al objetivo y la añade al ladrón
+  - La víctima aumenta miedo y hostilidad hacia el ladrón
+  - El ladrón gana utilidad a corto plazo pero pierde confianza social
+  - Si la víctima tiene rasgo AGRESIVO puede reaccionar (futuro: contraataque)
+"""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from tipos.enums import ResultadoAccion, TipoAccion, TipoEvento, TipoRecurso
+from tipos.modelos import EventoSistema
 
 from .accion_base import AccionBase
+
+if TYPE_CHECKING:
+    from nucleo.contexto import ContextoSimulacion
+
+CANTIDAD_ROBADA = 1
 
 
 class AccionRobar(AccionBase):
@@ -17,14 +33,7 @@ class AccionRobar(AccionBase):
         """Solo viable si hay una entidad cercana con comida en el inventario."""
         if contexto is None:
             return False
-        entidades_cercanas = []
-        if contexto.percepcion_local:
-            entidades_cercanas = getattr(contexto.percepcion_local, "entidades_visibles", [])
-        elif hasattr(contexto, "entidades"):
-            entidades_cercanas = [
-                e for e in (contexto.entidades or [])
-                if e.id_entidad != entidad.id_entidad
-            ]
+        entidades_cercanas = self._obtener_cercanas(entidad, contexto)
         for otra in entidades_cercanas:
             inv = getattr(getattr(otra, "estado_interno", None), "inventario", None)
             comida = getattr(inv, "comida", 0) if inv else 0
@@ -34,7 +43,70 @@ class AccionRobar(AccionBase):
         return False
 
     def calcular_utilidad_base(self, entidad, contexto) -> float:
+        from agentes.pesos_utilidad import obtener_utilidad_base
         return obtener_utilidad_base("robar")
 
-    def ejecutar(self, entidad, contexto) -> ResultadoAccion:
-        return ResultadoAccion.NO_APLICA
+    def ejecutar(self, entidad, contexto: "ContextoSimulacion") -> ResultadoAccion:
+        entidades = getattr(contexto, "entidades", [])
+        objetivo = next((e for e in entidades if e.id_entidad == self.id_objetivo), None)
+
+        if objetivo is None:
+            # Buscar por proximidad si el id_objetivo no es válido
+            cercanas = self._obtener_cercanas(entidad, contexto)
+            for otra in cercanas:
+                inv = getattr(getattr(otra, "estado_interno", None), "inventario", None)
+                if inv and inv.comida > 0:
+                    objetivo = otra
+                    self.id_objetivo = otra.id_entidad
+                    break
+
+        if objetivo is None:
+            return ResultadoAccion.NO_APLICA
+
+        inv_obj = objetivo.estado_interno.inventario
+        if not inv_obj.tiene(TipoRecurso.COMIDA, CANTIDAD_ROBADA):
+            return ResultadoAccion.FALLO
+
+        # Transferir
+        inv_obj.quitar(TipoRecurso.COMIDA, CANTIDAD_ROBADA)
+        entidad.estado_interno.inventario.agregar(TipoRecurso.COMIDA, CANTIDAD_ROBADA)
+
+        # Consecuencias en relaciones
+        if hasattr(objetivo, "relaciones"):
+            objetivo.relaciones.registrar_interaccion_negativa(entidad.id_entidad, magnitud=2.0)
+            # Víctima aumenta riesgo percibido
+            objetivo.estado_interno.riesgo_percibido = min(
+                1.0, objetivo.estado_interno.riesgo_percibido + 0.25
+            )
+
+        if hasattr(entidad, "relaciones"):
+            # El ladrón pierde confianza de terceros (degradación social)
+            entidad.relaciones.ajustar_confianza(objetivo.id_entidad, -0.20)
+            entidad.relaciones.ajustar_utilidad(objetivo.id_entidad, +0.10)
+
+        # Emitir evento
+        tick = getattr(contexto, "tick_actual", 0)
+        bus = getattr(contexto, "bus_eventos", None)
+        if bus:
+            bus.emitir(EventoSistema(
+                tick=tick,
+                tipo=TipoEvento.ROBO,
+                id_origen=entidad.id_entidad,
+                id_objetivo=objetivo.id_entidad,
+                posicion=entidad.posicion,
+                descripcion=(
+                    f"{entidad.nombre} roba {CANTIDAD_ROBADA} comida "
+                    f"a {objetivo.nombre}"
+                ),
+                metadatos={"cantidad": CANTIDAD_ROBADA},
+            ))
+
+        return ResultadoAccion.EXITO
+
+    def _obtener_cercanas(self, entidad, contexto) -> list:
+        if contexto is None:
+            return []
+        if contexto.percepcion_local:
+            return getattr(contexto.percepcion_local, "entidades_visibles", [])
+        return [e for e in (getattr(contexto, "entidades", []) or [])
+                if e.id_entidad != entidad.id_entidad]

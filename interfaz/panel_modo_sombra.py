@@ -270,9 +270,34 @@ class PanelModoSombra:
                     pantalla.blit(t, (x0 + 2, y))
                 y += 11
             elif modo_str.lower() == "poseido":
-                t = f_sm.render("Cola vacía → volviendo a AUTONOMO", True, COLOR_TEXTO_SEC)
+                t = f_sm.render("Cola vacia -> volviendo a AUTONOMO", True, COLOR_TEXTO_SEC)
                 pantalla.blit(t, (x0 + 2, y))
                 y += 11
+
+        # Relaciones sociales
+        relaciones_obj = getattr(ent, "relaciones", None)
+        if relaciones_obj and y + 12 < self.alto - 5:
+            rels = relaciones_obj.relaciones_por_entidad
+            if rels:
+                t = f_sm.render("Relaciones:", True, COLOR_SUBTITULO)
+                pantalla.blit(t, (x0, y))
+                y += 11
+                for id_e, rel in list(rels.items())[:4]:
+                    conf = int(rel.confianza * 100)
+                    host = int(rel.hostilidad * 100)
+                    miedo = int(rel.miedo * 100)
+                    color_r = (
+                        (100, 220, 100) if conf > 50
+                        else (220, 80, 80) if host > 50
+                        else COLOR_TEXTO_SEC
+                    )
+                    t = f_sm.render(
+                        f"  #{id_e}: conf={conf}% host={host}% miedo={miedo}%",
+                        True, color_r
+                    )
+                    if y + 11 < self.alto - 5:
+                        pantalla.blit(t, (x0 + 2, y))
+                    y += 11
 
         # Historial decisiones (últimas 3)
         historial = getattr(ent, "historial_decisiones", [])
