@@ -55,6 +55,7 @@ class TipoAccion(Enum):
     HUIR = "huir"
     EVITAR = "evitar"
     SEGUIR = "seguir"
+    ATACAR = "atacar"
 
 
 class TipoEvento(Enum):
@@ -77,6 +78,17 @@ class TipoEvento(Enum):
     DIRECTIVA_REINTERPRETADA = "directiva_reinterpretada"
     DIRECTIVA_RECHAZADA = "directiva_rechazada"
     DIRECTIVA_COMPLETADA = "directiva_completada"
+    # Eventos específicos del MODO SOMBRA
+    MODO_SOMBRA_ACTIVADO     = "modo_sombra_activado"
+    MODO_SOMBRA_DESACTIVADO  = "modo_sombra_desactivado"
+    COMANDO_SOMBRA_EMITIDO   = "comando_sombra_emitido"
+    COMANDO_SOMBRA_INICIADO  = "comando_sombra_iniciado"
+    COMANDO_SOMBRA_COMPLETADO = "comando_sombra_completado"
+    COMANDO_SOMBRA_CANCELADO = "comando_sombra_cancelado"
+    DIRECTIVA_SOMBRA_EMITIDA   = "directiva_sombra_emitida"
+    DIRECTIVA_SOMBRA_ACEPTADA  = "directiva_sombra_aceptada"
+    DIRECTIVA_SOMBRA_RECHAZADA = "directiva_sombra_rechazada"
+    ATAQUE_EJECUTADO           = "ataque_ejecutado"
 
 
 class EstadoDirectiva(Enum):
@@ -116,3 +128,39 @@ class ResultadoAccion(Enum):
     FALLO = "fallo"
     NO_APLICA = "no_aplica"
     CANCELADA = "cancelada"
+
+
+class ModoControl(Enum):
+    """Modo de control de una entidad autónoma.
+
+    AUTONOMO  – la IA decide libremente.
+    DIRIGIDO  – la IA decide pero con directivas externas activas que modifican utilidades.
+    POSEIDO   – la IA suspendida; la entidad ejecuta comandos forzados de la cola.
+    """
+
+    AUTONOMO = "autonomo"
+    DIRIGIDO = "dirigido"
+    POSEIDO  = "poseido"
+
+
+class TipoComandoSombra(Enum):
+    """Tipos de comandos forzados que puede emitir el modo POSEIDO."""
+
+    MOVER_A_POSICION    = "mover_a_posicion"
+    IR_A_REFUGIO        = "ir_a_refugio"
+    QUEDARSE_EN_REFUGIO = "quedarse_en_refugio"
+    RECOGER_OBJETIVO    = "recoger_objetivo"
+    SEGUIR_OBJETIVO     = "seguir_objetivo"
+    EVITAR_OBJETIVO     = "evitar_objetivo"
+    ATACAR_OBJETIVO     = "atacar_objetivo"
+    MATAR_OBJETIVO      = "matar_objetivo"   # reservado – requiere sistema de combate
+
+
+class EstadoComandoSombra(Enum):
+    """Estado de un comando sombra en la cola."""
+
+    PENDIENTE   = "pendiente"
+    EN_PROGRESO = "en_progreso"
+    COMPLETADO  = "completado"
+    CANCELADO   = "cancelado"
+    FALLIDO     = "fallido"

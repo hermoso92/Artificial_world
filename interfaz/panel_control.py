@@ -10,6 +10,7 @@ from tipos.enums import TipoDirectiva, EstadoDirectiva
 from tipos.modelos import DirectivaExterna, Posicion
 
 from .estado_panel import EstadoPanel, ModoVisualizacion, PestanaPanel
+from .panel_modo_sombra import PanelModoSombra
 
 
 class PanelControl:
@@ -42,6 +43,11 @@ class PanelControl:
         self.color_texto_sec = (160, 165, 170)
         self.color_seleccion = (100, 180, 120)
 
+        # Panel dedicado al modo sombra
+        self.panel_sombra = PanelModoSombra(x0, ancho, alto, self.estado)
+        # Referencia al gestor sombra (inyectada por la simulación)
+        self.gestor_sombra = None
+
     def procesar_click(self, pos: tuple[int, int], tick: int, entidades: list, mapa) -> dict | None:
         """
         Procesa click del ratón. Devuelve acción a ejecutar o None.
@@ -56,7 +62,7 @@ class PanelControl:
         self.rects_ordenes.clear()
 
         # Pestañas
-        pestana_w = self.ancho // 6
+        pestana_w = self.ancho // len(list(PestanaPanel))
         for i, p in enumerate(PestanaPanel):
             r = pygame.Rect(self.x0 + i * pestana_w, 0, pestana_w, self.ALTURA_PESTANA)
             if r.collidepoint(x, y):
@@ -69,6 +75,8 @@ class PanelControl:
             return self._procesar_click_control(x, y, y_base, tick)
         if self.estado.pestana_actual == PestanaPanel.ORDENES:
             return self._procesar_click_ordenes(x, y, y_base, entidades, tick)
+        if self.estado.pestana_actual == PestanaPanel.SOMBRA:
+            return self.panel_sombra.procesar_click((x, y), tick, entidades, mapa)
         if self.estado.pestana_actual == PestanaPanel.ENTIDADES:
             return self._procesar_click_entidades(x, y, y_base, entidades)
         if self.estado.pestana_actual == PestanaPanel.EVENTOS:
@@ -247,13 +255,15 @@ class PanelControl:
             fuente = pygame.font.Font(None, 14)
 
         # Pestañas
-        pestana_w = self.ancho // 6
+        pestana_w = self.ancho // len(list(PestanaPanel))
         for i, p in enumerate(PestanaPanel):
             rx = self.x0 + i * pestana_w
             activa = p == self.estado.pestana_actual
             # Pestaña WATCHDOG en rojo si hay alertas activas
             if p == PestanaPanel.WATCHDOG and alertas_watchdog:
                 color = (160, 40, 40) if not activa else (200, 60, 60)
+            elif p == PestanaPanel.SOMBRA and self.estado.modo_sombra:
+                color = (160, 70, 20) if not activa else (210, 100, 30)
             else:
                 color = self.color_pestana_activa if activa else self.color_pestana_inactiva
             pygame.draw.rect(pantalla, color, (rx, 0, pestana_w, self.ALTURA_PESTANA))
@@ -269,6 +279,8 @@ class PanelControl:
             self._dibujar_control(pantalla, fuente, fuente_tit, y, tick_actual)
         elif self.estado.pestana_actual == PestanaPanel.ORDENES:
             self._dibujar_ordenes(pantalla, fuente, fuente_tit, y, entidades)
+        elif self.estado.pestana_actual == PestanaPanel.SOMBRA:
+            self.panel_sombra.dibujar(pantalla, entidades, tick_actual, self.gestor_sombra)
         elif self.estado.pestana_actual == PestanaPanel.ENTIDADES:
             self._dibujar_entidades(pantalla, fuente, fuente_tit, y, entidades)
         elif self.estado.pestana_actual == PestanaPanel.EVENTOS:

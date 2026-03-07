@@ -21,6 +21,7 @@ class ContextoDecision:
     entidades_cercanas: list = None
     directivas_activas: list["DirectivaExterna"] = None
     eventos_recientes_globales: list = None
+    entidades: list = None  # todas las entidades del mundo (para comandos SEGUIR/ATACAR)
 
     def __post_init__(self):
         if self.entidades_cercanas is None:
@@ -29,6 +30,8 @@ class ContextoDecision:
             self.directivas_activas = []
         if self.eventos_recientes_globales is None:
             self.eventos_recientes_globales = []
+        if self.entidades is None:
+            self.entidades = []
 
 
 @dataclass

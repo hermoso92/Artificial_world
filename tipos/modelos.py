@@ -8,7 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from .enums import EstadoDirectiva, TipoDirectiva, TipoEvento
+from .enums import EstadoDirectiva, TipoDirectiva, TipoEvento, TipoComandoSombra, EstadoComandoSombra
 
 
 @dataclass(frozen=True)
@@ -120,3 +120,32 @@ class AccionPuntuada:
     modificadores: dict[str, float]
     puntuacion_final: float
     motivo_principal: str
+
+
+@dataclass
+class ComandoSombra:
+    """Comando forzado emitido desde el MODO POSEIDO.
+
+    La entidad no interpreta ni filtra: ejecuta lo que indica el comando.
+    """
+
+    id_comando: int
+    id_entidad_objetivo: int
+    tipo_comando: TipoComandoSombra
+    tick_emision: int
+    prioridad: float = 1.0
+    objetivo_posicion: "Posicion | None" = None
+    objetivo_entidad: int | None = None
+    parametros: dict | None = None
+    estado: EstadoComandoSombra = field(default_factory=lambda: EstadoComandoSombra.PENDIENTE)
+    tick_inicio: int | None = None
+    tick_fin: int | None = None
+    motivo_fallo: str | None = None
+
+    def esta_terminado(self) -> bool:
+        """True si el comando ya no está pendiente ni en progreso."""
+        return self.estado in (
+            EstadoComandoSombra.COMPLETADO,
+            EstadoComandoSombra.CANCELADO,
+            EstadoComandoSombra.FALLIDO,
+        )

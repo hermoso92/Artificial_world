@@ -4,7 +4,7 @@ Entidad base: clase base para todas las entidades autónomas.
 
 from typing import TYPE_CHECKING
 
-from tipos.enums import TipoEntidad
+from tipos.enums import TipoEntidad, ModoControl
 from tipos.modelos import AccionPuntuada, DirectivaExterna, PercepcionLocal, Posicion
 
 from agentes.directivas import GestorDirectivas
@@ -16,6 +16,7 @@ from agentes.percepcion import SistemaPercepcion
 if TYPE_CHECKING:
     from mundo.mapa import Mapa
     from nucleo.contexto import ContextoDecision, ContextoSimulacion
+    from sistemas.gestor_modo_sombra import GestorModoSombra
 
 
 class EntidadBase:
@@ -45,10 +46,19 @@ class EntidadBase:
         self.gestor_directivas = gestor_directivas or GestorDirectivas()
         # Historial de las últimas 8 decisiones para debug/panel
         self.historial_decisiones: list[dict] = []
-        # Modo control total / Modo Sombra: el jugador maneja esta entidad manualmente
+
+        # ── MODO SOMBRA ──────────────────────────────────────────────────
+        # Campo de modo de control (AUTONOMO / DIRIGIDO / POSEIDO)
+        # Se mantiene sincronizado con el GestorModoSombra cuando este existe.
+        self.modo_control: ModoControl = ModoControl.AUTONOMO
+
+        # Campos legacy para compatibilidad con código anterior (renderizador, etc.)
         self.control_total: bool = False
-        self.control_total_pendiente: Posicion | None = None  # movimiento pedido por teclado
-        self.sombra_accion_pendiente: str | None = None  # "mover", "esperar"
+        self.control_total_pendiente: Posicion | None = None
+        self.sombra_accion_pendiente: str | None = None
+
+        # Referencia al gestor central (inyectada por la simulación)
+        self._gestor_sombra: "GestorModoSombra | None" = None
 
     def actualizar_estado_interno(self, configuracion) -> None:
         """Actualiza hambre por tick (la energía se actualiza por acción)."""
@@ -79,11 +89,25 @@ class EntidadBase:
         self.gestor_directivas.filtrar_directivas_expiradas(tick_actual)
 
     def decidir_accion(self, contexto_decision: "ContextoDecision") -> AccionPuntuada | None:
-        """Decide la mejor acción y registra en historial.
-        En modo control_total / sombra, la IA no toma decisiones; el jugador manda.
+        """Decide la mejor acción según el modo de control activo.
+
+        AUTONOMO:  IA decide libremente.
+        DIRIGIDO:  IA decide + directivas modifican utilidades.
+        POSEIDO:   GestorModoSombra genera la acción del comando activo.
+                   Fallback legacy (control_total=True sin gestor) para
+                   compatibilidad con tests anteriores.
         """
+        tick = contexto_decision.tick_actual
+
+        # ── MODO POSEIDO (vía GestorModoSombra) ─────────────────────────
+        if self.modo_control == ModoControl.POSEIDO and self._gestor_sombra is not None:
+            accion_puntuada = self._gestor_sombra.procesar_tick(self, tick, contexto_decision)
+            if accion_puntuada:
+                self._registrar_en_historial(accion_puntuada, tick)
+            return accion_puntuada
+
+        # ── FALLBACK LEGACY: control_total sin gestor (tests + WASD) ────
         if self.control_total:
-            # Accion ESPERAR explícita (tecla ESPACIO en modo sombra)
             if self.sombra_accion_pendiente == "esperar":
                 self.sombra_accion_pendiente = None
                 from acciones.accion_descansar import AccionDescansar
@@ -95,17 +119,9 @@ class EntidadBase:
                     puntuacion_final=9.0,
                     motivo_principal="SOMBRA_ESPERAR",
                 )
-                self.historial_decisiones.append({
-                    "tick": contexto_decision.tick_actual,
-                    "accion": "descansar",
-                    "score": 9.0,
-                    "motivo": "SOMBRA_ESPERAR",
-                })
-                if len(self.historial_decisiones) > 8:
-                    self.historial_decisiones.pop(0)
+                self._registrar_en_historial(puntuada, tick)
                 return puntuada
 
-            # Movimiento manual pendiente
             if self.control_total_pendiente is not None:
                 dest = self.control_total_pendiente
                 self.control_total_pendiente = None
@@ -119,31 +135,28 @@ class EntidadBase:
                     puntuacion_final=9.0,
                     motivo_principal="SOMBRA_MOVER",
                 )
-                self.historial_decisiones.append({
-                    "tick": contexto_decision.tick_actual,
-                    "accion": "mover",
-                    "score": 9.0,
-                    "motivo": "SOMBRA_MOVER",
-                })
-                if len(self.historial_decisiones) > 8:
-                    self.historial_decisiones.pop(0)
+                self._registrar_en_historial(puntuada, tick)
                 return puntuada
 
-            # Sin acción pendiente: mundo espera
             return None
 
+        # ── MODO AUTONOMO / DIRIGIDO: IA con motor de decisión ──────────
         resultado = self.motor_decision.decidir(self, contexto_decision)
         if resultado:
-            entrada = {
-                "tick": contexto_decision.tick_actual,
-                "accion": resultado.accion.tipo_accion.value,
-                "score": round(resultado.puntuacion_final, 3),
-                "motivo": resultado.motivo_principal,
-            }
-            self.historial_decisiones.append(entrada)
-            if len(self.historial_decisiones) > 8:
-                self.historial_decisiones.pop(0)
+            self._registrar_en_historial(resultado, tick)
         return resultado
+
+    def _registrar_en_historial(self, accion_puntuada: AccionPuntuada, tick: int) -> None:
+        """Registra una decisión en el historial (máx. 8 entradas)."""
+        entrada = {
+            "tick": tick,
+            "accion": accion_puntuada.accion.tipo_accion.value,
+            "score": round(accion_puntuada.puntuacion_final, 3),
+            "motivo": accion_puntuada.motivo_principal,
+        }
+        self.historial_decisiones.append(entrada)
+        if len(self.historial_decisiones) > 8:
+            self.historial_decisiones.pop(0)
 
     def ejecutar_accion(
         self, accion_puntuada: AccionPuntuada, contexto_simulacion: "ContextoSimulacion"
@@ -175,4 +188,5 @@ class EntidadBase:
                 if self.estado_interno.accion_actual
                 else None
             ),
+            "modo_control": self.modo_control.value,
         }

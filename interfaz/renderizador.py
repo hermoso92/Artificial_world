@@ -229,7 +229,7 @@ class Renderizador:
             self.pantalla.blit(texto_acc, rect_acc)
 
     def dibujar_barra_inferior(self, estado_ui: dict) -> None:
-        """Barra inferior con tick, velocidad, modo y feedback."""
+        """Barra inferior con tick, velocidad, modo, feedback y alertas watchdog."""
         tick = estado_ui.get("tick_actual", 0)
         pausado = estado_ui.get("pausado", False)
         velocidad = estado_ui.get("velocidad", 1.0)
@@ -237,6 +237,7 @@ class Renderizador:
         feedback = estado_ui.get("mensaje_feedback", "")
         modo_sombra = estado_ui.get("modo_sombra", False)
         sombra_esperando = estado_ui.get("sombra_esperando_input", False)
+        watchdog_total = estado_ui.get("watchdog_total", 0)
         try:
             fuente = pygame.font.SysFont("arial", 12)
             fuente_b = pygame.font.SysFont("arial", 12, bold=True)
@@ -285,6 +286,12 @@ class Renderizador:
             )
             if y_fb + 14 < self.alto_total:
                 self.pantalla.blit(txt_fb, (x_fb, y_fb))
+
+        if watchdog_total > 0:
+            txt_wd = fuente_b.render(f"WATCHDOG: {watchdog_total} alertas", True, (255, 100, 80))
+            x_wd = self.ancho_mapa - txt_wd.get_width() - 15
+            if x_wd > 10:
+                self.pantalla.blit(txt_wd, (x_wd, y_bar + 5))
 
     def obtener_panel(self) -> PanelControl | None:
         """Devuelve el panel de control para procesar clicks."""

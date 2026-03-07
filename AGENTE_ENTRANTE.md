@@ -302,6 +302,26 @@ Detecta automáticamente problemas en la simulación. Se ejecuta **cada 10 ticks
 **Fix:** quitado `"mover"` de la condición; añadidos detectores `HAMBRE_SIN_COMIDA_DISPONIBLE` y `SOLO_MOVIMIENTO_GLOBAL`.  
 **Verificación:** 32 alertas en 100 ticks tras el fix (0 antes).
 
+### Verificación manual del watchdog
+
+Si se duda de que el watchdog funciona, seguir este procedimiento:
+
+1. **Estado limpio:** Borrar `mundo_artificial.db` y `simulacion.log` para empezar sin datos previos.
+2. **Ejecutar:** `ejecutar.bat` o `python principal.py`.
+3. **Pausar:** Pulsar `P` en tick ~5.
+4. **Avanzar manualmente:** Pulsar `N` unas 15 veces (tick manual). Si las entidades están bloqueadas o el mapa está vacío, permanecerán en la misma posición.
+5. **Abrir pestaña WATCHDOG:** Hacer clic en la 5ª pestaña del panel derecho (etiqueta "WATC"). Si hay alertas, la pestaña se muestra en rojo.
+6. **Comprobar UI:** Título "WATCHDOG [N detectados]" en rojo si N>0, lista de alertas con nivel y mensaje.
+7. **Comprobar log:** Abrir `simulacion.log` en la raíz del proyecto y buscar líneas que contengan `WATCHDOG` y el código de alerta (ej. `TRAMPA_POSICION`).
+
+**Causa frecuente de "no funciona":** El usuario no hace clic en la pestaña WATCHDOG. Por defecto está en CONTROL. El contenido de alertas solo se ve al seleccionar la pestaña.
+
+**Test automatizado:**
+```powershell
+python pruebas/test_watchdog_integracion.py
+```
+Verifica: (1) alerta TRAMPA_POSICION con entidad fija, (2) escritura en log, (3) integración con Simulacion real.
+
 ---
 
 ## 8. PERSISTENCIA
@@ -344,6 +364,7 @@ python pruebas/test_core.py
 python pruebas/test_modo_sombra.py
 python pruebas/test_bug_robar.py
 python pruebas/test_watchdog_fixes.py
+python pruebas/test_watchdog_integracion.py
 python pruebas/test_arranque_limpio.py
 ```
 
@@ -354,6 +375,7 @@ python pruebas/test_arranque_limpio.py
 | `test_modo_sombra.py` | 7/7 | ✅ PASAN |
 | `test_bug_robar.py` | 3/3 | ✅ PASAN |
 | `test_watchdog_fixes.py` | 4/4 | ✅ PASAN |
+| `test_watchdog_integracion.py` | 3/3 | ✅ PASAN |
 | `test_arranque_limpio.py` | 1/1 | ✅ PASA |
 
 ### Qué validan los tests (no son triviales)
@@ -364,6 +386,7 @@ python pruebas/test_arranque_limpio.py
 - `test_variedad_acciones_minima` — en 30 ticks hay ≥2 acciones distintas
 - `test_watchdog_detecta_trampa` — entidad atrapada genera alerta TRAMPA_POSICION
 - `test_watchdog_fixes` — los 3 puntos ciegos corregidos funcionan
+- `test_watchdog_integracion` — watchdog integrado con simulación real, alertas en log
 
 ### Filtro recomendado para ejecutar tests
 ```powershell
