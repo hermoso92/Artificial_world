@@ -26,6 +26,7 @@ class Simulacion:
         self.sistema_regeneracion = None
         self.sistema_persistencia = None
         self.sistema_watchdog = None
+        self.gestor_modo_sombra = None
         self.renderizador = None
         self.estado_panel = EstadoPanel()
         self.guardado_ok_tick = 0
@@ -39,6 +40,7 @@ class Simulacion:
         from sistemas.sistema_metricas import SistemaMetricas
         from sistemas.sistema_regeneracion import SistemaRegeneracion
         from sistemas.sistema_persistencia import SistemaPersistencia
+        from sistemas.gestor_modo_sombra import GestorModoSombra
         from interfaz.renderizador import Renderizador
 
         self.gestor_ticks = GestorTicks()
@@ -52,8 +54,12 @@ class Simulacion:
         self.sistema_regeneracion = SistemaRegeneracion()
         from sistemas.sistema_watchdog import SistemaWatchdog
         self.sistema_watchdog = SistemaWatchdog()
+        self.gestor_modo_sombra = GestorModoSombra(bus_eventos=self.bus_eventos)
         self.renderizador = Renderizador(self.configuracion)
         self.renderizador.inicializar(estado_panel=self.estado_panel)
+        # Inyectar gestor sombra en el panel de control
+        if self.gestor_modo_sombra and self.renderizador.panel_control:
+            self.renderizador.panel_control.gestor_sombra = self.gestor_modo_sombra
 
     def crear_mundo(self) -> None:
         """Crea el mundo inicial."""
@@ -71,6 +77,10 @@ class Simulacion:
 
         fab = FabricaEntidades(self.configuracion)
         self.entidades = fab.crear_entidades_iniciales(self.mapa)
+        # Inyectar gestor modo sombra en cada entidad
+        if self.gestor_modo_sombra:
+            for e in self.entidades:
+                e._gestor_sombra = self.gestor_modo_sombra
 
     def procesar_entrada(self) -> bool:
         """Procesa entrada del usuario. Devuelve False si hay que salir."""
@@ -83,8 +93,17 @@ class Simulacion:
                 )
                 return False
             if evento.type == pygame.KEYDOWN:
-                # Si el campo de coordenadas está activo, capturar texto primero
-                if self.estado_panel.coord_input_activo:
+                # Delegar al panel sombra si tiene input activo
+                panel = self.renderizador.obtener_panel() if self.renderizador else None
+                panel_s = panel.panel_sombra if panel else None
+                if panel_s and panel_s.tiene_input_activo():
+                    accion = panel_s.procesar_tecla(
+                        evento.key, evento.unicode, self.entidades,
+                        self.gestor_ticks.tick_actual
+                    )
+                    if accion:
+                        self._procesar_click(accion)  # reusar el manejador con dict
+                elif self.estado_panel.coord_input_activo:
                     self._procesar_tecla_coord_input(evento)
                 else:
                     self._procesar_tecla(evento.key)
@@ -211,8 +230,14 @@ class Simulacion:
                 return e
         return None
 
-    def _procesar_click(self, pos: tuple[int, int]) -> None:
-        """Procesa click del ratón en el mapa o panel."""
+    def _procesar_click(self, pos) -> None:
+        """Procesa click del ratón o una acción dict directa desde el panel sombra."""
+        # Si se pasa un dict directamente (desde panel sombra via tecla), procesarlo
+        if isinstance(pos, dict):
+            accion = pos
+            self._manejar_accion_panel(accion)
+            return
+
         x, y = pos
         tam = self.configuracion.tamano_celda
         if x < self.renderizador.ancho_mapa and y < self.renderizador.alto_mapa:
@@ -232,6 +257,11 @@ class Simulacion:
         )
         if not accion:
             return
+        self._manejar_accion_panel(accion)
+
+    def _manejar_accion_panel(self, accion: dict) -> None:
+        """Despacha una acción del panel al sistema correcto."""
+        panel = self.renderizador.obtener_panel() if self.renderizador else None
         tipo = accion.get("tipo")
         if tipo == "pausar":
             self.estado_panel.pausado = not self.estado_panel.pausado
@@ -258,25 +288,39 @@ class Simulacion:
                 # Desactivar control total en cualquier otra entidad primero
                 for e in self.entidades:
                     if e.id_entidad != id_ent and getattr(e, "control_total", False):
-                        e.control_total = False
-                        e.control_total_pendiente = None
-                        e.sombra_accion_pendiente = None
-                ent.control_total = not ent.control_total
-                if ent.control_total:
-                    # Activar modo sombra automáticamente al tomar control
+                        if self.gestor_modo_sombra:
+                            self.gestor_modo_sombra.desactivar_modo_sombra(
+                                e, self.gestor_ticks.tick_actual
+                            )
+                        else:
+                            e.control_total = False
+                            e.control_total_pendiente = None
+                            e.sombra_accion_pendiente = None
+                en_ctrl = getattr(ent, "control_total", False)
+                if not en_ctrl:
+                    # Activar POSEIDO
+                    if self.gestor_modo_sombra:
+                        self.gestor_modo_sombra.activar_modo_poseido(
+                            ent, self.gestor_ticks.tick_actual
+                        )
+                    ent.control_total = True
+                    ent.modo_control = __import__("tipos.enums", fromlist=["ModoControl"]).ModoControl.POSEIDO
                     self.estado_panel.modo_sombra = True
                     self.estado_panel.sombra_esperando_input = True
-                    self.estado_panel.pausado = False  # el modo sombra maneja su propio flujo
+                    self.estado_panel.pausado = False
                     self.estado_panel.mensaje_feedback = (
                         f"[MODO SOMBRA ON] {ent.nombre}  WASD=mover  ESPACIO=esperar"
                     )
                     self.estado_panel.mensaje_feedback_tick = 200
                 else:
-                    # Desactivar modo sombra al soltar control
+                    # Desactivar
+                    if self.gestor_modo_sombra:
+                        self.gestor_modo_sombra.desactivar_modo_sombra(
+                            ent, self.gestor_ticks.tick_actual
+                        )
+                    ent.modo_control = __import__("tipos.enums", fromlist=["ModoControl"]).ModoControl.AUTONOMO
                     self.estado_panel.modo_sombra = False
                     self.estado_panel.sombra_esperando_input = False
-                    ent.control_total_pendiente = None
-                    ent.sombra_accion_pendiente = None
                     self.estado_panel.mensaje_feedback = f"[MODO SOMBRA OFF] {ent.nombre} - IA retoma control"
                     self.estado_panel.mensaje_feedback_tick = 120
                 import logging
@@ -284,6 +328,47 @@ class Simulacion:
                 logging.getLogger("simulacion").info(
                     f"MODO_SOMBRA {estado_str} para {ent.nombre} en tick {self.gestor_ticks.tick_actual}"
                 )
+        elif tipo == "comando_sombra":
+            # Comando forzado (modo POSEIDO) desde el panel_modo_sombra
+            id_ent = accion.get("id_entidad")
+            tipo_cmd_str = accion.get("tipo_comando")
+            ent = next((e for e in self.entidades if e.id_entidad == id_ent), None)
+            if ent and tipo_cmd_str and self.gestor_modo_sombra:
+                from tipos.enums import TipoComandoSombra, ModoControl
+                try:
+                    tipo_cmd = TipoComandoSombra(tipo_cmd_str)
+                except ValueError:
+                    self.estado_panel.mensaje_feedback = f"Cmd desconocido: {tipo_cmd_str}"
+                    self.estado_panel.mensaje_feedback_tick = 60
+                    return
+                obj_x = accion.get("objetivo_x")
+                obj_y = accion.get("objetivo_y")
+                obj_ent = accion.get("objetivo_entidad")
+                from tipos.modelos import Posicion
+                pos_obj = Posicion(obj_x, obj_y) if obj_x is not None and obj_y is not None else None
+                tick = self.gestor_ticks.tick_actual
+                cmd = self.gestor_modo_sombra.encolar_comando(
+                    entidad=ent,
+                    tipo_comando=tipo_cmd,
+                    tick=tick,
+                    objetivo_posicion=pos_obj,
+                    objetivo_entidad=obj_ent,
+                )
+                ent.modo_control = ModoControl.POSEIDO
+                self.estado_panel.modo_sombra = True
+                self.estado_panel.sombra_esperando_input = False
+                self.estado_panel.mensaje_feedback = (
+                    f"[SOMBRA] cmd#{cmd.id_comando} {tipo_cmd.value} → {ent.nombre}"
+                )
+                self.estado_panel.mensaje_feedback_tick = 120
+                if self.sistema_logs:
+                    self.sistema_logs.registrar_directiva_recibida(
+                        nombre_ent=ent.nombre,
+                        tipo_dir=f"COMANDO_SOMBRA:{tipo_cmd.value}",
+                        tick=tick,
+                        duracion=0,
+                        intensidad=1.0,
+                    )
         elif tipo == "activar_coord_input":
             self.estado_panel.coord_input_activo = True
             self.estado_panel.coord_input_texto = ""
@@ -307,6 +392,12 @@ class Simulacion:
                 else:
                     self.estado_panel.mensaje_feedback = f"Orden [{nombre_dir}] → {ent.nombre}"
                 self.estado_panel.mensaje_feedback_tick = 120
+                # Cambiar a modo DIRIGIDO
+                from tipos.enums import ModoControl
+                if ent.modo_control != ModoControl.POSEIDO:
+                    ent.modo_control = ModoControl.DIRIGIDO
+                    if self.gestor_modo_sombra:
+                        self.gestor_modo_sombra.activar_modo_dirigido(ent, tick)
                 if self.sistema_logs:
                     intensidad = 1.0
                     duracion = 999 if nombre_dir == "quedarse_aqui" else 200
@@ -342,6 +433,7 @@ class Simulacion:
             entidades_cercanas=[],
             directivas_activas=entidad.gestor_directivas.obtener_directivas_activas(tick),
             eventos_recientes_globales=[],
+            entidades=self.entidades,
         )
         accion_puntuada = entidad.decidir_accion(contexto_decision)
         if accion_puntuada:

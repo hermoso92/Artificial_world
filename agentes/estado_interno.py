@@ -26,6 +26,7 @@ class EstadoInterno:
         self.inventario = inventario or Inventario()
         self.accion_actual: TipoAccion | None = None
         self.objetivo_actual: Posicion | None = None
+        self.activo: bool = True   # False = eliminada/inactiva (por ataque u otro)
 
     def actualizar_hambre(self, delta: float) -> None:
         """Modifica la hambre (delta positivo la aumenta)."""

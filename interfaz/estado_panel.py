@@ -20,6 +20,7 @@ class PestanaPanel(Enum):
     """Pestañas del panel de control."""
     CONTROL = "control"
     ORDENES = "ordenes"
+    SOMBRA  = "sombra"
     ENTIDADES = "entidades"
     EVENTOS = "eventos"
     WATCHDOG = "watchdog"

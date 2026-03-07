@@ -29301,3 +29301,181 @@
 23:36:46 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ent2 tick=9: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
 23:36:46 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ent3 tick=9: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
 23:36:46 [ERROR] WATCHDOG [SIN_VARIEDAD_GLOBAL] ent=SISTEMA tick=9: 'descansar' domina 100% de todas las acciones | datos={'accion': 'descansar', 'porcentaje': 1.0, 'distribucion': {'descansar': 40}}
+01:09:34 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ana tick=9: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:09:34 [ERROR] WATCHDOG [SIN_VARIEDAD_GLOBAL] ent=SISTEMA tick=9: 'descansar' domina 100% de todas las acciones | datos={'accion': 'descansar', 'porcentaje': 1.0, 'distribucion': {'descansar': 10}}
+01:09:34 [ERROR] WATCHDOG [TRAMPA_POSICION] ent=Ana tick=19: lleva 12 ticks sin moverse en (10, 10) | datos={'posicion': (10, 10), 'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:09:34 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ana tick=19: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:09:34 [ERROR] WATCHDOG [SIN_VARIEDAD_GLOBAL] ent=SISTEMA tick=19: 'descansar' domina 100% de todas las acciones | datos={'accion': 'descansar', 'porcentaje': 1.0, 'distribucion': {'descansar': 10}}
+01:09:34 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ana tick=9: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:09:34 [ERROR] WATCHDOG [SIN_VARIEDAD_GLOBAL] ent=SISTEMA tick=9: 'descansar' domina 100% de todas las acciones | datos={'accion': 'descansar', 'porcentaje': 1.0, 'distribucion': {'descansar': 10}}
+01:09:34 [ERROR] WATCHDOG [TRAMPA_POSICION] ent=Ana tick=19: lleva 12 ticks sin moverse en (5, 5) | datos={'posicion': (5, 5), 'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:09:34 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ana tick=19: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:09:34 [ERROR] WATCHDOG [SIN_VARIEDAD_GLOBAL] ent=SISTEMA tick=19: 'descansar' domina 100% de todas las acciones | datos={'accion': 'descansar', 'porcentaje': 1.0, 'distribucion': {'descansar': 10}}
+01:09:35 [INFO] EVENTO tick=1 ent=1 tipo=siguio desc=Ana exploro (2,0)
+01:09:35 [INFO] EVENTO tick=1 ent=2 tipo=siguio desc=Bruno exploro (7,7)
+01:09:35 [INFO] EVENTO tick=2 ent=1 tipo=siguio desc=Ana exploro (1,0)
+01:09:35 [INFO] EVENTO tick=2 ent=2 tipo=siguio desc=Bruno exploro (6,7)
+01:09:35 [INFO] EVENTO tick=3 ent=1 tipo=siguio desc=Ana exploro (2,0)
+01:09:35 [INFO] EVENTO tick=3 ent=2 tipo=siguio desc=Bruno exploro (5,7)
+01:09:35 [INFO] EVENTO tick=4 ent=1 tipo=siguio desc=Ana exploro (1,0)
+01:09:35 [INFO] EVENTO tick=4 ent=2 tipo=siguio desc=Bruno exploro (4,7)
+01:09:35 [INFO] EVENTO tick=5 ent=1 tipo=siguio desc=Ana exploro (0,0)
+01:09:35 [INFO] EVENTO tick=5 ent=2 tipo=siguio desc=Bruno exploro (5,7)
+01:09:35 [INFO] EVENTO tick=6 ent=1 tipo=siguio desc=Ana exploro (1,0)
+01:09:35 [INFO] EVENTO tick=6 ent=2 tipo=siguio desc=Bruno exploro (4,7)
+01:09:35 [INFO] EVENTO tick=7 ent=1 tipo=siguio desc=Ana exploro (2,0)
+01:09:35 [INFO] EVENTO tick=7 ent=2 tipo=siguio desc=Bruno exploro (5,7)
+01:09:35 [INFO] EVENTO tick=8 ent=1 tipo=siguio desc=Ana exploro (1,0)
+01:09:35 [INFO] EVENTO tick=8 ent=2 tipo=siguio desc=Bruno exploro (5,6)
+01:09:35 [INFO] EVENTO tick=9 ent=1 tipo=siguio desc=Ana exploro (0,0)
+01:09:35 [INFO] EVENTO tick=9 ent=2 tipo=siguio desc=Bruno exploro (6,6)
+01:09:35 [INFO] EVENTO tick=10 ent=1 tipo=siguio desc=Ana exploro (0,1)
+01:09:35 [INFO] EVENTO tick=10 ent=2 tipo=siguio desc=Bruno exploro (6,5)
+01:09:35 [INFO] EVENTO tick=11 ent=1 tipo=siguio desc=Ana exploro (0,0)
+01:09:35 [INFO] EVENTO tick=11 ent=2 tipo=siguio desc=Bruno exploro (7,5)
+01:09:35 [INFO] EVENTO tick=12 ent=1 tipo=siguio desc=Ana exploro (1,0)
+01:09:35 [INFO] EVENTO tick=12 ent=2 tipo=siguio desc=Bruno exploro (8,5)
+01:09:35 [INFO] EVENTO tick=13 ent=1 tipo=siguio desc=Ana exploro (0,0)
+01:09:35 [INFO] EVENTO tick=13 ent=2 tipo=siguio desc=Bruno exploro (7,5)
+01:09:35 [INFO] EVENTO tick=14 ent=1 tipo=siguio desc=Ana exploro (0,1)
+01:09:35 [INFO] EVENTO tick=14 ent=2 tipo=siguio desc=Bruno exploro (6,5)
+01:09:35 [INFO] EVENTO tick=15 ent=1 tipo=siguio desc=Ana exploro (0,0)
+01:09:35 [INFO] EVENTO tick=15 ent=2 tipo=siguio desc=Bruno exploro (6,4)
+01:10:07 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:07 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ana tick=9: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:10:07 [ERROR] WATCHDOG [SIN_VARIEDAD_GLOBAL] ent=SISTEMA tick=9: 'descansar' domina 100% de todas las acciones | datos={'accion': 'descansar', 'porcentaje': 1.0, 'distribucion': {'descansar': 10}}
+01:10:07 [ERROR] WATCHDOG [TRAMPA_POSICION] ent=Ana tick=19: lleva 12 ticks sin moverse en (10, 10) | datos={'posicion': (10, 10), 'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:10:07 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ana tick=19: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:10:07 [ERROR] WATCHDOG [SIN_VARIEDAD_GLOBAL] ent=SISTEMA tick=19: 'descansar' domina 100% de todas las acciones | datos={'accion': 'descansar', 'porcentaje': 1.0, 'distribucion': {'descansar': 10}}
+01:10:07 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:07 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ana tick=9: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:10:07 [ERROR] WATCHDOG [SIN_VARIEDAD_GLOBAL] ent=SISTEMA tick=9: 'descansar' domina 100% de todas las acciones | datos={'accion': 'descansar', 'porcentaje': 1.0, 'distribucion': {'descansar': 10}}
+01:10:07 [ERROR] WATCHDOG [TRAMPA_POSICION] ent=Ana tick=19: lleva 12 ticks sin moverse en (5, 5) | datos={'posicion': (5, 5), 'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:10:07 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ana tick=19: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:10:07 [ERROR] WATCHDOG [SIN_VARIEDAD_GLOBAL] ent=SISTEMA tick=19: 'descansar' domina 100% de todas las acciones | datos={'accion': 'descansar', 'porcentaje': 1.0, 'distribucion': {'descansar': 10}}
+01:10:07 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:07 [INFO] EVENTO tick=1 ent=1 tipo=siguio desc=Ana exploro (2,0)
+01:10:07 [INFO] EVENTO tick=1 ent=2 tipo=siguio desc=Bruno exploro (7,7)
+01:10:07 [INFO] EVENTO tick=2 ent=1 tipo=siguio desc=Ana exploro (1,0)
+01:10:07 [INFO] EVENTO tick=2 ent=2 tipo=siguio desc=Bruno exploro (6,7)
+01:10:07 [INFO] EVENTO tick=3 ent=1 tipo=siguio desc=Ana exploro (2,0)
+01:10:07 [INFO] EVENTO tick=3 ent=2 tipo=siguio desc=Bruno exploro (5,7)
+01:10:07 [INFO] EVENTO tick=4 ent=1 tipo=siguio desc=Ana exploro (1,0)
+01:10:07 [INFO] EVENTO tick=4 ent=2 tipo=siguio desc=Bruno exploro (4,7)
+01:10:07 [INFO] EVENTO tick=5 ent=1 tipo=siguio desc=Ana exploro (0,0)
+01:10:07 [INFO] EVENTO tick=5 ent=2 tipo=siguio desc=Bruno exploro (5,7)
+01:10:07 [INFO] EVENTO tick=6 ent=1 tipo=siguio desc=Ana exploro (1,0)
+01:10:07 [INFO] EVENTO tick=6 ent=2 tipo=siguio desc=Bruno exploro (4,7)
+01:10:07 [INFO] EVENTO tick=7 ent=1 tipo=siguio desc=Ana exploro (2,0)
+01:10:07 [INFO] EVENTO tick=7 ent=2 tipo=siguio desc=Bruno exploro (5,7)
+01:10:07 [INFO] EVENTO tick=8 ent=1 tipo=siguio desc=Ana exploro (1,0)
+01:10:07 [INFO] EVENTO tick=8 ent=2 tipo=siguio desc=Bruno exploro (5,6)
+01:10:07 [INFO] EVENTO tick=9 ent=1 tipo=siguio desc=Ana exploro (0,0)
+01:10:07 [INFO] EVENTO tick=9 ent=2 tipo=siguio desc=Bruno exploro (6,6)
+01:10:07 [INFO] EVENTO tick=10 ent=1 tipo=siguio desc=Ana exploro (0,1)
+01:10:07 [INFO] EVENTO tick=10 ent=2 tipo=siguio desc=Bruno exploro (6,5)
+01:10:07 [INFO] EVENTO tick=11 ent=1 tipo=siguio desc=Ana exploro (0,0)
+01:10:07 [INFO] EVENTO tick=11 ent=2 tipo=siguio desc=Bruno exploro (7,5)
+01:10:07 [INFO] EVENTO tick=12 ent=1 tipo=siguio desc=Ana exploro (1,0)
+01:10:07 [INFO] EVENTO tick=12 ent=2 tipo=siguio desc=Bruno exploro (8,5)
+01:10:07 [INFO] EVENTO tick=13 ent=1 tipo=siguio desc=Ana exploro (0,0)
+01:10:07 [INFO] EVENTO tick=13 ent=2 tipo=siguio desc=Bruno exploro (7,5)
+01:10:07 [INFO] EVENTO tick=14 ent=1 tipo=siguio desc=Ana exploro (0,1)
+01:10:07 [INFO] EVENTO tick=14 ent=2 tipo=siguio desc=Bruno exploro (6,5)
+01:10:07 [INFO] EVENTO tick=15 ent=1 tipo=siguio desc=Ana exploro (0,0)
+01:10:07 [INFO] EVENTO tick=15 ent=2 tipo=siguio desc=Bruno exploro (6,4)
+01:10:07 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:08 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:08 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:08 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:08 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:08 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:08 [DEBUG] DECISION tick=10 ent=Ana      accion=explorar           score=0.420 motivo=directivas:+0.72          E=0.80 H=0.30 dir=1
+01:10:08 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:08 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:08 [WARNING] WATCHDOG [BUCLE_ACCION] ent=TestEnt tick=9: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:10:08 [ERROR] WATCHDOG [SIN_VARIEDAD_GLOBAL] ent=SISTEMA tick=9: 'descansar' domina 100% de todas las acciones | datos={'accion': 'descansar', 'porcentaje': 1.0, 'distribucion': {'descansar': 10}}
+01:10:08 [ERROR] WATCHDOG [TRAMPA_POSICION] ent=TestEnt tick=19: lleva 12 ticks sin moverse en (5, 5) | datos={'posicion': (5, 5), 'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:10:08 [WARNING] WATCHDOG [BUCLE_ACCION] ent=TestEnt tick=19: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:10:08 [ERROR] WATCHDOG [SIN_VARIEDAD_GLOBAL] ent=SISTEMA tick=19: 'descansar' domina 100% de todas las acciones | datos={'accion': 'descansar', 'porcentaje': 1.0, 'distribucion': {'descansar': 10}}
+01:10:08 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:08 [WARNING] WATCHDOG [BUCLE_ACCION] ent=TestEnt2 tick=9: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 0.9, 'hambre': 0.0}
+01:10:08 [ERROR] WATCHDOG [SIN_VARIEDAD_GLOBAL] ent=SISTEMA tick=9: 'descansar' domina 100% de todas las acciones | datos={'accion': 'descansar', 'porcentaje': 1.0, 'distribucion': {'descansar': 10}}
+01:10:08 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:08 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ent0 tick=9: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:10:08 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ent1 tick=9: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:10:08 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ent2 tick=9: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:10:08 [WARNING] WATCHDOG [BUCLE_ACCION] ent=Ent3 tick=9: repite 'descansar' durante 10 ticks | datos={'accion': 'descansar', 'energia': 1.0, 'hambre': 0.0}
+01:10:08 [ERROR] WATCHDOG [SIN_VARIEDAD_GLOBAL] ent=SISTEMA tick=9: 'descansar' domina 100% de todas las acciones | datos={'accion': 'descansar', 'porcentaje': 1.0, 'distribucion': {'descansar': 40}}
+01:10:08 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:13 [INFO] Watchdog activo: analisis cada 10 ticks
+01:10:13 [INFO] EVENTO tick=1 ent=1 tipo=siguio desc=Ana exploro (39,7)
+01:10:13 [INFO] EVENTO tick=1 ent=2 tipo=siguio desc=Bruno exploro (1,48)
+01:10:13 [INFO] EVENTO tick=1 ent=3 tipo=siguio desc=Clara exploro (16,15)
+01:10:13 [INFO] EVENTO tick=1 ent=4 tipo=siguio desc=David exploro (13,8)
+01:10:13 [INFO] EVENTO tick=1 ent=5 tipo=siguio desc=Eva exploro (46,6)
+01:10:13 [INFO] EVENTO tick=1 ent=6 tipo=siguio desc=Félix exploro (44,47)
+01:10:13 [INFO] EVENTO tick=1 ent=7 tipo=siguio desc=Amiguisimo exploro (58,34)
+01:10:13 [INFO] EVENTO tick=2 ent=1 tipo=siguio desc=Ana exploro (39,8)
+01:10:13 [INFO] EVENTO tick=2 ent=2 tipo=siguio desc=Bruno exploro (2,48)
+01:10:13 [INFO] EVENTO tick=2 ent=3 tipo=siguio desc=Clara exploro (16,16)
+01:10:13 [INFO] EVENTO tick=2 ent=4 tipo=siguio desc=David exploro (12,8)
+01:10:13 [INFO] EVENTO tick=2 ent=5 tipo=siguio desc=Eva exploro (46,5)
+01:10:13 [INFO] EVENTO tick=2 ent=6 tipo=siguio desc=Félix exploro (45,47)
+01:10:13 [INFO] EVENTO tick=2 ent=7 tipo=siguio desc=Amiguisimo exploro (58,33)
+01:10:13 [INFO] EVENTO tick=3 ent=1 tipo=siguio desc=Ana exploro (39,7)
+01:10:13 [INFO] EVENTO tick=3 ent=2 tipo=siguio desc=Bruno exploro (1,48)
+01:10:13 [INFO] EVENTO tick=3 ent=3 tipo=siguio desc=Clara exploro (17,16)
+01:10:13 [INFO] EVENTO tick=3 ent=4 tipo=siguio desc=David exploro (12,9)
+01:10:13 [INFO] EVENTO tick=3 ent=5 tipo=siguio desc=Eva exploro (46,4)
+01:10:13 [INFO] EVENTO tick=3 ent=6 tipo=siguio desc=Félix exploro (45,46)
+01:10:13 [INFO] EVENTO tick=3 ent=7 tipo=siguio desc=Amiguisimo exploro (57,33)
+01:10:13 [INFO] EVENTO tick=4 ent=1 tipo=siguio desc=Ana exploro (38,7)
+01:10:13 [INFO] EVENTO tick=4 ent=2 tipo=siguio desc=Bruno exploro (1,49)
+01:10:13 [INFO] EVENTO tick=4 ent=3 tipo=siguio desc=Clara exploro (16,16)
+01:10:13 [INFO] EVENTO tick=4 ent=4 tipo=siguio desc=David exploro (11,9)
+01:10:13 [INFO] EVENTO tick=4 ent=5 tipo=siguio desc=Eva exploro (46,3)
+01:10:13 [INFO] EVENTO tick=4 ent=6 tipo=siguio desc=Félix exploro (44,46)
+01:10:13 [INFO] EVENTO tick=4 ent=7 tipo=siguio desc=Amiguisimo exploro (58,33)
+01:10:13 [INFO] EVENTO tick=5 ent=1 tipo=siguio desc=Ana exploro (38,6)
+01:10:13 [INFO] EVENTO tick=5 ent=2 tipo=siguio desc=Bruno exploro (1,48)
+01:10:13 [INFO] EVENTO tick=5 ent=3 tipo=siguio desc=Clara exploro (15,16)
+01:10:13 [INFO] EVENTO tick=5 ent=4 tipo=siguio desc=David exploro (11,10)
+01:10:13 [INFO] EVENTO tick=5 ent=5 tipo=siguio desc=Eva exploro (45,3)
+01:10:13 [INFO] EVENTO tick=5 ent=6 tipo=siguio desc=Félix exploro (44,47)
+01:10:13 [INFO] EVENTO tick=5 ent=7 tipo=siguio desc=Amiguisimo exploro (57,33)
+01:10:13 [INFO] EVENTO tick=6 ent=1 tipo=siguio desc=Ana exploro (38,5)
+01:10:13 [INFO] EVENTO tick=6 ent=2 tipo=siguio desc=Bruno exploro (1,49)
+01:10:13 [INFO] EVENTO tick=6 ent=3 tipo=siguio desc=Clara exploro (16,16)
+01:10:13 [INFO] EVENTO tick=6 ent=4 tipo=siguio desc=David exploro (10,10)
+01:10:13 [INFO] EVENTO tick=6 ent=5 tipo=siguio desc=Eva exploro (44,3)
+01:10:13 [INFO] EVENTO tick=6 ent=6 tipo=siguio desc=Félix exploro (45,47)
+01:10:13 [INFO] EVENTO tick=6 ent=7 tipo=siguio desc=Amiguisimo exploro (58,33)
+01:10:13 [INFO] EVENTO tick=7 ent=1 tipo=siguio desc=Ana exploro (37,5)
+01:10:13 [INFO] EVENTO tick=7 ent=2 tipo=siguio desc=Bruno exploro (2,49)
+01:10:13 [INFO] EVENTO tick=7 ent=3 tipo=siguio desc=Clara exploro (15,16)
+01:10:13 [INFO] EVENTO tick=7 ent=4 tipo=siguio desc=David exploro (10,11)
+01:10:13 [INFO] EVENTO tick=7 ent=5 tipo=siguio desc=Eva exploro (44,2)
+01:10:13 [INFO] EVENTO tick=7 ent=6 tipo=siguio desc=Félix exploro (45,48)
+01:10:13 [INFO] EVENTO tick=7 ent=7 tipo=siguio desc=Amiguisimo exploro (58,34)
+01:10:13 [INFO] EVENTO tick=8 ent=1 tipo=siguio desc=Ana exploro (37,4)
+01:10:13 [INFO] EVENTO tick=8 ent=2 tipo=siguio desc=Bruno exploro (3,49)
+01:10:13 [INFO] EVENTO tick=8 ent=3 tipo=siguio desc=Clara exploro (15,15)
+01:10:13 [INFO] EVENTO tick=8 ent=4 tipo=siguio desc=David exploro (10,10)
+01:10:13 [INFO] EVENTO tick=8 ent=5 tipo=siguio desc=Eva exploro (45,2)
+01:10:13 [INFO] EVENTO tick=8 ent=6 tipo=siguio desc=Félix exploro (45,49)
+01:10:13 [INFO] EVENTO tick=8 ent=7 tipo=siguio desc=Amiguisimo exploro (58,33)
+01:10:13 [INFO] EVENTO tick=9 ent=1 tipo=siguio desc=Ana exploro (37,5)
+01:10:13 [INFO] EVENTO tick=9 ent=2 tipo=siguio desc=Bruno exploro (2,49)
+01:10:13 [INFO] EVENTO tick=9 ent=3 tipo=siguio desc=Clara exploro (16,15)
+01:10:13 [INFO] EVENTO tick=9 ent=4 tipo=siguio desc=David exploro (11,10)
+01:10:13 [INFO] EVENTO tick=9 ent=5 tipo=siguio desc=Eva exploro (46,2)
+01:10:13 [INFO] EVENTO tick=9 ent=6 tipo=siguio desc=Félix exploro (45,50)
+01:10:13 [INFO] EVENTO tick=9 ent=7 tipo=siguio desc=Amiguisimo exploro (58,32)
+01:10:13 [INFO] EVENTO tick=10 ent=1 tipo=siguio desc=Ana exploro (37,4)
+01:10:13 [INFO] EVENTO tick=10 ent=2 tipo=siguio desc=Bruno exploro (3,49)
+01:10:13 [INFO] EVENTO tick=10 ent=3 tipo=siguio desc=Clara exploro (16,16)
+01:10:13 [INFO] EVENTO tick=10 ent=4 tipo=siguio desc=David exploro (11,9)
+01:10:13 [INFO] EVENTO tick=10 ent=5 tipo=siguio desc=Eva exploro (45,2)
+01:10:13 [INFO] EVENTO tick=10 ent=6 tipo=siguio desc=Félix exploro (46,50)
+01:10:13 [INFO] EVENTO tick=10 ent=7 tipo=siguio desc=Amiguisimo exploro (57,32)

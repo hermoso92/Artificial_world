@@ -64,6 +64,7 @@ class SistemaWatchdog:
         self._ticks_acum: int = 0
         self._t_acum: float = time.time()
         self.problemas_detectados_total: int = 0
+        _logger.info("Watchdog activo: analisis cada %d ticks", self.INTERVALO_TICKS)
 
     # ------------------------------------------------------------------
     # API pública
