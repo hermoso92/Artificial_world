@@ -29,6 +29,8 @@ class Simulacion:
         self.gestor_modo_sombra = None
         self.renderizador = None
         self.estado_panel = EstadoPanel()
+        self.sistema_reporte = None
+        self.sistema_competencia = None
         self.guardado_ok_tick = 0
         self.cargado_ok_tick = 0
 
@@ -53,8 +55,23 @@ class Simulacion:
         self.sistema_metricas = SistemaMetricas()
         self.sistema_regeneracion = SistemaRegeneracion()
         from sistemas.sistema_watchdog import SistemaWatchdog
+        from sistemas.sistema_logging_reporte import SistemaReporte
+
         self.sistema_watchdog = SistemaWatchdog()
+        if getattr(self.configuracion, "reporte_sesion_activo", True):
+            self.sistema_reporte = SistemaReporte(
+                ruta=getattr(self.configuracion, "reporte_sesion_ruta", "reporte_sesion.json"),
+                activo=True,
+            )
+        from sistemas.sistema_modo_competencia import SistemaModoCompetencia
+        self.sistema_competencia = SistemaModoCompetencia(
+            activo=getattr(self.configuracion, "modo_competencia_activo", True),
+            ruta_db=getattr(self.configuracion, "modo_competencia_ruta_db", None),
+            umbral_alerta=getattr(self.configuracion, "modo_competencia_umbral_alerta", 60),
+            umbral_legal=getattr(self.configuracion, "modo_competencia_umbral_legal", 80),
+        )
         self.gestor_modo_sombra = GestorModoSombra(bus_eventos=self.bus_eventos)
+        self.gestor_modo_sombra.sistema_competencia = self.sistema_competencia
         self.renderizador = Renderizador(self.configuracion)
         self.renderizador.inicializar(estado_panel=self.estado_panel)
         # Inyectar gestor sombra en el panel de control
@@ -161,13 +178,40 @@ class Simulacion:
         """Procesa teclas."""
         import pygame
 
-        # --- Movimiento manual (WASD / flechas): controla entidad en modo sombra ---
         TECLAS_MOVIMIENTO = {
             pygame.K_w: (0, -1), pygame.K_UP:    (0, -1),
             pygame.K_s: (0,  1), pygame.K_DOWN:  (0,  1),
             pygame.K_a: (-1, 0), pygame.K_LEFT:  (-1, 0),
             pygame.K_d: (1,  0), pygame.K_RIGHT: (1,  0),
         }
+
+        # --- Flechas cuando pausado + entidad seleccionada: mueve esa entidad (sin modo sombra) ---
+        if key in TECLAS_MOVIMIENTO and self.estado_panel.pausado and self.estado_panel.entidad_seleccionada_id:
+            ent = next((e for e in self.entidades if e.id_entidad == self.estado_panel.entidad_seleccionada_id), None)
+            if ent:
+                from tipos.modelos import Posicion
+                dx, dy = TECLAS_MOVIMIENTO[key]
+                nx = ent.posicion.x + dx
+                ny = ent.posicion.y + dy
+                destino = Posicion(nx, ny)
+                if self.mapa and not self.mapa.es_posicion_valida(destino):
+                    self.estado_panel.mensaje_feedback = f"Posicion ({nx},{ny}) fuera del mapa"
+                    self.estado_panel.mensaje_feedback_tick = 30
+                    return
+                ent.control_total = True
+                ent.control_total_pendiente = destino
+                self.estado_panel.mensaje_feedback = f"[FLECHAS] {ent.nombre} -> ({nx},{ny})"
+                self.estado_panel.mensaje_feedback_tick = 45
+                return
+
+        # --- Flechas / N = paso a paso cuando pausado (si no hay entidad sombra esperando) ---
+        if key in (pygame.K_RIGHT, pygame.K_DOWN, pygame.K_n) and self.estado_panel.pausado:
+            entidad_sombra = self._obtener_entidad_control_total()
+            if not (entidad_sombra and self.estado_panel.modo_sombra and self.estado_panel.sombra_esperando_input):
+                self.estado_panel.paso_manual = True
+                return
+
+        # --- Movimiento manual (WASD / flechas): controla entidad en modo sombra ---
         if key in TECLAS_MOVIMIENTO:
             entidad_sombra = self._obtener_entidad_control_total()
             if entidad_sombra and self.estado_panel.modo_sombra:
@@ -207,6 +251,7 @@ class Simulacion:
         if key == pygame.K_p:
             self.estado_panel.pausado = not self.estado_panel.pausado
         elif key == pygame.K_n:
+            # N = paso (tambien flechas cuando pausado, manejado arriba)
             self.estado_panel.paso_manual = True
         elif key == pygame.K_g:
             if self.sistema_persistencia and self.sistema_persistencia.guardar_estado(self):
@@ -246,6 +291,25 @@ class Simulacion:
             if ent:
                 self.estado_panel.entidad_seleccionada_id = ent.id_entidad
                 return
+            # Click en celda vacia: si hay entidad seleccionada, marcar destino IR_A_POSICION
+            id_ent = self.estado_panel.entidad_seleccionada_id
+            if id_ent:
+                ent = next((e for e in self.entidades if e.id_entidad == id_ent), None)
+                panel = self.renderizador.obtener_panel() if self.renderizador else None
+                from tipos.modelos import Posicion
+                if ent and panel and self.mapa and self.mapa.es_posicion_valida(Posicion(celda_x, celda_y)):
+                    from tipos.enums import TipoDirectiva
+                    tick = self.gestor_ticks.tick_actual
+                    directiva = panel.crear_directiva(id_ent, TipoDirectiva.IR_A_POSICION, tick, celda_x, celda_y)
+                    ent.recibir_directiva(directiva)
+                    self.estado_panel.mensaje_feedback = f">>> {ent.nombre} va a ({celda_x},{celda_y})"
+                    self.estado_panel.mensaje_feedback_tick = 120
+                    if self.sistema_logs:
+                        self.sistema_logs.registrar_directiva_recibida(
+                            nombre_ent=ent.nombre, tipo_dir="ir_a_posicion",
+                            tick=tick, duracion=200, intensidad=1.0,
+                        )
+                return
         panel = self.renderizador.obtener_panel() if self.renderizador else None
         if not panel:
             return
@@ -257,13 +321,17 @@ class Simulacion:
         )
         if not accion:
             return
+        import logging
+        logging.getLogger("simulacion").debug(f"CLICK panel accion={accion.get('tipo')} pos={pos}")
         self._manejar_accion_panel(accion)
 
     def _manejar_accion_panel(self, accion: dict) -> None:
         """Despacha una acción del panel al sistema correcto."""
         panel = self.renderizador.obtener_panel() if self.renderizador else None
         tipo = accion.get("tipo")
-        if tipo == "pausar":
+        if tipo == "cambiar_pestana":
+            pass  # ya cambiada en panel
+        elif tipo == "pausar":
             self.estado_panel.pausado = not self.estado_panel.pausado
         elif tipo == "tick_manual":
             self.estado_panel.paso_manual = True
@@ -281,7 +349,15 @@ class Simulacion:
                 self.cargado_ok_tick = self.gestor_ticks.tick_actual + 90
                 self.estado_panel.mensaje_feedback = "Cargado OK"
                 self.estado_panel.mensaje_feedback_tick = 60
+        elif tipo == "toggle_modo_combate":
+            if hasattr(self.configuracion, "modo_combate_activo"):
+                self.configuracion.modo_combate_activo = not self.configuracion.modo_combate_activo
+                estado = "ON" if self.configuracion.modo_combate_activo else "OFF"
+                self.estado_panel.mensaje_feedback = f"Modo combate: {estado}"
+                self.estado_panel.mensaje_feedback_tick = 90
         elif tipo == "toggle_control_total":
+            import logging
+            logging.getLogger("simulacion").info(f"ACCION toggle_control_total id={accion.get('id_entidad')}")
             id_ent = accion.get("id_entidad")
             ent = next((e for e in self.entidades if e.id_entidad == id_ent), None)
             if ent and hasattr(ent, "control_total"):
@@ -377,6 +453,8 @@ class Simulacion:
         elif tipo == "seleccionar":
             self.estado_panel.entidad_seleccionada_id = accion.get("id_entidad")
         elif tipo == "orden":
+            import logging
+            logging.getLogger("simulacion").info(f"ACCION orden id={accion.get('id_entidad')} tipo={accion.get('tipo_directiva')}")
             id_ent = accion.get("id_entidad")
             tipo_dir = accion.get("tipo_directiva")
             tick = accion.get("tick", self.gestor_ticks.tick_actual)
@@ -418,6 +496,8 @@ class Simulacion:
 
     def actualizar_entidad(self, entidad) -> None:
         """Actualiza una entidad: estado, percepción, decisión, ejecución."""
+        if not getattr(entidad.estado_interno, "activo", True):
+            return  # Entidad eliminada (salud<=0 por ataque)
         tick = self.gestor_ticks.tick_actual
         entidad.actualizar_estado_interno(self.configuracion)
         percepcion = entidad.percibir_entorno(self.mapa, self.configuracion)
@@ -572,19 +652,9 @@ class Simulacion:
             self.renderizador.renderizar(self.mapa, self.entidades, estado_ui)
 
     def _ejecutar_tick_completo(self) -> None:
-        """Avanza el mundo exactamente 1 tick: todas las entidades actúan."""
-        self.gestor_ticks.avanzar()
-        for entidad in self.entidades:
-            self.actualizar_entidad(entidad)
-        if self.sistema_watchdog:
-            self.sistema_watchdog.registrar_tick(self.gestor_ticks.tick_actual, self.entidades)
-        self.actualizar_mundo()
-        self.despachar_eventos()
-        self._escribir_debug_si_activo()
-        if self.sistema_persistencia:
-            if self.sistema_persistencia.auto_guardar_si_procede(self):
-                self.estado_panel.mensaje_feedback = "Auto-guardado"
-                self.estado_panel.mensaje_feedback_tick = 15
+        """Avanza el mundo exactamente 1 tick. Delega a core.simulation."""
+        from core.simulation.tick_runner import ejecutar_tick
+        ejecutar_tick(self)
 
     def ejecutar_bucle_principal(self) -> None:
         """Bucle principal de la simulación."""
@@ -672,12 +742,28 @@ class Simulacion:
 
             except Exception as _exc:
                 import traceback as _tb
+                tick = self.gestor_ticks.tick_actual if self.gestor_ticks else "?"
+                if self.sistema_reporte:
+                    self.sistema_reporte.registrar_excepcion(_exc, f"BUCLE tick={tick}")
                 _logger.critical(
-                    f"EXCEPCION EN BUCLE tick={self.gestor_ticks.tick_actual if self.gestor_ticks else '?'}: "
+                    f"EXCEPCION EN BUCLE tick={tick}: "
                     f"{type(_exc).__name__}: {_exc}"
                 )
                 _logger.critical(_tb.format_exc())
-                raise
+                # Mostrar error al usuario en UI antes de cerrar
+                self.estado_panel.mensaje_feedback = (
+                    f"ERROR tick {tick}: {type(_exc).__name__}: {str(_exc)[:80]}"
+                )
+                self.estado_panel.mensaje_feedback_tick = 300  # ~10 seg a 30fps
+                for _ in range(90):  # 3 segundos para leer
+                    try:
+                        self.renderizar()
+                        reloj.tick(fps)
+                    except Exception:
+                        break
+                break
 
         _logger.info(f"BUCLE FINALIZADO en tick {self.gestor_ticks.tick_actual if self.gestor_ticks else '?'}")
+        if self.sistema_reporte:
+            self.sistema_reporte.generar_desde_simulacion(self)
         self.renderizador.cerrar()

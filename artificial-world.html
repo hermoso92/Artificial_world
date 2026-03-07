@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artificial World — Simulación 2D de agentes autónomos</title>
+  <style>
+    :root {
+      --bg-dark: #0a0b0d;
+      --bg-card: #12141a;
+      --bg-elevated: #181b22;
+      --border: rgba(255, 255, 255, 0.06);
+      --text: #e8eaed;
+      --text-muted: #8b8f98;
+      --accent: #00d4ff;
+      --accent-dim: rgba(0, 212, 255, 0.15);
+      --success: #00e676;
+      --warning: #ffb74d;
+      --danger: #ff5252;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .hero {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero .subtitle { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 1rem; font-weight: 500; }
+    .hero .desc { font-size: 1rem; color: var(--text-muted); margin-bottom: 2rem; opacity: 0.9; }
+    .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.75rem 1.5rem; font-size: 0.95rem; font-weight: 600; border-radius: 8px;
+      text-decoration: none; cursor: pointer; transition: all 0.2s; border: none; font-family: inherit;
+    }
+    .btn-primary { background: var(--accent); color: var(--bg-dark); }
+    .btn-primary:hover { background: #33ddff; transform: translateY(-1px); }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--text-muted); background: var(--bg-elevated); }
+
+    .demo-section { padding: 1rem; max-width: none; margin: 0; }
+    .demo-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+    .demo-layout { display: flex; flex-direction: row; min-height: 520px; }
+    @media (max-width: 900px) {
+      .demo-layout { flex-direction: column; }
+      .demo-sidebar { width: 100%; min-width: 0; border-left: none; border-top: 1px solid var(--border); max-height: 300px; }
+    }
+    .demo-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .demo-controls {
+      display: flex; flex-wrap: wrap; gap: 1rem; padding: 1rem 1.25rem;
+      background: var(--bg-elevated); border-bottom: 1px solid var(--border); align-items: center;
+    }
+    .demo-stats { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .demo-stat { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-muted); }
+    .demo-stat span { color: var(--accent); font-weight: 600; }
+    .demo-actions { display: flex; gap: 0.5rem; margin-left: auto; }
+    .demo-actions .btn { padding: 0.5rem 1rem; font-size: 0.85rem; }
+    .demo-speed { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted); }
+    .demo-speed select { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 0.25rem 0.5rem; border-radius: 4px; }
+    .demo-canvas-wrap {
+      position: relative; flex: 1; display: flex; justify-content: center; align-items: center;
+      padding: 0.5rem; cursor: crosshair;
+    }
+    .demo-canvas-wrap.mover-activo { outline: 2px dashed var(--accent); outline-offset: 2px; }
+    #simCanvas {
+      background: var(--bg-dark); border-radius: 8px; display: block; max-width: 100%; height: auto;
+    }
+    @media (min-width: 900px) { #simCanvas { width: 800px; height: 500px; } }
+
+    .demo-sidebar {
+      width: 300px; min-width: 280px; border-left: 1px solid var(--border);
+      background: var(--bg-elevated); display: flex; flex-direction: column; overflow: hidden;
+    }
+    .panel-tabs {
+      display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+    .panel-tab {
+      padding: 0.5rem 0.75rem; font-size: 0.8rem; cursor: pointer;
+      color: var(--text-muted); border-bottom: 2px solid transparent;
+    }
+    .panel-tab:hover { color: var(--text); }
+    .panel-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .panel-content { flex: 1; overflow-y: auto; padding: 0.75rem; }
+    .panel-content h3 { font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--text-muted); }
+    .panel-btn {
+      display: block; width: 100%; padding: 0.4rem 0.6rem; margin-bottom: 0.35rem;
+      font-size: 0.8rem; text-align: left; background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text); border-radius: 4px; cursor: pointer;
+    }
+    .panel-btn:hover { border-color: var(--accent-dim); background: var(--bg-dark); }
+    .panel-btn.primary { background: var(--accent); color: var(--bg-dark); border-color: var(--accent); }
+    .panel-btn.sombra-activa { background: var(--warning); color: var(--bg-dark); }
+    .entity-item {
+      padding: 0.4rem 0.6rem; margin-bottom: 0.25rem; font-size: 0.8rem;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px;
+      cursor: pointer;
+    }
+    .entity-item:hover { border-color: var(--accent-dim); }
+    .entity-item.selected { border-color: var(--accent); background: var(--accent-dim); }
+    .event-log {
+      padding: 0.5rem; max-height: 280px; overflow-y: auto; font-size: 0.8rem;
+    }
+    .event-item {
+      padding: 0.35rem 0.5rem; margin-bottom: 0.25rem; border-radius: 4px;
+      background: rgba(255,255,255,0.03); color: var(--text-muted); border-left: 3px solid var(--border);
+    }
+    .event-item.recogio_recurso { border-left-color: var(--success); }
+    .event-item.comio { border-left-color: var(--warning); }
+    .event-item.descanso { border-left-color: var(--accent); }
+    .event-item.entro_refugio { border-left-color: #9c27b0; }
+    .event-item.siguio { border-left-color: var(--text-muted); }
+    .event-item .tick { color: var(--text-muted); font-size: 0.75rem; margin-right: 0.5rem; }
+
+    .agent-tooltip {
+      position: fixed; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.8rem; z-index: 100;
+      pointer-events: none; max-width: 220px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .agent-tooltip .name { font-weight: 600; color: var(--accent); margin-bottom: 0.25rem; }
+    .agent-tooltip .bar { height: 4px; background: var(--bg-dark); border-radius: 2px; margin: 0.2rem 0; overflow: hidden; }
+    .agent-tooltip .bar-fill { height: 100%; border-radius: 2px; transition: width 0.2s; }
+    .agent-tooltip .bar-fill.hambre { background: var(--warning); }
+    .agent-tooltip .bar-fill.energia { background: var(--success); }
+    .agent-tooltip .accion { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+    section.content { max-width: 720px; margin: 0 auto; padding: 4rem 1.5rem; }
+    section.content h2 { font-size: 1.75rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 1rem; color: var(--text); }
+    section.content p { color: var(--text-muted); font-size: 1.05rem; }
+    .capacidades { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+    .cap-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.5rem; transition: border-color 0.2s;
+    }
+    .cap-card:hover { border-color: var(--accent-dim); }
+    .cap-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--accent); }
+    .cap-card p { font-size: 0.9rem; }
+    .func-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+    .func-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.25rem; transition: border-color 0.2s;
+    }
+    .func-card:hover { border-color: var(--accent-dim); }
+    .func-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--accent); }
+    .func-card p { font-size: 0.9rem; color: var(--text-muted); }
+    .func-card ul { margin: 0.5rem 0 0 1rem; font-size: 0.85rem; color: var(--text-muted); }
+    .func-card li { margin-bottom: 0.25rem; }
+    .nav-anchor { display: block; position: relative; top: -4rem; }
+    .cta-section { text-align: center; padding: 5rem 1.5rem; }
+    .cta-section h2 { margin-bottom: 0.75rem; }
+    .cta-section p { margin-bottom: 1.5rem; }
+    footer { text-align: center; padding: 2rem 1.5rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <h1>Artificial World</h1>
+    <p class="subtitle">Un mundo artificial en 2D donde los agentes perciben, recuerdan y deciden</p>
+    <p class="desc">Explora una simulación de agentes autónomos con memoria, necesidades y comportamiento emergente.</p>
+    <div class="hero-buttons">
+      <a href="#demo" class="btn btn-primary">Ver demo</a>
+      <a href="damas-ai.html" class="btn btn-secondary">Damas vs IA</a>
+      <a href="#funcionalidades" class="btn btn-secondary">Todas las funcionalidades</a>
+    </div>
+  </header>
+
+  <section id="demo" class="demo-section">
+    <div class="demo-wrapper">
+      <div class="demo-controls">
+        <div class="demo-stats">
+          <div class="demo-stat">Tick: <span id="tickCount">0</span></div>
+          <div class="demo-stat">Agentes: <span id="agentCount">0</span></div>
+          <div class="demo-stat">Comida: <span id="foodCount">0</span></div>
+          <div class="demo-stat">Material: <span id="materialCount">0</span></div>
+          <div class="demo-stat">Estado: <span id="simStatus">Pausado</span></div>
+          <div class="demo-stat" id="sombraStatus" style="display:none">Modo Sombra: <span>activo</span></div>
+        </div>
+        <select id="speedSelect" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:0.25rem 0.5rem;border-radius:4px;font-size:0.85rem">
+          <option value="0.25">0.25x</option>
+          <option value="0.5">0.5x</option>
+          <option value="1" selected>1x</option>
+          <option value="2">2x</option>
+          <option value="4">4x</option>
+        </select>
+      </div>
+      <div class="demo-layout">
+        <div class="demo-main">
+          <div class="demo-canvas-wrap">
+            <canvas id="simCanvas" width="800" height="500"></canvas>
+          </div>
+        </div>
+        <aside class="demo-sidebar">
+          <div class="panel-tabs">
+            <div class="panel-tab active" data-tab="control">Control</div>
+            <div class="panel-tab" data-tab="sombra">Sombra</div>
+            <div class="panel-tab" data-tab="entidades">Entidades</div>
+            <div class="panel-tab" data-tab="eventos">Eventos</div>
+            <div class="panel-tab" data-tab="archivo">Archivo</div>
+          </div>
+          <div class="panel-content">
+            <div id="panelControl" class="panel-pane">
+              <h3>Simulación</h3>
+              <button id="btnPlay" class="panel-btn primary">Iniciar</button>
+              <button id="btnTickManual" class="panel-btn">Tick manual (N)</button>
+              <button id="btnVelocidad" class="panel-btn">Velocidad: <span id="velLabel">1x</span></button>
+              <button id="btnReset" class="panel-btn">Reiniciar</button>
+            </div>
+            <div id="panelSombra" class="panel-pane" style="display:none">
+              <h3>Modo Sombra</h3>
+              <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.5rem">Controla Amiguisimo por turnos. Flechas/WASD mover. Espacio esperar (avanza el resto).</p>
+              <button id="btnActivarSombra" class="panel-btn">Activar (Amiguisimo)</button>
+              <button id="btnMoverPos" class="panel-btn">Mover a posición</button>
+              <button id="btnIrRefugio" class="panel-btn">Ir al refugio</button>
+              <button id="btnRecoger" class="panel-btn">Recoger objetivo</button>
+              <button id="btnExplorar" class="panel-btn">Explorar</button>
+            </div>
+            <div id="panelEntidades" class="panel-pane" style="display:none">
+              <h3>Entidades</h3>
+              <div id="entityList"></div>
+            </div>
+            <div id="panelEventos" class="panel-pane" style="display:none">
+              <h3>Eventos recientes</h3>
+              <div id="eventLog" class="event-log"></div>
+            </div>
+            <div id="panelArchivo" class="panel-pane" style="display:none">
+              <h3>Archivo</h3>
+              <button id="btnGuardar" class="panel-btn">Guardar estado</button>
+              <button id="btnCargar" class="panel-btn">Cargar estado</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <div id="agentTooltip" class="agent-tooltip" style="display:none"></div>
+  </section>
+
+  <section id="que-es" class="content">
+    <h2>Qué es Artificial World</h2>
+    <p>Artificial World es un entorno de simulación en 2D donde múltiples agentes actúan dentro de un mundo compartido. Cada agente puede percibir el entorno, reaccionar a estímulos y tomar decisiones simples de forma autónoma.</p>
+  </section>
+
+  <section class="content">
+    <h2>Capacidades</h2>
+    <div class="capacidades">
+      <div class="cap-card">
+        <h3>Percepción</h3>
+        <p>Los agentes detectan recursos, refugios y entidades cercanas.</p>
+      </div>
+      <div class="cap-card">
+        <h3>Memoria</h3>
+        <p>Cada agente conserva recuerdos espaciales de lo que ha visto.</p>
+      </div>
+      <div class="cap-card">
+        <h3>Decisión</h3>
+        <p>El comportamiento emerge de prioridades: hambre, energía y entorno.</p>
+      </div>
+      <div class="cap-card">
+        <h3>Escalabilidad</h3>
+        <p>La simulación puede ampliarse a más entidades y reglas.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="funcionalidades" class="content">
+    <span class="nav-anchor" id="func-anchor"></span>
+    <h2>Todas las funcionalidades</h2>
+    <p style="margin-bottom:1.5rem">La aplicación principal (pygame) incluye el conjunto completo de sistemas:</p>
+    <div class="func-grid">
+      <div class="func-card">
+        <h3>Simulación en tiempo real</h3>
+        <p>Mapa 2D con grid, entidades, recursos y refugios. Renderizado pygame con cámara y modos de visualización.</p>
+        <ul>
+          <li>Normal, calor energía, calor hambre, recursos, refugios</li>
+          <li>Pausa, velocidad variable, tick manual</li>
+        </ul>
+      </div>
+      <div class="func-card">
+        <h3>Modo Sombra</h3>
+        <p>Control manual por turnos. Toma posesión de Amiguisimo (el gato) y ejecuta comandos uno a uno.</p>
+        <ul>
+          <li>Mover a posición, ir a refugio, recoger, seguir, evitar, atacar</li>
+          <li>Cola de comandos trazable</li>
+        </ul>
+      </div>
+      <div class="func-card">
+        <h3>Directivas externas</h3>
+        <p>Órdenes a entidades sin control total. Modifican las utilidades del motor de decisión.</p>
+        <ul>
+          <li>Explorar zona, ir a posición, quedarse aquí</li>
+          <li>Evitar entidad, cooperar, priorizar supervivencia</li>
+        </ul>
+      </div>
+      <div class="func-card">
+        <h3>12 acciones</h3>
+        <p>Mover, explorar, recoger comida, recoger material, comer, descansar, ir refugio, compartir, robar, huir, evitar, seguir, atacar.</p>
+      </div>
+      <div class="func-card">
+        <h3>Watchdog</h3>
+        <p>Monitor de anomalías en tiempo real. Detecta patrones sospechosos.</p>
+        <ul>
+          <li>Solo movimiento global, entidades pilladas</li>
+          <li>Alertas en panel dedicado</li>
+        </ul>
+      </div>
+      <div class="func-card">
+        <h3>Persistencia SQLite</h3>
+        <p>Guardar y cargar estado del mundo. Auto-guardado cada 20 ticks.</p>
+        <ul>
+          <li>mundo_artificial.db</li>
+          <li>Entidades, mapa, recursos, refugios</li>
+        </ul>
+      </div>
+      <div class="func-card">
+        <h3>Panel de control</h3>
+        <p>6 pestañas: Control, Órdenes, Sombra, Entidades, Eventos, Watchdog, Archivo.</p>
+      </div>
+      <div class="func-card">
+        <h3>Relaciones sociales</h3>
+        <p>Confianza, miedo y hostilidad entre entidades. Afectan compartir, robar y huir.</p>
+      </div>
+      <div class="func-card">
+        <h3>Regeneración</h3>
+        <p>Recursos se reponen cada 30 ticks. Comida y material distribuidos en el mapa.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="minijuegos" class="content">
+    <h2>Minijuegos</h2>
+    <p>Juega contra IAs que piensan. Sin registro. Sin descargas.</p>
+    <div class="capacidades" style="margin-top:1rem">
+      <a href="damas-ai.html" class="cap-card" style="text-decoration:none;color:inherit;cursor:pointer;transition:transform 0.2s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+        <h3 style="color:var(--success)">Damas AI</h3>
+        <p>Tablero 2D con IA ajustable. Niveles Principiante a Experto. Minimax + alpha-beta.</p>
+        <span style="font-size:0.85rem;color:var(--accent)">Jugar ahora →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>De demo visual a sistema vivo</h2>
+    <p>Esta demo es la base visual de un proyecto mayor: un mundo artificial donde los agentes tengan necesidades, relaciones, memoria persistente y comportamiento trazable.</p>
+  </section>
+
+  <section class="cta-section">
+    <h2>Construyendo inteligencia emergente</h2>
+    <p>Una interfaz clara para explorar sistemas autónomos en tiempo real.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1rem">
+      <code style="background:var(--bg-card);padding:0.5rem 1rem;border-radius:6px;font-size:0.9rem">python principal.py</code>
+      <code style="background:var(--bg-card);padding:0.5rem 1rem;border-radius:6px;font-size:0.9rem">python principal.py --web</code>
+    </div>
+    <p style="font-size:0.85rem;margin-top:0.75rem;opacity:0.8">--web abre esta landing en el navegador</p>
+    <a href="mailto:contacto@artificialworld.io?subject=Artificial%20World" class="btn btn-primary" style="margin-top:1.5rem">Contactar</a>
+  </section>
+
+  <footer>
+    Artificial World · Simulación 2D de agentes autónomos · MUNDO_ARTIFICIAL
+  </footer>
+
+  <script>
+    (function() {
+      'use strict';
+
+      /* Valores alineados con configuracion.py y fabrica_entidades.py */
+      const CONFIG = {
+        canvasWidth: 800,
+        canvasHeight: 500,
+        agentCount: 7,
+        nombresEntidades: ['Ana', 'Bruno', 'Clara', 'David', 'Eva', 'Félix', 'Amiguisimo'],
+        foodCount: 12,
+        materialCount: 10,
+        refugeCount: 4,
+        agentRadius: 8,
+        resourceRadius: 6,
+        refugeRadius: 18,
+        perceptionRadius: 130,
+        collectRadius: 22,
+        refugeRadiusCollect: 28,
+        agentSpeed: 1.4,
+        hungerRate: 0.002,
+        energyDecay: 0.003,
+        restBonus: 0.08,
+        eatBonus: 0.30,
+        memoryCapacity: 20,
+        resourceRespawnDelay: 80,
+        maxEventosUI: 20
+      };
+
+      const canvas = document.getElementById('simCanvas');
+      const ctx = canvas.getContext('2d');
+      const btnPlay = document.getElementById('btnPlay');
+      const btnReset = document.getElementById('btnReset');
+      const speedSelect = document.getElementById('speedSelect');
+      const tickCountEl = document.getElementById('tickCount');
+      const agentCountEl = document.getElementById('agentCount');
+      const foodCountEl = document.getElementById('foodCount');
+      const materialCountEl = document.getElementById('materialCount');
+      const simStatusEl = document.getElementById('simStatus');
+      const eventLogEl = document.getElementById('eventLog');
+      const agentTooltipEl = document.getElementById('agentTooltip');
+
+      let agents = [];
+      let foods = [];
+      let materials = [];
+      let refuges = [];
+      let events = [];
+      let running = false;
+      let frameCount = 0;
+      let hoveredAgent = null;
+      let mouseX = 0, mouseY = 0;
+      let modoSombra = false;
+      let entidadSombraId = 7;
+      let esperandoClickMover = false;
+      let entidadSeleccionadaId = null;
+      const velocidades = [0.25, 0.5, 1, 2, 4];
+      let velocidadIndex = 2;
+      let updateAccum = 0;
+
+      function rand(min, max) { return min + Math.random() * (max - min); }
+      function dist(x1, y1, x2, y2) { return Math.hypot(x2 - x1, y2 - y1); }
+
+      function addEvent(tipo, texto, clase) {
+        events.unshift({ tick: frameCount, tipo, texto, clase: clase || tipo });
+        if (events.length > CONFIG.maxEventosUI) events.pop();
+      }
+
+      function createAgent(id) {
+        const nombre = CONFIG.nombresEntidades[id % CONFIG.nombresEntidades.length];
+        return {
+          id: id + 1,
+          nombre,
+          x: rand(CONFIG.agentRadius, CONFIG.canvasWidth - CONFIG.agentRadius),
+          y: rand(CONFIG.agentRadius, CONFIG.canvasHeight - CONFIG.agentRadius),
+          vx: 0, vy: 0,
+          hambre: rand(0.2, 0.5),
+          energia: rand(0.5, 0.9),
+          inventario: { comida: 0, material: 0 },
+          memoria: [],
+          accion: 'explorar',
+          target: null,
+          targetType: null,
+          hue: rand(180, 220),
+          descansando: 0
+        };
+      }
+
+      function createFood(id) {
+        return {
+          id, tipo: 'comida',
+          x: rand(CONFIG.resourceRadius, CONFIG.canvasWidth - CONFIG.resourceRadius),
+          y: rand(CONFIG.resourceRadius, CONFIG.canvasHeight - CONFIG.resourceRadius),
+          collected: false,
+          respawnAt: 0
+        };
+      }
+
+      function createMaterial(id) {
+        return {
+          id, tipo: 'material',
+          x: rand(CONFIG.resourceRadius, CONFIG.canvasWidth - CONFIG.resourceRadius),
+          y: rand(CONFIG.resourceRadius, CONFIG.canvasHeight - CONFIG.resourceRadius),
+          collected: false,
+          respawnAt: 0
+        };
+      }
+
+      function createRefuge(id) {
+        const margin = CONFIG.refugeRadius + 20;
+        return {
+          id,
+          x: rand(margin, CONFIG.canvasWidth - margin),
+          y: rand(margin, CONFIG.canvasHeight - margin),
+          bonus: CONFIG.restBonus
+        };
+      }
+
+      function addMemory(agent, tipo, x, y) {
+        const mem = { tipo, x, y, tick: frameCount };
+        agent.memoria.push(mem);
+        if (agent.memoria.length > CONFIG.memoryCapacity) agent.memoria.shift();
+      }
+
+      function findInMemory(agent, tipo) {
+        let best = null;
+        let minD = Infinity;
+        for (const m of agent.memoria) {
+          if (m.tipo !== tipo) continue;
+          const d = dist(agent.x, agent.y, m.x, m.y);
+          if (d < CONFIG.perceptionRadius * 1.5 && d < minD) {
+            minD = d;
+            best = m;
+          }
+        }
+        return best;
+      }
+
+      function findNearest(agent, list, filter) {
+        let nearest = null;
+        let minDist = Infinity;
+        for (const r of list) {
+          if (filter && !filter(r)) continue;
+          const d = dist(agent.x, agent.y, r.x, r.y);
+          if (d < CONFIG.perceptionRadius && d < minDist) {
+            minDist = d;
+            nearest = r;
+          }
+        }
+        return nearest;
+      }
+
+      function findNearestRefuge(agent) {
+        let nearest = null;
+        let minDist = Infinity;
+        for (const r of refuges) {
+          const d = dist(agent.x, agent.y, r.x, r.y);
+          if (d < CONFIG.perceptionRadius * 1.2 && d < minDist) {
+            minDist = d;
+            nearest = r;
+          }
+        }
+        return nearest;
+      }
+
+      function moveToward(agent, tx, ty, speed) {
+        const dx = tx - agent.x;
+        const dy = ty - agent.y;
+        const d = Math.hypot(dx, dy) || 0.001;
+        agent.vx = (dx / d) * speed;
+        agent.vy = (dy / d) * speed;
+      }
+
+      /** Intenta recoger comida/material si el agente está encima (control total). */
+      function intentarRecogerEnPosicion(agent) {
+        for (const r of foods) {
+          if (r.collected) continue;
+          if (dist(agent.x, agent.y, r.x, r.y) < CONFIG.collectRadius) {
+            r.collected = true;
+            r.respawnAt = frameCount + CONFIG.resourceRespawnDelay;
+            agent.inventario.comida++;
+            agent.hambre = Math.max(0, agent.hambre - CONFIG.eatBonus);
+            addEvent('recogio_recurso', agent.nombre + ' recogio comida (sombra)');
+            addMemory(agent, 'comida', r.x, r.y);
+            return;
+          }
+        }
+        for (const r of materials) {
+          if (r.collected) continue;
+          if (dist(agent.x, agent.y, r.x, r.y) < CONFIG.collectRadius) {
+            r.collected = true;
+            r.respawnAt = frameCount + CONFIG.resourceRespawnDelay;
+            agent.inventario.material++;
+            addEvent('recogio_recurso', agent.nombre + ' recogio material (sombra)');
+            addMemory(agent, 'material', r.x, r.y);
+            return;
+          }
+        }
+      }
+
+      function wander(agent) {
+        agent.vx += (rand(-1, 1) - agent.vx) * 0.04;
+        agent.vy += (rand(-1, 1) - agent.vy) * 0.04;
+        const v = Math.hypot(agent.vx, agent.vy) || 0.001;
+        if (v > CONFIG.agentSpeed * 0.4) {
+          agent.vx = (agent.vx / v) * CONFIG.agentSpeed * 0.4;
+          agent.vy = (agent.vy / v) * CONFIG.agentSpeed * 0.4;
+        }
+      }
+
+      function ejecutarComandoSombra(cmd) {
+        const agent = agents.find(a => a.id === entidadSombraId);
+        if (!agent) return;
+        if (cmd === 'mover_posicion' && agent.targetPos) {
+          const d = dist(agent.x, agent.y, agent.targetPos.x, agent.targetPos.y);
+          if (d > 8) {
+            moveToward(agent, agent.targetPos.x, agent.targetPos.y, CONFIG.agentSpeed);
+            agent.x += agent.vx; agent.y += agent.vy;
+            agent.x = Math.max(CONFIG.agentRadius, Math.min(CONFIG.canvasWidth - CONFIG.agentRadius, agent.x));
+            agent.y = Math.max(CONFIG.agentRadius, Math.min(CONFIG.canvasHeight - CONFIG.agentRadius, agent.y));
+            if (dist(agent.x, agent.y, agent.targetPos.x, agent.targetPos.y) < 8) agent.targetPos = null;
+          } else agent.targetPos = null;
+          intentarRecogerEnPosicion(agent);
+          agent.accion = 'mover';
+          addEvent('siguio', agent.nombre + ' se movio (sombra)');
+        } else if (cmd === 'ir_refugio') {
+          const ref = findNearestRefuge(agent);
+          if (ref) {
+            moveToward(agent, ref.x, ref.y, CONFIG.agentSpeed);
+            agent.x += agent.vx; agent.y += agent.vy;
+            const d = dist(agent.x, agent.y, ref.x, ref.y);
+            if (d < CONFIG.refugeRadiusCollect) {
+              agent.descansando = 5;
+              addMemory(agent, 'refugio', ref.x, ref.y);
+              addEvent('entro_refugio', agent.nombre + ' entro refugio (sombra)');
+            } else {
+              addEvent('siguio', agent.nombre + ' hacia refugio (sombra)');
+            }
+          }
+        } else if (cmd === 'recoger') {
+          const food = findNearest(agent, foods, r => !r.collected);
+          const mat = findNearest(agent, materials, r => !r.collected);
+          const target = food && (!mat || dist(agent.x, agent.y, food.x, food.y) < dist(agent.x, agent.y, mat.x, mat.y)) ? food : mat;
+          if (target) {
+            moveToward(agent, target.x, target.y, CONFIG.agentSpeed);
+            agent.x += agent.vx; agent.y += agent.vy;
+            const d = dist(agent.x, agent.y, target.x, target.y);
+            if (d < CONFIG.collectRadius) {
+              target.collected = true;
+              target.respawnAt = frameCount + CONFIG.resourceRespawnDelay;
+              if (target.tipo === 'comida') { agent.inventario.comida++; agent.hambre = Math.max(0, agent.hambre - CONFIG.eatBonus); addEvent('recogio_recurso', agent.nombre + ' recogio comida (sombra)'); }
+              else { agent.inventario.material++; addEvent('recogio_recurso', agent.nombre + ' recogio material (sombra)'); }
+              addMemory(agent, target.tipo, target.x, target.y);
+            } else addEvent('siguio', agent.nombre + ' hacia recurso (sombra)');
+          }
+        } else if (cmd === 'explorar') {
+          wander(agent);
+          agent.x += agent.vx; agent.y += agent.vy;
+          agent.x = Math.max(CONFIG.agentRadius, Math.min(CONFIG.canvasWidth - CONFIG.agentRadius, agent.x));
+          agent.y = Math.max(CONFIG.agentRadius, Math.min(CONFIG.canvasHeight - CONFIG.agentRadius, agent.y));
+          addEvent('siguio', agent.nombre + ' exploro (sombra)');
+        }
+        avancarTickResto();
+      }
+
+      function aplicarStatsPasivos(agent) {
+        agent.hambre = Math.min(1, agent.hambre + CONFIG.hungerRate);
+        if (agent.descansando > 0) {
+          agent.descansando--;
+          agent.energia = Math.min(1, agent.energia + CONFIG.restBonus);
+          return;
+        }
+        agent.energia = Math.max(0, agent.energia - CONFIG.energyDecay);
+        if (agent.inventario.comida > 0 && agent.hambre >= 0.3) {
+          agent.inventario.comida--;
+          agent.hambre = Math.max(0, agent.hambre - CONFIG.eatBonus);
+          addEvent('comio', agent.nombre + ' comio');
+        }
+      }
+
+      function avancarTickResto() {
+        for (const agent of agents) {
+          if (agent.id === entidadSombraId) aplicarStatsPasivos(agent);
+          else updateAgent(agent);
+        }
+        frameCount++;
+        respawnResources();
+      }
+
+      function moverAmiguisimoConFlecha(dx, dy) {
+        const agent = agents.find(a => a.id === entidadSombraId);
+        if (!agent || !modoSombra) return;
+        const step = 20;
+        agent.x = Math.max(CONFIG.agentRadius, Math.min(CONFIG.canvasWidth - CONFIG.agentRadius, agent.x + dx * step));
+        agent.y = Math.max(CONFIG.agentRadius, Math.min(CONFIG.canvasHeight - CONFIG.agentRadius, agent.y + dy * step));
+        agent.accion = 'mover';
+        intentarRecogerEnPosicion(agent);
+        addEvent('siguio', agent.nombre + ' se movio (flechas)');
+        avancarTickResto();
+      }
+
+      function updateAgent(agent) {
+        agent.hambre = Math.min(1, agent.hambre + CONFIG.hungerRate);
+        if (agent.descansando > 0) {
+          agent.descansando--;
+          agent.energia = Math.min(1, agent.energia + CONFIG.restBonus);
+          agent.accion = 'descansar';
+          return;
+        }
+        agent.energia = Math.max(0, agent.energia - CONFIG.energyDecay);
+
+        const necesitaComer = agent.hambre >= 0.6;
+        const necesitaDescansar = agent.energia <= 0.35;
+        const critico = agent.hambre >= 0.9 || agent.energia <= 0.15;
+
+        let target = null;
+        let targetType = null;
+
+        if (necesitaComer || (agent.inventario.comida === 0 && agent.hambre >= 0.4)) {
+          target = findNearest(agent, foods, r => !r.collected);
+          targetType = 'comida';
+          if (!target) target = findInMemory(agent, 'comida');
+        }
+        if (!target && necesitaDescansar) {
+          const ref = findNearestRefuge(agent);
+          if (ref) {
+            target = ref;
+            targetType = 'refugio';
+          } else {
+            const memRef = findInMemory(agent, 'refugio');
+            if (memRef) { target = memRef; targetType = 'refugio'; }
+          }
+        }
+        if (!target && !necesitaComer && !necesitaDescansar) {
+          target = findNearest(agent, materials, r => !r.collected);
+          if (target) targetType = 'material';
+          if (!target) target = findNearest(agent, foods, r => !r.collected);
+          if (target && !targetType) targetType = 'comida';
+        }
+        if (!target) {
+          const memFood = findInMemory(agent, 'comida');
+          const memMat = findInMemory(agent, 'material');
+          if (memFood && necesitaComer) { target = memFood; targetType = 'comida'; }
+          else if (memMat) { target = memMat; targetType = 'material'; }
+        }
+
+        agent.target = target;
+        agent.targetType = targetType;
+
+        let tx = null, ty = null;
+        if (target) {
+          tx = target.x;
+          ty = target.y;
+        }
+
+        if (tx != null && ty != null) {
+          const d = dist(agent.x, agent.y, tx, ty);
+          const collectRad = targetType === 'refugio' ? CONFIG.refugeRadiusCollect : CONFIG.collectRadius;
+
+          if (targetType === 'refugio' && d < collectRad) {
+            agent.descansando = 15;
+            agent.accion = 'descansar';
+            addEvent('entro_refugio', agent.nombre + ' entro refugio');
+            addMemory(agent, 'refugio', target.x, target.y);
+          } else if (targetType === 'comida' && d < collectRad && !target.collected) {
+            target.collected = true;
+            target.respawnAt = frameCount + CONFIG.resourceRespawnDelay;
+            agent.hambre = Math.max(0, agent.hambre - CONFIG.eatBonus);
+            agent.inventario.comida++;
+            agent.accion = 'comer';
+            addEvent('recogio_recurso', agent.nombre + ' recogio comida');
+            addMemory(agent, 'comida', target.x, target.y);
+          } else if (targetType === 'material' && d < collectRad && !target.collected) {
+            target.collected = true;
+            target.respawnAt = frameCount + CONFIG.resourceRespawnDelay;
+            agent.inventario.material++;
+            agent.accion = 'recoger_material';
+            addEvent('recogio_recurso', agent.nombre + ' recogio material');
+            addMemory(agent, 'material', target.x, target.y);
+          } else {
+            agent.accion = targetType === 'refugio' ? 'ir_refugio' : (targetType === 'comida' ? 'buscar_comida' : 'buscar_material');
+            moveToward(agent, tx, ty, critico ? CONFIG.agentSpeed * 1.2 : CONFIG.agentSpeed);
+          }
+        } else {
+          agent.accion = 'explorar';
+          wander(agent);
+        }
+
+        if (agent.accion === 'explorar' && Math.random() < 0.02) {
+          addEvent('siguio', agent.nombre + ' exploro (' + Math.round(agent.x) + ',' + Math.round(agent.y) + ')');
+        }
+
+        agent.x += agent.vx;
+        agent.y += agent.vy;
+        agent.x = Math.max(CONFIG.agentRadius, Math.min(CONFIG.canvasWidth - CONFIG.agentRadius, agent.x));
+        agent.y = Math.max(CONFIG.agentRadius, Math.min(CONFIG.canvasHeight - CONFIG.agentRadius, agent.y));
+
+        if (agent.inventario.comida > 0 && agent.hambre >= 0.3) {
+          agent.inventario.comida--;
+          agent.hambre = Math.max(0, agent.hambre - CONFIG.eatBonus);
+          addEvent('comio', agent.nombre + ' comio');
+        }
+      }
+
+      function respawnResources() {
+        for (const r of foods) {
+          if (r.collected && frameCount >= r.respawnAt) {
+            r.x = rand(CONFIG.resourceRadius, CONFIG.canvasWidth - CONFIG.resourceRadius);
+            r.y = rand(CONFIG.resourceRadius, CONFIG.canvasHeight - CONFIG.resourceRadius);
+            r.collected = false;
+          }
+        }
+        for (const r of materials) {
+          if (r.collected && frameCount >= r.respawnAt) {
+            r.x = rand(CONFIG.resourceRadius, CONFIG.canvasWidth - CONFIG.resourceRadius);
+            r.y = rand(CONFIG.resourceRadius, CONFIG.canvasHeight - CONFIG.resourceRadius);
+            r.collected = false;
+          }
+        }
+      }
+
+      function singleUpdate() {
+        frameCount++;
+        for (const agent of agents) updateAgent(agent);
+        respawnResources();
+      }
+      function update() {
+        if (modoSombra) return;
+        const speed = parseFloat(speedSelect.value) || 1;
+        if (speed >= 1) {
+          for (let i = 0; i < Math.min(speed, 10); i++) singleUpdate();
+        } else {
+          updateAccum += speed;
+          while (updateAccum >= 1) { singleUpdate(); updateAccum -= 1; }
+        }
+      }
+
+      function draw() {
+        ctx.fillStyle = '#0a0b0d';
+        ctx.fillRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight);
+
+        for (const r of refuges) {
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, CONFIG.refugeRadius, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(0, 212, 255, 0.08)';
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(0, 212, 255, 0.35)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+
+        for (const r of foods) {
+          if (r.collected) continue;
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, CONFIG.resourceRadius, 0, Math.PI * 2);
+          ctx.fillStyle = '#00e676';
+          ctx.globalAlpha = 0.9;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+
+        for (const r of materials) {
+          if (r.collected) continue;
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, CONFIG.resourceRadius, 0, Math.PI * 2);
+          ctx.fillStyle = '#ffb74d';
+          ctx.globalAlpha = 0.9;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+
+        for (const agent of agents) {
+          const isHovered = hoveredAgent === agent;
+          const isSombra = modoSombra && agent.id === entidadSombraId;
+          ctx.beginPath();
+          ctx.arc(agent.x, agent.y, CONFIG.agentRadius, 0, Math.PI * 2);
+          ctx.fillStyle = agent.target ? `hsl(${agent.hue}, 75%, 55%)` : `hsl(${agent.hue}, 55%, 42%)`;
+          ctx.fill();
+          ctx.strokeStyle = isSombra ? '#ffb74d' : (isHovered ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.25)');
+          ctx.lineWidth = (isSombra || isHovered) ? 2 : 1;
+          ctx.stroke();
+        }
+      }
+
+      function updateEventLog() {
+        let html = '';
+        for (let i = 0; i < Math.min(15, events.length); i++) {
+          const e = events[i];
+          html += '<div class="event-item ' + e.clase + '"><span class="tick">' + e.tick + '</span>' + e.texto + '</div>';
+        }
+        eventLogEl.innerHTML = html || '<div class="event-item">Sin eventos aún</div>';
+      }
+
+      function updateTooltip() {
+        if (!hoveredAgent) {
+          agentTooltipEl.style.display = 'none';
+          return;
+        }
+        const a = hoveredAgent;
+        agentTooltipEl.innerHTML =
+          '<div class="name">' + a.nombre + '</div>' +
+          '<div>Hambre: <div class="bar"><div class="bar-fill hambre" style="width:' + (a.hambre * 100) + '%"></div></div></div>' +
+          '<div>Energía: <div class="bar"><div class="bar-fill energia" style="width:' + (a.energia * 100) + '%"></div></div></div>' +
+          '<div class="accion">Acción: ' + a.accion + '</div>';
+        agentTooltipEl.style.display = 'block';
+        agentTooltipEl.style.left = (mouseX + 15) + 'px';
+        agentTooltipEl.style.top = (mouseY + 15) + 'px';
+      }
+
+      function tick() {
+        if (running) update();
+        draw();
+        tickCountEl.textContent = frameCount;
+        agentCountEl.textContent = agents.length;
+        foodCountEl.textContent = foods.filter(r => !r.collected).length;
+        materialCountEl.textContent = materials.filter(r => !r.collected).length;
+        simStatusEl.textContent = modoSombra ? 'Modo Sombra' : (running ? 'En ejecución' : 'Pausado');
+        btnPlay.textContent = running ? 'Pausar' : 'Iniciar';
+        updateEventLog();
+        updateTooltip();
+        requestAnimationFrame(tick);
+      }
+
+      function init() {
+        agents = [];
+        foods = [];
+        materials = [];
+        refuges = [];
+        events = [];
+        frameCount = 0;
+        for (let i = 0; i < CONFIG.agentCount; i++) agents.push(createAgent(i));
+        for (let i = 0; i < CONFIG.foodCount; i++) foods.push(createFood(i));
+        for (let i = 0; i < CONFIG.materialCount; i++) materials.push(createMaterial(i));
+        for (let i = 0; i < CONFIG.refugeCount; i++) refuges.push(createRefuge(i));
+        addEvent('siguio', 'Simulación iniciada', 'siguio');
+        document.getElementById('velLabel').textContent = velocidades[velocidadIndex] + 'x';
+      }
+
+      function reset() {
+        modoSombra = false;
+        esperandoClickMover = false;
+        document.getElementById('btnActivarSombra').textContent = 'Activar (Amiguisimo)';
+        document.getElementById('btnActivarSombra').classList.remove('sombra-activa');
+        document.getElementById('sombraStatus').style.display = 'none';
+        document.querySelector('.demo-canvas-wrap').classList.remove('mover-activo');
+        init();
+        renderEntityList();
+        if (!running) draw();
+      }
+
+      canvas.addEventListener('mousemove', function(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+        const cx = (e.clientX - rect.left) * scaleX;
+        const cy = (e.clientY - rect.top) * scaleY;
+        hoveredAgent = null;
+        for (const a of agents) {
+          if (dist(cx, cy, a.x, a.y) < CONFIG.agentRadius * 2) {
+            hoveredAgent = a;
+            break;
+          }
+        }
+      });
+
+      canvas.addEventListener('mouseleave', function() { hoveredAgent = null; });
+
+      canvas.addEventListener('click', function(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const cx = (e.clientX - rect.left) * scaleX;
+        const cy = (e.clientY - rect.top) * scaleY;
+        if (esperandoClickMover && modoSombra) {
+          const agent = agents.find(a => a.id === entidadSombraId);
+          if (agent) {
+            agent.targetPos = { x: cx, y: cy };
+            esperandoClickMover = false;
+            document.querySelector('.demo-canvas-wrap').classList.remove('mover-activo');
+            ejecutarComandoSombra('mover_posicion');
+          }
+        } else if (entidadSeleccionadaId !== null) {
+          for (const a of agents) {
+            if (dist(cx, cy, a.x, a.y) < CONFIG.agentRadius * 2) {
+              entidadSeleccionadaId = a.id;
+              renderEntityList();
+              break;
+            }
+          }
+        }
+      });
+
+      document.querySelectorAll('.panel-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+          document.querySelectorAll('.panel-pane').forEach(p => p.style.display = 'none');
+          const pid = 'panel' + this.dataset.tab.charAt(0).toUpperCase() + this.dataset.tab.slice(1);
+          const pane = document.getElementById(pid);
+          if (pane) pane.style.display = 'block';
+        });
+      });
+
+      btnPlay.addEventListener('click', function() {
+        if (modoSombra) { modoSombra = false; document.getElementById('sombraStatus').style.display = 'none'; this.textContent = 'Iniciar'; }
+        running = !running;
+        this.textContent = running ? 'Pausar' : 'Iniciar';
+      });
+      document.getElementById('btnTickManual').addEventListener('click', function() {
+        if (modoSombra) return;
+        frameCount++;
+        for (const agent of agents) updateAgent(agent);
+        respawnResources();
+      });
+      document.getElementById('btnVelocidad').addEventListener('click', function() {
+        velocidadIndex = (velocidadIndex + 1) % velocidades.length;
+        speedSelect.value = velocidades[velocidadIndex];
+        document.getElementById('velLabel').textContent = velocidades[velocidadIndex] + 'x';
+      });
+      btnReset.addEventListener('click', reset);
+
+      document.getElementById('btnActivarSombra').addEventListener('click', function() {
+        modoSombra = !modoSombra;
+        running = false;
+        document.getElementById('btnPlay').textContent = 'Iniciar';
+        document.getElementById('sombraStatus').style.display = modoSombra ? 'flex' : 'none';
+        this.textContent = modoSombra ? 'Desactivar Sombra' : 'Activar (Amiguisimo)';
+        this.classList.toggle('sombra-activa', modoSombra);
+      });
+      document.getElementById('btnMoverPos').addEventListener('click', function() {
+        if (!modoSombra) return;
+        esperandoClickMover = true;
+        document.querySelector('.demo-canvas-wrap').classList.add('mover-activo');
+      });
+      document.getElementById('btnIrRefugio').addEventListener('click', function() {
+        if (!modoSombra) return;
+        ejecutarComandoSombra('ir_refugio');
+      });
+      document.getElementById('btnRecoger').addEventListener('click', function() {
+        if (!modoSombra) return;
+        ejecutarComandoSombra('recoger');
+      });
+      document.getElementById('btnExplorar').addEventListener('click', function() {
+        if (!modoSombra) return;
+        ejecutarComandoSombra('explorar');
+      });
+
+      document.getElementById('btnGuardar').addEventListener('click', function() {
+        const state = {
+          frameCount,
+          agents: agents.map(a => ({ id: a.id, nombre: a.nombre, x: a.x, y: a.y, vx: a.vx, vy: a.vy, hambre: a.hambre, energia: a.energia, inventario: { ...a.inventario }, memoria: a.memoria.map(m => ({ ...m })), hue: a.hue, descansando: a.descansando })),
+          foods: foods.map(f => ({ id: f.id, tipo: f.tipo, x: f.x, y: f.y, collected: f.collected, respawnAt: f.respawnAt })),
+          materials: materials.map(m => ({ id: m.id, tipo: m.tipo, x: m.x, y: m.y, collected: m.collected, respawnAt: m.respawnAt })),
+          refuges: refuges.map(r => ({ id: r.id, x: r.x, y: r.y, bonus: r.bonus }))
+        };
+        localStorage.setItem('artificialWorld_state', JSON.stringify(state));
+        addEvent('siguio', 'Estado guardado');
+      });
+      document.getElementById('btnCargar').addEventListener('click', function() {
+        const s = localStorage.getItem('artificialWorld_state');
+        if (!s) return;
+        try {
+          const state = JSON.parse(s);
+          frameCount = state.frameCount || 0;
+          agents = (state.agents || []).map(a => ({ ...a, target: null, targetType: null, targetPos: null }));
+          foods = (state.foods || []).map(f => ({ ...f }));
+          materials = (state.materials || []).map(m => ({ ...m }));
+          refuges = (state.refuges || []).map(r => ({ ...r }));
+          renderEntityList();
+          addEvent('siguio', 'Estado cargado');
+        } catch (_) {}
+      });
+
+      function renderEntityList() {
+        const el = document.getElementById('entityList');
+        el.innerHTML = agents.map(a => `
+          <div class="entity-item ${entidadSeleccionadaId === a.id ? 'selected' : ''}" data-id="${a.id}">
+            ${a.nombre} · H:${(a.hambre*100).toFixed(0)}% E:${(a.energia*100).toFixed(0)}%
+          </div>
+        `).join('');
+        el.querySelectorAll('.entity-item').forEach(item => {
+          item.addEventListener('click', () => {
+            entidadSeleccionadaId = parseInt(item.dataset.id, 10);
+            renderEntityList();
+          });
+        });
+      }
+
+      document.addEventListener('keydown', function(e) {
+        if (modoSombra) {
+          if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { e.preventDefault(); moverAmiguisimoConFlecha(0, -1); return; }
+          if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { e.preventDefault(); moverAmiguisimoConFlecha(0, 1); return; }
+          if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { e.preventDefault(); moverAmiguisimoConFlecha(-1, 0); return; }
+          if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { e.preventDefault(); moverAmiguisimoConFlecha(1, 0); return; }
+          if (e.key === ' ') { e.preventDefault(); addEvent('siguio', 'Amiguisimo espero (sombra)'); avancarTickResto(); return; }
+        }
+        if (e.key === 'n' || e.key === 'N') document.getElementById('btnTickManual').click();
+      });
+
+      init();
+      renderEntityList();
+      tick();
+
+      // API de test para verificación integral (tests E2E)
+      window.__awTest = {
+        getState: () => ({
+          foods: foods.map(f => ({ id: f.id, x: f.x, y: f.y, collected: f.collected })),
+          materials: materials.map(m => ({ id: m.id, x: m.x, y: m.y, collected: m.collected })),
+          agents: agents.map(a => ({ id: a.id, x: a.x, y: a.y, inventario: { ...a.inventario } })),
+          modoSombra, entidadSombraId, frameCount
+        }),
+        setAgentPos: (agentId, x, y) => {
+          const a = agents.find(ag => ag.id === agentId);
+          if (a) { a.x = x; a.y = y; }
+        },
+        triggerRecoger: (agentId) => {
+          const a = agents.find(ag => ag.id === agentId);
+          if (a) intentarRecogerEnPosicion(a);
+        }
+      };
+    })();
+  </script>
+</body>
+</html>

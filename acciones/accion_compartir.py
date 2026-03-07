@@ -84,10 +84,23 @@ class AccionCompartir(AccionBase):
         return ResultadoAccion.EXITO
 
     def _obtener_cercanas(self, entidad, contexto) -> list:
+        """Devuelve lista de entidades cercanas (no tuplas)."""
         if contexto is None:
             return []
+        entidades = getattr(contexto, "entidades", []) or []
         if contexto.percepcion_local:
-            entidades_raw = getattr(contexto.percepcion_local, "entidades_visibles", [])
-        else:
-            entidades_raw = getattr(contexto, "entidades", [])
-        return [e for e in entidades_raw if e.id_entidad != entidad.id_entidad]
+            raw = getattr(contexto.percepcion_local, "entidades_visibles", [])
+            if not raw:
+                return []
+            primer = raw[0]
+            if hasattr(primer, "id_entidad"):
+                return [e for e in raw if e.id_entidad != entidad.id_entidad]
+            resultado = []
+            for _pos, ids in raw:
+                for id_e in ids:
+                    if id_e != entidad.id_entidad:
+                        e = next((x for x in entidades if x.id_entidad == id_e), None)
+                        if e and e not in resultado:
+                            resultado.append(e)
+            return resultado
+        return [e for e in entidades if e.id_entidad != entidad.id_entidad]

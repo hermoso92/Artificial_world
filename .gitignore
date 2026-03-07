@@ -1,0 +1,46 @@
+# Secretos - NUNCA commitear
+.env
+.env.local
+.env.*.local
+*.key
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Logs y datos de sesión
+*.log
+reporte_sesion.json
+verificacion_completa.json
+mundo_artificial.db
+audit_competencia.db
+audit_simulacion.db
+*.db-shm
+*.db-wal
+debug_*.json
+debug_*.txt
+error_critico.txt
+
+# Node
+node_modules/
+
+# Build
+build/
+dist/
+*.spec
+*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

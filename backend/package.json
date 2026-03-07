@@ -1,0 +1,28 @@
+{
+  "name": "artificial-world-api",
+  "version": "1.0.0",
+  "description": "API backend para Artificial World - simulación 2D de agentes autónomos",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "prod": "cross-env NODE_ENV=production node src/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ai": "node scripts/test-with-ai.js",
+    "test:e2e": "node ../scripts/test-e2e-autonomous.js",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.0"
+  }
+}

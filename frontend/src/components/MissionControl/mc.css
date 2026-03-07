@@ -1,0 +1,294 @@
+/**
+ * Mission Control — dark terminal aesthetic.
+ * Uses design tokens from index.css (no hardcoded hex).
+ */
+
+.mc {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background);
+}
+
+.mc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-card);
+}
+
+.mc-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mc-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  font-family: ui-monospace, monospace;
+  letter-spacing: 0.05em;
+}
+
+.mc-subtitle {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.mc-tabs {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.mc-tab {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.mc-tab:hover {
+  color: var(--color-foreground);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.mc-tab.active {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: var(--color-primary-muted);
+}
+
+.mc-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+/* KPI cards (Overview) */
+.mc-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.mc-kpi-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+}
+
+.mc-kpi-label {
+  font-size: 0.7rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.35rem;
+}
+
+.mc-kpi-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+  font-family: ui-monospace, monospace;
+}
+
+.mc-kpi-value.accent {
+  color: var(--color-primary);
+}
+
+.mc-kpi-value.success {
+  color: var(--color-success);
+}
+
+.mc-kpi-value.muted {
+  color: var(--color-muted);
+}
+
+/* Tables */
+.mc-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-card);
+}
+
+.mc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.mc-table th {
+  text-align: left;
+  padding: 0.6rem 1rem;
+  background: var(--color-elevated);
+  color: var(--color-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+}
+
+.mc-table td {
+  padding: 0.5rem 1rem;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-foreground);
+}
+
+.mc-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Activity feed */
+.mc-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 400px;
+  overflow-y: auto;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+}
+
+.mc-feed-item {
+  padding: 0.4rem 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 3px solid var(--color-border);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--color-muted);
+}
+
+.mc-feed-item.system {
+  border-left-color: var(--color-primary);
+}
+
+.mc-feed-item.simulation {
+  border-left-color: var(--color-success);
+}
+
+.mc-feed-item.event {
+  border-left-color: var(--color-warning);
+}
+
+.mc-feed-tick {
+  color: var(--color-muted);
+  margin-right: 0.5rem;
+  font-size: 0.75rem;
+}
+
+/* Chart container */
+.mc-chart-wrap {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  min-height: 200px;
+}
+
+.mc-chart-title {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Audit badge */
+.mc-audit-type {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: var(--color-elevated);
+  color: var(--color-muted);
+}
+
+.mc-audit-type.tick { background: rgba(0, 212, 255, 0.15); color: var(--color-primary); }
+.mc-audit-type.sim_start { background: rgba(0, 230, 118, 0.15); color: var(--color-success); }
+.mc-audit-type.sim_pause { background: rgba(255, 183, 77, 0.15); color: var(--color-warning); }
+.mc-audit-type.agent_release { background: rgba(0, 212, 255, 0.15); color: var(--color-primary); }
+
+/* Quick actions (Overview) */
+.mc-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mc-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mc-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.mc-btn-primary {
+  background: var(--color-primary);
+  color: var(--color-background);
+  border-color: var(--color-primary);
+}
+
+.mc-btn-primary:hover {
+  opacity: 0.9;
+}
+
+.mc-btn-secondary {
+  background: var(--color-card);
+  color: var(--color-foreground);
+}
+
+.mc-btn-secondary:hover:not(:disabled) {
+  background: var(--color-elevated);
+  border-color: var(--color-primary);
+}
+
+.mc-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mc-release-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mc-release-input {
+  width: 4rem;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.85rem;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-foreground);
+}
+
+/* Empty state */
+.mc-empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}

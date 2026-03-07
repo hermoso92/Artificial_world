@@ -22,6 +22,10 @@ class Configuracion:
     # Entidades
     cantidad_entidades_sociales: int = 6
     incluir_gato: bool = True
+    incluir_tryndamere: bool = True  # Rey y fundador de Artificial World (personaje jugable)
+
+    # Combate (activar para permitir atacar/eliminar entidades)
+    modo_combate_activo: bool = False  # True = se puede atacar y eliminar; False = no violencia
 
     # Recursos
     cantidad_comida_inicial: int = 80
@@ -61,3 +65,33 @@ class Configuracion:
     debug_entidades_pilladas: bool = False
     debug_archivo_activo: bool = False  # Escribe estado a debug_live.json cada 5 ticks
     debug_archivo_ruta: str = "debug_live.json"
+
+    # Logging y reporte (observabilidad para demos y desarrollo)
+    nivel_log: str = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+    log_estructurado: bool = False  # JSON para parsing
+    log_consola: bool = False  # Salida a stdout
+    reporte_sesion_activo: bool = True  # Genera reporte_sesion.json al finalizar
+    reporte_sesion_ruta: str = "reporte_sesion.json"
+
+    # Modo Competencia (observabilidad defensiva y forense)
+    modo_competencia_activo: bool = True
+    modo_competencia_ruta_db: str = "audit_competencia.db"
+    modo_competencia_umbral_alerta: int = 60
+    modo_competencia_umbral_legal: int = 80
+
+    def __post_init__(self) -> None:
+        """Valida rangos para evitar fallos silenciosos."""
+        if self.ancho_mapa < 2 or self.alto_mapa < 2:
+            raise ValueError(
+                f"Mapa minimo 2x2: ancho={self.ancho_mapa}, alto={self.alto_mapa}"
+            )
+        if self.fps_objetivo <= 0:
+            raise ValueError(f"fps_objetivo debe ser > 0: {self.fps_objetivo}")
+        if self.cantidad_comida_inicial < 0 or self.cantidad_material_inicial < 0:
+            raise ValueError("Recursos iniciales no pueden ser negativos")
+        if not (0 < self.incremento_hambre_por_tick <= 1):
+            raise ValueError(
+                f"incremento_hambre_por_tick debe estar en (0,1]: {self.incremento_hambre_por_tick}"
+            )
+        if not (0 < self.max_hambre <= 1) or not (0 < self.max_energia <= 1):
+            raise ValueError("max_hambre y max_energia deben estar en (0,1]")

@@ -3,8 +3,6 @@
 from tipos.enums import ResultadoAccion, TipoAccion
 from tipos.modelos import Posicion
 
-from agentes.pesos_utilidad import obtener_utilidad_base
-
 from .accion_base import AccionBase
 
 
@@ -24,6 +22,7 @@ class AccionMover(AccionBase):
         return destino in vecinos
 
     def calcular_utilidad_base(self, entidad, contexto) -> float:
+        from agentes.pesos_utilidad import obtener_utilidad_base
         return obtener_utilidad_base("mover")
 
     def ejecutar(self, entidad, contexto) -> ResultadoAccion:

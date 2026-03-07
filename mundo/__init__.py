@@ -1,9 +1,9 @@
-"""Módulo del mundo: mapa, celdas, recursos, refugios."""
+"""Módulo del mundo: mapa, celdas, recursos, refugios.
 
-from .celda import Celda
-from .mapa import Mapa
-from .recurso import Recurso
-from .refugio import Refugio
-from .generador_mundo import GeneradorMundo
+Reexporta desde core.world y core.shelter para compatibilidad.
+"""
 
-__all__ = ["Celda", "Mapa", "Recurso", "Refugio", "GeneradorMundo"]
+from core.shelter import Refugio
+from core.world import Celda, GeneradorMundo, Mapa, Recurso, TipoTerreno, Zona
+
+__all__ = ["Celda", "Mapa", "Recurso", "Refugio", "GeneradorMundo", "TipoTerreno", "Zona"]

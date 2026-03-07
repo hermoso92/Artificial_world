@@ -49,6 +49,7 @@ class GestorModoSombra:
 
     def __init__(self, bus_eventos: "BusEventos | None" = None):
         self.bus_eventos = bus_eventos
+        self.sistema_competencia = None  # Inyectado por Simulacion
         # modo_control por id_entidad; default AUTONOMO
         self._modos: dict[int, ModoControl] = defaultdict(lambda: ModoControl.AUTONOMO)
         # colas de comandos por id_entidad
@@ -86,6 +87,17 @@ class GestorModoSombra:
             posicion=entidad.posicion,
             descripcion=f"[SOMBRA] {entidad.nombre} POSEIDO",
         ))
+        if self.sistema_competencia and self.sistema_competencia.activo:
+            self.sistema_competencia.registrar(
+                action="modo_sombra_activado",
+                target_resource=entidad.nombre,
+                target_type="modo_sombra",
+                outcome="success",
+                signals=["modo_sombra_activado"],
+                actor_id=str(entidad.id_entidad),
+                actor_role="modo_sombra",
+                tick=tick,
+            )
         _logger.info("MODO_SOMBRA_ACTIVADO ent=%s tick=%d", entidad.nombre, tick)
 
     def activar_modo_dirigido(self, entidad: "EntidadBase", tick: int) -> None:
@@ -131,6 +143,17 @@ class GestorModoSombra:
             posicion=entidad.posicion,
             descripcion=f"[SOMBRA] {entidad.nombre} AUTONOMO",
         ))
+        if self.sistema_competencia and self.sistema_competencia.activo:
+            self.sistema_competencia.registrar(
+                action="modo_sombra_desactivado",
+                target_resource=entidad.nombre,
+                target_type="modo_sombra",
+                outcome="success",
+                signals=["modo_sombra_activado"],
+                actor_id=str(entidad.id_entidad),
+                actor_role="modo_sombra",
+                tick=tick,
+            )
         _logger.info("MODO_SOMBRA_DESACTIVADO ent=%s tick=%d", entidad.nombre, tick)
 
     # ------------------------------------------------------------------
@@ -169,6 +192,17 @@ class GestorModoSombra:
             f"cmd#{cmd.id_comando} tipo={tipo_comando.value} "
             f"pos={objetivo_posicion} ent={objetivo_entidad}"
         )
+        if self.sistema_competencia and self.sistema_competencia.activo:
+            self.sistema_competencia.registrar(
+                action="comando_sombra_emitido",
+                target_resource=entidad.nombre,
+                target_type="modo_sombra",
+                outcome="success",
+                signals=["comando_sombra", "directiva_emitida"],
+                actor_id=str(entidad.id_entidad),
+                actor_role="modo_sombra",
+                tick=tick,
+            )
         self._emitir(EventoSistema(
             tick=tick,
             tipo=TipoEvento.COMANDO_SOMBRA_EMITIDO,
@@ -518,6 +552,14 @@ class GestorModoSombra:
 
     def _cmd_atacar_objetivo(self, entidad, cmd, tick, contexto) -> AccionPuntuada | None:
         """Ataque mínimo: acercarse al objetivo y ejecutar AccionAtacar."""
+        modo_combate = getattr(
+            getattr(contexto, "configuracion", None), "modo_combate_activo", False
+        )
+        if not modo_combate:
+            from acciones.accion_descansar import AccionDescansar
+            return self._hacer_accion_puntuada(
+                AccionDescansar(entidad.id_entidad), "SOMBRA_ATACAR_BLOQUEADO_modo_combate_off"
+            )
         id_obj = cmd.objetivo_entidad
         if id_obj is None:
             return None
@@ -639,9 +681,9 @@ class GestorModoSombra:
         modo = self._modos[id_entidad]
         cmd = self.obtener_comando_activo(id_entidad)
         cola_total = len(self._colas[id_entidad])
-        return {
-            "modo_control": modo.value,
-            "comando_activo": {
+        comando_activo: dict | None = None
+        if cmd is not None:
+            comando_activo = {
                 "id": cmd.id_comando,
                 "tipo": cmd.tipo_comando.value,
                 "estado": cmd.estado.value,
@@ -649,6 +691,9 @@ class GestorModoSombra:
                 "tick_inicio": cmd.tick_inicio,
                 "objetivo_posicion": cmd.objetivo_posicion.como_tupla() if cmd.objetivo_posicion else None,
                 "objetivo_entidad": cmd.objetivo_entidad,
-            } if cmd else None,
+            }
+        return {
+            "modo_control": modo.value,
+            "comando_activo": comando_activo,
             "cola_total": cola_total,
         }

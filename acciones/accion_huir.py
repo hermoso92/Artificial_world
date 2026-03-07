@@ -1,6 +1,5 @@
 """Acción de huir."""
 
-from agentes.pesos_utilidad import obtener_utilidad_base
 from tipos.enums import ResultadoAccion, TipoAccion
 from tipos.modelos import Posicion
 
@@ -41,6 +40,7 @@ class AccionHuir(AccionBase):
         return percepcion is not None and bool(percepcion.entidades_visibles)
 
     def calcular_utilidad_base(self, entidad, contexto) -> float:
+        from agentes.pesos_utilidad import obtener_utilidad_base
         return obtener_utilidad_base("huir")
 
     def ejecutar(self, entidad, contexto) -> ResultadoAccion:

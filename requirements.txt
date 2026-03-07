@@ -1,4 +1,8 @@
-# MUNDO_ARTIFICIAL - Dependencias
+# MUNDO_ARTIFICIAL - Dependencias (versiones fijas para produccion)
 # Python 3.11+
 
-pygame>=2.5.0
+pygame==2.6.1
+python-dotenv>=1.0.0  # Carga .env para API keys y secretos
+
+# Browser testing (opcional, para pruebas E2E de artificial-world.html)
+playwright>=1.40.0
