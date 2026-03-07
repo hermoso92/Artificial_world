@@ -1,7 +1,7 @@
 """
 Panel de control avanzado.
 Pestañas: Control, Órdenes, Entidades, Archivo.
-Velocidad, modo visualización, dar órdenes a entidades.
+Tema: Ecosistema Viviente — coherente con renderizador.
 """
 
 import pygame
@@ -11,6 +11,19 @@ from tipos.modelos import DirectivaExterna, Posicion
 
 from .estado_panel import EstadoPanel, ModoVisualizacion, PestanaPanel
 from .panel_modo_sombra import PanelModoSombra
+
+
+# ─── Paleta coherente con renderizador ──────────────────────────────────────
+COLOR_FONDO = (30, 35, 42)
+COLOR_PESTANA_ACTIVA = (45, 52, 62)
+COLOR_PESTANA_INACTIVA = (38, 44, 52)
+COLOR_BOTON = (55, 62, 72)
+COLOR_BOTON_HOVER = (70, 78, 90)
+COLOR_BOTON_ORDEN = (65, 110, 150)
+COLOR_TEXTO = (232, 237, 244)
+COLOR_TEXTO_SEC = (138, 153, 168)
+COLOR_SELECCION = (70, 140, 95)
+COLOR_BORDE = (55, 62, 72)
 
 
 class PanelControl:
@@ -33,18 +46,18 @@ class PanelControl:
         self.rects_entidades: dict[int, pygame.Rect] = {}
         self.rects_ordenes: dict[str, pygame.Rect] = {}
 
-        self.color_fondo = (35, 38, 45)
-        self.color_pestana_activa = (60, 65, 75)
-        self.color_pestana_inactiva = (45, 48, 55)
-        self.color_boton = (70, 75, 85)
-        self.color_boton_hover = (90, 95, 105)
-        self.color_boton_orden = (80, 120, 160)
-        self.color_texto = (220, 220, 220)
-        self.color_texto_sec = (160, 165, 170)
-        self.color_seleccion = (100, 180, 120)
+        self.color_fondo = COLOR_FONDO
+        self.color_pestana_activa = COLOR_PESTANA_ACTIVA
+        self.color_pestana_inactiva = COLOR_PESTANA_INACTIVA
+        self.color_boton = COLOR_BOTON
+        self.color_boton_hover = COLOR_BOTON_HOVER
+        self.color_boton_orden = COLOR_BOTON_ORDEN
+        self.color_texto = COLOR_TEXTO
+        self.color_texto_sec = COLOR_TEXTO_SEC
+        self.color_seleccion = COLOR_SELECCION
 
         # Panel dedicado al modo sombra
-        self.panel_sombra = PanelModoSombra(x0, ancho, alto, self.estado)
+        self.panel_sombra = PanelModoSombra(x0, ancho, alto, self.estado, self.configuracion)
         # Referencia al gestor sombra (inyectada por la simulación)
         self.gestor_sombra = None
 
@@ -82,7 +95,7 @@ class PanelControl:
         if self.estado.pestana_actual == PestanaPanel.EVENTOS:
             return None
         if self.estado.pestana_actual == PestanaPanel.WATCHDOG:
-            return None
+            return self._procesar_click_watchdog(x, y, y_base, entidades, tick)
         if self.estado.pestana_actual == PestanaPanel.ARCHIVO:
             return self._procesar_click_archivo(x, y, y_base, tick)
         return None
@@ -116,12 +129,12 @@ class PanelControl:
     def _procesar_click_ordenes(self, x: int, y: int, y_base: int, entidades: list, tick: int) -> dict | None:
         bx = self.x0 + self.MARGEN
         if self.estado.entidad_seleccionada_id is None:
-            by = y_base + self.OFFSET_TITULO + 18
+            by = y_base + self.OFFSET_TITULO + 20
             for ent in entidades:
-                r = pygame.Rect(bx, by, self.ancho - 2 * self.MARGEN, 28)
+                r = pygame.Rect(bx, by, self.ancho - 2 * self.MARGEN, 30)
                 if r.collidepoint(x, y):
                     return {"tipo": "seleccionar", "id_entidad": ent.id_entidad}
-                by += 32
+                by += 34
             return None
 
         by = y_base + self.OFFSET_TITULO + 28
@@ -208,13 +221,13 @@ class PanelControl:
         return None
 
     def _procesar_click_entidades(self, x: int, y: int, y_base: int, entidades: list) -> dict | None:
-        by = y_base + self.OFFSET_TITULO
+        by = y_base + self.OFFSET_TITULO + 2
         for ent in entidades:
             r = pygame.Rect(self.x0 + self.MARGEN, by, self.ancho - 2 * self.MARGEN, 36)
             self.rects_entidades[ent.id_entidad] = r
             if r.collidepoint(x, y):
                 return {"tipo": "seleccionar", "id_entidad": ent.id_entidad}
-            by += 40
+            by += 42
         return None
 
     def _procesar_click_archivo(self, x: int, y: int, y_base: int, tick: int) -> dict | None:
@@ -239,39 +252,39 @@ class PanelControl:
         tick_actual: int,
         guardado_ok: bool,
         cargado_ok: bool,
+        mapa=None,
         eventos_recientes: list | None = None,
         alertas_watchdog: list | None = None,
         watchdog_total: int = 0,
     ) -> None:
         """Dibuja el panel completo."""
         pygame.draw.rect(pantalla, self.color_fondo, (self.x0, 0, self.ancho, self.alto))
-        pygame.draw.line(pantalla, (60, 64, 72), (self.x0, 0), (self.x0, self.alto), 2)
+        pygame.draw.line(pantalla, (48, 55, 65), (self.x0, 0), (self.x0, self.alto), 1)
 
         try:
+            fuente_tit = pygame.font.SysFont("segoe ui", 12, bold=True)
+            fuente = pygame.font.SysFont("segoe ui", 11)
+        except Exception:
             fuente_tit = pygame.font.SysFont("arial", 12, bold=True)
             fuente = pygame.font.SysFont("arial", 11)
-        except Exception:
-            fuente_tit = pygame.font.Font(None, 16)
-            fuente = pygame.font.Font(None, 14)
 
         # Pestañas
         pestana_w = self.ancho // len(list(PestanaPanel))
         for i, p in enumerate(PestanaPanel):
             rx = self.x0 + i * pestana_w
             activa = p == self.estado.pestana_actual
-            # Pestaña WATCHDOG en rojo si hay alertas activas
             if p == PestanaPanel.WATCHDOG and alertas_watchdog:
-                color = (160, 40, 40) if not activa else (200, 60, 60)
+                color = (140, 50, 50) if not activa else (180, 70, 70)
             elif p == PestanaPanel.SOMBRA and self.estado.modo_sombra:
-                color = (160, 70, 20) if not activa else (210, 100, 30)
+                color = (140, 80, 30) if not activa else (200, 120, 50)
             else:
                 color = self.color_pestana_activa if activa else self.color_pestana_inactiva
             pygame.draw.rect(pantalla, color, (rx, 0, pestana_w, self.ALTURA_PESTANA))
             lbl = p.value[:4].upper() if p.value else ""
             txt = fuente.render(lbl, True, self.color_texto)
-            pantalla.blit(txt, (rx + pestana_w // 2 - txt.get_width() // 2, 6))
+            pantalla.blit(txt, (rx + pestana_w // 2 - txt.get_width() // 2, 7))
             if i > 0:
-                pygame.draw.line(pantalla, (50, 54, 62), (rx, 0), (rx, self.ALTURA_PESTANA), 1)
+                pygame.draw.line(pantalla, (42, 48, 58), (rx, 2), (rx, self.ALTURA_PESTANA - 2), 1)
 
         y = self.ALTURA_PESTANA + self.MARGEN
 
@@ -282,38 +295,34 @@ class PanelControl:
         elif self.estado.pestana_actual == PestanaPanel.SOMBRA:
             self.panel_sombra.dibujar(pantalla, entidades, tick_actual, self.gestor_sombra)
         elif self.estado.pestana_actual == PestanaPanel.ENTIDADES:
-            self._dibujar_entidades(pantalla, fuente, fuente_tit, y, entidades)
+            self._dibujar_entidades(pantalla, fuente, fuente_tit, y, entidades, mapa)
         elif self.estado.pestana_actual == PestanaPanel.EVENTOS:
             self._dibujar_eventos(pantalla, fuente, fuente_tit, y, eventos_recientes or [])
         elif self.estado.pestana_actual == PestanaPanel.WATCHDOG:
             self._dibujar_watchdog(pantalla, fuente, fuente_tit, y,
-                                   alertas_watchdog or [], watchdog_total)
+                                   alertas_watchdog or [], watchdog_total, entidades)
         elif self.estado.pestana_actual == PestanaPanel.ARCHIVO:
             self._dibujar_archivo(pantalla, fuente, fuente_tit, y, guardado_ok, cargado_ok)
 
     def _dibujar_control(self, pantalla, fuente, fuente_tit, y, tick_actual) -> None:
         tit = fuente_tit.render("CONTROL", True, self.color_texto)
         pantalla.blit(tit, (self.x0 + self.MARGEN, y))
-        y += 22
+        y += 24
 
-        # Pausa
-        texto_pausa = "Reanudar  [P]" if self.estado.pausado else "Pausar  [P]"
-        color_pausa = (120, 200, 120) if self.estado.pausado else self.color_boton
+        texto_pausa = "Reanudar [P]" if self.estado.pausado else "Pausar [P]"
+        color_pausa = (70, 130, 90) if self.estado.pausado else self.color_boton
         self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, texto_pausa, fuente, color_pausa)
         y += self.ALTURA_BOTON + self.ESPACIO
 
-        # Tick manual
-        self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, "Tick manual  [N]", fuente, (60, 80, 120))
+        self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, "Tick manual [N]", fuente, (55, 75, 110))
         y += self.ALTURA_BOTON + self.ESPACIO
 
-        # Velocidad
         vel_str = f"{self.estado.velocidad}x"
-        self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, f"Velocidad: {vel_str}  [V]", fuente)
+        self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, f"Velocidad: {vel_str} [V]", fuente)
         y += self.ALTURA_BOTON + self.ESPACIO
 
-        # Modo visualización
         modo_str = self.estado.modo_visualizacion.value.replace("_", " ")
-        self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, f"Modo: {modo_str[:12]}  [M]", fuente)
+        self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, f"Modo: {modo_str[:12]} [M]", fuente)
         y += self.ALTURA_BOTON + self.ESPACIO
 
         txt_tick = fuente.render(f"Tick: {tick_actual}", True, self.color_texto_sec)
@@ -321,7 +330,7 @@ class PanelControl:
         y += 18
 
         if self.estado.pausado:
-            txt = fuente.render("PAUSADO - N = 1 tick", True, (255, 200, 80))
+            txt = fuente.render("Pausado — N = 1 tick", True, (232, 200, 100))
             pantalla.blit(txt, (self.x0 + self.MARGEN, y))
 
     def _dibujar_ordenes(self, pantalla, fuente, fuente_tit, y, entidades) -> None:
@@ -332,23 +341,15 @@ class PanelControl:
         if self.estado.entidad_seleccionada_id is None:
             txt = fuente.render("Selecciona una entidad:", True, self.color_texto_sec)
             pantalla.blit(txt, (self.x0 + self.MARGEN, y))
-            y += 18
+            y += 20
             for ent in entidades:
-                pygame.draw.rect(
-                    pantalla,
-                    self.color_boton_orden,
-                    (self.x0 + self.MARGEN, y, self.ancho - 2 * self.MARGEN, 28),
-                )
-                pygame.draw.rect(
-                    pantalla,
-                    (100, 140, 180),
-                    (self.x0 + self.MARGEN, y, self.ancho - 2 * self.MARGEN, 28),
-                    1,
-                )
+                rect = (self.x0 + self.MARGEN, y, self.ancho - 2 * self.MARGEN, 30)
+                pygame.draw.rect(pantalla, self.color_boton_orden, rect)
+                pygame.draw.rect(pantalla, (85, 130, 175), rect, 1)
                 nombre = getattr(ent, "nombre", f"E{ent.id_entidad}")
                 txt_ent = fuente.render(f"  {nombre}", True, (255, 255, 255))
-                pantalla.blit(txt_ent, (self.x0 + self.MARGEN + 6, y + 5))
-                y += 32
+                pantalla.blit(txt_ent, (self.x0 + self.MARGEN + 8, y + 6))
+                y += 34
             return
 
         ent = next((e for e in entidades if e.id_entidad == self.estado.entidad_seleccionada_id), None)
@@ -373,7 +374,7 @@ class PanelControl:
         txt_ctrl = fuente_tit.render(label_ctrl, True, (255, 255, 200) if en_ctrl else (200, 220, 255))
         pantalla.blit(txt_ctrl, (self.x0 + self.MARGEN + 6, y + 5))
         if en_ctrl:
-            hint = fuente.render("WASD/flechas = mover  P = pausa", True, (255, 200, 100))
+            hint = fuente.render("WASD/flechas=mover  P=pausa  N/flechas=paso  Click mapa=destino", True, (255, 200, 100))
             pantalla.blit(hint, (self.x0 + self.MARGEN + 4, y + 18))
         y += self.ALTURA_BOTON + 4 + self.ESPACIO + 4
 
@@ -482,52 +483,51 @@ class PanelControl:
             txt = fuente.render(f"Accion: {acc.value if acc else '-'}", True, self.color_texto_sec)
             pantalla.blit(txt, (self.x0 + self.MARGEN + 4, y))
 
-    def _dibujar_entidades(self, pantalla, fuente, fuente_tit, y, entidades) -> None:
+    def _dibujar_entidades(self, pantalla, fuente, fuente_tit, y, entidades, mapa=None) -> None:
         tit = fuente_tit.render("ENTIDADES", True, self.color_texto)
         pantalla.blit(tit, (self.x0 + self.MARGEN, y))
-        y += 22
+        y += 24
 
         for ent in entidades:
             sel = ent.id_entidad == self.estado.entidad_seleccionada_id
-            color_fondo = self.color_seleccion if sel else self.color_fondo
-            pygame.draw.rect(
-                pantalla,
-                color_fondo,
-                (self.x0 + self.MARGEN, y, self.ancho - 2 * self.MARGEN, 34),
-            )
-            pygame.draw.rect(
-                pantalla,
-                (80, 85, 95),
-                (self.x0 + self.MARGEN, y, self.ancho - 2 * self.MARGEN, 34),
-                1,
-            )
+            color_fondo = (55, 75, 65) if sel else (40, 46, 54)
+            rect = (self.x0 + self.MARGEN, y, self.ancho - 2 * self.MARGEN, 36)
+            pygame.draw.rect(pantalla, color_fondo, rect)
+            pygame.draw.rect(pantalla, (60, 68, 78), rect, 1)
             nombre = getattr(ent, "nombre", f"E{ent.id_entidad}")
-            txt1 = fuente.render(nombre, True, ent.color if not sel else (255, 255, 255))
-            pantalla.blit(txt1, (self.x0 + self.MARGEN + 6, y + 2))
+            refugio_str = ""
+            if mapa:
+                celda = mapa.obtener_celda(ent.posicion)
+                if celda and celda.tiene_refugio() and celda.refugio:
+                    refugio_str = f" · Refugio #{celda.refugio.id_refugio}"
+            txt1 = fuente.render(f"{nombre}{refugio_str}", True, ent.color if not sel else (255, 255, 255))
+            pantalla.blit(txt1, (self.x0 + self.MARGEN + 8, y + 4))
             acc = ent.estado_interno.accion_actual
             acc_str = acc.value if acc else "-"
             e_val = int(ent.estado_interno.energia * 100)
             h_val = int(ent.estado_interno.hambre * 100)
-            txt2 = fuente.render(f"{acc_str} | E:{e_val}% H:{h_val}%", True, self.color_texto_sec)
-            pantalla.blit(txt2, (self.x0 + self.MARGEN + 6, y + 16))
-            y += 40
+            txt2 = fuente.render(f"{acc_str} · E:{e_val}% H:{h_val}%", True, self.color_texto_sec)
+            pantalla.blit(txt2, (self.x0 + self.MARGEN + 8, y + 18))
+            y += 42
 
         if self.estado.entidad_seleccionada_id and y + 120 < self.alto:
             ent = next((e for e in entidades if e.id_entidad == self.estado.entidad_seleccionada_id), None)
             if ent:
                 y += self.ESPACIO
-                self._dibujar_panel_jugador(pantalla, fuente, fuente_tit, y, ent)
+                self._dibujar_panel_jugador(pantalla, fuente, fuente_tit, y, ent, mapa)
 
-    def _dibujar_panel_jugador(self, pantalla, fuente, fuente_tit, y, ent) -> None:
+    def _dibujar_panel_jugador(self, pantalla, fuente, fuente_tit, y, ent, mapa=None) -> None:
         """Panel avanzado del jugador seleccionado."""
         ancho = self.ancho - 2 * self.MARGEN
         x0 = self.x0 + self.MARGEN
 
         # --- Cabecera ---
-        pygame.draw.rect(pantalla, (30, 35, 45), (x0, y, ancho, 16))
-        tit = fuente_tit.render(f">> {ent.nombre.upper()} <<", True, ent.color)
-        pantalla.blit(tit, (x0 + 4, y + 2))
-        y += 18
+        pygame.draw.rect(pantalla, (35, 42, 52), (x0, y, ancho, 20))
+        pygame.draw.line(pantalla, (55, 65, 80), (x0, y), (x0 + ancho, y), 1)
+        pygame.draw.line(pantalla, (48, 55, 65), (x0, y + 20), (x0 + ancho, y + 20), 1)
+        tit = fuente_tit.render(f"» {ent.nombre.upper()} «", True, ent.color)
+        pantalla.blit(tit, (x0 + 6, y + 4))
+        y += 22
 
         # --- Stats principales ---
         e_val = int(ent.estado_interno.energia * 100)
@@ -535,13 +535,13 @@ class PanelControl:
         s_val = int(getattr(ent.estado_interno, "salud", 1.0) * 100)
         r_val = int(getattr(ent.estado_interno, "riesgo_percibido", 0.0) * 100)
 
-        self._dibujar_barra_stat(pantalla, fuente, x0, y, ancho, "Energia", e_val, (80, 180, 80))
-        y += 14
-        self._dibujar_barra_stat(pantalla, fuente, x0, y, ancho, "Hambre ", h_val, (200, 100, 60))
-        y += 14
-        self._dibujar_barra_stat(pantalla, fuente, x0, y, ancho, "Salud  ", s_val, (80, 140, 220))
-        y += 14
-        self._dibujar_barra_stat(pantalla, fuente, x0, y, ancho, "Riesgo ", r_val, (200, 60, 60))
+        self._dibujar_barra_stat(pantalla, fuente, x0, y, ancho, "Energia", e_val, (107, 198, 126))
+        y += 16
+        self._dibujar_barra_stat(pantalla, fuente, x0, y, ancho, "Hambre ", h_val, (232, 160, 90))
+        y += 16
+        self._dibujar_barra_stat(pantalla, fuente, x0, y, ancho, "Salud  ", s_val, (90, 159, 212))
+        y += 16
+        self._dibujar_barra_stat(pantalla, fuente, x0, y, ancho, "Riesgo ", r_val, (224, 122, 90))
         y += 16
 
         # --- Posición, rasgo, acción ---
@@ -553,8 +553,14 @@ class PanelControl:
         comida_inv = getattr(inv, "comida", 0) if inv else 0
         mat_inv = getattr(inv, "material", 0) if inv else 0
 
+        refugio_str = "-"
+        if mapa:
+            celda = mapa.obtener_celda(ent.posicion)
+            if celda and celda.tiene_refugio() and celda.refugio:
+                refugio_str = f"Refugio #{celda.refugio.id_refugio}"
         lineas_info = [
             f"Pos: ({ent.posicion.x},{ent.posicion.y})  Rasgo: {rasgo_str}",
+            f"Refugio: {refugio_str}",
             f"Accion actual: {acc_str}",
             f"Inventario: {comida_inv} comida | {mat_inv} material",
         ]
@@ -601,21 +607,38 @@ class PanelControl:
 
     def _dibujar_barra_stat(self, pantalla, fuente, x0, y, ancho, label, valor, color) -> None:
         """Barra de stat con label, valor numérico y barra visual."""
-        # Label
         txt = fuente.render(f"{label}: {valor:3d}%", True, self.color_texto_sec)
-        pantalla.blit(txt, (x0 + 4, y))
-        # Barra de fondo
-        bx = x0 + 80
-        bw = ancho - 85
-        pygame.draw.rect(pantalla, (50, 55, 65), (bx, y + 1, bw, 10))
-        # Barra rellena
-        fill = max(0, min(bw, int(bw * valor / 100)))
+        pantalla.blit(txt, (x0 + 4, y - 1))
+        bx = x0 + 82
+        bw = ancho - 88
+        bh = 10
+        # Fondo
+        pygame.draw.rect(pantalla, (42, 48, 56), (bx, y, bw, bh))
+        pygame.draw.rect(pantalla, (55, 62, 72), (bx, y, bw, bh), 1)
+        # Relleno
+        fill = max(0, min(bw - 2, int((bw - 2) * valor / 100)))
         if fill > 0:
-            pygame.draw.rect(pantalla, color, (bx, y + 1, fill, 10))
+            pygame.draw.rect(pantalla, color, (bx + 1, y + 1, fill, bh - 2))
+
+    def _procesar_click_watchdog(self, x: int, y: int, y_base: int, entidades: list, tick: int) -> dict | None:
+        """Procesa clicks en el panel watchdog (botones cuando no hay alertas)."""
+        r_ord = getattr(self, "_rect_watchdog_ordenes", None)
+        if r_ord and r_ord.collidepoint(x, y):
+            self.estado.pestana_actual = PestanaPanel.ORDENES
+            return {"tipo": "cambiar_pestana"}
+        r_ctrl = getattr(self, "_rect_watchdog_ctrl", None)
+        if r_ctrl and r_ctrl.collidepoint(x, y) and self.estado.entidad_seleccionada_id:
+            return {
+                "tipo": "toggle_control_total",
+                "id_entidad": self.estado.entidad_seleccionada_id,
+            }
+        return None
 
     def _dibujar_watchdog(self, pantalla, fuente, fuente_tit, y,
-                          alertas: list, total_detectados: int) -> None:
+                          alertas: list, total_detectados: int, entidades: list) -> None:
         """Panel del watchdog: alertas automáticas detectadas."""
+        setattr(self, "_rect_watchdog_ordenes", None)
+        setattr(self, "_rect_watchdog_ctrl", None)
         x0 = self.x0 + self.MARGEN
         ancho = self.ancho - 2 * self.MARGEN
 
@@ -628,6 +651,35 @@ class PanelControl:
         if not alertas:
             txt = fuente.render("Sin problemas detectados", True, (80, 200, 100))
             pantalla.blit(txt, (x0, y))
+            y += 20
+            txt2 = fuente.render("P=pausa | Selecciona entidad + flechas=mover", True, self.color_texto_sec)
+            pantalla.blit(txt2, (x0, y))
+            y += 18
+            txt3 = fuente.render("N=1 tick | Click mapa=destino (con entidad sel.)", True, self.color_texto_sec)
+            pantalla.blit(txt3, (x0, y))
+            y += 25
+            # Boton ir a ORDENES
+            r_ord = pygame.Rect(x0, y, ancho, self.ALTURA_BOTON)
+            setattr(self, "_rect_watchdog_ordenes", r_ord)
+            pygame.draw.rect(pantalla, self.color_boton_orden, r_ord)
+            pygame.draw.rect(pantalla, (100, 140, 180), r_ord, 1)
+            txt_btn = fuente.render(">> ORDENES (Control total, priorizar, etc)", True, (255, 255, 255))
+            pantalla.blit(txt_btn, (x0 + 6, y + 4))
+            y += self.ALTURA_BOTON + self.ESPACIO
+            # Si hay entidad seleccionada: boton Control total
+            ent_sel = next((e for e in entidades if e.id_entidad == self.estado.entidad_seleccionada_id), None) if self.estado.entidad_seleccionada_id else None
+            if ent_sel:
+                en_ctrl = getattr(ent_sel, "control_total", False)
+                color_ctrl = (200, 80, 20) if en_ctrl else (40, 100, 180)
+                r_ctrl = pygame.Rect(x0, y, ancho, self.ALTURA_BOTON + 4)
+                setattr(self, "_rect_watchdog_ctrl", r_ctrl)
+                pygame.draw.rect(pantalla, color_ctrl, r_ctrl)
+                pygame.draw.rect(pantalla, (255, 140, 40) if en_ctrl else (80, 160, 220), r_ctrl, 2)
+                lbl = "CONTROL TOTAL: ON [WASD]" if en_ctrl else "TOMAR CONTROL TOTAL"
+                txt_ctrl = fuente_tit.render(lbl, True, (255, 255, 200) if en_ctrl else (200, 220, 255))
+                pantalla.blit(txt_ctrl, (x0 + 6, y + 5))
+            else:
+                setattr(self, "_rect_watchdog_ctrl", None)
             return
 
         # Color por nivel
@@ -698,18 +750,18 @@ class PanelControl:
 
     def _dibujar_boton(self, pantalla, x, y, texto, fuente) -> None:
         pygame.draw.rect(pantalla, self.color_boton, (x, y, self.ANCHO_BOTON, self.ALTURA_BOTON))
-        pygame.draw.rect(pantalla, (90, 95, 105), (x, y, self.ANCHO_BOTON, self.ALTURA_BOTON), 1)
+        pygame.draw.rect(pantalla, COLOR_BORDE, (x, y, self.ANCHO_BOTON, self.ALTURA_BOTON), 1)
         txt = fuente.render(texto, True, self.color_texto)
-        pantalla.blit(txt, (x + 6, y + 4))
+        pantalla.blit(txt, (x + 8, y + 5))
 
     def _dibujar_boton_ancho(self, pantalla, x, y, texto, fuente, color=None) -> None:
         """Botón de ancho completo del panel."""
         color = color or self.color_boton
         w = self.ancho - 2 * self.MARGEN
         pygame.draw.rect(pantalla, color, (x, y, w, self.ALTURA_BOTON))
-        pygame.draw.rect(pantalla, (90, 95, 105), (x, y, w, self.ALTURA_BOTON), 1)
+        pygame.draw.rect(pantalla, COLOR_BORDE, (x, y, w, self.ALTURA_BOTON), 1)
         txt = fuente.render(texto, True, self.color_texto)
-        pantalla.blit(txt, (x + 6, y + 4))
+        pantalla.blit(txt, (x + 8, y + 5))
 
     def crear_directiva(
         self,
