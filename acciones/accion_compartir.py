@@ -88,6 +88,22 @@ class AccionCompartir(AccionBase):
             return []
         if contexto.percepcion_local:
             entidades_raw = getattr(contexto.percepcion_local, "entidades_visibles", [])
+            directas = []
+            ids_cercanos: set[int] = set()
+            for item in entidades_raw:
+                if hasattr(item, "id_entidad"):
+                    if item.id_entidad != entidad.id_entidad:
+                        directas.append(item)
+                else:
+                    _, ids = item
+                    ids_cercanos.update(ids)
+            if directas:
+                return directas
+            if ids_cercanos:
+                ids_cercanos.discard(entidad.id_entidad)
+                todas = getattr(contexto, "entidades", [])
+                return [e for e in todas if e.id_entidad in ids_cercanos]
+            return []
         else:
             entidades_raw = getattr(contexto, "entidades", [])
-        return [e for e in entidades_raw if e.id_entidad != entidad.id_entidad]
+            return [e for e in entidades_raw if e.id_entidad != entidad.id_entidad]
