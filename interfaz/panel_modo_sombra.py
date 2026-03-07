@@ -95,7 +95,7 @@ class PanelModoSombra:
     ESPACIO      = 3
     ALTURA_BARRA = 9
 
-    def __init__(self, x0: int, ancho: int, alto: int, estado: "EstadoPanel"):
+    def __init__(self, x0: int, ancho: int, alto: int, estado: "EstadoPanel", configuracion=None):
         self.x0    = x0
         self.ancho = ancho
         self.alto  = alto
