@@ -21,17 +21,17 @@ SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_interacciones_so
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_arranque_limpio.py
 ```
 
-### Known pre-existing issue
-
-`PanelModoSombra.__init__()` in `interfaz/panel_modo_sombra.py` accepts 4 args (x0, ancho, alto, estado), but `interfaz/panel_control.py` line 60 passes 5 (adding `self.configuracion`). This causes a `TypeError` that prevents the full GUI from starting and causes failures in tests that call `Simulacion.inicializar()` (which initializes the renderer). Tests that set up entities/world directly (without the renderer) work fine.
-
 ### Lint
 
 No linting tools (flake8, pylint, mypy, ruff) are configured in this project. The CI pipeline (`pipeline.yml`) only runs tests. Use `python -m py_compile <file>` for basic syntax verification.
 
 ### Running the application
 
-Entry point: `python principal.py`. Requires a display (X11/Xvfb) or SDL dummy drivers. In Cloud VMs, use `Xvfb :99 -screen 0 1280x1024x24 &` and `DISPLAY=:99` to provide a virtual display. Note: the app currently crashes on startup due to the PanelModoSombra issue described above.
+Entry point: `python principal.py`. Requires a display (X11/Xvfb). In Cloud VMs, use `DISPLAY=:1` (TigerVNC display) to run the app visually in the Desktop pane. Clean start: delete `mundo_artificial.db` before running if entities behave unexpectedly.
+
+### entidades_visibles format
+
+`PercepcionLocal.entidades_visibles` contains tuples `(Posicion, list[int])` from `mapa.obtener_entidades_en_radio()`. Code that iterates over this field must unpack tuples to extract entity IDs, then resolve actual entity objects from `contexto.entidades`. Some tests pass entity objects directly — any new code must handle both formats. See Bugs 5-7 in `AGENTE_ENTRANTE.md` for details.
 
 ### Dependencies
 
