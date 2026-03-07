@@ -1,0 +1,29 @@
+# Artificial World - Aplicación completa en VPS
+# Ejecuta el juego Pygame con acceso web vía noVNC
+#
+# Uso:
+#   docker compose -f docker-compose.vps.yml up -d
+#   Abrir http://localhost:6080/vnc.html
+#
+# En VPS: cambiar localhost por la IP o dominio del servidor
+
+services:
+  artificial-world:
+    build:
+      context: .
+      dockerfile: Dockerfile.vps
+    container_name: artificial-world
+    ports:
+      - "6080:6080"
+    environment:
+      - DISPLAY=:99
+    # Opcional: persistir BD y logs (crear carpeta ./data local)
+    # volumes:
+    #   - ./data:/app/data
+    # Evitar que el contenedor se reinicie indefinidamente si falla
+    restart: unless-stopped
+    # Recursos (ajustar según tu VPS)
+    deploy:
+      resources:
+        limits:
+          memory: 1G

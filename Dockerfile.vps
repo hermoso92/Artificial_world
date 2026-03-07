@@ -1,0 +1,36 @@
+# Artificial World - Aplicación completa en VPS
+# Pygame + Xvfb + noVNC para acceso desde navegador
+# Uso: docker build -f Dockerfile.vps -t artificial-world .
+#      docker run -p 6080:6080 artificial-world
+
+FROM python:3.11-slim-bookworm
+
+# Dependencias: SDL/pygame + Xvfb + x11vnc + noVNC (apt)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libsdl2-2.0-0 \
+    libsdl2-image-2.0-0 \
+    libsdl2-mixer-2.0-0 \
+    libsdl2-ttf-2.0-0 \
+    xvfb \
+    x11vnc \
+    novnc \
+    websockify \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Display virtual (Xvfb)
+ENV DISPLAY=:99
+ENV PYTHONUNBUFFERED=1
+
+COPY scripts/entrypoint_vps.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 6080
+
+CMD ["/entrypoint.sh"]
