@@ -19,18 +19,21 @@ class SistemaPersistencia:
     RUTA_JSON = "estado_simulacion.json"
     RUTA_SQLITE = "mundo_artificial.db"
 
+    @classmethod
+    def _ruta(cls, nombre: str) -> str:
+        from utilidades.paths import obtener_base_path
+        return os.path.join(obtener_base_path(), nombre)
+
     def __init__(self, usar_sqlite: bool = True, auto_guardar_intervalo: int = 20):
         self.usar_sqlite = usar_sqlite
         self.auto_guardar_intervalo = auto_guardar_intervalo
         self._ultimo_auto_guardado = 0
 
     def _ruta_proyecto(self, nombre: str) -> str:
-        base = os.path.dirname(os.path.abspath(__file__))
-        proyecto = os.path.dirname(base)
-        return os.path.join(proyecto, nombre)
+        return self._ruta(nombre)
 
     def _conexion_sqlite(self) -> sqlite3.Connection:
-        ruta = self._ruta_proyecto(self.RUTA_SQLITE)
+        ruta = self._ruta(self.RUTA_SQLITE)
         conn = sqlite3.connect(ruta)
         conn.execute("""
             CREATE TABLE IF NOT EXISTS estado (
@@ -61,12 +64,23 @@ class SistemaPersistencia:
                 ruta = self._ruta_proyecto(ruta) if not os.path.isabs(ruta) else ruta
                 with open(ruta, "w", encoding="utf-8") as f:
                     json.dump(datos, f, indent=2, ensure_ascii=False)
-            return True
+            ok = True
         except Exception as e:
+            ok = False
             if getattr(simulacion, "estado_panel", None):
                 simulacion.estado_panel.mensaje_feedback = f"Error guardar: {e}"
                 simulacion.estado_panel.mensaje_feedback_tick = 60
-            return False
+        sc = getattr(simulacion, "sistema_competencia", None)
+        if sc and sc.activo:
+            sc.registrar(
+                action="guardar_estado",
+                target_resource="estado",
+                target_type="persistencia",
+                outcome="success" if ok else "failure",
+                signals=["acceso_persistencia"],
+                tick=simulacion.gestor_ticks.tick_actual,
+            )
+        return ok
 
     def auto_guardar_si_procede(self, simulacion) -> bool:
         """Auto-guarda cada N ticks. Devuelve True si guardó."""
@@ -101,10 +115,22 @@ class SistemaPersistencia:
                     datos = json.load(f)
             self._deserializar(simulacion, datos)
             self._ultimo_auto_guardado = simulacion.gestor_ticks.tick_actual
-            return True
+            ok = True
         except Exception as e:
+            ok = False
             self._mensaje_error(simulacion, f"Error cargar: {e}")
-            return False
+        sc = getattr(simulacion, "sistema_competencia", None)
+        if sc and sc.activo:
+            tick = simulacion.gestor_ticks.tick_actual if ok and simulacion.gestor_ticks else None
+            sc.registrar(
+                action="cargar_estado",
+                target_resource="estado",
+                target_type="persistencia",
+                outcome="success" if ok else "failure",
+                signals=["carga_externa", "acceso_persistencia"],
+                tick=tick,
+            )
+        return ok
 
     def _mensaje_error(self, simulacion, msg: str) -> None:
         if getattr(simulacion, "estado_panel", None):

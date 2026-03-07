@@ -90,6 +90,41 @@ docker compose -f docker-compose.vps.yml up -d
 
 Abre `http://TU_IP:6080/vnc.html` para jugar. Ver [docs/DEPLOY_VPS_APLICACION.md](docs/DEPLOY_VPS_APLICACION.md).
 
+## Code Review automatico con IA (gga)
+
+Cada `git commit` es revisado automaticamente por una IA local (Ollama) contra las reglas del proyecto definidas en `AGENTS.md`.
+
+### Instalacion (una sola vez)
+
+**Requisitos:** [Ollama](https://ollama.com/download/windows) instalado en el sistema.
+
+Desde **Git Bash**:
+
+```bash
+bash install-gga.sh
+```
+
+El script descarga el modelo `qwen2.5-coder:7b` (~4GB), instala gga y activa el hook automaticamente.
+
+### Uso diario
+
+No necesitas hacer nada. Al hacer `git commit`, el hook se activa solo:
+
+- `STATUS: PASSED` → commit procede normalmente
+- `STATUS: FAILED` → commit bloqueado, se muestran las violaciones a corregir
+
+### Saltar el review puntualmente
+
+```bash
+git commit --no-verify -m "wip: trabajo en curso"
+```
+
+### Reglas activas
+
+Ver `AGENTS.md` en la raiz del proyecto. Revisa: no `console.log`, no URLs hardcodeadas, `organizationId` en requests, TypeScript estricto, componentes <300 lineas, y mas.
+
+---
+
 ## Documentacion
 
 - [AGENTE_ENTRANTE.md](AGENTE_ENTRANTE.md) — Documentacion tecnica completa

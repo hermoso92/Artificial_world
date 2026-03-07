@@ -1,0 +1,8 @@
+{
+  "name": "artificial-world",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:e2e": "node scripts/test-e2e-autonomous.js"
+  }
+}

@@ -1,0 +1,26 @@
+# artificial word - CI con Redis para cache/estado
+# Uso local: docker-compose -f docker-compose.ci.yml run --rm tests
+# O: docker-compose -f docker-compose.ci.yml up tests --abort-on-container-exit
+# Redis: servicio auxiliar para cache o futuras integraciones (tests no lo requieren)
+
+services:
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.ci
+    environment:
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      REDIS_URL: redis://redis:6379/0
+    # Sin depends_on: tests funcionan sin Redis
+    command: python pruebas/verificar_todo.py
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    # Redis disponible para: cache de verificacion_completa.json,
+    # resultados de tests entre runs, o futuras features (ej. API con sesiones)

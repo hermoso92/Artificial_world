@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Damas AI — Juega contra IA experta</title>
+  <meta name="description" content="Tablero de damas 2D con IA ajustable. Compite contra la máquina en Principiante, Intermedio, Avanzado o Experto.">
+  <link rel="manifest" href="manifest-damas.json">
+  <meta name="theme-color" content="#0c0e12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@400;500;600;700&display=swap');
+
+    :root {
+      --bg-dark: #0c0e12;
+      --bg-card: #151820;
+      --bg-elevated: #1c1f2a;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f0f2f5;
+      --text-muted: #7a8299;
+      --accent: #00e5a0;
+      --accent-dim: rgba(0, 229, 160, 0.2);
+      --accent-glow: rgba(0, 229, 160, 0.4);
+      --player: #4fc3f7;
+      --ai: #ff8a65;
+      --success: #00e676;
+      --warning: #ffb74d;
+      --danger: #ff5252;
+      --cell-light: #2d3548;
+      --cell-dark: #1e2230;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      background-image: radial-gradient(ellipse at 50% 0%, rgba(0, 229, 160, 0.06) 0%, transparent 50%);
+    }
+
+    .game-container {
+      max-width: 560px;
+      width: 100%;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    header h1 {
+      font-size: clamp(1.75rem, 4vw, 2.25rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--accent) 0%, #00b894 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .control-group label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .control-group select {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .control-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-dark);
+    }
+    .btn-primary:hover {
+      background: #00ffb3;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .board-wrapper {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      width: min(400px, 85vw);
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 2px var(--border);
+    }
+
+    .cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
+      transition: background 0.15s;
+    }
+    .cell.light { background: var(--cell-light); }
+    .cell.dark { background: var(--cell-dark); }
+    .cell.playable {
+      cursor: pointer;
+      background: var(--accent-dim) !important;
+    }
+    .cell.playable:hover {
+      background: rgba(0, 229, 160, 0.35) !important;
+    }
+    .cell.selected {
+      background: var(--accent) !important;
+      box-shadow: inset 0 0 0 2px var(--bg-dark);
+    }
+    .cell.last-move {
+      box-shadow: inset 0 0 0 2px var(--accent);
+    }
+
+    .piece {
+      width: 85%;
+      height: 85%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6em;
+      font-weight: 700;
+      transition: transform 0.2s;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+    .piece.player {
+      background: linear-gradient(145deg, #5fc8ff, #2196f3);
+      color: #0d47a1;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+    }
+    .piece.player.king {
+      background: linear-gradient(145deg, #81d4fa, #29b6f6);
+      box-shadow: 0 0 12px rgba(79, 195, 247, 0.5);
+    }
+    .piece.ai {
+      background: linear-gradient(145deg, #ffab91, #ff7043);
+      color: #bf360c;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+    }
+    .piece.ai.king {
+      background: linear-gradient(145deg, #ffccbc, #ff8a65);
+      box-shadow: 0 0 12px rgba(255, 138, 101, 0.5);
+    }
+    .piece.dragging {
+      transform: scale(1.15);
+      z-index: 10;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-elevated);
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+    .status-turn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    .status-dot.player { background: var(--player); }
+    .status-dot.ai { background: var(--ai); }
+    .status-dot.inactive { animation: none; opacity: 0.4; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .status-score {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+    }
+    .status-score span { color: var(--accent); font-weight: 600; }
+
+    .message-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .message-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .message-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      max-width: 320px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+    }
+    .message-box h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .message-box.win h2 { color: var(--success); }
+    .message-box.lose h2 { color: var(--danger); }
+    .message-box.draw h2 { color: var(--warning); }
+    .message-box p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .thinking {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+    .thinking-dots span {
+      animation: blink 0.6s infinite;
+    }
+    .thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .ad-slot {
+      min-height: 90px; margin: 1.5rem 0; padding: 0.5rem;
+      background: var(--bg-elevated); border: 1px dashed var(--border);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; color: var(--text-muted);
+    }
+    .premium-badge {
+      display: inline-block; margin-top: 0.5rem; padding: 0.25rem 0.5rem;
+      background: var(--accent-dim); color: var(--accent); border-radius: 6px;
+      font-size: 0.75rem; font-weight: 600;
+    }
+    .premium-badge:hover { background: var(--accent); color: var(--bg-dark); }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <header>
+      <h1>Damas AI</h1>
+      <p>Juega contra la IA. Elige tu nivel y demuestra tu estrategia.</p>
+    </header>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="level">Nivel IA:</label>
+        <select id="level">
+          <option value="1">Principiante (rápido)</option>
+          <option value="2">Intermedio</option>
+          <option value="3">Avanzado</option>
+          <option value="4" selected>Experto</option>
+        </select>
+      </div>
+      <button id="btnNew" class="btn btn-primary">Nueva partida</button>
+      <button id="btnUndo" class="btn btn-secondary">Deshacer</button>
+    </div>
+
+    <div class="board-wrapper">
+      <div id="board" class="board"></div>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-turn">
+        <div id="turnDot" class="status-dot player"></div>
+        <span id="turnText">Tu turno</span>
+      </div>
+      <div class="status-score">
+        Tú: <span id="scorePlayer">12</span> — IA: <span id="scoreAI">12</span>
+      </div>
+    </div>
+    <div id="thinking" class="thinking" style="display:none">
+      <span>IA pensando</span>
+      <span class="thinking-dots"><span>.</span><span>.</span><span>.</span></span>
+    </div>
+  </div>
+
+  <div id="messageOverlay" class="message-overlay">
+    <div id="messageBox" class="message-box">
+      <h2 id="messageTitle">¡Victoria!</h2>
+      <p id="messageText">Has ganado la partida.</p>
+      <button id="btnPlayAgain" class="btn btn-primary">Jugar de nuevo</button>
+    </div>
+  </div>
+
+  <!-- Slot publicidad: pegar código AdSense aquí -->
+  <aside id="ad-slot" class="ad-slot" aria-label="Publicidad">
+    <!-- Ej: <ins class="adsbygoogle" data-ad-client="ca-pub-XXX" data-ad-slot="XXX"></ins> -->
+  </aside>
+
+  <footer>
+    Minijuego de Damas AI — Producto independiente · Sin dependencias externas
+    <a href="#" id="premiumLink" class="premium-badge">Premium: sin anuncios</a>
+  </footer>
+
+  <!-- Analytics: descomentar y configurar tu ID -->
+  <!--
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
+  -->
+  <!-- Alternativa: Plausible <script defer data-domain="tudominio.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script>
+(function() {
+  'use strict';
+
+  const EMPTY = 0, PLAYER = 1, AI_PIECE = 2, PLAYER_KING = 3, AI_KING = 4;
+  const DIRS = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+  const JUMP_OFFSET = 2;
+
+  const LEVELS = {
+    1: { depth: 2, name: 'Principiante' },
+    2: { depth: 3, name: 'Intermedio' },
+    3: { depth: 4, name: 'Avanzado' },
+    4: { depth: 5, name: 'Experto' }
+  };
+
+  let board = [];
+  let selectedCell = null;
+  let validMoves = [];
+  let lastMove = null;
+  let history = [];
+  let isPlayerTurn = true;
+  let gameOver = false;
+
+  const boardEl = document.getElementById('board');
+  const levelSelect = document.getElementById('level');
+  const track = (event, data) => {
+    if (typeof window.gtag === 'function') window.gtag('event', event, data);
+    if (typeof window.plausible === 'function') window.plausible(event, { props: data });
+    if (typeof console !== 'undefined' && console.debug) console.debug('[analytics]', event, data);
+  };
+  const turnDot = document.getElementById('turnDot');
+  const turnText = document.getElementById('turnText');
+  const scorePlayerEl = document.getElementById('scorePlayer');
+  const scoreAIEl = document.getElementById('scoreAI');
+  const thinkingEl = document.getElementById('thinking');
+  const messageOverlay = document.getElementById('messageOverlay');
+  const messageBox = document.getElementById('messageBox');
+  const messageTitle = document.getElementById('messageTitle');
+  const messageText = document.getElementById('messageText');
+
+  function initBoard() {
+    board = [];
+    for (let r = 0; r < 8; r++) {
+      board[r] = [];
+      for (let c = 0; c < 8; c++) {
+        const isDark = (r + c) % 2 === 1;
+        if (!isDark) {
+          board[r][c] = EMPTY;
+          continue;
+        }
+        if (r < 3) board[r][c] = AI_PIECE;
+        else if (r > 4) board[r][c] = PLAYER;
+        else board[r][c] = EMPTY;
+      }
+    }
+    selectedCell = null;
+    validMoves = [];
+    lastMove = null;
+    history = [];
+    isPlayerTurn = true;
+    gameOver = false;
+    render();
+    updateStatus();
+  }
+
+  function getPieceType(cell) {
+    if (cell === PLAYER || cell === PLAYER_KING) return 'player';
+    if (cell === AI_PIECE || cell === AI_KING) return 'ai';
+    return null;
+  }
+
+  function isKing(cell) {
+    return cell === PLAYER_KING || cell === AI_KING;
+  }
+
+  function getJumps(boardState, r, c, isAI) {
+    const jumps = [];
+    const piece = boardState[r][c];
+    const isK = isKing(piece);
+    const dirs = isK ? DIRS : (isAI ? [[1, -1], [1, 1]] : [[-1, -1], [-1, 1]]);
+
+    for (const [dr, dc] of dirs) {
+      const nr = r + dr, nc = c + dc;
+      const jr = r + 2 * dr, jc = c + 2 * dc;
+      if (jr < 0 || jr > 7 || jc < 0 || jc > 7) continue;
+      const mid = boardState[nr]?.[nc];
+      const target = boardState[jr]?.[jc];
+      if (!mid || mid === EMPTY || target !== EMPTY) continue;
+      const midIsEnemy = (isAI && (mid === PLAYER || mid === PLAYER_KING)) || (!isAI && (mid === AI_PIECE || mid === AI_KING));
+      if (!midIsEnemy) continue;
+      const dark = (jr + jc) % 2 === 1;
+      if (!dark) continue;
+      jumps.push({ from: [r, c], to: [jr, jc], captured: [nr, nc] });
+    }
+    return jumps;
+  }
+
+  function getSimpleMoves(boardState, r, c, isAI) {
+    const moves = [];
+    const piece = boardState[r][c];
+    const isK = isKing(piece);
+    const dirs = isK ? DIRS : (isAI ? [[1, -1], [1, 1]] : [[-1, -1], [-1, 1]]);
+
+    for (const [dr, dc] of dirs) {
+      const nr = r + dr, nc = c + dc;
+      if (nr < 0 || nr > 7 || nc < 0 || nc > 7) continue;
+      if (boardState[nr][nc] !== EMPTY) continue;
+      const dark = (nr + nc) % 2 === 1;
+      if (!dark) continue;
+      moves.push({ from: [r, c], to: [nr, nc], captured: null });
+    }
+    return moves;
+  }
+
+  function getAllJumps(boardState, isAI) {
+    const all = [];
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const p = boardState[r][c];
+        if (!p || (isAI && (p !== AI_PIECE && p !== AI_KING)) || (!isAI && (p !== PLAYER && p !== PLAYER_KING))) continue;
+        const j = getJumps(boardState, r, c, isAI);
+        all.push(...j.map(x => ({ ...x })));
+      }
+    }
+    return all;
+  }
+
+  function expandJumpChains(boardState, move, isAI) {
+    const chains = [];
+    const doExpand = (b, m, acc) => {
+      const [fr, fc] = m.from;
+      const [tr, tc] = m.to;
+      const newB = b.map(row => [...row]);
+      const piece = newB[fr][fc];
+      newB[tr][tc] = piece;
+      newB[fr][fc] = EMPTY;
+      if (m.captured) newB[m.captured[0]][m.captured[1]] = EMPTY;
+      const promote = (isAI && tr === 0) || (!isAI && tr === 7);
+      if (promote) newB[tr][tc] = isAI ? AI_KING : PLAYER_KING;
+      const more = getJumps(newB, tr, tc, isAI);
+      if (more.length === 0) {
+        chains.push({ moves: [...acc, m], board: newB });
+        return;
+      }
+      for (const nm of more) {
+        doExpand(newB, nm, [...acc, m]);
+      }
+    };
+    doExpand(boardState, move, []);
+    return chains;
+  }
+
+  function getValidMoves(boardState, isAI) {
+    const jumps = getAllJumps(boardState, isAI);
+    if (jumps.length > 0) {
+      const allChains = [];
+      for (const j of jumps) {
+        const chains = expandJumpChains(boardState, j, isAI);
+        for (const ch of chains) {
+          allChains.push(ch);
+        }
+      }
+      return allChains.map(c => ({ chain: c.moves, board: c.board }));
+    }
+    const moves = [];
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const p = boardState[r][c];
+        if (!p || (isAI && (p !== AI_PIECE && p !== AI_KING)) || (!isAI && (p !== PLAYER && p !== PLAYER_KING))) continue;
+        const m = getSimpleMoves(boardState, r, c, isAI);
+        for (const mv of m) {
+          const newB = boardState.map(row => [...row]);
+          const piece = newB[r][c];
+          newB[mv.to[0]][mv.to[1]] = piece;
+          newB[r][c] = EMPTY;
+          const promote = (isAI && mv.to[0] === 0) || (!isAI && mv.to[0] === 7);
+          if (promote) newB[mv.to[0]][mv.to[1]] = isAI ? AI_KING : PLAYER_KING;
+          moves.push({ chain: [mv], board: newB });
+        }
+      }
+    }
+    return moves;
+  }
+
+  function evaluate(b) {
+    let score = 0;
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const p = b[r][c];
+        if (p === PLAYER) score -= 10 + (7 - r);
+        else if (p === PLAYER_KING) score -= 20;
+        else if (p === AI_PIECE) score += 10 + r;
+        else if (p === AI_KING) score += 20;
+      }
+    }
+    return score;
+  }
+
+  function minimax(b, depth, alpha, beta, maximizing) {
+    const moves = getValidMoves(b, maximizing);
+    if (depth === 0 || moves.length === 0) return evaluate(b);
+
+    if (maximizing) {
+      let maxEval = -Infinity;
+      for (const m of moves) {
+        const e = minimax(m.board, depth - 1, alpha, beta, false);
+        maxEval = Math.max(maxEval, e);
+        alpha = Math.max(alpha, e);
+        if (beta <= alpha) break;
+      }
+      return maxEval;
+    } else {
+      let minEval = Infinity;
+      for (const m of moves) {
+        const e = minimax(m.board, depth - 1, alpha, beta, true);
+        minEval = Math.min(minEval, e);
+        beta = Math.min(beta, e);
+        if (beta <= alpha) break;
+      }
+      return minEval;
+    }
+  }
+
+  function getAIMove() {
+    const moves = getValidMoves(board, true);
+    if (moves.length === 0) return null;
+    const depth = LEVELS[parseInt(levelSelect.value) || 4].depth;
+    let best = null;
+    let bestScore = -Infinity;
+    for (const m of moves) {
+      const score = minimax(m.board, depth - 1, -Infinity, Infinity, false);
+      if (score > bestScore) {
+        bestScore = score;
+        best = m;
+      }
+    }
+    return best;
+  }
+
+  function applyMove(move) {
+    const chain = move.chain;
+    let b = board.map(row => [...row]);
+    for (const m of chain) {
+      const [fr, fc] = m.from;
+      const [tr, tc] = m.to;
+      const piece = b[fr][fc];
+      b[tr][tc] = piece;
+      b[fr][fc] = EMPTY;
+      if (m.captured) b[m.captured[0]][m.captured[1]] = EMPTY;
+      const promote = (piece === AI_PIECE && tr === 0) || (piece === PLAYER && tr === 7);
+      if (promote) b[tr][tc] = piece === AI_PIECE ? AI_KING : PLAYER_KING;
+    }
+    board = b;
+    lastMove = { from: chain[0].from, to: chain[chain.length - 1].to };
+  }
+
+  function checkGameOver() {
+    const playerMoves = getValidMoves(board, false);
+    const aiMoves = getValidMoves(board, true);
+    const playerCount = board.flat().filter(x => x === PLAYER || x === PLAYER_KING).length;
+    const aiCount = board.flat().filter(x => x === AI_PIECE || x === AI_KING).length;
+    if (playerCount === 0) return 'lose';
+    if (aiCount === 0) return 'win';
+    if (isPlayerTurn && playerMoves.length === 0) return 'lose';
+    if (!isPlayerTurn && aiMoves.length === 0) return 'win';
+    return null;
+  }
+
+  function render() {
+    boardEl.innerHTML = '';
+    boardEl.querySelectorAll('.last-move').forEach(el => el.classList.remove('last-move'));
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const cell = document.createElement('div');
+        const isDark = (r + c) % 2 === 1;
+        cell.className = 'cell ' + (isDark ? 'dark' : 'light');
+        cell.dataset.r = r;
+        cell.dataset.c = c;
+        const piece = board[r][c];
+        if (piece !== EMPTY) {
+          const div = document.createElement('div');
+          const type = getPieceType(piece);
+          const king = isKing(piece);
+          div.className = `piece ${type}${king ? ' king' : ''}`;
+          div.textContent = king ? '♔' : '';
+          cell.appendChild(div);
+        }
+        const isSelected = selectedCell && selectedCell[0] === r && selectedCell[1] === c;
+        const isValid = validMoves.some(m => {
+          const last = m.chain[m.chain.length - 1];
+          return last.to[0] === r && last.to[1] === c;
+        });
+        const isLast = lastMove && ((lastMove.from[0] === r && lastMove.from[1] === c) || (lastMove.to[0] === r && lastMove.to[1] === c));
+        if (isSelected) cell.classList.add('selected');
+        if (isValid && isPlayerTurn && !gameOver) cell.classList.add('playable');
+        if (isLast) cell.classList.add('last-move');
+        boardEl.appendChild(cell);
+      }
+    }
+  }
+
+  function updateStatus() {
+    const pc = board.flat().filter(x => x === PLAYER || x === PLAYER_KING).length;
+    const ac = board.flat().filter(x => x === AI_PIECE || x === AI_KING).length;
+    scorePlayerEl.textContent = pc;
+    scoreAIEl.textContent = ac;
+    turnDot.className = 'status-dot ' + (isPlayerTurn ? 'player' : 'ai');
+    turnDot.classList.toggle('inactive', gameOver);
+    turnText.textContent = gameOver ? 'Partida terminada' : (isPlayerTurn ? 'Tu turno' : 'Turno de la IA');
+  }
+
+  function showMessage(title, text, type) {
+    messageTitle.textContent = title;
+    messageText.textContent = text;
+    messageBox.className = 'message-box ' + type;
+    messageOverlay.classList.add('visible');
+    if (typeof track === 'function') track('game_end', { result: type });
+  }
+
+  function onCellClick(e) {
+    if (gameOver || !isPlayerTurn) return;
+    const cell = e.target.closest('.cell');
+    if (!cell) return;
+    const r = parseInt(cell.dataset.r);
+    const c = parseInt(cell.dataset.c);
+    const piece = board[r][c];
+    const type = getPieceType(piece);
+
+    if (type === 'player') {
+      selectedCell = [r, c];
+      validMoves = getValidMoves(board, false).filter(m => {
+        const first = m.chain[0];
+        return first.from[0] === r && first.from[1] === c;
+      });
+      render();
+      updateStatus();
+      return;
+    }
+
+    if (validMoves.some(m => {
+      const last = m.chain[m.chain.length - 1];
+      return last.to[0] === r && last.to[1] === c;
+    })) {
+      const move = validMoves.find(m => {
+        const last = m.chain[m.chain.length - 1];
+        return last.to[0] === r && last.to[1] === c;
+      });
+      history.push({ board: board.map(row => [...row]), isPlayerTurn });
+      applyMove(move);
+      selectedCell = null;
+      validMoves = [];
+      isPlayerTurn = false;
+      render();
+      updateStatus();
+      const result = checkGameOver();
+      if (result === 'win') {
+        showMessage('¡Victoria!', 'Has derrotado a la IA.', 'win');
+        return;
+      }
+      if (result === 'lose') {
+        showMessage('Derrota', 'La IA ha ganado.', 'lose');
+        return;
+      }
+      setTimeout(aiTurn, 400);
+    } else {
+      selectedCell = null;
+      validMoves = [];
+      render();
+      updateStatus();
+    }
+  }
+
+  function aiTurn() {
+    thinkingEl.style.display = 'flex';
+    const move = getAIMove();
+    thinkingEl.style.display = 'none';
+    if (!move) {
+      showMessage('¡Victoria!', 'La IA no tiene movimientos.', 'win');
+      gameOver = true;
+      updateStatus();
+      return;
+    }
+    applyMove(move);
+    isPlayerTurn = true;
+    render();
+    updateStatus();
+    const result = checkGameOver();
+    if (result === 'lose') {
+      showMessage('Derrota', 'La IA te ha derrotado.', 'lose');
+      gameOver = true;
+    } else if (result === 'win') {
+      showMessage('¡Victoria!', 'Has ganado.', 'win');
+      gameOver = true;
+    }
+  }
+
+  function undo() {
+    if (history.length === 0 || !isPlayerTurn || gameOver) return;
+    const h = history.pop();
+    board = h.board;
+    isPlayerTurn = h.isPlayerTurn;
+    selectedCell = null;
+    validMoves = [];
+    lastMove = null;
+    render();
+    updateStatus();
+  }
+
+  document.getElementById('btnNew').addEventListener('click', initBoard);
+  document.getElementById('btnUndo').addEventListener('click', undo);
+  document.getElementById('btnPlayAgain').addEventListener('click', () => {
+    messageOverlay.classList.remove('visible');
+    initBoard();
+  });
+  boardEl.addEventListener('click', onCellClick);
+
+  initBoard();
+
+  // PWA: registrar service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw-damas.js').catch(() => {});
+  }
+
+  document.getElementById('btnNew').addEventListener('click', () => track('game_start', { level: levelSelect.value }));
+  document.getElementById('btnPlayAgain').addEventListener('click', () => track('game_restart'));
+  document.getElementById('premiumLink').addEventListener('click', (e) => { e.preventDefault(); track('premium_click'); });
+})();
+  </script>
+</body>
+</html>

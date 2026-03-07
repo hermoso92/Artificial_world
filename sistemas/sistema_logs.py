@@ -5,14 +5,18 @@ Sistema de logs y eventos recientes para UI.
 import logging
 import os
 from tipos.modelos import EventoSistema
+from utilidades.paths import obtener_base_path
 
 _logger = logging.getLogger("mundo_artificial")
 
 
-def _configurar_logger_archivo(ruta: str = "simulacion.log") -> None:
-    """Configura el logger raíz para escribir a archivo si no está ya configurado."""
+def _configurar_logger_archivo(ruta: str | None = None) -> None:
+    """Configura el logger para archivo si no está ya configurado.
+    Respeta la configuración central de sistema_logging_reporte si ya se ejecutó."""
     if _logger.handlers:
         return
+    if ruta is None:
+        ruta = os.path.join(obtener_base_path(), "simulacion.log")
     _logger.setLevel(logging.DEBUG)
     fh = logging.FileHandler(ruta, mode="a", encoding="utf-8")
     fh.setLevel(logging.DEBUG)

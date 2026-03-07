@@ -33,26 +33,26 @@ if TYPE_CHECKING:
 
 
 # ──────────────────────────────────────────────
-# Colores
+# Colores (coherentes con tema Ecosistema Viviente)
 # ──────────────────────────────────────────────
-COLOR_FONDO        = (28, 30, 38)
-COLOR_TITULO       = (200, 200, 210)
-COLOR_SUBTITULO    = (120, 140, 180)
-COLOR_TEXTO        = (190, 190, 200)
-COLOR_TEXTO_SEC    = (130, 135, 145)
-COLOR_AUTONOMO     = (80, 180, 80)
-COLOR_DIRIGIDO     = (80, 160, 220)
-COLOR_POSEIDO      = (220, 100, 40)
-COLOR_BTN_DIRECTIVA = (60, 100, 160)
-COLOR_BTN_COMANDO  = (140, 50, 40)
-COLOR_BTN_CANCELAR = (80, 40, 40)
-COLOR_BTN_HOVER    = (100, 120, 160)
-COLOR_SELECCION    = (90, 160, 110)
-COLOR_BORDE        = (70, 74, 82)
-COLOR_BARRA_BUENA  = (80, 180, 80)
-COLOR_BARRA_MALA   = (200, 80, 60)
-COLOR_BARRA_MEDIA  = (200, 160, 60)
-COLOR_SOMBRA_ACTIVA = (200, 80, 20)
+COLOR_FONDO        = (30, 35, 42)
+COLOR_TITULO       = (232, 237, 244)
+COLOR_SUBTITULO    = (138, 153, 168)
+COLOR_TEXTO        = (210, 215, 225)
+COLOR_TEXTO_SEC    = (130, 140, 155)
+COLOR_AUTONOMO     = (107, 198, 126)
+COLOR_DIRIGIDO     = (90, 159, 212)
+COLOR_POSEIDO      = (232, 140, 60)
+COLOR_BTN_DIRECTIVA = (55, 100, 145)
+COLOR_BTN_COMANDO  = (160, 70, 55)
+COLOR_BTN_CANCELAR = (70, 45, 45)
+COLOR_BTN_HOVER    = (75, 95, 130)
+COLOR_SELECCION    = (70, 140, 95)
+COLOR_BORDE        = (55, 62, 72)
+COLOR_BARRA_BUENA  = (107, 198, 126)
+COLOR_BARRA_MALA   = (224, 122, 90)
+COLOR_BARRA_MEDIA  = (232, 180, 90)
+COLOR_SOMBRA_ACTIVA = (232, 140, 60)
 
 
 # ──────────────────────────────────────────────
@@ -95,16 +95,18 @@ class PanelModoSombra:
     ESPACIO      = 3
     ALTURA_BARRA = 9
 
-    def __init__(self, x0: int, ancho: int, alto: int, estado: "EstadoPanel"):
+    def __init__(self, x0: int, ancho: int, alto: int, estado: "EstadoPanel", configuracion=None):
         self.x0    = x0
         self.ancho = ancho
         self.alto  = alto
         self.estado = estado
+        self.configuracion = configuracion
 
         # Rects de botones registrados en cada draw (para hit-test)
         self._rects_directivas: dict[str, pygame.Rect] = {}
         self._rects_comandos:   dict[str, pygame.Rect] = {}
         self._rect_control_total: pygame.Rect | None = None
+        self._rect_modo_combate:  pygame.Rect | None = None
         self._rect_desactivar:    pygame.Rect | None = None
         self._rect_coord_input:   pygame.Rect | None = None
         self._rect_coord_confirm: pygame.Rect | None = None
@@ -372,6 +374,19 @@ class PanelModoSombra:
         pantalla.blit(t, (x0 + 5, y + 5))
         y += self.ALTURA_BTN + 4 + self.ESPACIO + 2
 
+        # Toggle Modo combate (permite atacar/eliminar entidades)
+        if self.configuracion and y + self.ALTURA_BTN + 2 < self.alto - 5:
+            modo_combate = getattr(self.configuracion, "modo_combate_activo", False)
+            color_cb = (180, 60, 50) if modo_combate else (50, 55, 65)
+            r_cb = pygame.Rect(x0, y, w, self.ALTURA_BTN)
+            self._rect_modo_combate = r_cb
+            pygame.draw.rect(pantalla, color_cb, r_cb)
+            pygame.draw.rect(pantalla, (120, 80, 70) if modo_combate else COLOR_BORDE, r_cb, 1)
+            lbl = "Modo combate: ON (atacar/matar)" if modo_combate else "Modo combate: OFF [activar]"
+            t_cb = f_norm.render(lbl, True, (255, 200, 180) if modo_combate else COLOR_TEXTO_SEC)
+            pantalla.blit(t_cb, (x0 + 5, y + 4))
+            y += self.ALTURA_BTN + self.ESPACIO
+
         # Campo de entrada de posición (si hay comando pendiente que la requiere)
         if self.cmd_pos_input_activo and y + self.ALTURA_BTN + 2 < self.alto - 5:
             color_in = (50, 70, 50) if self.cmd_pos_input_activo else (35, 45, 35)
@@ -407,7 +422,10 @@ class PanelModoSombra:
             y += 13
 
         # Botones de comandos forzados
+        modo_combate = getattr(self.configuracion, "modo_combate_activo", False) if self.configuracion else False
         for tipo_cmd, label, req_pos, req_ent in COMANDOS_PANEL:
+            if tipo_cmd in (TipoComandoSombra.ATACAR_OBJETIVO, TipoComandoSombra.MATAR_OBJETIVO) and not modo_combate:
+                continue  # Ocultar atacar/matar si modo combate desactivado
             if y + self.ALTURA_BTN + 2 > self.alto - 5:
                 break
             color_c = (160, 40, 30) if tipo_cmd in (
@@ -468,6 +486,10 @@ class PanelModoSombra:
         # Toggle POSEIDO
         if self._rect_control_total and self._rect_control_total.collidepoint(x, y):
             return {"tipo": "toggle_control_total", "id_entidad": id_sel}
+
+        # Toggle Modo combate
+        if self._rect_modo_combate and self._rect_modo_combate.collidepoint(x, y):
+            return {"tipo": "toggle_modo_combate"}
 
         # Botón desactivar
         if self._rect_desactivar and self._rect_desactivar.collidepoint(x, y):

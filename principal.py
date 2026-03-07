@@ -1,46 +1,60 @@
 """
 Punto de entrada del proyecto MUNDO_ARTIFICIAL.
+
+Uso:
+  python principal.py          # Inicia la simulación pygame
+  python principal.py --web     # Abre la landing en el navegador
+  python principal.py --help    # Muestra ayuda
 """
 
-import os
-from datetime import datetime
+import argparse
+import sys
 
-LOG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "app_diagnostico.log")
+from utilidades.arranque import (
+    abrir_landing_en_navegador,
+    ejecutar_simulacion,
+    log,
+    mostrar_error_al_usuario,
+    preparar_entorno,
+)
 
 
-def _log(msg: str) -> None:
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="MUNDO_ARTIFICIAL — Simulación 2D de agentes autónomos",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Ejemplos:
+  python principal.py          Inicia la simulación (pygame)
+  python principal.py --web     Abre la landing page en el navegador
+        """,
+    )
+    parser.add_argument(
+        "--web",
+        action="store_true",
+        help="Abre la landing page (artificial-world.html) en el navegador",
+    )
+    return parser.parse_args()
+
+
+def main() -> int:
+    """Punto de entrada principal."""
+    log("Inicio principal.py")
+    preparar_entorno()
+
+    args = _parse_args()
+
+    if args.web:
+        abrir_landing_en_navegador()
+        return 0
+
+    ejecutar_simulacion()
+    log("main() termino OK")
+    return 0
+
+
+if __name__ == "__main__":
     try:
-        with open(LOG_PATH, "a", encoding="utf-8") as f:
-            f.write(f"[{datetime.now().isoformat()}] {msg}\n")
-    except Exception:
-        pass
-
-
-# Forzar driver de vídeo real (evitar dummy de tests headless)
-if os.environ.get("SDL_VIDEODRIVER") == "dummy":
-    del os.environ["SDL_VIDEODRIVER"]
-    _log("SDL_VIDEODRIVER dummy eliminado")
-
-_log("Inicio principal.py")
-
-try:
-    from configuracion import Configuracion
-    from nucleo.simulacion import Simulacion
-    _log("Imports OK")
-
-    def main() -> None:
-        """Inicia la simulación."""
-        config = Configuracion()
-        sim = Simulacion(config)
-        _log("Simulacion creada, llamando ejecutar_bucle_principal")
-        sim.ejecutar_bucle_principal()
-        _log("Bucle finalizado (usuario cerro)")
-
-    if __name__ == "__main__":
-        main()
-        _log("main() termino OK")
-except Exception as e:
-    _log(f"ERROR: {e}")
-    import traceback
-    _log(traceback.format_exc())
-    raise
+        sys.exit(main())
+    except Exception as e:
+        mostrar_error_al_usuario(e)

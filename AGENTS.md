@@ -1,38 +1,95 @@
 # AGENTS.md
 
-## Cursor Cloud specific instructions
+## Reglas de Code Review — Artificial Word
 
-### Project overview
+### Referencias
+- Frontend: `frontend/src/`
+- Backend: `backend/src/`
 
-MUNDO_ARTIFICIAL is a 2D artificial life simulation with autonomous agents, built with Python 3.11+ and pygame. See `AGENTE_ENTRANTE.md` for full technical documentation (architecture, entities, decision engine, etc.).
+---
 
-### Running tests
+## TODOS LOS ARCHIVOS
 
-All tests require SDL dummy drivers in headless environments:
+REJECT si:
+- Se usa `console.log` → usar siempre el `logger` de `utils/logger`
+- Se usan credenciales o secrets hardcodeados
+- Hay bloques `catch` vacíos o silenciosos sin manejo de error
+- Se usa `any` en TypeScript sin justificación explícita con comentario
 
+---
+
+## JavaScript / TypeScript (frontend y backend)
+
+REJECT si:
+- URLs hardcodeadas como `http://localhost:9998` o similares → usar `config/api.ts` o variables de entorno
+- Requests a la API sin incluir `organizationId` en headers o body
+- Se importa `* as React` → usar imports nombrados `{ useState, useEffect }`
+- Componentes React superan 300 líneas
+- Se usan colores hexadecimales hardcodeados en className → usar clases Tailwind
+- `useMemo` o `useCallback` sin justificación
+- `var` en lugar de `const` o `let`
+- Funciones con más de 3 niveles de anidamiento sin refactorizar
+
+PREFER:
+- Exports nombrados sobre default exports
+- Composición sobre herencia
+- Nombres descriptivos en inglés o español consistente (no mezclar)
+
+---
+
+## Python
+
+REJECT si:
+- `print()` en lugar de `logger`
+- Funciones públicas sin type hints
+- `except:` sin excepción específica (bare except)
+- Variables de una sola letra salvo en bucles cortos (`i`, `j`)
+
+REQUIRE:
+- Docstrings en clases y funciones públicas
+
+---
+
+## Seguridad
+
+REJECT si:
+- JWT o tokens expuestos en variables globales del frontend
+- Datos de una organización accesibles sin filtro `organizationId`
+- Inputs del usuario usados directamente en queries sin sanitizar
+
+---
+
+## Estructura y Módulos
+
+REJECT si:
+- Se crean módulos o rutas fuera del menú oficial del proyecto
+- Se cambian los puertos 9998 (backend) o 5174 (frontend)
+- Se propone un script de inicio distinto a `iniciar.ps1`
+
+---
+
+## Formato de Respuesta
+
+La PRIMERA LÍNEA debe ser exactamente:
+STATUS: PASSED
+o
+STATUS: FAILED
+
+Si FAILED, listar: `archivo:linea - regla violada - descripción del problema`
+
+---
+
+## Cursor Cloud / Proyecto
+
+MUNDO_ARTIFICIAL es una simulación 2D de vida artificial con agentes autónomos (Python 3.11+ y pygame). Ver `AGENTE_ENTRANTE.md` para documentación técnica.
+
+### Tests
 ```bash
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_core.py
-SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_modo_sombra.py
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_modo_sombra_completo.py
-SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_bug_robar.py
-SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_watchdog_fixes.py
-SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_watchdog_integracion.py
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_interacciones_sociales.py
-SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_arranque_limpio.py
 ```
 
-### Known pre-existing issue
-
-`PanelModoSombra.__init__()` in `interfaz/panel_modo_sombra.py` accepts 4 args (x0, ancho, alto, estado), but `interfaz/panel_control.py` line 60 passes 5 (adding `self.configuracion`). This causes a `TypeError` that prevents the full GUI from starting and causes failures in tests that call `Simulacion.inicializar()` (which initializes the renderer). Tests that set up entities/world directly (without the renderer) work fine.
-
-### Lint
-
-No linting tools (flake8, pylint, mypy, ruff) are configured in this project. The CI pipeline (`pipeline.yml`) only runs tests. Use `python -m py_compile <file>` for basic syntax verification.
-
-### Running the application
-
-Entry point: `python principal.py`. Requires a display (X11/Xvfb) or SDL dummy drivers. In Cloud VMs, use `Xvfb :99 -screen 0 1280x1024x24 &` and `DISPLAY=:99` to provide a virtual display. Note: the app currently crashes on startup due to the PanelModoSombra issue described above.
-
-### Dependencies
-
-Only pip dependency: `pygame>=2.5.0` (from `requirements.txt`). System dependencies: `libsdl2-2.0-0`, `libsdl2-image-2.0-0`, `libsdl2-mixer-2.0-0`, `libsdl2-ttf-2.0-0`.
+### Inicio
+- Python: `python principal.py`
+- Fullstack: `.\scripts\iniciar_fullstack.ps1` (backend 3001, frontend 5173)

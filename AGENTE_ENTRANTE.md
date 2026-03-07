@@ -2,7 +2,8 @@
 
 **Estado:** Activo, en desarrollo iterativo  
 **Última sesión relevante:** [Watchdog + Shadow Mode](fcdee6f4-8864-4082-9b16-b90e18a2aac8)  
-**Proyecto path:** `c:\Users\Cosigein SL\Desktop\artificial word`
+**Proyecto path:** `c:\Users\Cosigein SL\Desktop\artificial word`  
+**Plan producción:** Ver [PRODUCCION_PLAN.md](PRODUCCION_PLAN.md) para fases hasta usuarios finales.
 
 ---
 
@@ -109,17 +110,41 @@ artificial word/
 │   └── conversores.py        ← vacío
 │
 ├── pruebas/
-│   ├── test_core.py          ← 22 tests del motor, pesos, directivas, watchdog
-│   ├── test_modo_sombra.py   ← 7 tests del modo sombra (turnos)
-│   ├── test_bug_robar.py     ← regresión: AccionRobar.es_viable sin víctima
-│   ├── test_watchdog_fixes.py ← 4 tests de los 3 fixes del watchdog (puntos ciegos)
-│   └── test_arranque_limpio.py ← arranque sin DB + 10 ticks sin excepción
+│   ├── run_tests_produccion.py    ← runner único: ejecuta todas las suites + reporte
+│   ├── test_estructural.py        ← imports, config, módulos, dependencias
+│   ├── test_integracion_produccion.py ← sim 200 ticks, guardar/cargar, modo sombra, sintaxis
+│   ├── test_core.py               ← 22 tests del motor, pesos, directivas, watchdog
+│   ├── test_modo_sombra_completo.py ← tests del modo sombra (turnos)
+│   ├── test_bug_robar.py          ← regresión: AccionRobar.es_viable sin víctima
+│   ├── test_watchdog_fixes.py     ← 4 tests de los 3 fixes del watchdog
+│   ├── test_watchdog_integracion.py ← integración watchdog
+│   ├── test_arranque_limpio.py    ← arranque sin DB + 10 ticks sin excepción
+│   └── reporte_produccion.log     ← salida del runner (generado al ejecutar)
 │
 ├── simulacion.log            ← log principal (append, toda la historia)
 ├── app_diagnostico.log       ← log de arranque de principal.py
 ├── amiguisimo_debug.log      ← log de acciones manuales de Amiguisimo en modo sombra
 └── mundo_artificial.db       ← SQLite de persistencia (puede no existir)
 ```
+
+### 2.1 Sistema de tests para producción
+
+**Runner único:** `python pruebas/run_tests_produccion.py`
+
+Ejecuta 9 suites en orden: estructurales, core, modo sombra, interacciones, bug robar, watchdog fixes/integración, arranque, integración producción. Genera `pruebas/reporte_produccion.log` con timestamp y resumen. Exit 0 si todo OK, 1 si alguna suite falla.
+
+| Suite | Contenido |
+|-------|-----------|
+| test_estructural | Imports de todos los módulos, Configuracion, pygame |
+| test_integracion_produccion | 200 ticks sin crash, guardar/cargar, modo sombra, sintaxis .py |
+| test_core | Motor, directivas, watchdog (22 tests) |
+| test_modo_sombra_completo | Trazabilidad, cola, autonomía |
+| test_interacciones_sociales | Seguir, compartir, huir |
+| test_bug_robar | Regresión AccionRobar |
+| test_watchdog_* | Fixes e integración |
+| test_arranque_limpio | 10 ticks sin excepción |
+
+**CI:** `.github/workflows/tests.yml` ejecuta el runner en cada push/PR.
 
 ---
 
@@ -336,12 +361,24 @@ Verifica: (1) alerta TRAMPA_POSICION con entidad fija, (2) escritura en log, (3)
 
 ## 9. LOGGING
 
+### Sistema central (`sistemas/sistema_logging_reporte.py`)
+- **configurar_logging()** — Nivel, formato (texto/JSON), consola. Se ejecuta al inicio en `principal.py`.
+- **SistemaReporte** — Genera `reporte_sesion.json` al finalizar (ticks, métricas, alertas watchdog, excepciones).
+
+### Modo Competencia (`sistemas/sistema_modo_competencia.py`)
+- **Observabilidad defensiva y forense.** Registra eventos sensibles (guardar/cargar estado, modo sombra, exportación) con risk_score, integridad (hash encadenado) y correlación.
+- **Archivo:** `audit_competencia.db` (append-only, SQLite separado).
+- **Config:** `modo_competencia_activo`, `modo_competencia_ruta_db`, `modo_competencia_umbral_alerta`, `modo_competencia_umbral_legal`.
+- **Diseño:** Ver `docs/DESIGN_MODO_COMPETENCIA.md`.
+
 ### Archivos de log
 | Archivo | Logger | Contenido |
 |---|---|---|
 | `simulacion.log` | `"mundo_artificial"` | Todo: EVENTO, DECISION, DIRECTIVA, WATCHDOG, EXCEPCION |
 | `app_diagnostico.log` | archivo directo | Arranque y errores de `principal.py` |
 | `amiguisimo_debug.log` | `"amiguisimo_debug"` | Estado detallado de Amiguisimo en cada acción manual |
+| `reporte_sesion.json` | SistemaReporte | Resumen de sesión (duración, ticks, métricas, alertas) |
+| `audit_competencia.db` | SistemaModoCompetencia | Eventos sensibles con risk_score e integridad |
 
 ### Configuración del logger
 `sistema_logs.py` configura `logging.getLogger("mundo_artificial")` con `FileHandler(simulacion.log, mode="a")` al importarse. El watchdog usa `logging.getLogger("mundo_artificial.watchdog")` que hereda el handler del padre (propagate=True por defecto en Python).
@@ -366,6 +403,8 @@ python pruebas/test_bug_robar.py
 python pruebas/test_watchdog_fixes.py
 python pruebas/test_watchdog_integracion.py
 python pruebas/test_arranque_limpio.py
+python pruebas/test_modo_sombra_completo.py
+python pruebas/test_interacciones_sociales.py
 ```
 
 ### Estado actual verificado
@@ -373,10 +412,12 @@ python pruebas/test_arranque_limpio.py
 |---|---|---|
 | `test_core.py` | 22/22 | ✅ PASAN |
 | `test_modo_sombra.py` | 7/7 | ✅ PASAN |
+| `test_modo_sombra_completo.py` | 22/22 | ✅ PASAN |
 | `test_bug_robar.py` | 3/3 | ✅ PASAN |
 | `test_watchdog_fixes.py` | 4/4 | ✅ PASAN |
 | `test_watchdog_integracion.py` | 3/3 | ✅ PASAN |
 | `test_arranque_limpio.py` | 1/1 | ✅ PASA |
+| `test_interacciones_sociales.py` | 13/13 | ✅ PASAN |
 
 ### Qué validan los tests (no son triviales)
 - `test_motor_decide_accion` — el motor elige acción con score > 0
@@ -395,18 +436,18 @@ python pruebas/test_core.py 2>&1 | Select-String -NotMatch "pkg_resources|UserWa
 
 ---
 
-## 11. PROBLEMA PENDIENTE IDENTIFICADO (próximo bug a investigar)
+## 11. BUG DE HAMBRE — RESUELTO
 
-### Descripción
-En 100 ticks reales, las entidades Ana, Bruno, Eva y Amiguisimo llegan a `hambre=1.0` moviéndose sin encontrar/recoger comida. El watchdog lo detecta con `HAMBRE_SIN_COMIDA_DISPONIBLE` y `HAMBRE_CRITICA_SIN_RESPUESTA`.
+### Descripción original
+En 100 ticks reales, las entidades llegaban a `hambre=1.0` moviéndose sin encontrar/recoger comida.
 
-### Hipótesis a verificar (en orden de probabilidad)
-1. **Distribución de comida insuficiente:** el mapa genera 80 unidades en un grid 60×60 = 3600 celdas (2.2% de ocupación). Con radio de percepción 5, cada entidad ve ~100 celdas. La densidad puede ser demasiado baja.
-2. **`AccionRecogerComida.es_viable()` no detecta comida en celda actual:** verificar si la entidad llega a la celda con comida pero no la recoge porque la lógica de viable falla.
-3. **`AccionComer.es_viable()` requiere inventario con comida:** las entidades deben primero recoger y luego comer. Si no recogen, nunca comen.
-4. **Percepción no registra correctamente en memoria:** `actualizar_memoria` podría no guardar la posición del recurso visto para que `AccionRecogerComida` lo use.
+### Fix aplicado
+El modificador de memoria del motor (`aplicar_modificadores_por_memoria`) ahora premia moverse hacia comida visible/recordada (reducir distancia), no solo al llegar a la celda de comida. Cuando hay hambre y comida en percepción o memoria, el movimiento que acerca a la entidad al recurso recibe bonus (+0.25 si hambre ≥ 0.5, +0.12 si hambre ≥ 0.25).
 
-### Cómo reproducirlo
+### Verificación
+Tras 100 ticks, 6 de 7 entidades tienen hambre < 0.90. Criterio de éxito cumplido.
+
+### Cómo reproducir (verificación)
 ```powershell
 python -c "
 import os, sys; sys.path.insert(0,'.'); os.environ['SDL_VIDEODRIVER']='dummy'; os.environ['SDL_AUDIODRIVER']='dummy'
@@ -470,9 +511,9 @@ print('Alertas:', sim.sistema_watchdog.problemas_detectados_total)
 | `AccionRecogerMaterial` | ✅ | ✅ | Completa |
 | `AccionHuir` | ✅ | ✅ | Completa |
 | `AccionEvitar` | ✅ | ✅ | Completa |
-| `AccionRobar` | ✅ | ❌ NO_APLICA | Esqueleto |
-| `AccionCompartir` | ✅ | ❌ NO_APLICA | Esqueleto |
-| `AccionSeguir` | ✅ | ❌ NO_APLICA | Esqueleto |
+| `AccionRobar` | ✅ | ✅ | Completa |
+| `AccionCompartir` | ✅ | ✅ | Completa |
+| `AccionSeguir` | ✅ | ✅ | Completa |
 
 ---
 

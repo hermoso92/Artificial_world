@@ -1,6 +1,7 @@
 """
 Renderizador del mundo y entidades.
 Incluye: nombres, acciones, modos de visualización, panel de control avanzado.
+Tema: Ecosistema Viviente — paleta orgánica, jerarquía suave.
 """
 
 import pygame
@@ -9,6 +10,21 @@ from tipos.enums import TipoRecurso, TipoEntidad
 
 from .estado_panel import ModoVisualizacion
 from .panel_control import PanelControl
+
+
+# ─── Paleta "Ecosistema Viviente" ───────────────────────────────────────────
+# Base oscura forestal, acentos orgánicos, bordes sutiles
+COLOR_FONDO = (22, 26, 30)
+COLOR_CELDA = (38, 45, 52)
+COLOR_CELDA_ALT = (42, 50, 58)
+COLOR_COMIDA = (107, 198, 126)
+COLOR_MATERIAL = (196, 165, 116)
+COLOR_REFUGIO = (90, 159, 212)
+COLOR_BORDE_GRID = (52, 60, 70)
+COLOR_TEXTO = (232, 237, 244)
+COLOR_TEXTO_SEC = (138, 153, 168)
+COLOR_ENTIDAD_SEL = (232, 212, 122)
+COLOR_CTRL_TOTAL = (255, 160, 60)
 
 
 class Renderizador:
@@ -31,22 +47,22 @@ class Renderizador:
         self.reloj = None
         self.panel_control: PanelControl | None = None
 
-        # Colores
-        self.color_fondo = (40, 44, 52)
-        self.color_celda = (55, 59, 68)
-        self.color_comida = (120, 200, 80)
-        self.color_material = (180, 140, 90)
-        self.color_refugio = (100, 150, 200)
-        self.color_borde = (70, 74, 82)
-        self.color_panel = (35, 38, 45)
-        self.color_texto = (220, 220, 220)
-        self.color_texto_sec = (160, 165, 170)
+        # Colores (compatibilidad)
+        self.color_fondo = COLOR_FONDO
+        self.color_celda = COLOR_CELDA
+        self.color_comida = COLOR_COMIDA
+        self.color_material = COLOR_MATERIAL
+        self.color_refugio = COLOR_REFUGIO
+        self.color_borde = COLOR_BORDE_GRID
+        self.color_panel = (35, 40, 48)
+        self.color_texto = COLOR_TEXTO
+        self.color_texto_sec = COLOR_TEXTO_SEC
 
     def inicializar(self, estado_panel: "EstadoPanel | None" = None) -> None:
         """Inicializa Pygame y la ventana."""
         from .estado_panel import EstadoPanel
         pygame.init()
-        pygame.display.set_caption("MUNDO_ARTIFICIAL")
+        pygame.display.set_caption("Mundo Artificial — Simulación de Vida")
         ancho_mapa = self.configuracion.ancho_mapa * self.configuracion.tamano_celda
         alto_mapa = self.configuracion.alto_mapa * self.configuracion.tamano_celda
         ancho_panel = getattr(self.configuracion, "ancho_panel_control", 340)
@@ -92,7 +108,7 @@ class Renderizador:
         self.dibujar_mapa(mapa, modo, entidades)
         self.dibujar_recursos(mapa)
         self.dibujar_refugios(mapa)
-        self.dibujar_entidades(entidades, estado_ui.get("entidad_seleccionada_id"))
+        self.dibujar_entidades(mapa, entidades, estado_ui.get("entidad_seleccionada_id"))
         self.dibujar_barra_inferior(estado_ui)
 
         if self.panel_control:
@@ -102,6 +118,7 @@ class Renderizador:
                 estado_ui.get("tick_actual", 0),
                 estado_ui.get("guardado_ok", False),
                 estado_ui.get("cargado_ok", False),
+                mapa=mapa,
                 eventos_recientes=estado_ui.get("eventos_recientes", []),
                 alertas_watchdog=estado_ui.get("alertas_watchdog", []),
                 watchdog_total=estado_ui.get("watchdog_total", 0),
@@ -115,57 +132,58 @@ class Renderizador:
         tam = self.configuracion.tamano_celda
         for (x, y), celda in mapa.celdas.items():
             rect = pygame.Rect(x * tam, y * tam, tam, tam)
-            color = self.color_celda
+            # Patrón sutil: celdas alternas ligeramente distintas
+            base = COLOR_CELDA if (x + y) % 2 == 0 else COLOR_CELDA_ALT
+            color = base
             if modo == ModoVisualizacion.CALOR_ENERGIA or modo == ModoVisualizacion.CALOR_HAMBRE:
                 ent_en_celda = [e for e in entidades if e.posicion.x == x and e.posicion.y == y]
                 if ent_en_celda:
                     e0 = ent_en_celda[0]
                     if modo == ModoVisualizacion.CALOR_ENERGIA:
                         v = int(e0.estado_interno.energia * 255)
-                        color = (255 - v, v, 80)
+                        color = (max(0, 80 - v // 3), min(255, 60 + v), 90)
                     else:
                         v = int(e0.estado_interno.hambre * 255)
-                        color = (v, 255 - v, 80)
+                        color = (min(255, 80 + v), max(0, 120 - v // 2), 90)
             elif modo == ModoVisualizacion.RECURSOS:
                 if celda.tiene_recurso() and celda.recurso:
                     color = (
-                        (100, 180, 100) if celda.recurso.tipo == TipoRecurso.COMIDA
-                        else (160, 120, 80)
+                        (90, 170, 110) if celda.recurso.tipo == TipoRecurso.COMIDA
+                        else (150, 130, 90)
                     )
                 else:
-                    color = (45, 48, 52)
+                    color = (32, 38, 44)
             elif modo == ModoVisualizacion.REFUGIOS:
                 if celda.tiene_refugio():
-                    color = (80, 130, 200)
+                    color = (75, 130, 185)
                 else:
-                    color = (45, 48, 52)
+                    color = (32, 38, 44)
             pygame.draw.rect(self.pantalla, color, rect)
-            pygame.draw.rect(self.pantalla, self.color_borde, rect, 1)
+            pygame.draw.rect(self.pantalla, COLOR_BORDE_GRID, rect, 1)
 
     def dibujar_recursos(self, mapa) -> None:
         """Dibuja los recursos en el mapa."""
         if mapa is None:
             return
         tam = self.configuracion.tamano_celda
-        margen = 2
+        margen = max(1, tam // 6)
         for (x, y), celda in mapa.celdas.items():
             if celda.tiene_recurso() and celda.recurso:
                 cx = x * tam + tam // 2
                 cy = y * tam + tam // 2
                 radio = tam // 2 - margen
-                color = (
-                    self.color_comida
-                    if celda.recurso.tipo == TipoRecurso.COMIDA
-                    else self.color_material
-                )
+                color = COLOR_COMIDA if celda.recurso.tipo == TipoRecurso.COMIDA else COLOR_MATERIAL
+                # Sombra sutil
+                pygame.draw.circle(self.pantalla, (20, 25, 28), (cx + 1, cy + 1), radio)
                 pygame.draw.circle(self.pantalla, color, (cx, cy), radio)
+                pygame.draw.circle(self.pantalla, (255, 255, 255), (cx, cy), radio, 1)
 
     def dibujar_refugios(self, mapa) -> None:
         """Dibuja los refugios en el mapa."""
         if mapa is None:
             return
         tam = self.configuracion.tamano_celda
-        margen = 2
+        margen = max(1, tam // 6)
         for (x, y), celda in mapa.celdas.items():
             if celda.tiene_refugio():
                 rect = pygame.Rect(
@@ -174,21 +192,31 @@ class Renderizador:
                     tam - 2 * margen,
                     tam - 2 * margen,
                 )
-                pygame.draw.rect(self.pantalla, self.color_refugio, rect)
-                pygame.draw.rect(self.pantalla, (80, 120, 180), rect, 2)
+                pygame.draw.rect(self.pantalla, (70, 130, 180), rect)
+                pygame.draw.rect(self.pantalla, COLOR_REFUGIO, rect)
+                pygame.draw.rect(self.pantalla, (120, 180, 230), rect, 1)
 
-    def dibujar_entidades(self, entidades: list, entidad_seleccionada_id: int | None = None) -> None:
-        """Dibuja las entidades con nombres y acción."""
+    def dibujar_entidades(
+        self,
+        mapa,
+        entidades: list,
+        entidad_seleccionada_id: int | None = None,
+    ) -> None:
+        """Dibuja las entidades con nombre, refugio (si está en uno) y acción."""
         if not entidades:
             return
         tam = self.configuracion.tamano_celda
-        radio = max(3, tam // 3)
+        radio = max(4, tam // 3)
         try:
-            fuente_nombre = pygame.font.SysFont("arial", 10)
-            fuente_accion = pygame.font.SysFont("arial", 8)
+            fuente_nombre = pygame.font.SysFont("segoe ui", 11, bold=True)
+            fuente_accion = pygame.font.SysFont("segoe ui", 9)
         except Exception:
-            fuente_nombre = pygame.font.Font(None, 14)
-            fuente_accion = pygame.font.Font(None, 12)
+            try:
+                fuente_nombre = pygame.font.SysFont("arial", 11, bold=True)
+                fuente_accion = pygame.font.SysFont("arial", 9)
+            except Exception:
+                fuente_nombre = pygame.font.Font(None, 16)
+                fuente_accion = pygame.font.Font(None, 14)
 
         for entidad in entidades:
             px = entidad.posicion.x * tam + tam // 2
@@ -197,35 +225,43 @@ class Renderizador:
             seleccionada = entidad.id_entidad == entidad_seleccionada_id
             en_ctrl = getattr(entidad, "control_total", False)
 
-            # Anillo exterior: naranja pulsante si control total, amarillo si seleccionada
+            # Anillo exterior
             if en_ctrl:
-                pygame.draw.circle(self.pantalla, (255, 140, 0), (px, py), radio + 5, 3)
-                pygame.draw.circle(self.pantalla, (255, 220, 50), (px, py), radio + 8, 1)
+                pygame.draw.circle(self.pantalla, (40, 30, 20), (px + 1, py + 1), radio + 6, 4)
+                pygame.draw.circle(self.pantalla, COLOR_CTRL_TOTAL, (px, py), radio + 6, 3)
+                pygame.draw.circle(self.pantalla, (255, 200, 100), (px, py), radio + 8, 1)
             elif seleccionada:
-                pygame.draw.circle(self.pantalla, (255, 255, 100), (px, py), radio + 3, 2)
+                pygame.draw.circle(self.pantalla, (35, 35, 25), (px + 1, py + 1), radio + 4, 3)
+                pygame.draw.circle(self.pantalla, COLOR_ENTIDAD_SEL, (px, py), radio + 4, 2)
 
+            # Cuerpo: sombra + relleno
+            pygame.draw.circle(self.pantalla, (15, 18, 22), (px + 1, py + 1), radio)
             pygame.draw.circle(self.pantalla, color, (px, py), radio)
             pygame.draw.circle(self.pantalla, (255, 255, 255), (px, py), radio, 1)
             if entidad.tipo_entidad == TipoEntidad.GATO:
-                pygame.draw.circle(self.pantalla, (255, 255, 255), (px, py), radio - 2, 1)
+                pygame.draw.circle(self.pantalla, (255, 255, 255), (px, py), max(1, radio - 2), 1)
 
             nombre = getattr(entidad, "nombre", f"E{entidad.id_entidad}")
-            # En control total, mostrar el nombre en naranja con prefijo [TÚ]
-            color_nombre = (255, 180, 50) if en_ctrl else (255, 255, 255)
-            prefijo = "[TU] " if en_ctrl else ""
-            texto_nom = fuente_nombre.render(f"{prefijo}{nombre}", True, color_nombre)
-            rect_nom = texto_nom.get_rect(center=(px, py - radio - 8))
-            sombra = pygame.Surface((rect_nom.w + 2, rect_nom.h + 2))
+            en_refugio = ""
+            if mapa:
+                celda = mapa.obtener_celda(entidad.posicion)
+                if celda and celda.tiene_refugio() and celda.refugio:
+                    en_refugio = f" [Refugio #{celda.refugio.id_refugio}]"
+            color_nombre = COLOR_CTRL_TOTAL if en_ctrl else COLOR_TEXTO
+            prefijo = "[TÚ] " if en_ctrl else ""
+            texto_nom = fuente_nombre.render(f"{prefijo}{nombre}{en_refugio}", True, color_nombre)
+            rect_nom = texto_nom.get_rect(center=(px, py - radio - 10))
+            sombra = pygame.Surface((rect_nom.w + 4, rect_nom.h + 4))
             sombra.fill((0, 0, 0))
-            sombra.set_alpha(180)
-            self.pantalla.blit(sombra, (rect_nom.x - 1, rect_nom.y - 1))
+            sombra.set_alpha(140)
+            self.pantalla.blit(sombra, (rect_nom.x - 2, rect_nom.y - 2))
             self.pantalla.blit(texto_nom, rect_nom)
 
             acc = entidad.estado_interno.accion_actual
             acc_str = ("CTRL" if en_ctrl else acc.value) if (en_ctrl or acc) else "-"
-            color_acc = (255, 140, 0) if en_ctrl else self.color_texto_sec
+            color_acc = COLOR_CTRL_TOTAL if en_ctrl else COLOR_TEXTO_SEC
             texto_acc = fuente_accion.render(acc_str, True, color_acc)
-            rect_acc = texto_acc.get_rect(center=(px, py + radio + 6))
+            rect_acc = texto_acc.get_rect(center=(px, py + radio + 8))
             self.pantalla.blit(texto_acc, rect_acc)
 
     def dibujar_barra_inferior(self, estado_ui: dict) -> None:
@@ -239,59 +275,56 @@ class Renderizador:
         sombra_esperando = estado_ui.get("sombra_esperando_input", False)
         watchdog_total = estado_ui.get("watchdog_total", 0)
         try:
+            fuente = pygame.font.SysFont("segoe ui", 12)
+            fuente_b = pygame.font.SysFont("segoe ui", 12, bold=True)
+        except Exception:
             fuente = pygame.font.SysFont("arial", 12)
             fuente_b = pygame.font.SysFont("arial", 12, bold=True)
-        except Exception:
-            fuente = pygame.font.Font(None, 18)
-            fuente_b = fuente
 
-        y_bar = self.alto_mapa + 3
+        y_bar = self.alto_mapa
+        alto_barra = self.alto_total - y_bar
+        # Fondo barra con elevación sutil
+        color_barra_base = (28, 32, 38)
+        if modo_sombra:
+            color_barra_base = (55, 35, 15) if sombra_esperando else (25, 45, 30)
+        pygame.draw.rect(self.pantalla, color_barra_base, (0, y_bar, self.ancho_mapa, alto_barra))
+        pygame.draw.line(self.pantalla, (45, 52, 60), (0, y_bar), (self.ancho_mapa, y_bar), 1)
+
+        y_bar += 6
 
         if modo_sombra:
-            # Fondo especial para modo sombra
-            color_barra = (60, 30, 10) if sombra_esperando else (30, 50, 20)
-            pygame.draw.rect(self.pantalla, color_barra,
-                             (0, y_bar, self.ancho_mapa, self.alto_total - y_bar))
-            if sombra_esperando:
-                txt_sombra = fuente_b.render(
-                    f"[MODO SOMBRA] Tick {tick} - TU TURNO: WASD=mover  ESPACIO=esperar  P=pausar",
-                    True, (255, 200, 80)
-                )
-            else:
-                txt_sombra = fuente_b.render(
-                    f"[MODO SOMBRA] Tick {tick} - Ejecutando turno...",
-                    True, (150, 200, 150)
-                )
-            self.pantalla.blit(txt_sombra, (10, y_bar + 4))
-        else:
-            estado_str = "PAUSADO" if pausado else "Ejecutando"
-            texto = fuente.render(
-                f"Tick: {tick}  |  {estado_str}  |  {velocidad}x  |  {modo.value}",
-                True, self.color_texto,
+            txt_sombra = fuente_b.render(
+                f"[MODO SOMBRA] Tick {tick} — TU TURNO: WASD=mover  ESPACIO=esperar  P=pausar"
+                if sombra_esperando else f"[MODO SOMBRA] Tick {tick} — Ejecutando turno...",
+                True, (255, 200, 100) if sombra_esperando else (150, 210, 160),
             )
-            self.pantalla.blit(texto, (10, y_bar + 5))
+            self.pantalla.blit(txt_sombra, (12, y_bar))
+
+        texto = None
+        if not modo_sombra:
+            estado_str = "pausado" if pausado else "ejecutando"
+            hints = "  P=pausa  Selecciona+flechas=mover  N=paso  Click mapa=destino"
+            texto = fuente.render(
+                f"Tick: {tick}  ·  {estado_str}  ·  {velocidad}x  ·  {modo.value}  ·  {hints}",
+                True, COLOR_TEXTO_SEC,
+            )
+            self.pantalla.blit(texto, (12, y_bar))
 
         if feedback:
-            color_fb = (255, 200, 80) if "SOMBRA" in feedback else (
-                (100, 200, 100) if ("OK" in feedback or "Auto" in feedback) else (200, 150, 100)
+            color_fb = (255, 200, 100) if "SOMBRA" in feedback else (
+                (107, 198, 126) if ("OK" in feedback or "Auto" in feedback) else (232, 180, 100)
             )
             txt_fb = fuente.render(feedback[:80], True, color_fb)
-            # Si modo sombra ya ocupa la barra, poner feedback debajo
-            y_fb = y_bar + 18 if modo_sombra else y_bar + 5
-            x_fb = 10 if modo_sombra else (
-                fuente.render(
-                    f"Tick: {tick}  |  {'PAUSADO' if pausado else 'Ejecutando'}  |  {velocidad}x  |  {modo.value}",
-                    True, self.color_texto
-                ).get_width() + 15
-            )
+            y_fb = y_bar + 16 if modo_sombra else y_bar
+            x_fb = 12 if modo_sombra else (texto.get_width() + 20 if texto else 12)
             if y_fb + 14 < self.alto_total:
                 self.pantalla.blit(txt_fb, (x_fb, y_fb))
 
         if watchdog_total > 0:
-            txt_wd = fuente_b.render(f"WATCHDOG: {watchdog_total} alertas", True, (255, 100, 80))
-            x_wd = self.ancho_mapa - txt_wd.get_width() - 15
-            if x_wd > 10:
-                self.pantalla.blit(txt_wd, (x_wd, y_bar + 5))
+            txt_wd = fuente_b.render(f"WATCHDOG: {watchdog_total} alertas", True, (224, 122, 90))
+            x_wd = self.ancho_mapa - txt_wd.get_width() - 16
+            if x_wd > 12:
+                self.pantalla.blit(txt_wd, (x_wd, y_bar))
 
     def obtener_panel(self) -> PanelControl | None:
         """Devuelve el panel de control para procesar clicks."""

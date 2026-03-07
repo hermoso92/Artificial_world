@@ -41,7 +41,7 @@ class EstadoPanel:
     modo_visualizacion: ModoVisualizacion = ModoVisualizacion.NORMAL
 
     # Panel
-    pestana_actual: PestanaPanel = PestanaPanel.CONTROL
+    pestana_actual: PestanaPanel = PestanaPanel.WATCHDOG
     scroll_offset: int = 0
     entidad_seleccionada_id: int | None = None
 
