@@ -30,6 +30,7 @@ export function SimulationView({ onBack, onNavigate }) {
   const [initialLoad, setInitialLoad] = useState(true);
   const [activeRefugeIndex, setActiveRefugeIndex] = useState(0);
   const [refuges, setRefuges] = useState([]);
+  const [hero, setHero] = useState(null);
 
   const { connected, refuge: wsRefuge, tick: wsTick, running: wsRunning } = useRealtimeSimulation();
 
@@ -40,12 +41,13 @@ export function SimulationView({ onBack, onNavigate }) {
 
   const fetchData = useCallback(async () => {
     try {
-      const [worldData, agentsData, blueprintsData, logsData, refugesData] = await Promise.all([
+      const [worldData, agentsData, blueprintsData, logsData, refugesData, heroData] = await Promise.all([
         api.getWorld(),
         api.getAgents(),
         api.getBlueprints(),
         api.getLogs(),
         api.getRefuges(),
+        api.getHero().catch(() => null),
       ]);
       setWorld(worldData ?? null);
       setAgents(Array.isArray(agentsData) ? agentsData : []);
@@ -53,31 +55,20 @@ export function SimulationView({ onBack, onNavigate }) {
       setLogs(Array.isArray(logsData) ? logsData : []);
       const refList = Array.isArray(refugesData) ? refugesData : [];
       setRefuges(refList);
+      if (heroData) setHero(heroData);
 
-      // #region agent log
       const pid = getPlayerId();
-      fetch('http://127.0.0.1:7420/ingest/10191b54-3116-4e1b-b9ad-2fd987d9aa38',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'cc0b57'},body:JSON.stringify({sessionId:'cc0b57',location:'SimulationView.jsx:fetchData',message:'fetchData called',data:{pid,autoSelected:autoSelectedRef.current,refListLength:refList.length,refOwnerIds:refList.map(r=>r.ownerId).filter(Boolean),worldActiveIdx:worldData?.activeRefugeIndex},timestamp:Date.now(),hypothesisId:'H-A'})}).catch(()=>{});
-      // #endregion
 
       // Auto-seleccionar refugio propio, o crearlo si no existe
       if (!autoSelectedRef.current && pid) {
         let myIdx = refList.findIndex((r) => r.ownerId === pid);
-        // #region agent log
-        fetch('http://127.0.0.1:7420/ingest/10191b54-3116-4e1b-b9ad-2fd987d9aa38',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'cc0b57'},body:JSON.stringify({sessionId:'cc0b57',location:'SimulationView.jsx:autoSelect',message:'findIndex result',data:{pid,myIdx,matchedOwnerId:myIdx>=0?refList[myIdx].ownerId:null,matchedName:myIdx>=0?refList[myIdx].name:null},timestamp:Date.now(),hypothesisId:'H-A'})}).catch(()=>{});
-        // #endregion
         if (myIdx < 0) {
           try {
-            // #region agent log
-            fetch('http://127.0.0.1:7420/ingest/10191b54-3116-4e1b-b9ad-2fd987d9aa38',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'cc0b57'},body:JSON.stringify({sessionId:'cc0b57',location:'SimulationView.jsx:createRefuge',message:'creating personal refuge',data:{pid},timestamp:Date.now(),hypothesisId:'H-B'})}).catch(()=>{});
-            // #endregion
             await api.createRefuge('Mi casa', pid);
             const freshRefuges = await api.getRefuges();
             const freshList = Array.isArray(freshRefuges) ? freshRefuges : [];
             setRefuges(freshList);
             myIdx = freshList.findIndex((r) => r.ownerId === pid);
-            // #region agent log
-            fetch('http://127.0.0.1:7420/ingest/10191b54-3116-4e1b-b9ad-2fd987d9aa38',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'cc0b57'},body:JSON.stringify({sessionId:'cc0b57',location:'SimulationView.jsx:postCreate',message:'refuge created',data:{myIdx,freshListLength:freshList.length},timestamp:Date.now(),hypothesisId:'H-B'})}).catch(()=>{});
-            // #endregion
           } catch (err) {
             logger.warn('Could not auto-create personal refuge', err);
           }
@@ -85,9 +76,6 @@ export function SimulationView({ onBack, onNavigate }) {
         if (myIdx >= 0) {
           setActiveRefugeIndex(myIdx);
           autoSelectedRef.current = true;
-          // #region agent log
-          fetch('http://127.0.0.1:7420/ingest/10191b54-3116-4e1b-b9ad-2fd987d9aa38',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'cc0b57'},body:JSON.stringify({sessionId:'cc0b57',location:'SimulationView.jsx:selectRefuge',message:'selecting own refuge',data:{myIdx,ownerId:refList[myIdx]?.ownerId,name:refList[myIdx]?.name},timestamp:Date.now(),hypothesisId:'H-B'})}).catch(()=>{});
-          // #endregion
           try { await api.selectRefuge(myIdx); } catch (err) { logger.warn('SimulationView: select refuge failed', err); }
         } else {
           setActiveRefugeIndex(worldData?.activeRefugeIndex ?? 0);
@@ -261,9 +249,7 @@ export function SimulationView({ onBack, onNavigate }) {
   const selectedAgent = effectiveAgents.find((a) => a.id === selectedAgentId) || null;
   const isOwnedRefuge = effectiveRefuge?.ownerId === getPlayerId();
   const hasPets = (effectiveRefuge?.pets ?? []).length > 0;
-  // #region agent log
-  if (!window.__cc0b57_logged_render) { window.__cc0b57_logged_render = true; setTimeout(() => { window.__cc0b57_logged_render = false; }, 5000); fetch('http://127.0.0.1:7420/ingest/10191b54-3116-4e1b-b9ad-2fd987d9aa38',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'cc0b57'},body:JSON.stringify({sessionId:'cc0b57',location:'SimulationView.jsx:render',message:'render state',data:{isOwnedRefuge,refugeOwnerId:effectiveRefuge?.ownerId,pid:getPlayerId(),refugeName:effectiveRefuge?.name,refugeId:effectiveRefuge?.id,agentCount:effectiveAgents.length,activeRefugeIndex,hasPets,connected},timestamp:Date.now(),hypothesisId:'H-ALL'})}).catch(()=>{});}
-  // #endregion
+  const furniture = effectiveRefuge?.furniture ?? [];
   const liveWorld = world ? { ...world, refuge: effectiveRefuge, tick: wsTick ?? world.tick, running: wsRunning ?? world.running } : null;
 
   // Pet tick + stat decay — runs every 3s when viewing own refuge
@@ -297,8 +283,12 @@ export function SimulationView({ onBack, onNavigate }) {
           <button className="back-btn" onClick={onBack}>← Hub</button>
         </div>
         <div className="header-center">
-          <h1>Tu Mundo</h1>
-          <p className="subtitle">Constrúyelo. Habítalo. Haz que crezca.</p>
+          <h1>{hero?.name ? `${hero.name} — Tu Mundo` : 'Tu Mundo'}</h1>
+          <p className="subtitle">
+            {hero?.companion?.name
+              ? `${hero.companion.name} te acompaña · ${hero.modes?.find(m => m.id === hero.activeMode)?.label ?? 'Refugio'}`
+              : 'Constrúyelo. Habítalo. Haz que crezca.'}
+          </p>
         </div>
         <div className="header-right">
           {onNavigate && (
@@ -323,7 +313,19 @@ export function SimulationView({ onBack, onNavigate }) {
 
       <DetectionBanner wsConnected={connected} onRefresh={fetchData} />
 
-      {effectiveAgents.length === 0 && !error && (
+      {isOwnedRefuge && (
+        <div className="home-banner">
+          <div className="home-banner-icon">🏠</div>
+          <div className="home-banner-text">
+            <strong>Estás en tu casa — {effectiveRefuge?.name ?? 'Mi casa'}</strong>
+            <span className="home-banner-hint">
+              Muévete con WASD · Pulsa E para usar muebles · Pulsa "Editar" para decorar
+            </span>
+          </div>
+        </div>
+      )}
+
+      {!isOwnedRefuge && effectiveAgents.length === 0 && !error && (
         <div className="quick-start-banner">
           <span>Tu mundo está vacío. </span>
           <button
@@ -334,6 +336,14 @@ export function SimulationView({ onBack, onNavigate }) {
           >
             Empezar rápido — crear especie y traer 5 habitantes
           </button>
+        </div>
+      )}
+
+      {isOwnedRefuge && furniture.length === 0 && (
+        <div className="home-empty-state" id="home-empty-state">
+          <div className="home-empty-state-arrow" aria-hidden="true">↓</div>
+          <p className="home-empty-state-main">Tu casa está vacía. Pulsa <strong>"Editar"</strong> debajo del mapa para colocar muebles.</p>
+          <p className="home-empty-state-tip">Prueba a poner una <strong>Cama</strong> en el Dormitorio, una <strong>Mesa</strong> en la Cocina o un <strong>Sofá</strong> en el Salón.</p>
         </div>
       )}
 
@@ -379,7 +389,7 @@ export function SimulationView({ onBack, onNavigate }) {
         </main>
 
         <aside className="sidebar right">
-          <HeroRefugePanel />
+          <HeroRefugePanel heroData={hero} onHeroUpdate={setHero} />
           <AgentDetailPanel selectedAgent={selectedAgent} agents={effectiveAgents} onSelectAgent={(a) => setSelectedAgentId(a?.id ?? null)} />
           <LogPanel logs={logs} />
         </aside>

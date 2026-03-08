@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test:e2e": "node scripts/test-e2e-autonomous.js"
+    "test:e2e": "node scripts/test-e2e-autonomous.js",
+    "screenshots": "node scripts/capture-screenshots.js"
   }
 }

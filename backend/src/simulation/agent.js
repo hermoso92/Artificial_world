@@ -3,6 +3,16 @@
  * Artificial life forms with genetic traits, energy, matter.
  * Movement, metabolism, attack, defense, gathering from blueprint.
  */
+const STATE_LABELS = {
+  idle: 'Descansando',
+  exploring: 'Explorando',
+  wandering: 'Vagando',
+  seeking_energy: 'Busca energía',
+  seeking_matter: 'Busca materia',
+  gathering_energy: 'Recogiendo energía',
+  gathering_matter: 'Recogiendo materia',
+};
+
 export class Agent {
   static nextId = 1;
 
@@ -64,6 +74,7 @@ export class Agent {
       maxEnergy: this.maxEnergy,
       maxMatter: this.maxMatter,
       state: this.state,
+      stateLabel: STATE_LABELS[this.state] ?? this.state,
       birthTick: this.birthTick,
       dead: this.dead,
     };

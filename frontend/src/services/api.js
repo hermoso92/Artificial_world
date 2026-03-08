@@ -175,6 +175,25 @@ export const api = {
 
   // DobackSoft — acceso por cupón limitado
   getDobackSoftStats: () => fetchApi('/dobacksoft/stats'),
+  getDobackSoftSessions: () => fetchApi('/dobacksoft/sessions'),
+  getDobackSoftSessionRoute: (sessionId) => fetchApi(`/dobacksoft/session-route/${sessionId}`),
+  uploadDobackSoftFiles: async (fileEntries, vehicleName) => {
+    const formData = new FormData();
+    formData.append('vehicleName', vehicleName || 'Vehículo');
+    fileEntries.forEach(([key, file]) => {
+      if (file) formData.append(key, file);
+    });
+    const playerId = getPlayerId();
+    const res = await fetch(`${API_BASE}/dobacksoft/upload`, {
+      method: 'POST',
+      headers: { ...(playerId ? { 'x-player-id': playerId } : {}) },
+      body: formData,
+    });
+    const text = await res.text();
+    const json = text ? JSON.parse(text) : {};
+    if (!res.ok) throw new Error(json?.error?.message ?? `Error ${res.status}`);
+    return json?.data ?? json;
+  },
   validateDobackSoftCoupon: (code) =>
     fetchApi('/dobacksoft/coupon/validate', {
       method: 'POST',

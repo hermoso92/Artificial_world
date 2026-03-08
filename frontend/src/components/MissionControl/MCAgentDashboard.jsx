@@ -63,7 +63,7 @@ export function MCAgentDashboard() {
             <th>Posición</th>
             <th>Energía</th>
             <th>Materia</th>
-            <th>Estado</th>
+            <th>¿Qué hace?</th>
             <th>Linaje</th>
           </tr>
         </thead>
@@ -76,12 +76,14 @@ export function MCAgentDashboard() {
                 ({a.gridX ?? 0}, {a.gridY ?? 0})
               </td>
               <td>
-                {((a.energy ?? 0) * 100).toFixed(0)}%
+                <span className={`mc-energy ${(a.energy ?? 0) < 0.3 ? 'low' : ''}`}>
+                  {((a.energy ?? 0) * 100).toFixed(0)}%
+                </span>
               </td>
               <td>
                 {((a.matter ?? 0) * 100).toFixed(0)}%
               </td>
-              <td>{a.state ?? 'idle'}</td>
+              <td>{a.stateLabel ?? a.state ?? 'idle'}</td>
               <td>{a.lineageId ?? '-'}</td>
             </tr>
           ))}

@@ -89,11 +89,15 @@ export function Hub({ onNavigate }) {
         <p className="hub-subtitle">Refugiarte. Habitar. Expandir. Pertenecer. Gobernar.</p>
       </div>
 
-      {heroName && (
-        <div className="hub-personal">
-          <div className="hub-personal-greeting">
-            Bienvenido, <strong>{heroName}</strong>
-          </div>
+      <div className="hub-personal">
+        <div className="hub-personal-greeting">
+          {heroName ? (
+            <>Bienvenido, <strong>{heroName}</strong></>
+          ) : (
+            <>Tu refugio te espera. Haz clic en <strong>Tu Mundo</strong> abajo para entrar.</>
+          )}
+        </div>
+        {(heroName || worldCount > 0 || status) && (
           <div className="hub-personal-stats">
             <span className="hub-stat">
               🌍 {worldCount} {worldCount === 1 ? 'mundo' : 'mundos'}
@@ -109,7 +113,8 @@ export function Hub({ onNavigate }) {
               </span>
             )}
           </div>
-          <div className="hub-personal-actions">
+        )}
+        <div className="hub-personal-actions">
             <button
               className="hub-personal-cta"
               onClick={() => onNavigate('simulation')}
@@ -127,8 +132,7 @@ export function Hub({ onNavigate }) {
               </button>
             )}
           </div>
-        </div>
-      )}
+      </div>
 
       <div className="hub-grid">
         {PILLARS.map((pillar) => (
@@ -162,6 +166,7 @@ export function Hub({ onNavigate }) {
 
       <footer className="hub-footer">
         <span>Constructor de Mundos · Crea tu refugio · Hazlo crecer · Invita a tu gente</span>
+        <a href="#admin" className="hub-admin-link" title="Panel administrador">⚙️ Admin</a>
       </footer>
 
       <PricingModal

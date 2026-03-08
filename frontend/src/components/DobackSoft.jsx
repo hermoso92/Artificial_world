@@ -6,6 +6,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '../services/api.js';
 import logger from '../utils/logger.js';
+import { VisorRuta2D } from './DobackSoft/VisorRuta2D.jsx';
+import { SubidaManualLite } from './DobackSoft/SubidaManualLite.jsx';
 
 const FEATURES = [
   { icon: '🗺️', label: 'Mapa de despacho en tiempo real', desc: 'Rutas dinámicas hacia la emergencia activa' },
@@ -15,7 +17,9 @@ const FEATURES = [
   { icon: '📊', label: 'Progresión y niveles', desc: 'Escenarios de dificultad creciente' },
 ];
 
-export function DobackSoft({ onBack }) {
+const ACCESS_CODE_KEY = 'dobacksoft_access_code';
+
+export function DobackSoft({ onBack, onNavigate }) {
   const [stats, setStats] = useState(null);
   const [coupon, setCoupon] = useState('');
   const [couponResult, setCouponResult] = useState(null);
@@ -23,6 +27,7 @@ export function DobackSoft({ onBack }) {
   const [error, setError] = useState(null);
   const [registered, setRegistered] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const [activeTab, setActiveTab] = useState('rutas'); // 'subir' | 'rutas' | 'jugar'
 
   useEffect(() => {
     api.getDobackSoftStats()
@@ -36,6 +41,12 @@ export function DobackSoft({ onBack }) {
   useEffect(() => {
     if (couponResult?.valid) setVideoError(false);
   }, [couponResult?.valid]);
+
+  useEffect(() => {
+    if (couponResult?.valid && couponResult?.accessCode && typeof window !== 'undefined') {
+      window.localStorage.setItem(ACCESS_CODE_KEY, couponResult.accessCode);
+    }
+  }, [couponResult?.valid, couponResult?.accessCode]);
 
   const handleValidateCoupon = async () => {
     setError(null);
@@ -75,6 +86,16 @@ export function DobackSoft({ onBack }) {
     }
   }, [couponResult?.accessCode]);
 
+  const handlePlayRoute = useCallback((sessionId, routeData) => {
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem('dobacksoft_route_session', sessionId);
+        sessionStorage.setItem('dobacksoft_route_data', JSON.stringify(routeData));
+      } catch (_) { /* ignore */ }
+    }
+    onNavigate?.('firesimulator');
+  }, [onNavigate]);
+
   return (
     <div className="dobacksoft">
       <div className="dobacksoft-header">
@@ -112,7 +133,7 @@ export function DobackSoft({ onBack }) {
           <input
             type="text"
             className="dobacksoft-coupon-input"
-            placeholder="FUNDADOR1000"
+            placeholder="DEMO o FUNDADOR1000"
             value={coupon}
             onChange={(e) => setCoupon(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleValidateCoupon()}
@@ -161,10 +182,15 @@ export function DobackSoft({ onBack }) {
         {error && <p className="dobacksoft-error">{error}</p>}
       </div>
 
-      {couponResult?.valid && (
+      {(couponResult?.valid || registered) && (
         <div className="dobacksoft-promo-content">
           <section className="dobacksoft-video-section">
             <h3 className="dobacksoft-section-title">Trailer</h3>
+            {registered && (
+              <p className="dobacksoft-game-desc">
+                Ya tienes acceso. Tu código está guardado.
+              </p>
+            )}
             <div className="dobacksoft-video-wrapper">
               {videoError ? (
                 <div className="dobacksoft-video-fallback">
@@ -183,13 +209,63 @@ export function DobackSoft({ onBack }) {
               )}
             </div>
           </section>
-          <section className="dobacksoft-game-section">
-            <h3 className="dobacksoft-section-title">Tu código de acceso</h3>
-            <p className="dobacksoft-game-desc">
-              Conserva este código para acceder al simulador DobackSoft (camión de bomberos) cuando esté disponible.
-              Las Damas y otros minijuegos son gratis desde el Hub.
-            </p>
-          </section>
+
+          <nav className="dobacksoft-tabs">
+            <button
+              type="button"
+              className={`dobacksoft-tab ${activeTab === 'subir' ? 'active' : ''}`}
+              onClick={() => setActiveTab('subir')}
+            >
+              📤 Subir
+            </button>
+            <button
+              type="button"
+              className={`dobacksoft-tab ${activeTab === 'rutas' ? 'active' : ''}`}
+              onClick={() => setActiveTab('rutas')}
+            >
+              📊 Ver rutas
+            </button>
+            <button
+              type="button"
+              className={`dobacksoft-tab ${activeTab === 'jugar' ? 'active' : ''}`}
+              onClick={() => setActiveTab('jugar')}
+            >
+              🚒 Jugar
+            </button>
+          </nav>
+
+          {activeTab === 'subir' && (
+            <SubidaManualLite
+              onSwitchToRutas={() => setActiveTab('rutas')}
+            />
+          )}
+
+          {activeTab === 'rutas' && (
+            <VisorRuta2D onPlayRoute={handlePlayRoute} />
+          )}
+
+          {activeTab === 'jugar' && (
+            <section className="dobacksoft-game-section">
+              <h3 className="dobacksoft-section-title">Tu código de acceso</h3>
+              <p className="dobacksoft-game-desc">
+                Conserva este código para acceder al simulador. Las Damas y otros minijuegos son gratis desde el Hub.
+              </p>
+              {onNavigate && (
+                <button
+                  type="button"
+                  className="dobacksoft-play-btn"
+                  onClick={() => {
+                    if (couponResult?.accessCode) {
+                      window.localStorage.setItem(ACCESS_CODE_KEY, couponResult.accessCode);
+                    }
+                    onNavigate('firesimulator');
+                  }}
+                >
+                  🚒 Jugar Fire Simulator
+                </button>
+              )}
+            </section>
+          )}
         </div>
       )}
 

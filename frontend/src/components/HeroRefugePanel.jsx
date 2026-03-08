@@ -12,8 +12,8 @@ import { WorldCard } from './HeroRefuge/WorldCard';
 import { WorldDetailModal } from './HeroRefuge/WorldDetailModal';
 import { PricingModal } from './PricingModal';
 
-export function HeroRefugePanel() {
-  const [hero, setHero] = useState(null);
+export function HeroRefugePanel({ heroData, onHeroUpdate }) {
+  const [hero, setHero] = useState(heroData ?? null);
   const [worlds, setWorlds] = useState([]);
   const [agentAnswer, setAgentAnswer] = useState('');
   const [query, setQuery] = useState('');
@@ -31,10 +31,18 @@ export function HeroRefugePanel() {
       const data = await api.getHero();
       setHero(data);
       setWorlds(data.aliveWorlds ?? []);
+      if (onHeroUpdate) onHeroUpdate(data);
     } catch {
       // backend may not be ready yet
     }
-  }, []);
+  }, [onHeroUpdate]);
+
+  useEffect(() => {
+    if (heroData && !hero) {
+      setHero(heroData);
+      setWorlds(heroData.aliveWorlds ?? []);
+    }
+  }, [heroData, hero]);
 
   useEffect(() => {
     fetchHero();
@@ -248,8 +256,29 @@ export function HeroRefugePanel() {
             </div>
           )}
 
+          {/* Simulation link */}
+          {hero.simulation && (
+            <div style={{
+              marginTop: '10px',
+              paddingTop: '8px',
+              borderTop: '1px solid rgba(255,255,255,0.06)',
+              display: 'flex',
+              gap: '8px',
+              alignItems: 'center',
+              fontSize: '9px',
+              color: 'rgba(255,255,255,0.35)',
+            }}>
+              <span style={{ color: hero.simulation.running ? '#00e676' : 'rgba(255,255,255,0.25)' }}>
+                {hero.simulation.running ? '● Vivo' : '○ Pausado'}
+              </span>
+              <span>👥 {hero.simulation.agentCount} habitantes</span>
+              <span>🏘️ {hero.simulation.refugeCount} refugios</span>
+              <span>⏱ Tick {hero.simulation.tick}</span>
+            </div>
+          )}
+
           {/* Stats footer */}
-          <div style={{ marginTop: '10px', paddingTop: '8px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', gap: '8px', justifyContent: 'space-between', fontSize: '9px', color: 'rgba(255,255,255,0.25)' }}>
+          <div style={{ marginTop: '6px', paddingTop: '6px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', gap: '8px', justifyContent: 'space-between', fontSize: '9px', color: 'rgba(255,255,255,0.25)' }}>
             <span>⏱ Tiempo: {hero.stats?.totalTicks ?? 0}</span>
             <span>🌍 Mundos: {hero.stats?.worldsCreated ?? 0}</span>
             <span>📜 Legado: {(hero.stats?.worldsCreated ?? 0) - (hero.stats?.worldsDestroyed ?? 0)}</span>

@@ -14,6 +14,7 @@ import {
   saveHeroState,
   ensurePlayer,
 } from '../db/database.js';
+import { getWorld } from './worldManager.js';
 
 const HERO_MODES = [
   { id: 'personal',    label: 'Yo',          icon: '🪞', scale: 1,   description: 'Tu espacio interior. Desde aquí nace todo.' },
@@ -195,6 +196,7 @@ class ArtificialWorld {
       destroyedAt: this.destroyedAt,
       historyCount: this.history.length,
       recentHistory: this.history.slice(0, 5),
+      simulationRefugeIndex: this.simulationRefugeIndex ?? null,
     };
   }
 }
@@ -319,6 +321,18 @@ export class HeroRefuge {
     this.worlds.push(world);
     this.stats.worldsCreated++;
     this.agent._remember(`Created world "${world.name}" (${world.scale})`);
+
+    try {
+      const simWorld = getWorld();
+      const refuge = simWorld.createRefuge({
+        name: world.name,
+        ownerId: this.playerId,
+      });
+      if (refuge) {
+        world.simulationRefugeIndex = refuge.plotIndex;
+      }
+    } catch { /* simulation not ready */ }
+
     this._markDirty();
     return world;
   }
@@ -382,8 +396,22 @@ export class HeroRefuge {
 
   async queryAgent(query, context = {}) {
     const aliveWorlds = this.getAliveWorlds();
+
+    let simSnapshot = {};
+    try {
+      const simWorld = getWorld();
+      const simRefuge = simWorld.getActiveRefuge();
+      simSnapshot = {
+        simTick: simWorld.tick,
+        simRunning: simWorld.running,
+        simAgents: simRefuge?.agents?.filter(a => !a.dead).length ?? 0,
+        simRefuges: simWorld.refuges.length,
+      };
+    } catch { /* noop */ }
+
     const enrichedContext = {
       ...context,
+      ...simSnapshot,
       worldCount: aliveWorlds.length,
     };
     const executeTool = (tool, params) => Promise.resolve(this._executeTool(tool, params));
@@ -394,6 +422,18 @@ export class HeroRefuge {
   }
 
   toJSON() {
+    let simulation = null;
+    try {
+      const simWorld = getWorld();
+      const simRefuge = simWorld.getActiveRefuge();
+      simulation = {
+        tick: simWorld.tick,
+        running: simWorld.running,
+        agentCount: simRefuge?.agents?.filter(a => !a.dead).length ?? 0,
+        refugeCount: simWorld.refuges.length,
+      };
+    } catch { /* noop */ }
+
     return {
       id: this.id,
       playerId: this.playerId,
@@ -402,9 +442,11 @@ export class HeroRefuge {
       activeMode: this.activeMode,
       modes: this.modes,
       agent: this.agent.toJSON(),
+      companion: this.agent.toJSON(),
       aliveWorlds: this.getAliveWorlds().map((w) => w.toJSON()),
       totalWorlds: this.worlds.length,
       stats: this.stats,
+      simulation,
       createdAt: this.createdAt,
     };
   }
