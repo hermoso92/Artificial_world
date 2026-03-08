@@ -2,7 +2,7 @@
 #
 # Flujo:
 #   PR abierto/actualizado → Test → Upload artefactos
-#   Merge a main (push)    → Test → Deploy Pages + Deploy VPS → Upload
+#   Merge a main (push)    → Test + Deploy Pages + Deploy VPS (en paralelo)
 #
 # Secrets requeridos:
 #   - PAGES_TOKEN: PAT para GitHub Pages (opcional si Pages ya está activo)
@@ -71,11 +71,10 @@ jobs:
             pruebas/reporte_produccion.log
           if-no-files-found: ignore
 
-  # ─── 2. DEPLOY (solo en main, tras tests OK) ─────────────────────────
+  # ─── 2. DEPLOY (solo en main, siempre) ─────────────────────────────────
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
       contents: read
@@ -102,13 +101,12 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  # ─── 2b. DEPLOY VPS (solo en main, tras tests OK) ─────────────────────
+  # ─── 2b. DEPLOY VPS (solo en main, siempre) ────────────────────────────
   # Requiere secrets: SSH_HOST, SSH_USER, SSH_PRIVATE_KEY
   # Opcional: REMOTE_PATH (default /opt/artificial-world)
   deploy-vps:
     name: Deploy VPS
     runs-on: ubuntu-latest
-    needs: test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
