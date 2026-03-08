@@ -170,6 +170,71 @@ body {
   font-size: 0.85rem;
 }
 
+.home-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(90deg, rgba(0, 255, 136, 0.15), rgba(0, 212, 255, 0.08));
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 8px;
+  margin: 0 0.5rem;
+}
+.home-banner-icon {
+  font-size: 1.5rem;
+}
+.home-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.home-banner-text strong {
+  color: #00ff88;
+  font-size: 1rem;
+}
+.home-banner-hint {
+  color: var(--color-muted, #888);
+  font-size: 0.8rem;
+}
+
+.home-empty-state {
+  text-align: center;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 183, 77, 0.15);
+  border: 2px solid rgba(255, 183, 77, 0.5);
+  border-radius: 8px;
+  margin: 0 0.5rem;
+  font-size: 0.95rem;
+  color: var(--text);
+  box-shadow: 0 0 20px rgba(255, 183, 77, 0.1);
+}
+.home-empty-state-arrow {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+  animation: home-empty-bounce 1.5s ease-in-out infinite;
+}
+@keyframes home-empty-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+.home-empty-state-main {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.home-empty-state-main strong {
+  color: var(--color-primary);
+}
+.home-empty-state-tip {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+.home-empty-state-tip strong {
+  color: var(--text);
+}
+
 .main-layout {
   flex: 1;
   display: flex;
@@ -634,6 +699,15 @@ body {
   border-color: var(--accent);
   color: var(--accent);
 }
+.canvas-edit-btn--empty-house {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.4);
+  font-weight: 700;
+}
+.canvas-edit-btn--empty-house:hover {
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.5);
+}
 .legend-item {
   display: flex;
   align-items: center;
@@ -784,6 +858,50 @@ body {
   line-height: 1.6;
   margin-bottom: 32px;
 }
+.landing-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto 24px;
+}
+.landing-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  background: var(--color-card);
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.landing-option:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--color-primary-muted);
+}
+.landing-option.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-muted);
+}
+.landing-option--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.landing-option-icon {
+  font-size: 1.25rem;
+}
+.landing-option-badge {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--color-muted);
+  margin-left: 4px;
+}
 .landing-form {
   display: flex;
   flex-direction: column;
@@ -825,6 +943,15 @@ body {
   0%, 100% { transform: scale(1); }
   50%      { transform: scale(1.08); }
 }
+.landing-tips {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
 .landing-footer {
   position: absolute;
   bottom: 24px;
@@ -837,6 +964,229 @@ body {
   z-index: 1;
 }
 .landing-footer-dot {
+  margin: 0 6px;
+}
+
+/* =========================================================
+   ONBOARDING TUTORIAL
+   ========================================================= */
+.onboarding-tutorial {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--color-background);
+}
+.onboarding-tutorial-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(0,212,255,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(114,9,183,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(0,230,118,0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+.onboarding-tutorial-panel {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 560px;
+  padding: 0 24px;
+  animation: landing-fade-in 0.6s ease-out both;
+}
+.onboarding-tutorial-header {
+  margin-bottom: 28px;
+}
+.onboarding-tutorial-step-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.onboarding-tutorial-title {
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 800;
+  color: var(--color-foreground);
+  letter-spacing: -0.02em;
+}
+.onboarding-tutorial-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.onboarding-tutorial-desc {
+  font-size: 1rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+.onboarding-tutorial-desc strong {
+  color: var(--color-foreground);
+}
+.onboarding-tutorial-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+}
+.onboarding-tutorial-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 20px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  background: var(--color-card);
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  text-align: center;
+}
+.onboarding-tutorial-option:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--color-primary-muted);
+}
+.onboarding-tutorial-option.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-muted);
+}
+.onboarding-tutorial-option--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.onboarding-tutorial-option-icon {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+.onboarding-tutorial-option-label {
+  font-weight: 700;
+}
+.onboarding-tutorial-option-hint {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--color-muted);
+}
+.onboarding-tutorial-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+}
+.onboarding-tutorial-input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-foreground);
+  background: var(--color-card);
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+.onboarding-tutorial-input:focus {
+  border-color: var(--color-primary);
+}
+.onboarding-tutorial-input::placeholder {
+  color: var(--color-muted);
+  opacity: 0.6;
+}
+.onboarding-tutorial-error {
+  color: var(--color-destructive);
+  font-size: 0.85rem;
+  margin: 0;
+}
+.onboarding-tutorial-cta {
+  display: inline-block;
+  padding: 14px 36px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-background);
+  background: var(--color-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  letter-spacing: 0.02em;
+}
+.onboarding-tutorial-cta:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,212,255,0.3);
+}
+.onboarding-tutorial-cta:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+}
+.onboarding-tutorial-cta--glow {
+  box-shadow: 0 0 30px rgba(0,212,255,0.25);
+}
+.onboarding-tutorial-cta--glow:hover:not(:disabled) {
+  box-shadow: 0 0 40px rgba(0,212,255,0.4), 0 8px 24px rgba(0,212,255,0.3);
+}
+.onboarding-tutorial-highlight {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: var(--color-primary-muted);
+  border: 1px solid rgba(0,212,255,0.3);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--color-foreground);
+}
+.onboarding-tutorial-highlight-icon {
+  font-size: 1.5rem;
+}
+.onboarding-tutorial-tips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 20px;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+.onboarding-tutorial-skip {
+  display: block;
+  margin: 24px auto 0;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.onboarding-tutorial-skip:hover {
+  color: var(--color-foreground);
+}
+.onboarding-tutorial-footer {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  opacity: 0.5;
+  z-index: 1;
+}
+.onboarding-tutorial-footer-dot {
   margin: 0 6px;
 }
 
@@ -1042,6 +1392,18 @@ body {
   margin-top: 60px;
   font-size: 0.75rem;
   color: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+.hub-admin-link {
+  color: rgba(255,255,255,0.25);
+  text-decoration: none;
+  font-size: 0.8rem;
+}
+.hub-admin-link:hover {
+  color: rgba(255,255,255,0.5);
 }
 
 /* =========================================================
@@ -1633,6 +1995,417 @@ body {
   color: var(--color-success);
   font-size: 0.9rem;
   font-weight: 600;
+}
+
+/* =====================================================
+   FIRE SIMULATOR (DobackSoft demo)
+   ===================================================== */
+.firesim {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  padding: 24px 16px 40px;
+}
+.firesim-gate {
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.firesim-gate-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #f97316;
+  text-align: center;
+}
+.firesim-gate-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.firesim-gate-row {
+  display: flex;
+  gap: 12px;
+}
+.firesim-gate-input {
+  flex: 1;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  font-family: monospace;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--bg-dark);
+  color: var(--text);
+}
+.firesim-gate-input:focus {
+  outline: none;
+  border-color: #f97316;
+}
+.firesim-gate-btn {
+  padding: 12px 24px;
+  background: rgba(249,115,22,0.25);
+  border: 1px solid rgba(249,115,22,0.5);
+  color: #fb923c;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.firesim-gate-btn:hover {
+  background: rgba(249,115,22,0.35);
+}
+.firesim-gate-error {
+  color: var(--color-error, #ef4444);
+  font-size: 0.85rem;
+}
+.firesim-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 800px;
+  margin: 0 auto 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.firesim-telemetry {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.firesim-telemetry-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 14px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  min-width: 70px;
+}
+.firesim-telemetry-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.firesim-telemetry-value {
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: monospace;
+  color: #f97316;
+}
+.firesim-telemetry-value.firesim-low {
+  color: #ef4444;
+}
+.firesim-status .firesim-telemetry-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+}
+.firesim-controls {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  opacity: 0.9;
+}
+.firesim-mission {
+  max-width: 800px;
+  margin: 12px auto 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+.firesim-failed .firesim-won-title {
+  color: #ef4444;
+}
+.firesim-level-btn {
+  padding: 6px 12px;
+  background: rgba(249,115,22,0.2);
+  border: 1px solid rgba(249,115,22,0.4);
+  color: #fb923c;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 8px;
+}
+.firesim-level-btn:hover {
+  background: rgba(249,115,22,0.3);
+}
+.firesim-levels {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+.firesim-levels-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #f97316;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.firesim-levels-desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 24px;
+}
+.firesim-levels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+.firesim-level-card {
+  background: var(--bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.firesim-level-card:hover {
+  border-color: #f97316;
+  background: rgba(249,115,22,0.08);
+}
+.firesim-level-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f97316;
+}
+.firesim-level-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.firesim-level-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  opacity: 0.9;
+}
+.firesim-level-badge {
+  font-size: 0.7rem;
+  background: rgba(239,68,68,0.2);
+  color: #f87171;
+  padding: 2px 6px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+.firesim-level-weather {
+  font-size: 1.2rem;
+}
+.firesim-won-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 8px;
+}
+.firesim-next-btn {
+  background: rgba(34,197,94,0.25);
+  border-color: rgba(34,197,94,0.5);
+  color: #22c55e;
+}
+.firesim-next-btn:hover {
+  background: rgba(34,197,94,0.35);
+}
+.firesim-levels-btn {
+  background: rgba(249,115,22,0.15);
+  border-color: rgba(249,115,22,0.4);
+  color: #fb923c;
+}
+.firesim-levels-btn:hover {
+  background: rgba(249,115,22,0.25);
+}
+.firesim-canvas-wrap {
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+.firesim-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.firesim-won {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.firesim-won-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-success);
+}
+.firesim-won-desc {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+.firesim-replay-btn {
+  padding: 14px 28px;
+  background: rgba(249,115,22,0.25);
+  border: 1px solid rgba(249,115,22,0.5);
+  color: #fb923c;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.15s;
+}
+.firesim-replay-btn:hover {
+  background: rgba(249,115,22,0.35);
+}
+
+/* =====================================================
+   ADMIN PANEL (Modo dios)
+   ===================================================== */
+.admin-panel {
+  min-height: 100vh;
+  padding: 24px 16px 40px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.admin-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.admin-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.admin-badge {
+  background: rgba(239,68,68,0.2);
+  border: 1px solid rgba(239,68,68,0.4);
+  color: #f87171;
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.admin-error {
+  text-align: center;
+  padding: 40px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+.admin-error h2 {
+  color: #ef4444;
+  margin-bottom: 12px;
+}
+.admin-hint {
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.admin-hint code {
+  font-size: 0.8rem;
+  background: rgba(0,0,0,0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.admin-error-msg {
+  color: #ef4444;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+.admin-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.admin-section {
+  background: var(--bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+}
+.admin-section h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.admin-stats {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.admin-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.admin-btn {
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  transition: background 0.15s;
+}
+.admin-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.1);
+}
+.admin-btn-danger {
+  border-color: rgba(239,68,68,0.4);
+  color: #f87171;
+  background: rgba(239,68,68,0.1);
+}
+.admin-btn-danger:hover:not(:disabled) {
+  background: rgba(239,68,68,0.2);
+}
+.admin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.admin-btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+.admin-worlds-list {
+  list-style: none;
+  margin-bottom: 12px;
+}
+.admin-world-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.2);
+  border-radius: var(--radius-md);
+  margin-bottom: 6px;
+}
+.admin-world-item span {
+  font-size: 0.9rem;
+}
+.admin-footer {
+  margin-top: 40px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.admin-footer code {
+  font-size: 0.75rem;
+  background: rgba(0,0,0,0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 /* =====================================================
