@@ -4,10 +4,12 @@ import { Hub } from './components/Hub';
 import { SimulationView } from './components/SimulationView';
 import { MinigamesLobby } from './components/MinigamesLobby';
 import { DobackSoft } from './components/DobackSoft';
+import { FireSimulator } from './components/FireSimulator';
 import { MissionControl } from './components/MissionControl';
+import { AdminPanel } from './components/AdminPanel';
 
 const ONBOARDED_KEY = 'aw_onboarded';
-const VALID_ROUTES = ['landing', 'hub', 'simulation', 'minigames', 'dobacksoft', 'missioncontrol'];
+const VALID_ROUTES = ['landing', 'hub', 'simulation', 'minigames', 'dobacksoft', 'firesimulator', 'missioncontrol', 'admin'];
 
 function hasOnboarded() {
   return typeof window !== 'undefined' && localStorage.getItem(ONBOARDED_KEY) === '1';
@@ -39,11 +41,16 @@ export default function App() {
     navigate('hub');
   };
 
-  if (route === 'landing')        return <Landing onEnter={handleOnboardingComplete} />;
+  if (route === 'landing' || (!hasOnboarded() && route !== 'admin')) {
+    return <Landing onEnter={handleOnboardingComplete} />;
+  }
+
   if (route === 'simulation')     return <SimulationView onBack={() => navigate('hub')} onNavigate={navigate} />;
   if (route === 'minigames')      return <MinigamesLobby onBack={() => navigate('hub')} />;
-  if (route === 'dobacksoft')     return <DobackSoft onBack={() => navigate('hub')} />;
+  if (route === 'dobacksoft')     return <DobackSoft onBack={() => navigate('hub')} onNavigate={navigate} />;
+  if (route === 'firesimulator')  return <FireSimulator onBack={() => navigate('dobacksoft')} />;
   if (route === 'missioncontrol') return <MissionControl onBack={() => navigate('hub')} onNavigate={navigate} />;
+  if (route === 'admin') return <AdminPanel onBack={() => navigate('hub')} />;
 
   return <Hub onNavigate={navigate} />;
 }

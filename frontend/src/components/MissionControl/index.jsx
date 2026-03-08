@@ -9,6 +9,7 @@ import { DetectionBanner } from '../DetectionBanner.jsx';
 import { MCActivityFeed } from './MCActivityFeed.jsx';
 import { MCSystemMonitor } from './MCSystemMonitor.jsx';
 import { MCAuditLog } from './MCAuditLog.jsx';
+import { MCLiveLog } from './MCLiveLog.jsx';
 import './mc.css';
 
 const TABS = [
@@ -17,6 +18,7 @@ const TABS = [
   { id: 'activity', label: 'Qué pasa' },
   { id: 'system', label: 'Salud' },
   { id: 'audit', label: 'Crónica' },
+  { id: 'logs', label: '📡 Logs' },
 ];
 
 export function MissionControl({ onBack, onNavigate }) {
@@ -35,6 +37,8 @@ export function MissionControl({ onBack, onNavigate }) {
         return <MCSystemMonitor />;
       case 'audit':
         return <MCAuditLog />;
+      case 'logs':
+        return <MCLiveLog />;
       default:
         return <MCOverview />;
     }

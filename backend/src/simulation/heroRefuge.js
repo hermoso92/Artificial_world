@@ -2,11 +2,18 @@
  * HeroRefuge — El refugio-origen del héroe.
  * Al crearse, genera automáticamente un Agente Personalizado (companion IA)
  * que opera en 13 modos de escala: personal → ia → galaxia.
- * Persiste mundos artificiales asociados al héroe.
+ * Persists hero, companion and worlds to SQLite via db/database.js.
  */
 
 import { randomUUID } from 'crypto';
 import { generateAnswer, generateToolResultAnswer } from '../services/llmService.mjs';
+import {
+  getHeroByPlayer,
+  getAliveWorldsByHero,
+  getWorldsByHero,
+  saveHeroState,
+  ensurePlayer,
+} from '../db/database.js';
 
 const HERO_MODES = [
   { id: 'personal',    label: 'Yo',          icon: '🪞', scale: 1,   description: 'Tu espacio interior. Desde aquí nace todo.' },
@@ -194,22 +201,104 @@ class ArtificialWorld {
 
 export class HeroRefuge {
   constructor(params = {}) {
-    this.id = `hero-${randomUUID()}`;
+    this.id = params.id ?? `hero-${randomUUID()}`;
+    this.playerId = params.playerId ?? null;
     this.name = params.name ?? 'The Hero';
     this.title = params.title ?? 'Architect of Worlds';
-    this.activeMode = 'refugio';
+    this.activeMode = params.activeMode ?? 'refugio';
     this.modes = HERO_MODES;
     this.agent = new PersonalAgent(this.id, this.name);
     this.worlds = [];
     this.maxWorlds = 256;
-    this.createdAt = Date.now();
-    this.stats = {
+    this.createdAt = params.createdAt ?? Date.now();
+    this.stats = params.stats ?? {
       worldsCreated: 0,
       worldsDestroyed: 0,
       totalTicks: 0,
     };
+    this._dirty = false;
+    this._saveTimer = null;
 
-    this.agent.switchMode('refugio');
+    if (params.companion) {
+      this.agent.id = params.companion.id ?? this.agent.id;
+      this.agent.name = params.companion.name ?? this.agent.name;
+      if (params.companion.traits) this.agent.traits = params.companion.traits;
+      this.agent.interactions = params.companion.interactions ?? 0;
+    }
+
+    this.agent.switchMode(this.activeMode);
+  }
+
+  /**
+   * Load a hero from SQLite by playerId, or create a new one if not found.
+   */
+  static loadOrCreate(playerId, params = {}) {
+    ensurePlayer(playerId, params.name);
+    const row = getHeroByPlayer(playerId);
+
+    if (row) {
+      const hero = new HeroRefuge({
+        id: row.id,
+        playerId,
+        name: row.name,
+        title: row.title,
+        activeMode: row.active_mode,
+        companion: {
+          id: row.companion_id,
+          name: row.companion_name,
+          traits: row.companion_traits ? JSON.parse(row.companion_traits) : undefined,
+          interactions: row.companion_interactions,
+        },
+        stats: {
+          worldsCreated: row.stats_worlds_created,
+          worldsDestroyed: row.stats_worlds_destroyed,
+          totalTicks: row.stats_total_ticks,
+        },
+      });
+
+      const worldRows = getWorldsByHero(row.id);
+      for (const wr of worldRows) {
+        const w = new ArtificialWorld(hero.id, {
+          name: wr.name,
+          type: wr.type,
+          scale: wr.scale,
+          biomes: wr.biomes,
+        });
+        w.id = wr.id;
+        w.population = wr.population;
+        w.resources = wr.resources;
+        w.tick = wr.tick;
+        w.alive = wr.alive;
+        w.history = wr.history;
+        w.createdAt = new Date(wr.created_at).getTime();
+        w.destroyedAt = wr.destroyed_at ? new Date(wr.destroyed_at).getTime() : null;
+        hero.worlds.push(w);
+      }
+
+      return hero;
+    }
+
+    const hero = new HeroRefuge({ playerId, ...params });
+    hero.persist();
+    return hero;
+  }
+
+  persist() {
+    if (!this.playerId) return;
+    saveHeroState(this);
+  }
+
+  _markDirty() {
+    this._dirty = true;
+    if (!this._saveTimer) {
+      this._saveTimer = setTimeout(() => {
+        this._saveTimer = null;
+        if (this._dirty) {
+          this._dirty = false;
+          this.persist();
+        }
+      }, 2000);
+    }
   }
 
   switchMode(modeId) {
@@ -217,6 +306,7 @@ export class HeroRefuge {
     if (!mode) return false;
     this.activeMode = modeId;
     this.agent.switchMode(modeId);
+    this._markDirty();
     return true;
   }
 
@@ -229,6 +319,7 @@ export class HeroRefuge {
     this.worlds.push(world);
     this.stats.worldsCreated++;
     this.agent._remember(`Created world "${world.name}" (${world.scale})`);
+    this._markDirty();
     return world;
   }
 
@@ -238,6 +329,7 @@ export class HeroRefuge {
     world.destroy();
     this.stats.worldsDestroyed++;
     this.agent._remember(`Destroyed world "${world.name}"`);
+    this._markDirty();
     return true;
   }
 
@@ -250,6 +342,9 @@ export class HeroRefuge {
       if (w.alive) w.tick_forward();
     }
     this.stats.totalTicks++;
+    if (this.stats.totalTicks % 10 === 0) {
+      this._markDirty();
+    }
   }
 
   _executeTool(tool, params) {
@@ -301,6 +396,7 @@ export class HeroRefuge {
   toJSON() {
     return {
       id: this.id,
+      playerId: this.playerId,
       name: this.name,
       title: this.title,
       activeMode: this.activeMode,

@@ -65,3 +65,17 @@ export function broadcastEvent(eventType, data) {
     if (ws.readyState === 1) ws.send(msg);
   });
 }
+
+export function broadcastLog(level, message, source) {
+  if (!wss) return;
+  const msg = JSON.stringify({
+    type: 'log',
+    level,
+    message,
+    source: source ?? 'server',
+    timestamp: new Date().toISOString(),
+  });
+  wss.clients.forEach((ws) => {
+    if (ws.readyState === 1) ws.send(msg);
+  });
+}

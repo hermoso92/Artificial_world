@@ -1,19 +1,16 @@
 /**
- * Landing — Primera experiencia. De visitante a constructor en 30 segundos.
+ * Landing — Onboarding flow for new users.
+ * Steps: choose world → name your hero → name your refuge → welcome screen.
  */
 import { useState } from 'react';
 import { api } from '../services/api';
 
-const STEPS = ['welcome', 'name', 'refuge', 'ready'];
-
 export function Landing({ onEnter }) {
-  const [step, setStep] = useState('welcome');
+  const [step, setStep] = useState('world');
   const [name, setName] = useState('');
   const [refugeName, setRefugeName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  const handleStart = () => setStep('name');
 
   const handleNameSubmit = (e) => {
     e.preventDefault();
@@ -36,27 +33,28 @@ export function Landing({ onEnter }) {
     }
   };
 
-  const handleEnter = () => onEnter?.();
-
   return (
     <div className="landing">
       <div className="landing-bg" />
 
-      {step === 'welcome' && (
-        <div className="landing-panel landing-welcome">
-          <p className="landing-eyebrow">Constructor de Mundos</p>
-          <h1 className="landing-headline">
-            Crea tu refugio.<br />
-            Hazlo crecer.<br />
-            Construye tu mundo.
-          </h1>
-          <p className="landing-body">
-            No es un juego. No es una herramienta. Es un lugar que puedes habitar,
-            llenar de vida y convertir en algo que no esperabas.
+      {step === 'world' && (
+        <div className="landing-panel landing-step">
+          <p className="landing-step-number">1 / 3</p>
+          <h2 className="landing-step-title">Tu mundo empieza aquí</h2>
+          <p className="landing-step-desc">
+            Crea tu propio mundo, dale vida con habitantes que piensan y sienten,
+            y observa cómo crece.
           </p>
-          <button className="landing-cta" onClick={handleStart}>
-            Empezar a construir
-          </button>
+          <div className="landing-options">
+            <button
+              type="button"
+              className="landing-option active"
+              onClick={() => setStep('name')}
+            >
+              <span className="landing-option-icon">🌍</span>
+              <span>Crear mi mundo</span>
+            </button>
+          </div>
           <button className="landing-skip" onClick={onEnter}>
             Ya tengo un mundo →
           </button>
@@ -65,8 +63,8 @@ export function Landing({ onEnter }) {
 
       {step === 'name' && (
         <div className="landing-panel landing-step">
-          <p className="landing-step-number">1 de 2</p>
-          <h2 className="landing-step-title">¿Cómo te llamas?</h2>
+          <p className="landing-step-number">2 / 3</p>
+          <h2 className="landing-step-title">¿Cómo te llamas, constructor?</h2>
           <p className="landing-step-desc">
             Cada mundo necesita un constructor. Tú eres el primero.
           </p>
@@ -89,11 +87,10 @@ export function Landing({ onEnter }) {
 
       {step === 'refuge' && (
         <div className="landing-panel landing-step">
-          <p className="landing-step-number">2 de 2</p>
-          <h2 className="landing-step-title">Dale nombre a tu refugio</h2>
+          <p className="landing-step-number">3 / 3</p>
+          <h2 className="landing-step-title">Nombra tu refugio</h2>
           <p className="landing-step-desc">
             Es el primer lugar de tu mundo. Donde todo empieza.
-            Puedes cambiarlo después.
           </p>
           <form onSubmit={handleRefugeSubmit} className="landing-form">
             <input
@@ -119,9 +116,14 @@ export function Landing({ onEnter }) {
           <h2 className="landing-step-title">Tu mundo está listo, {name}</h2>
           <p className="landing-step-desc">
             Tu refugio <strong>{refugeName || 'Mi refugio'}</strong> te espera.
-            Ahora toca habitarlo, darle vida y hacerlo crecer.
+            Entra, pulsa <strong>Editar</strong> debajo del mapa y coloca muebles para decorar tu casa.
           </p>
-          <button className="landing-cta landing-cta-glow" onClick={handleEnter}>
+          <div className="landing-tips">
+            <span>🛏️ Cama → Dormitorio</span>
+            <span>🍽️ Mesa → Cocina</span>
+            <span>🛋️ Sofá → Salón</span>
+          </div>
+          <button className="landing-cta landing-cta-glow" onClick={onEnter}>
             Entrar en mi mundo →
           </button>
         </div>

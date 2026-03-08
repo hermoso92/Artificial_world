@@ -21,6 +21,7 @@ mundo_artificial.db
 audit_competencia.db
 audit_simulacion.db
 subscriptions.db
+constructor.db
 *.db-shm
 *.db-wal
 debug_*.json

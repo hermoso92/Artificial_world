@@ -12,9 +12,10 @@ import apiRoutes from './routes/api.js';
 import heroRefugeRoutes from './routes/heroRefuge.js';
 import dobacksoftRoutes from './routes/dobacksoft.js';
 import subscriptionRoutes from './routes/subscription.js';
+import adminRoutes from './routes/admin.js';
 import { errorHandler } from './middleware/errorHandler.js';
-import { initWebSocket } from './realtime/websocket.js';
-import logger from './utils/logger.js';
+import { initWebSocket, broadcastLog } from './realtime/websocket.js';
+import logger, { setLogBroadcaster } from './utils/logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
@@ -30,6 +31,7 @@ app.use('/api', apiRoutes);
 app.use('/api/hero', heroRefugeRoutes);
 app.use('/api/dobacksoft', dobacksoftRoutes);
 app.use('/api/subscription', subscriptionRoutes);
+app.use('/api/admin', adminRoutes);
 
 // 404 para rutas API no registradas
 app.use('/api', (req, res) => {
@@ -62,6 +64,7 @@ if (IS_PROD && existsSync(distPath)) {
 app.use(errorHandler);
 
 initWebSocket(server);
+setLogBroadcaster(broadcastLog);
 
 server.listen(PORT, () => {
   logger.info(`Constructor de Mundos API at http://localhost:${PORT}`);

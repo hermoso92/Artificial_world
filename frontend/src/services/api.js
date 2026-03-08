@@ -35,10 +35,15 @@ function getErrorMessage(res, json, path = '') {
 
 async function fetchApi(path, options = {}) {
   const fullPath = `${API_BASE}${path}`;
+  const playerId = getPlayerId();
   let res;
   try {
     res = await fetch(fullPath, {
-      headers: { 'Content-Type': 'application/json', ...options.headers },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(playerId ? { 'x-player-id': playerId } : {}),
+        ...options.headers,
+      },
       ...options,
     });
   } catch (err) {
@@ -133,20 +138,20 @@ export const api = {
   },
 
   // Hero Refuge API
-  getHero: () => fetchApi('/hero'),
+  getHero: () => fetchApi(`/hero?playerId=${getPlayerId()}`),
   createHero: (name, title) =>
-    fetchApi('/hero', { method: 'POST', body: JSON.stringify({ name, title }) }),
+    fetchApi('/hero', { method: 'POST', body: JSON.stringify({ name, title, playerId: getPlayerId() }) }),
   switchHeroMode: (modeId) =>
-    fetchApi('/hero/mode', { method: 'POST', body: JSON.stringify({ modeId }) }),
+    fetchApi('/hero/mode', { method: 'POST', body: JSON.stringify({ modeId, playerId: getPlayerId() }) }),
   queryHeroAgent: (query, context) =>
-    fetchApi('/hero/query', { method: 'POST', body: JSON.stringify({ query, context }) }),
-  getHeroWorlds: () => fetchApi('/hero/worlds'),
+    fetchApi('/hero/query', { method: 'POST', body: JSON.stringify({ query, context, playerId: getPlayerId() }) }),
+  getHeroWorlds: () => fetchApi(`/hero/worlds?playerId=${getPlayerId()}`),
   createHeroWorld: (params) =>
     fetchApi('/hero/worlds', { method: 'POST', body: JSON.stringify({ ...params, playerId: getPlayerId() }) }),
   destroyHeroWorld: (worldId) =>
-    fetchApi(`/hero/worlds/${worldId}`, { method: 'DELETE' }),
+    fetchApi(`/hero/worlds/${worldId}?playerId=${getPlayerId()}`, { method: 'DELETE' }),
   tickHeroWorlds: () =>
-    fetchApi('/hero/worlds/tick', { method: 'POST' }),
+    fetchApi('/hero/worlds/tick', { method: 'POST', body: JSON.stringify({ playerId: getPlayerId() }) }),
 
   // Suscripciones — Constructor de Mundos
   getSubscriptionTiers: () => fetchApi('/subscription/tiers'),
@@ -177,4 +182,40 @@ export const api = {
     }),
   registerDobackSoftCitizen: () =>
     fetchApi('/dobacksoft/citizens', { method: 'POST' }),
+
+  // Admin (modo dios) — requiere playerId en ADMIN_PLAYER_IDS
+  adminOverview: () =>
+    fetchApi('/admin/overview', { headers: { 'X-Admin-Player-Id': getPlayerId() } }),
+  adminSimulationReset: () =>
+    fetchApi('/admin/simulation/reset', {
+      method: 'POST',
+      headers: { 'X-Admin-Player-Id': getPlayerId() },
+    }),
+  adminHeroWorldDestroy: (worldId) =>
+    fetchApi(`/admin/hero/worlds/${worldId}`, {
+      method: 'DELETE',
+      headers: { 'X-Admin-Player-Id': getPlayerId() },
+    }),
+  adminHeroWorldsWipe: () =>
+    fetchApi('/admin/hero/worlds/wipe', {
+      method: 'POST',
+      headers: { 'X-Admin-Player-Id': getPlayerId() },
+    }),
+  adminRefugeRemove: (refugeIndex) =>
+    fetchApi('/admin/refuges/remove', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Player-Id': getPlayerId() },
+      body: JSON.stringify({ refugeIndex }),
+    }),
+  adminDobackSoftReset: () =>
+    fetchApi('/admin/dobacksoft/reset', {
+      method: 'POST',
+      headers: { 'X-Admin-Player-Id': getPlayerId() },
+    }),
+  adminAuditEvents: (opts = {}) => {
+    const params = new URLSearchParams(opts).toString();
+    return fetchApi(`/admin/audit/events${params ? `?${params}` : ''}`, {
+      headers: { 'X-Admin-Player-Id': getPlayerId() },
+    });
+  },
 };
