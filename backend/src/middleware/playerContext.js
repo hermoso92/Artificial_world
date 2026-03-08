@@ -4,6 +4,7 @@
  * Registers the player in the DB on first sight.
  */
 import { ensurePlayer } from '../db/database.js';
+import logger from '../utils/logger.js';
 
 export function playerContext(req, _res, next) {
   req.playerId =
@@ -13,7 +14,11 @@ export function playerContext(req, _res, next) {
     ?? null;
 
   if (req.playerId) {
-    try { ensurePlayer(req.playerId); } catch { /* DB not ready yet */ }
+    try {
+      ensurePlayer(req.playerId);
+    } catch (err) {
+      logger.warn('[playerContext] ensurePlayer failed', { playerId: req.playerId, err: err.message });
+    }
   }
 
   next();
