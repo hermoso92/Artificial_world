@@ -106,10 +106,10 @@ Sin esto, solo puede haber un jugador.
 - [x] Filtros por nivel (info, warn, error) y por fuente (engine, api, ws)
 - [x] Auto-scroll con pause al hacer scroll manual
 
-#### 3.2 Pulir onboarding
-- [ ] Unificar Landing.jsx y OnboardingTutorial.jsx en un solo flujo
-- [ ] Eliminar duplicación de pasos
-- [ ] "Unirme con código": implementar o quitar la opción
+#### 3.2 Pulir onboarding ✅
+- [x] Unificar Landing.jsx y OnboardingTutorial.jsx en un solo flujo
+- [x] Eliminar duplicación de pasos
+- [x] "Unirme con código": quitada opción deshabilitada (se añadirá cuando esté lista)
 - [ ] Animaciones de transición entre pasos
 
 #### 3.3 Unificar HeroRefuge con simulación principal
