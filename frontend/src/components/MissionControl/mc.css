@@ -383,6 +383,31 @@
   color: var(--color-error, #ff4d4d);
 }
 
+.mc-feedback-limit {
+  background: rgba(255, 193, 7, 0.12);
+  color: #ffc107;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.mc-feedback-upgrade {
+  padding: 0.3rem 0.8rem;
+  border: 1px solid rgba(255, 193, 7, 0.4);
+  border-radius: 6px;
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.mc-feedback-upgrade:hover {
+  background: rgba(255, 193, 7, 0.25);
+}
+
 .mc-select {
   padding: 0.4rem 0.75rem;
   font-size: 0.85rem;

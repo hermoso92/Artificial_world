@@ -3,6 +3,7 @@
  */
 import { useState, useEffect } from 'react';
 import { api, getPlayerId } from '../../services/api.js';
+import { PricingModal } from '../PricingModal.jsx';
 import logger from '../../utils/logger.js';
 
 export function MCOverview({ onEnterSimulation }) {
@@ -17,6 +18,8 @@ export function MCOverview({ onEnterSimulation }) {
   const [actionFeedback, setActionFeedback] = useState(null);
   const [createRefugeName, setCreateRefugeName] = useState('Mi refugio');
   const [createRefugeLoading, setCreateRefugeLoading] = useState(false);
+  const [pricingOpen, setPricingOpen] = useState(false);
+  const [subscription, setSubscription] = useState(null);
 
   const refresh = async () => {
     try {
@@ -105,7 +108,11 @@ export function MCOverview({ onEnterSimulation }) {
       setTimeout(() => setActionFeedback(null), 2500);
     } catch (err) {
       logger.warn('MCOverview: release failed', err);
-      setActionFeedback({ type: 'error', msg: err.message });
+      if (err.message?.includes('plan') || err.message?.includes('Mejora') || err.message?.includes('habitantes')) {
+        setActionFeedback({ type: 'limit', msg: err.message });
+      } else {
+        setActionFeedback({ type: 'error', msg: err.message });
+      }
     } finally {
       setReleaseLoading(false);
     }
@@ -192,6 +199,11 @@ export function MCOverview({ onEnterSimulation }) {
       {actionFeedback && (
         <div className={`mc-feedback mc-feedback-${actionFeedback.type}`} role="status">
           {actionFeedback.msg}
+          {actionFeedback.type === 'limit' && (
+            <button className="mc-feedback-upgrade" onClick={() => setPricingOpen(true)}>
+              ⭐ Mejorar plan
+            </button>
+          )}
         </div>
       )}
 
@@ -306,6 +318,13 @@ export function MCOverview({ onEnterSimulation }) {
           </div>
         )}
       </div>
+
+      <PricingModal
+        open={pricingOpen}
+        onClose={() => setPricingOpen(false)}
+        currentTier={subscription?.tier ?? 'free'}
+        onSubscribed={() => { setPricingOpen(false); setActionFeedback(null); }}
+      />
     </div>
   );
 }
