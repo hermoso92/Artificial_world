@@ -8,11 +8,14 @@ import { asyncHandler } from '../middleware/asyncHandler.js';
 import { requireBody } from '../middleware/validate.js';
 import { ApiError } from '../middleware/errorHandler.js';
 import { HeroRefuge } from '../simulation/heroRefuge.js';
+import { listCivilizationSeeds } from '../simulation/civilizationSeeds.js';
 import { canCreateWorld } from '../subscription/store.js';
 
 const router = Router();
 
 const _heroCache = new Map();
+const _heroCacheKeys = [];
+const _heroCacheMaxSize = 1000;
 
 function requirePlayer(req) {
   if (!req.playerId) {
@@ -23,8 +26,13 @@ function requirePlayer(req) {
 
 function getOrCreateHero(playerId, params = {}) {
   if (_heroCache.has(playerId)) return _heroCache.get(playerId);
+  while (_heroCache.size >= _heroCacheMaxSize && _heroCacheKeys.length > 0) {
+    const oldest = _heroCacheKeys.shift();
+    if (_heroCache.has(oldest)) _heroCache.delete(oldest);
+  }
   const hero = HeroRefuge.loadOrCreate(playerId, params);
   _heroCache.set(playerId, hero);
+  _heroCacheKeys.push(playerId);
   return hero;
 }
 
@@ -62,6 +70,10 @@ router.post('/query', requireBody, asyncHandler(async (req, res) => {
   res.json({ success: true, data: response });
 }));
 
+router.get('/civilization-seeds', asyncHandler((req, res) => {
+  res.json({ success: true, data: listCivilizationSeeds() });
+}));
+
 router.get('/worlds', asyncHandler((req, res) => {
   const playerId = requirePlayer(req);
   const hero = getOrCreateHero(playerId);
@@ -70,7 +82,7 @@ router.get('/worlds', asyncHandler((req, res) => {
 
 router.post('/worlds', requireBody, asyncHandler((req, res) => {
   const playerId = requirePlayer(req);
-  const { name, type, biomes, scale } = req.body ?? {};
+  const { name, type, biomes, scale, civilizationSeedId, refugeName } = req.body ?? {};
   const hero = getOrCreateHero(playerId);
 
   const currentCount = hero.getAliveWorlds().length;
@@ -79,7 +91,7 @@ router.post('/worlds', requireBody, asyncHandler((req, res) => {
     throw new ApiError('LIMIT_EXCEEDED', check.reason, 429);
   }
 
-  const world = hero.createWorld({ name, type, biomes, scale });
+  const world = hero.createWorld({ name, type, biomes, scale, civilizationSeedId, refugeName });
   if (!world) throw new ApiError('LIMIT_EXCEEDED', 'No se pueden crear más mundos.', 429);
   res.status(201).json({ success: true, data: world.toJSON() });
 }));

@@ -3,12 +3,17 @@
  * Steps: choose world → name your hero → name your refuge → welcome screen.
  */
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { api } from '../services/api';
+import { CIVILIZATION_SEED_OPTIONS } from './HeroRefuge/constants';
+import { LanguageSelector } from './LanguageSelector';
 
 export function Landing({ onEnter }) {
+  const { t } = useTranslation();
   const [step, setStep] = useState('world');
   const [name, setName] = useState('');
   const [refugeName, setRefugeName] = useState('');
+  const [civilizationSeedId, setCivilizationSeedId] = useState('frontier-tribe');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -18,16 +23,24 @@ export function Landing({ onEnter }) {
     setStep('refuge');
   };
 
+  const defaultRefugeName = CIVILIZATION_SEED_OPTIONS.find((s) => s.value === civilizationSeedId)?.defaultRefugeName ?? 'Mi refugio';
+  const effectiveRefugeName = refugeName.trim() || defaultRefugeName;
+
   const handleRefugeSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
       await api.createHero(name.trim(), 'Constructor de Mundos');
-      await api.createRefuge(refugeName.trim() || 'Mi refugio');
+      await api.createRefuge(effectiveRefugeName);
+      await api.createHeroWorld({
+        name: `${effectiveRefugeName} · Civilizacion naciente`,
+        refugeName: effectiveRefugeName,
+        civilizationSeedId,
+      });
       setStep('ready');
     } catch (err) {
-      setError(err.message);
+      setError(err?.message ?? t('landing.error_create'));
     } finally {
       setLoading(false);
     }
@@ -36,76 +49,89 @@ export function Landing({ onEnter }) {
   return (
     <div className="landing">
       <div className="landing-bg" />
+      <LanguageSelector variant="landing" />
 
       {step === 'world' && (
         <div className="landing-panel landing-step">
-          <p className="landing-step-number">1 / 3</p>
-          <h2 className="landing-step-title">Tu mundo empieza aquí</h2>
-          <p className="landing-step-desc">
-            Crea tu propio mundo, dale vida con habitantes que piensan y sienten,
-            y observa cómo crece.
-          </p>
-          <div className="landing-options">
-            <button
-              type="button"
-              className="landing-option active"
-              onClick={() => setStep('name')}
-            >
-              <span className="landing-option-icon">🌍</span>
-              <span>Crear mi mundo</span>
-            </button>
+          <p className="landing-step-number">{t('landing.step1_num')}</p>
+          <h2 className="landing-step-title">{t('landing.step1_title')}</h2>
+          <p className="landing-step-desc">{t('landing.step1_desc')}</p>
+          <div className="landing-options" style={{ display: 'grid', gap: '10px' }}>
+            {CIVILIZATION_SEED_OPTIONS.map((seed) => (
+              <button
+                key={seed.value}
+                type="button"
+                className={`landing-option ${civilizationSeedId === seed.value ? 'active' : ''}`}
+                onClick={() => {
+                  setCivilizationSeedId(seed.value);
+                  setStep('name');
+                }}
+              >
+                <span className="landing-option-icon">🏛️</span>
+                <span>{seed.label}</span>
+                <small style={{ display: 'block', opacity: 0.7 }}>{seed.tone}</small>
+              </button>
+            ))}
           </div>
           <button className="landing-skip" onClick={onEnter}>
-            Ya tengo un mundo →
+            {t('landing.already_have_world')}
           </button>
         </div>
       )}
 
       {step === 'name' && (
         <div className="landing-panel landing-step">
-          <p className="landing-step-number">2 / 3</p>
-          <h2 className="landing-step-title">¿Cómo te llamas, constructor?</h2>
-          <p className="landing-step-desc">
-            Cada mundo necesita un constructor. Tú eres el primero.
-          </p>
+          <p className="landing-step-number">{t('landing.step2_num')}</p>
+          <h2 className="landing-step-title">{t('landing.step2_title')}</h2>
+          <p className="landing-step-desc">{t('landing.step2_desc')}</p>
           <form onSubmit={handleNameSubmit} className="landing-form">
             <input
               className="landing-input"
               type="text"
-              placeholder="Tu nombre"
+              placeholder={t('landing.placeholder_name')}
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoFocus
               maxLength={30}
             />
-            <button className="landing-cta" type="submit" disabled={!name.trim()}>
-              Continuar
-            </button>
+            <div className="landing-actions">
+              <button type="button" className="landing-back" onClick={() => setStep('world')}>
+                {t('landing.change_seed')}
+              </button>
+              <button className="landing-cta" type="submit" disabled={!name.trim()}>
+                {t('landing.continue')}
+              </button>
+            </div>
           </form>
         </div>
       )}
 
       {step === 'refuge' && (
         <div className="landing-panel landing-step">
-          <p className="landing-step-number">3 / 3</p>
-          <h2 className="landing-step-title">Nombra tu refugio</h2>
+          <p className="landing-step-number">{t('landing.step3_num')}</p>
+          <h2 className="landing-step-title">{t('landing.step3_title')}</h2>
           <p className="landing-step-desc">
-            Es el primer lugar de tu mundo. Donde todo empieza.
+            {t('landing.step3_desc')} <em>{defaultRefugeName}</em>
           </p>
           <form onSubmit={handleRefugeSubmit} className="landing-form">
             <input
               className="landing-input"
               type="text"
-              placeholder="Mi refugio"
+              placeholder={defaultRefugeName}
               value={refugeName}
               onChange={(e) => setRefugeName(e.target.value)}
               autoFocus
               maxLength={40}
             />
             {error && <p className="landing-error">{error}</p>}
-            <button className="landing-cta" type="submit" disabled={loading}>
-              {loading ? 'Construyendo…' : 'Crear mi refugio'}
-            </button>
+            <div className="landing-actions">
+              <button type="button" className="landing-back" onClick={() => setStep('name')}>
+                {t('landing.back')}
+              </button>
+              <button className="landing-cta" type="submit" disabled={loading}>
+                {loading ? t('landing.building') : t('landing.create_refuge')}
+              </button>
+            </div>
           </form>
         </div>
       )}
@@ -113,26 +139,27 @@ export function Landing({ onEnter }) {
       {step === 'ready' && (
         <div className="landing-panel landing-ready">
           <div className="landing-ready-icon">🌍</div>
-          <h2 className="landing-step-title">Tu mundo está listo, {name}</h2>
+          <h2 className="landing-step-title">{t('landing.ready_title', { name })}</h2>
           <p className="landing-step-desc">
-            Tu refugio <strong>{refugeName || 'Mi refugio'}</strong> te espera.
-            Entra, pulsa <strong>Editar</strong> debajo del mapa y coloca muebles para decorar tu casa.
+            {t('landing.ready_desc_before')}
+            <strong>{effectiveRefugeName}</strong>
+            {t('landing.ready_desc_after')}
           </p>
           <div className="landing-tips">
-            <span>🛏️ Cama → Dormitorio</span>
-            <span>🍽️ Mesa → Cocina</span>
-            <span>🛋️ Sofá → Salón</span>
+            <span>{t('landing.tip_bed')}</span>
+            <span>{t('landing.tip_table')}</span>
+            <span>{t('landing.tip_sofa')}</span>
           </div>
           <button className="landing-cta landing-cta-glow" onClick={onEnter}>
-            Entrar en mi mundo →
+            {t('landing.enter_world')}
           </button>
         </div>
       )}
 
       <footer className="landing-footer">
-        <span>Constructor de Mundos</span>
+        <span>{t('landing.footer_brand')}</span>
         <span className="landing-footer-dot">·</span>
-        <span>No persigas la IA. Construye un mundo que la necesite.</span>
+        <span>{t('landing.footer_tagline')}</span>
       </footer>
     </div>
   );

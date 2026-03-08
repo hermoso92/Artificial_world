@@ -1,25 +1,27 @@
 /**
- * DobackSoft — acceso por cupón limitado.
- * Primeros 1000 ciudadanos: €9,99/mes. Regular: €29/mes.
- * El código de acceso es para el simulador DobackSoft (bomberos), no para Damas (gratis).
+ * DobackSoft — Vertical demo integrada en Artificial World.
+ * Producto comercial completo en repo dobackv2. Ver docs/OWNERSHIP_ESTRATEGICO.md.
+ * Acceso por cupón. FireSimulator = superficie de demo/entrenamiento, no núcleo. Ver docs/SUPERFICIE_JUEGO.md.
  */
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { api } from '../services/api.js';
 import logger from '../utils/logger.js';
 import { VisorRuta2D } from './DobackSoft/VisorRuta2D.jsx';
 import { SubidaManualLite } from './DobackSoft/SubidaManualLite.jsx';
 
-const FEATURES = [
-  { icon: '🗺️', label: 'Mapa de despacho en tiempo real', desc: 'Rutas dinámicas hacia la emergencia activa' },
-  { icon: '🚒', label: 'Telemetría del vehículo', desc: 'Velocidad, combustible, estado del camión' },
-  { icon: '🏙️', label: 'Paisajes 2D realistas', desc: 'Tráfico, semáforos, peatones y edificios' },
-  { icon: '🌩️', label: 'Simulación de incidentes', desc: 'Incendios, accidentes y condiciones climáticas' },
-  { icon: '📊', label: 'Progresión y niveles', desc: 'Escenarios de dificultad creciente' },
-];
-
 const ACCESS_CODE_KEY = 'dobacksoft_access_code';
 
 export function DobackSoft({ onBack, onNavigate }) {
+  const { t } = useTranslation();
+
+  const FEATURES = [
+    { icon: '🗺️', label: t('dobacksoft.features.map_label'), desc: t('dobacksoft.features.map_desc') },
+    { icon: '🚒', label: t('dobacksoft.features.telemetry_label'), desc: t('dobacksoft.features.telemetry_desc') },
+    { icon: '🏙️', label: t('dobacksoft.features.landscape_label'), desc: t('dobacksoft.features.landscape_desc') },
+    { icon: '🌩️', label: t('dobacksoft.features.incidents_label'), desc: t('dobacksoft.features.incidents_desc') },
+    { icon: '📊', label: t('dobacksoft.features.progression_label'), desc: t('dobacksoft.features.progression_desc') },
+  ];
   const [stats, setStats] = useState(null);
   const [coupon, setCoupon] = useState('');
   const [couponResult, setCouponResult] = useState(null);
@@ -27,7 +29,7 @@ export function DobackSoft({ onBack, onNavigate }) {
   const [error, setError] = useState(null);
   const [registered, setRegistered] = useState(false);
   const [videoError, setVideoError] = useState(false);
-  const [activeTab, setActiveTab] = useState('rutas'); // 'subir' | 'rutas' | 'jugar'
+  const [activeTab, setActiveTab] = useState('rutas');
 
   useEffect(() => {
     api.getDobackSoftStats()
@@ -57,7 +59,7 @@ export function DobackSoft({ onBack, onNavigate }) {
       const data = await api.validateDobackSoftCoupon(coupon);
       setCouponResult(data);
     } catch (err) {
-      setError(err.message ?? 'Error al validar el cupón');
+      setError(err.message ?? t('dobacksoft.error_coupon'));
       logger.error('DobackSoft coupon validate', err);
     } finally {
       setLoading(false);
@@ -73,7 +75,7 @@ export function DobackSoft({ onBack, onNavigate }) {
       setRegistered(true);
       setCouponResult(null);
     } catch (err) {
-      setError(err.message ?? 'Error al registrar');
+      setError(err.message ?? t('dobacksoft.error_register'));
       logger.error('DobackSoft register', err);
     } finally {
       setLoading(false);
@@ -99,36 +101,33 @@ export function DobackSoft({ onBack, onNavigate }) {
   return (
     <div className="dobacksoft">
       <div className="dobacksoft-header">
-        <button className="back-btn" onClick={onBack}>← Constructor de Mundos</button>
+        <button className="back-btn" onClick={onBack}>{t('common.back')}</button>
       </div>
 
       <div className="dobacksoft-hero">
         <div className="dobacksoft-icon">🚒</div>
         <h1 className="dobacksoft-title">DobackSoft</h1>
-        <p className="dobacksoft-tagline">Protege tu comunidad · Acceso anticipado</p>
-        <span className="dobacksoft-badge">Primeros 1000 ciudadanos</span>
+        <p className="dobacksoft-tagline">{t('dobacksoft.tagline')}</p>
+        <span className="dobacksoft-badge">{t('dobacksoft.badge')}</span>
       </div>
 
-      <p className="dobacksoft-desc">
-        Conduce un camión de bomberos por paisajes 2D realistas. Tu objetivo: llegar a la
-        emergencia antes de que sea demasiado tarde. Acceso limitado por cupón.
-      </p>
+      <p className="dobacksoft-desc">{t('dobacksoft.desc')}</p>
 
       {stats && (
         <div className="dobacksoft-stats">
           <div className="dobacksoft-stat">
             <span className="dobacksoft-stat-value">{stats.citizensCount}</span>
-            <span className="dobacksoft-stat-label">de {stats.maxCitizens} ciudadanos</span>
+            <span className="dobacksoft-stat-label">{t('dobacksoft.citizens_of', { max: stats.maxCitizens })}</span>
           </div>
           <div className="dobacksoft-stat dobacksoft-stat--highlight">
             <span className="dobacksoft-stat-value">€{stats.priceEarly}</span>
-            <span className="dobacksoft-stat-label">/mes (cupón) vs €{stats.priceRegular}/mes</span>
+            <span className="dobacksoft-stat-label">{t('dobacksoft.price_vs', { regular: stats.priceRegular })}</span>
           </div>
         </div>
       )}
 
       <div className="dobacksoft-coupon">
-        <h3 className="dobacksoft-coupon-title">Introduce tu cupón</h3>
+        <h3 className="dobacksoft-coupon-title">{t('dobacksoft.coupon_title')}</h3>
         <div className="dobacksoft-coupon-row">
           <input
             type="text"
@@ -144,7 +143,7 @@ export function DobackSoft({ onBack, onNavigate }) {
             onClick={handleValidateCoupon}
             disabled={loading || !coupon.trim()}
           >
-            {loading ? '...' : 'Validar'}
+            {loading ? t('common.loading') : t('dobacksoft.validate')}
           </button>
         </div>
         {couponResult && (
@@ -154,16 +153,16 @@ export function DobackSoft({ onBack, onNavigate }) {
               <>
                 {couponResult.accessCode && (
                   <div className="dobacksoft-access-code">
-                    <span className="dobacksoft-access-label">Código de acceso a DobackSoft (Fire Simulator):</span>
+                    <span className="dobacksoft-access-label">{t('dobacksoft.access_label')}</span>
                     <div className="dobacksoft-access-row">
                       <code className="dobacksoft-access-value">{couponResult.accessCode}</code>
                       <button
                         type="button"
                         className="dobacksoft-copy-btn"
                         onClick={handleCopyCode}
-                        title="Copiar código"
+                        title={t('common.copy')}
                       >
-                        Copiar
+                        {t('common.copy')}
                       </button>
                     </div>
                   </div>
@@ -173,7 +172,7 @@ export function DobackSoft({ onBack, onNavigate }) {
                   onClick={handleRegister}
                   disabled={loading}
                 >
-                  Reservar por €{couponResult.price}/mes
+                  {t('dobacksoft.reserve', { price: couponResult.price })}
                 </button>
               </>
             )}
@@ -185,17 +184,15 @@ export function DobackSoft({ onBack, onNavigate }) {
       {(couponResult?.valid || registered) && (
         <div className="dobacksoft-promo-content">
           <section className="dobacksoft-video-section">
-            <h3 className="dobacksoft-section-title">Trailer</h3>
+            <h3 className="dobacksoft-section-title">{t('dobacksoft.trailer')}</h3>
             {registered && (
-              <p className="dobacksoft-game-desc">
-                Ya tienes acceso. Tu código está guardado.
-              </p>
+              <p className="dobacksoft-game-desc">{t('dobacksoft.has_access')}</p>
             )}
             <div className="dobacksoft-video-wrapper">
               {videoError ? (
                 <div className="dobacksoft-video-fallback">
-                  <span>Trailer próximamente.</span>
-                  <small>Ejecuta <code>python scripts/crear_video_dobacksoft.py</code> para generarlo.</small>
+                  <span>{t('dobacksoft.trailer_soon')}</span>
+                  <small dangerouslySetInnerHTML={{ __html: t('dobacksoft.trailer_generate') }} />
                 </div>
               ) : (
                 <video
@@ -216,21 +213,21 @@ export function DobackSoft({ onBack, onNavigate }) {
               className={`dobacksoft-tab ${activeTab === 'subir' ? 'active' : ''}`}
               onClick={() => setActiveTab('subir')}
             >
-              📤 Subir
+              {t('dobacksoft.tab_upload')}
             </button>
             <button
               type="button"
               className={`dobacksoft-tab ${activeTab === 'rutas' ? 'active' : ''}`}
               onClick={() => setActiveTab('rutas')}
             >
-              📊 Ver rutas
+              {t('dobacksoft.tab_routes')}
             </button>
             <button
               type="button"
               className={`dobacksoft-tab ${activeTab === 'jugar' ? 'active' : ''}`}
               onClick={() => setActiveTab('jugar')}
             >
-              🚒 Jugar
+              {t('dobacksoft.tab_play')}
             </button>
           </nav>
 
@@ -246,10 +243,8 @@ export function DobackSoft({ onBack, onNavigate }) {
 
           {activeTab === 'jugar' && (
             <section className="dobacksoft-game-section">
-              <h3 className="dobacksoft-section-title">Tu código de acceso</h3>
-              <p className="dobacksoft-game-desc">
-                Conserva este código para acceder al simulador. Las Damas y otros minijuegos son gratis desde el Hub.
-              </p>
+              <h3 className="dobacksoft-section-title">{t('dobacksoft.access_code_section')}</h3>
+              <p className="dobacksoft-game-desc">{t('dobacksoft.access_code_desc')}</p>
               {onNavigate && (
                 <button
                   type="button"
@@ -261,7 +256,7 @@ export function DobackSoft({ onBack, onNavigate }) {
                     onNavigate('firesimulator');
                   }}
                 >
-                  🚒 Jugar Fire Simulator
+                  {t('dobacksoft.play_fire')}
                 </button>
               )}
             </section>
@@ -283,7 +278,7 @@ export function DobackSoft({ onBack, onNavigate }) {
 
       {registered && (
         <div className="dobacksoft-registered">
-          ✓ ¡Bienvenido, ciudadano! Tu precio fundador está reservado.
+          {t('dobacksoft.welcome_citizen')}
         </div>
       )}
     </div>

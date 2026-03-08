@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artificial World — Documento completo</title>
+  <style>
+    :root { --accent: #0d9488; --accent-light: #ccfbf1; --text: #1a1d21; --text-muted: #4a5568; --bg: #fff; --border: #e2e8f0; --radius: 8px; }
+    @media print { body { -webkit-print-color-adjust: exact; } }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; color: var(--text); line-height: 1.6; font-size: 14px; background: #f0fdfa; }
+    .page { max-width: 700px; margin: 20px auto; padding: 36px 44px; background: var(--bg); border-radius: var(--radius); page-break-after: always; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .page:last-of-type { page-break-after: auto; }
+    h1 { font-size: 1.6rem; margin-bottom: 16px; color: var(--accent); border-bottom: 3px solid var(--accent); padding-bottom: 8px; }
+    h2 { font-size: 1.2rem; margin: 24px 0 12px; color: var(--text); }
+    h3 { font-size: 1rem; margin: 16px 0 8px; }
+    p, li { margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+    th { background: var(--accent-light); font-weight: 600; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+    ul { margin-left: 20px; margin-bottom: 12px; }
+    blockquote { border-left: 4px solid var(--accent); padding-left: 16px; margin: 12px 0; color: var(--text-muted); font-style: italic; }
+    pre.code-block { background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 12px; margin: 12px 0; }
+    .footer-note { font-size: 12px; color: var(--text-muted); margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--border); }
+    div[align="center"] { text-align: center; margin: 24px 0; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Artificial World — Documento completo</h1>
+    <p><em>Un solo documento que integra todo: idea, ejecución, relato inversores, guía técnica y crónica fundacional. Para colgar en la web.</em></p>
+    <p><strong>Fecha:</strong> 2026-03-08</p>
+    <div style="margin-top: 24px;">
+      <h1>Artificial World — Documento completo para web</h1>
+<p></p>
+<blockquote><strong>Un solo documento</strong> que integra todo: idea, ejecución, relato inversores, guía técnica y crónica fundacional. Para colgar en la web.</blockquote>
+<p></p>
+<p><strong>Fecha:</strong> 2026  </p>
+<p><strong>Marca:</strong> Artificial World  </p>
+<p><strong>Repositorio:</strong> artificial-word</p>
+<p></p>
+<p>---</p>
+<p></p>
+<div style="page-break-after: always;"></div>
+<p></p>
+<p>---</p>
+<p></p>
+<h1>PARTE 1 — La idea en 30 segundos</h1>
+<p></p>
+<h2>¿Qué es Artificial World?</h2>
+<p></p>
+<p><strong>Un mundo virtual donde los personajes piensan, recuerdan y se relacionan.</strong></p>
+<p></p>
+<p>Como un acuario digital: pones criaturas, les das reglas, y ellas deciden qué hacer. Comen cuando tienen hambre, huyen del peligro, comparten con amigos y desconfían de quienes les han robado.</p>
+<p></p>
+<p><strong>La diferencia:</strong> No usa ChatGPT ni nada parecido. Cada decisión es calculada, predecible y gratis. Corre en tu ordenador, sin internet.</p>
+<p></p>
+<h2>En una frase</h2>
+<p></p>
+<blockquote><strong>No persigas la IA. Construye un mundo que la necesite.</strong></blockquote>
+<p></p>
+<h2>Tres palabras clave</h2>
+<p></p>
+<p>| | |</p>
+<p>|---|---|</p>
+<p>| <strong>Memoria</strong> | Los personajes recuerdan lo que vieron y lo que pasó |</p>
+<p>| <strong>Relaciones</strong> | Confianza, miedo, hostilidad que cambian con el tiempo |</p>
+<p>| <strong>Local</strong> | Todo en tu PC. Cero coste por uso |</p>
+<p></p>
+<p>---</p>
+<p></p>
+<div style="page-break-after: always;"></div>
+<p></p>
+<p>---</p>
+<p></p>
+<h1>PARTE 2 — Resumen ejecutivo</h1>
+<p></p>
+<p><strong>Artificial World</strong> es una base para crear civilizaciones vivas con memoria, héroes, refugios y comunidades. La verdad estratégica vive en 2D; la encarnación 3D es capa futura.</p>
+<p></p>
+<p><strong>Tesis:</strong> <em>Empieza con un refugio. Elige una semilla. Mira nacer tu civilización.</em></p>
+<p></p>
+<p><strong>Objetivo final:</strong> Motor creador de mundos compacto y reutilizable.</p>
+<p></p>
+<h2>Qué existe hoy (verificado)</h2>
+<p></p>
+<p>| Componente | Estado | Evidencia |</p>
+<p>|------------|--------|-----------|</p>
+<p>| Motor Python 2D | Real | <code>principal.py</code>, 13 acciones, persistencia SQLite |</p>
+<p>| Modo Sombra | Real | <code>gestor_modo_sombra.py</code>, tests |</p>
+<p>| Web fullstack | Demo | Backend 3001, Frontend 5173 |</p>
+<p>| HeroRefuge | Parcial | 7 semillas, mundos ligeros, companion IA |</p>
+<p>| Panel Administrador | Real | <code>AdminPanel.jsx</code>, ruta <code>#admin</code> |</p>
+<p>| DobackSoft | Demo | UI en hub, FireSimulator |</p>
+<p>| IA local | Parcial | <code>aiCore.js</code>, Ollama, <code>/api/ai/*</code> |</p>
+<p>| CI GitHub | Real | Tests, deploy Pages, deploy VPS |</p>
+<p>| 11 suites Python | Real | <code>run_tests_produccion.py</code> |</p>
+<p></p>
+<h2>Qué no existe</h2>
+<p></p>
+<ul>
+<li>3D runtime</li>
+<li>Integración Python/JS</li>
+<li>DobackSoft comercial completo en este repo</li>
+</ul>
+<p></p>
+<p>---</p>
+<p></p>
+<div style="page-break-after: always;"></div>
+<p></p>
+<p>---</p>
+<p></p>
+<h1>PARTE 3 — Para tu abuelo (y para cualquiera no técnico)</h1>
+<p></p>
+<h2>Imagina un pueblo pequeño</h2>
+<p></p>
+<p>En ese pueblo hay vecinos. Cada uno tiene su casa, su huerto y sus recuerdos.</p>
+<p></p>
+<ul>
+<li><strong>Si ayudas a uno</strong>, te guarda confianza. La próxima vez te tratará mejor.</li>
+<li><strong>Si le robas</strong>, te tendrá miedo. Huirá cuando te vea.</li>
+<li><strong>Si no comes</strong>, te debilitas. Si no descansas, te cansas.</li>
+</ul>
+<p></p>
+<p><strong>Artificial World es ese pueblo</strong>, pero en pantalla. Los vecinos son personajes que el ordenador controla siguiendo reglas. No son aleatorios: cada acción tiene una razón (hambre, miedo, amistad).</p>
+<p></p>
+<h2>¿Para qué sirve?</h2>
+<p></p>
+<p>Para que los videojuegos y las simulaciones tengan personajes que <strong>importan</strong>. Que te reconozcan. Que cambien según lo que hagas.</p>
+<p></p>
+<h2>¿Quién puede usarlo?</h2>
+<p></p>
+<p>Cualquiera que quiera un mundo con vida. Estudiantes, creadores de juegos, empresas que simulan comportamientos.</p>
+<p></p>
+<p>---</p>
+<p></p>
+<div style="page-break-after: always;"></div>
+<p></p>
+<p>---</p>
+<p></p>
+<h1>PARTE 4 — Para inversores y jefes</h1>
+<p></p>
+<h2>El problema que resuelve</h2>
+<p></p>
+<p>Los personajes de muchos juegos y simulaciones son <strong>estáticos</strong>. Dicen lo mismo, no recuerdan, no evolucionan. Los jugadores lo notan.</p>
+<p></p>
+<p>Las alternativas con IA generativa (ChatGPT, etc.) <strong>cuestan dinero por uso</strong>, tienen latencia y son impredecibles. No escalan para mundos con cientos de personajes.</p>
+<p></p>
+<h2>La solución</h2>
+<p></p>
+<p>| Artificial World | Competencia (LLM) |</p>
+<p>|------------------|-------------------|</p>
+<p>| <strong>Coste:</strong> Cero por decisión | $ por token |</p>
+<p>| <strong>Latencia:</strong> < 1 ms | 100–500 ms |</p>
+<p>| <strong>Predecible:</strong> Sí | No |</p>
+<p>| <strong>Memoria persistente:</strong> Sí | Limitada |</p>
+<p>| <strong>Escalable:</strong> Miles de agentes | Coste crece con uso |</p>
+<p></p>
+<h2>Mercado y oportunidad</h2>
+<p></p>
+<ul>
+<li><strong>Estudios indie</strong> — NPCs creíbles sin presupuesto de API</li>
+<li><strong>Simulaciones</strong> — Gestión, logística, formación</li>
+<li><strong>Educación</strong> — Enseñar IA por utilidad</li>
+<li><strong>Investigación</strong> — Motor abierto, modificable</li>
+</ul>
+<p></p>
+<h2>Estado actual</h2>
+<p></p>
+<ul>
+<li>Motor funcional (Python + Web)</li>
+<li>68+ tests pasando</li>
+<li>Ejecutable Windows (.exe) listo</li>
+<li>Documentación completa</li>
+</ul>
+<p></p>
+<p>---</p>
+<p></p>
+<div style="page-break-after: always;"></div>
+<p></p>
+<p>---</p>
+<p></p>
+<h1>PARTE 5 — Cómo ejecutar</h1>
+<p></p>
+<h2>Opción A — Motor Python (recomendado)</h2>
+<p></p>
+<pre class="code-block">pip install -r requirements.txt
+python principal.py
+</pre>
+<p></p>
+<p><strong>Resultado:</strong> Ventana pygame, entidades moviéndose, panel, Modo Sombra, guardar/cargar en <code>mundo_artificial.db</code>.</p>
+<p></p>
+<h2>Opción B — Demo web</h2>
+<p></p>
+<pre class="code-block">.\scripts\iniciar_fullstack.ps1
+</pre>
+<p></p>
+<p><strong>Resultado:</strong> Backend 3001, Frontend 5173, navegador abierto. Hub con HeroRefuge, DobackSoft, FireSimulator.</p>
+<p></p>
+<h2>Opción C — Crónica fundacional (headless)</h2>
+<p></p>
+<pre class="code-block">python cronica_fundacional.py --ticks 200
+</pre>
+<p></p>
+<p><strong>Resultado:</strong> <code>cronica_fundacional.json</code> y <code>cronica_fundacional.md</code>.</p>
+<p></p>
+<h2>Opción D — Ejecutable Windows (sin instalar nada)</h2>
+<p></p>
+<p>1. Descarga <code>MundoArtificial.exe</code></p>
+<p>2. Ejecútalo</p>
+<p>3. Funciona igual que la versión completa</p>
+<p></p>
+<p>---</p>
+<p></p>
+<div style="page-break-after: always;"></div>
+<p></p>
+<p>---</p>
+<p></p>
+<h1>PARTE 6 — Stack técnico</h1>
+<p></p>
+<h2>Tecnologías</h2>
+<p></p>
+<p>| Capa | Tecnología |</p>
+<p>|------|------------|</p>
+<p>| <strong>Motor principal</strong> | Python 3.11+, pygame |</p>
+<p>| <strong>Persistencia</strong> | SQLite (mundo_artificial.db) |</p>
+<p>| <strong>Web</strong> | Node.js + Express, React + Vite |</p>
+<p>| <strong>Tiempo real</strong> | WebSocket |</p>
+<p></p>
+<h2>Arquitectura del motor</h2>
+<p></p>
+<pre class="code-block">nucleo.Simulacion → tick_runner
+    ├── mundo/ (mapa, celdas, recursos)
+    ├── entidades/ (EntidadSocial, EntidadGato)
+    ├── agentes/ (MotorDecision, memoria, relaciones)
+    ├── acciones/ (13: mover, comer, compartir, robar, huir, atacar...)
+    └── sistemas/ (persistencia, watchdog, logs)
+</pre>
+<p></p>
+<h2>Cómo decide un agente</h2>
+<p></p>
+<p>1. <strong>Genera</strong> acciones candidatas (mover, comer, ir al refugio...)</p>
+<p>2. <strong>Puntúa</strong> cada una por utilidad (hambre, energía, rasgo, relaciones)</p>
+<p>3. <strong>Selecciona</strong> la de mayor puntuación</p>
+<p>4. <strong>Ejecuta</strong> y actualiza memoria/relaciones</p>
+<p></p>
+<p>Sin LLMs. Todo determinista y trazable.</p>
+<p></p>
+<p>---</p>
+<p></p>
+<div style="page-break-after: always;"></div>
+<p></p>
+<p>---</p>
+<p></p>
+<h1>PARTE 7 — Modelo conceptual (civilizaciones vivas)</h1>
+<p></p>
+<p>| Entidad | Descripción |</p>
+<p>|---------|-------------|</p>
+<p>| <strong>World</strong> | Contenedor: identidad, recursos, tick, crónica, semilla, refugio fundador |</p>
+<p>| <strong>CivilizationSeed</strong> | Valores, tensiones, arquetipo, tono 2D/3D, héroe probable |</p>
+<p>| <strong>Refuge</strong> | Unidad base: nombre, recursos, seguridad, moral, memoria local |</p>
+<p>| <strong>Hero</strong> | Agente histórico: nombre, rol, arquetipo, lealtades |</p>
+<p>| <strong>Community</strong> | Agrupación: cultura, tensiones, normas, cohesión, liderazgo |</p>
+<p>| <strong>MemoryEntry</strong> | Registro: tipo, alcance, resumen, fecha |</p>
+<p>| <strong>HistoricalRecord</strong> | Evento: tipo, título, resumen, significancia |</p>
+<p></p>
+<p><strong>Flujo fundador:</strong> semilla → refugio → civilización naciente.</p>
+<p></p>
+<h2>Regla 2D / 3D</h2>
+<p></p>
+<ul>
+<li><strong>2D</strong> = Verdad sistémica (implementada)</li>
+<li><strong>3D</strong> = Encarnación futura (roadmap)</li>
+</ul>
+<p></p>
+<p>---</p>
+<p></p>
+<div style="page-break-after: always;"></div>
+<p></p>
+<p>---</p>
+<p></p>
+<h1>PARTE 8 — Relato para inversores</h1>
+<p></p>
+<h2>Elevator pitch</h2>
+<p></p>
+<p><strong>Artificial World</strong> es un motor de mundos virtuales 2D persistentes con agentes que tienen memoria y relaciones. No usa IA generativa de pago: cada decisión es local, trazable y sin coste por uso. El producto ya existe: motor Python completo, demo web, ejecutable Windows, 68+ tests. La oportunidad: convertirse en el estándar de referencia para emuladores de mundos artificiales.</p>
+<p></p>
+<h2>Líneas de monetización plausibles</h2>
+<p></p>
+<p>1. <strong>SDK / licencia</strong> — Motor integrable para estudios de videojuegos (indie, AA)</p>
+<p>2. <strong>SaaS vertical</strong> — DobackSoft como producto B2B: telemetría, estabilidad, formación</p>
+<p>3. <strong>Consultoría / laboratorio</strong> — Simulación de equipos, dinámicas organizativas</p>
+<p>4. <strong>Educación</strong> — Licencia para universidades, bootcamps, cursos de IA explicable</p>
+<p>5. <strong>Open core</strong> — Motor base abierto; extensiones, soporte o hosting de pago</p>
+<p></p>
+<h2>Manifiesto breve</h2>
+<p></p>
+<p>Un mundo artificial no es solo un decorado. Es un espacio donde las cosas pasan, se recuerdan y tienen consecuencias. Un personaje que no recuerda no es un personaje: es un decorado animado.</p>
+<p></p>
+<p><strong>Artificial World</strong> no pretende ser la simulación definitiva. Pretende ser una base donde el estado importa, donde la memoria importa y donde cada decisión puede dejar una historia verificable.</p>
+<p></p>
+<p>---</p>
+<p></p>
+<div style="page-break-after: always;"></div>
+<p></p>
+<p>---</p>
+<p></p>
+<h1>PARTE 9 — Tests y verificación</h1>
+<p></p>
+<h2>Python</h2>
+<p></p>
+<pre class="code-block">$env:SDL_VIDEODRIVER="dummy"; $env:SDL_AUDIODRIVER="dummy"
+python pruebas/run_tests_produccion.py
+python pruebas/verificar_todo.py
+</pre>
+<p></p>
+<p><strong>Suites Python (11):</strong> estructural, core, crónica fundacional, modo sombra, combate, interacciones sociales, bug robar, watchdog fixes, watchdog integración, arranque limpio, integración producción.</p>
+<p></p>
+<h2>Backend y frontend</h2>
+<p></p>
+<pre class="code-block">cd backend; npm test
+cd frontend; npm test
+</pre>
+<p></p>
+<p><strong>Backend:</strong> 39 tests (Vitest). <strong>Frontend:</strong> 6 tests (Vitest).</p>
+<p></p>
+<p>---</p>
+<p></p>
+<div style="page-break-after: always;"></div>
+<p></p>
+<p>---</p>
+<p></p>
+<h1>PARTE 10 — Crónica fundacional (ejemplo)</h1>
+<p></p>
+<p>La crónica fundacional es un artefacto generado por <code>python cronica_fundacional.py</code>. Documenta el estado de una sesión reproducible: entidades, alertas, hitos y veredicto.</p>
+<p></p>
+<p><strong>Ejemplo de estructura:</strong></p>
+<p></p>
+<ul>
+<li><strong>Fecha</strong> — Timestamp de la sesión</li>
+<li><strong>Veredicto</strong> — tension | prosperidad | supervivencia</li>
+<li><strong>Resumen</strong> — Estado global en una frase</li>
+<li><strong>Metadata</strong> — Semilla, fundador, refugio, ticks</li>
+<li><strong>Hitos</strong> — Tick de inicio y cierre</li>
+<li><strong>Entidades finales</strong> — Nombre, hambre, energía, posición</li>
+<li><strong>Alertas</strong> — Eventos del watchdog (hambre, energía crítica, etc.)</li>
+</ul>
+<p></p>
+<p>Para generar tu propia crónica:</p>
+<p></p>
+<pre class="code-block">python cronica_fundacional.py --founder "Tu nombre" --refuge "Tu refugio" --ticks 200
+</pre>
+<p></p>
+<p>---</p>
+<p></p>
+<div style="page-break-after: always;"></div>
+<p></p>
+<p>---</p>
+<p></p>
+<h1>PARTE 11 — Regla de foco y criterio de éxito</h1>
+<p></p>
+<h2>Regla de foco</h2>
+<p></p>
+<p>Cada cambio debe responder:</p>
+<p></p>
+<p><strong>¿Fortalece o distrae de "crear un refugio inicial y ver nacer una civilización"?</strong></p>
+<p></p>
+<p>Si distrae → posponer.</p>
+<p></p>
+<h2>Criterio de éxito</h2>
+<p></p>
+<p>Una persona nueva entiende en menos de 5 minutos:</p>
+<p></p>
+<ul>
+<li>qué es real</li>
+<li>qué es demo</li>
+<li>qué debe probar primero</li>
+</ul>
+<p></p>
+<p>---</p>
+<p></p>
+<div style="page-break-after: always;"></div>
+<p></p>
+<p>---</p>
+<p></p>
+<h1>Cierre</h1>
+<p></p>
+<h2>Artificial World en tres líneas</h2>
+<p></p>
+<p>1. <strong>Es</strong> un motor de vida artificial donde los personajes piensan, recuerdan y se relacionan.</p>
+<p>2. <strong>No usa</strong> ChatGPT ni APIs de pago. Todo corre local, gratis y predecible.</p>
+<p>3. <strong>Sirve</strong> para juegos, simulaciones, educación e investigación.</p>
+<p></p>
+<h2>Para cada persona</h2>
+<p></p>
+<p>| Si eres... | Tu siguiente paso |</p>
+<p>|------------|-------------------|</p>
+<p>| <strong>Abuelo / no técnico</strong> | Pide que te enseñen la demo en pantalla |</p>
+<p>| <strong>Jefe / inversor</strong> | Revisa la parte 4 (valor y mercado) |</p>
+<p>| <strong>Informático</strong> | Clona el repo y ejecuta <code>python principal.py</code> |</p>
+<p>| <strong>Cualquiera</strong> | Comparte este documento con quien creas que le interese |</p>
+<p></p>
+<h2>Frase final</h2>
+<p></p>
+<blockquote><strong>Constrúyelo. Habítalo. Haz que crezca.</strong></blockquote>
+<p></p>
+<p>---</p>
+<p></p>
+<div align="center">
+<p></p>
+<p><strong>Artificial World</strong></p>
+<p></p>
+<p><em>Simulación de vida artificial 2D con agentes autónomos</em></p>
+<p></p>
+<p><em>artificial-word — El repositorio. Artificial World — La tesis. Motor creador de mundos — El destino.</em></p>
+<p></p>
+<p></div></p>
+<p></p>
+    </div>
+    <p class="footer-note">Artificial World — Constrúyelo. Habítalo. Haz que crezca.</p>
+  </div>
+</body>
+</html>

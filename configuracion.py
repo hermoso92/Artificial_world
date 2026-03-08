@@ -79,6 +79,12 @@ class Configuracion:
     modo_competencia_umbral_alerta: int = 60
     modo_competencia_umbral_legal: int = 80
 
+    # Crónica fundacional (flujo headless reproducible)
+    nombre_fundador: str = "Tryndamere"
+    nombre_refugio: str = "Refugio Fundador"
+    semilla_civilizacion: str = "default"
+    ticks_cronica: int = 200
+
     def __post_init__(self) -> None:
         """Valida rangos para evitar fallos silenciosos."""
         if self.ancho_mapa < 2 or self.alto_mapa < 2:

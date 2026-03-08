@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "status": "official-boundary",
+  "updatedAt": "2025-03-08",
+  "note": "Frontera oficial de interoperabilidad DobackSoft ↔ Artificial World. Ver docs/FRONTERA_CONTRATOS.md. Integración por artefactos, no por acoplamiento.",
+  "session": {
+    "id": "string",
+    "source": "demo | artificial-world | dobacksoft-real",
+    "vehicleId": "string",
+    "startedAt": "ISO-8601",
+    "endedAt": "ISO-8601",
+    "mode": "debug | demo | production",
+    "tags": ["string"]
+  },
+  "route": {
+    "sessionId": "string",
+    "points": [
+      {
+        "lat": "number",
+        "lng": "number",
+        "ts": "ISO-8601",
+        "speed": "number"
+      }
+    ]
+  },
+  "event": {
+    "id": "string",
+    "sessionId": "string",
+    "type": "string",
+    "severity": "info | low | medium | high | critical",
+    "ts": "ISO-8601",
+    "payload": {}
+  },
+  "severity": {
+    "levels": ["info", "low", "medium", "high", "critical"],
+    "rule": "No reinterpretar escalas externas sin adaptación explícita."
+  },
+  "recommendation": {
+    "id": "string",
+    "sessionId": "string",
+    "severity": "info | low | medium | high | critical",
+    "summary": "string",
+    "evidence": ["string"],
+    "nextStep": "string"
+  },
+  "report": {
+    "id": "string",
+    "sessionId": "string",
+    "generatedAt": "ISO-8601",
+    "generator": "ai-core-local | manual",
+    "status": "verified | demo | external | roadmap",
+    "sections": [
+      {
+        "title": "string",
+        "content": "string"
+      }
+    ]
+  }
+}

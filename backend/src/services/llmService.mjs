@@ -1,15 +1,9 @@
 /**
- * LLM service — Ollama wrapper for Hero Refuge agent.
- * Falls back to mock response when Ollama is unavailable.
- * Uses OLLAMA_HOST env (default localhost:11434), OLLAMA_MODEL (default llama3.2).
- * Supports tool-calling: createWorld, destroyWorld, switchMode, listWorlds.
+ * Hero Refuge adapter over the shared ai-core service.
+ * HeroRefuge stays as a client with its own prompt/tool contract,
+ * while health/chat/summarize/analyze operations live in aiCore.js.
  */
-
-import logger from '../utils/logger.js';
-
-const OLLAMA_HOST = process.env.OLLAMA_HOST ?? 'http://localhost:11434';
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? 'llama3.2';
-const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS ?? 30000);
+import { aiChat } from './aiCore.js';
 
 const TOOL_DESCRIPTIONS = `
 HERRAMIENTAS DISPONIBLES (responde SOLO con JSON cuando el usuario pida ejecutar una acción):
@@ -62,44 +56,6 @@ ${toolsBlock}
 Responde en español, de forma concisa y natural.`;
 }
 
-async function callOllama(prompt, systemPrompt) {
-  const url = `${OLLAMA_HOST.replace(/\/$/, '')}/api/generate`;
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), OLLAMA_TIMEOUT_MS);
-
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: OLLAMA_MODEL,
-        prompt,
-        system: systemPrompt,
-        stream: false,
-      }),
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-
-    if (!res.ok) {
-      logger.warn('llmService: Ollama returned', res.status, res.statusText);
-      return null;
-    }
-
-    const data = await res.json();
-    const text = data?.response?.trim();
-    return text || null;
-  } catch (err) {
-    clearTimeout(timeoutId);
-    if (err.name === 'AbortError') {
-      logger.warn('llmService: Ollama request timed out');
-    } else {
-      logger.warn('llmService: Ollama unavailable', err.message);
-    }
-    return null;
-  }
-}
-
 function parseToolCall(text) {
   if (!text || typeof text !== 'string') return null;
   const trimmed = text.trim();
@@ -140,13 +96,24 @@ export async function generateAnswer(opts) {
     includeTools,
   });
 
-  const answer = await callOllama(query, systemPrompt);
-  if (answer) {
-    const toolCall = parseToolCall(answer);
+  const response = await aiChat({
+    prompt: query,
+    systemPrompt,
+    context: {
+      heroName,
+      activeMode: modeLabel,
+      worldCount,
+      heroRefuge: true,
+    },
+  });
+  const answerText = response?.data?.text;
+
+  if (answerText) {
+    const toolCall = parseToolCall(answerText);
     if (toolCall) {
       return { type: 'toolCall', tool: toolCall.tool, params: toolCall.params };
     }
-    return { type: 'answer', text: answer };
+    return { type: 'answer', text: answerText };
   }
 
   const modeContext = mode
@@ -171,6 +138,15 @@ export async function generateToolResultAnswer(opts) {
     includeTools: false,
   });
 
-  const answer = await callOllama(prompt, systemPrompt);
-  return answer ?? `He ejecutado ${tool}. ${JSON.stringify(toolResult)}`;
+  const response = await aiChat({
+    prompt,
+    systemPrompt,
+    context: {
+      heroName,
+      activeMode: modeLabel,
+      tool,
+      heroRefuge: true,
+    },
+  });
+  return response?.data?.text ?? `He ejecutado ${tool}. ${JSON.stringify(toolResult)}`;
 }

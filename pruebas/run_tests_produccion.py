@@ -26,6 +26,7 @@ REPORTE_PATH = PROYECTO / "pruebas" / "reporte_produccion.log"
 SUITES = [
     ("test_estructural", "pruebas/test_estructural.py", "Tests estructurales (imports, config, modulos)"),
     ("test_core", "pruebas/test_core.py", "Tests nucleo (motor, directivas, watchdog)"),
+    ("test_cronica_fundacional", "pruebas/test_cronica_fundacional.py", "Tests cronica fundacional (headless, artefactos)"),
     ("test_modo_sombra_completo", "pruebas/test_modo_sombra_completo.py", "Tests Modo Sombra completo"),
     ("test_perseguir_hasta_matar", "pruebas/test_perseguir_hasta_matar.py", "Tests persecucion hasta matar (combate)"),
     ("test_interacciones_sociales", "pruebas/test_interacciones_sociales.py", "Tests interacciones sociales"),

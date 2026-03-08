@@ -1,77 +1,161 @@
 # Estrategia de producto — Artificial World
 
-**Decisión:** Python como motor principal, Web como demo y puerta de entrada.
-
-**Fecha:** Marzo 2025
-
----
-
-## 1. Decisión
-
-| Componente | Rol | Prioridad |
-|------------|-----|-----------|
-| **Python (principal.py)** | Motor completo, producto principal | P0 |
-| **Web (fullstack)** | Demo, landing, puerta de entrada | P1 |
-| **DobackSoft** | Producto B2B integrado en web | P1 |
+**Fecha:** Marzo 2025  
+**Estado:** revisado contra el repo real
 
 ---
 
-## 2. Justificación
+## 1. Tesis oficial del repositorio
 
-### Python como motor principal
+La tesis que mejor encaja con el código actual es esta:
 
-- **13 acciones** con IA por utilidad (mover, comer, compartir, robar, huir, atacar, etc.)
-- **Modo Sombra** — control manual de una entidad
-- **Relaciones sociales** — confianza, miedo, hostilidad
-- **Memoria espacial** — recursos y refugios vistos
-- **Persistencia** SQLite
-- **Modo competencia** y watchdog
-- **68+ tests** pasando
-- **`.exe`** listo para Windows
-- **VPS** con Docker + noVNC — acceso completo desde navegador
+- **Artificial World** = motor principal real en Python + laboratorio local auditable
+- **Web fullstack** = demo funcional y puerta de entrada, con motor JavaScript propio
+- **DobackSoft en este repo** = vertical demo; producto comercial completo en dobackv2
+- **FireSimulator / juego** = superficie de demo y entrenamiento, no núcleo de negocio
 
-### Web como demo
+No debe presentarse este repositorio como si ya contuviera el `DobackSoft` comercial completo.
 
-- Sin instalación, compartir por URL
-- Base para DobackSoft y minijuegos
-- Motor simplificado (Gather → Decide → Move → Combat → Reproduce)
-- Estado en memoria (no persistente)
+Documento maestro de ownership: [docs/OWNERSHIP_ESTRATEGICO.md](OWNERSHIP_ESTRATEGICO.md).
 
 ---
 
-## 3. Próximos pasos
+## 2. Qué sostiene esta decisión
 
-### Corto plazo (Python)
+### Motor Python
 
-- [ ] Completar FASE 2 del plan de producción (manejo de errores)
-- [ ] Completar FASE 4 (CI en cada commit)
-- [ ] Documentar diferencia demo vs completo en la web
+Es la parte más consistente entre código, persistencia y pruebas:
 
-### Medio plazo (Web)
+- 13 tipos de acción en `tipos/enums.py`
+- persistencia SQLite en `sistemas/sistema_persistencia.py`
+- Modo Sombra en `sistemas/gestor_modo_sombra.py`
+- runner de producción con 10 suites en `pruebas/run_tests_produccion.py`
+- entrada principal clara en `principal.py`
 
-- [ ] Añadir persistencia al backend (SQLite o schema existente)
-- [ ] Banner/tooltip "Versión demo — versión completa: descarga .exe"
-- [ ] Enlace a descarga del .exe desde la landing
+### Web fullstack
 
-### Largo plazo (Híbrido)
+Es una demo funcional, pero no el mismo producto que el motor Python:
 
-- [ ] Evaluar API que exponga el motor Python al frontend web
-- [ ] O: portar lógica crítica del motor a JS si la web crece
+- usa su propio motor en `backend/src/simulation/`
+- expone REST + WebSocket en `backend/src/`
+- sirve como puerta de entrada visual y superficie de exploración
+
+### DobackSoft
+
+Dentro de este repo hay base demo, no base suficiente para llamarlo MVP real completo:
+
+- UI presente en `frontend/src/components/DobackSoft.jsx`
+- `FireSimulator` jugable en `frontend/src/components/FireSimulator.jsx`
+- sesiones y rutas mock en `backend/src/routes/dobacksoft.js`
 
 ---
 
-## 4. Criterios de éxito
+## 3. Decisión de foco para una sola programadora
 
-| Métrica | Objetivo |
-|---------|----------|
-| Python | `.exe` funcional, tests verificar_todo OK |
-| Web | Demo estable, sin errores en consola |
-| Documentación | PROYECTO_GUIA.md actualizado, ESTRATEGIA_PRODUCTO.md visible |
+### Decisión inmediata
+
+**Mantener el foco en el motor Python como producto real y usar la web como showcase funcional.**
+
+Esto equivale, a corto plazo, a tratar la web como una combinación de:
+
+- demo navegable
+- herramienta de entrada
+- superficie para verticales demo
+
+No como prueba de que el mismo motor ya esté portado o integrado de extremo a extremo.
 
 ---
 
-## 5. Referencias
+## 4. Evaluación de las tres opciones futuras
 
-- [PROYECTO_GUIA.md](PROYECTO_GUIA.md) — Guía técnica
-- [MODOS_EJECUCION.md](MODOS_EJECUCION.md) — Python vs Fullstack
-- [PRODUCCION_PLAN.md](../PRODUCCION_PLAN.md) — Fases de producción
+| Opción | Encaje con el repo actual | Coste | Recomendación |
+|--------|----------------------------|-------|---------------|
+| **1. Mantener dos motores separados** | Es el estado actual real | Medio/alto a largo plazo | Viable solo si se documenta claramente |
+| **2. Exponer Python por API** | No existe aún como flujo real | Alto | No abrir ahora salvo necesidad fuerte |
+| **3. Usar la web solo como showcase** | Encaja mejor con el estado actual y el foco limitado | Bajo/medio | **Recomendada a corto plazo** |
+
+### Conclusión
+
+La recomendación actual es:
+
+- **corto plazo:** opción 3
+- **estado técnico presente:** opción 1
+- **exploración futura:** opción 2 solo si hay necesidad de unificar experiencia
+
+---
+
+## 5. Golden path de producto
+
+El recorrido que mejor defiende el repo hoy es:
+
+1. instalar dependencias
+2. ejecutar `python principal.py`
+3. observar simulación
+4. probar Modo Sombra
+5. guardar/cargar estado
+
+Ese camino demuestra:
+
+- núcleo real
+- persistencia
+- control manual
+- capacidad técnica defendible
+
+La web puede enseñarse después como demo visual del concepto, no como sustituto del núcleo.
+
+---
+
+## 6. Qué no debe prometer esta estrategia
+
+Sin más evidencia, esta estrategia no debe usar como claim principal:
+
+- miles de agentes
+- latencia `< 1 ms`
+- producto enterprise
+- DobackSoft completo dentro de este repo
+- telemetría real integrada extremo a extremo
+
+Si alguno de esos puntos se quiere usar, debe apoyarse en benchmarks, integración real o pruebas versionadas.
+
+---
+
+## 7. Próximas acciones recomendadas
+
+### P0
+
+- fijar la verdad del producto en `README.md` y `docs/DOCUMENTACION_COMPLETA.md`
+- documentar el golden path en `docs/GOLDEN_PATH.md`
+- dejar explícito qué es real, demo y externo
+
+### P1
+
+- alinear `docs/MODOS_EJECUCION.md` con esta decisión
+- limpiar claims y cifras inconsistentes en documentación pública
+- usar una única marca: `Artificial World`
+
+### P2
+
+- decidir si `DobackSoft` se mantiene como demo vertical o se reduce a un MVP mínimo real
+- evaluar si merece la pena una API del motor Python
+
+---
+
+## 8. Criterio de éxito
+
+Esta estrategia será correcta si, al leer el repo:
+
+- una persona nueva entiende en menos de 5 minutos qué es real y qué es demo
+- nadie confunde el motor Python con la demo web
+- `DobackSoft` no se sobrevende como producto completo dentro de este repositorio
+
+---
+
+## 9. Referencias
+
+- [docs/OWNERSHIP_ESTRATEGICO.md](OWNERSHIP_ESTRATEGICO.md) — DobackSoft = producto; Artificial World = laboratorio; juego = demo
+- [docs/SUPERFICIE_JUEGO.md](SUPERFICIE_JUEGO.md) — FireSimulator como superficie, no núcleo
+- [README.md](../README.md)
+- [docs/DOCUMENTACION_COMPLETA.md](DOCUMENTACION_COMPLETA.md)
+- [docs/MODOS_EJECUCION.md](MODOS_EJECUCION.md)
+- [docs/GOLDEN_PATH.md](GOLDEN_PATH.md)
+- [AGENTE_ENTRANTE.md](../AGENTE_ENTRANTE.md)

@@ -2,6 +2,8 @@
 
 > **Dos páginas** para que cualquiera entienda qué es, por qué importa y cómo empezar.
 
+**Ownership:** Artificial World es laboratorio local y open source. DobackSoft es el producto principal (repo dobackv2). El juego/FireSimulator es superficie de demo y entrenamiento. Ver [docs/OWNERSHIP_ESTRATEGICO.md](OWNERSHIP_ESTRATEGICO.md).
+
 ---
 
 ## Página 1 — La idea
@@ -67,6 +69,7 @@ Los personajes de muchos juegos no recuerdan. No evolucionan. No reaccionan a lo
 
 - **Repositorio** — Añade aquí la URL de tu repo (ej. `github.com/tu-usuario/artificial-word`)
 - **Documentación** — `docs/ESENCIAL.md` (2 páginas técnicas)
+- **Relato para dirección e inversores** — `docs/PAQUETE_RELATO/` (dossier, brief, manifiesto)
 - **Landing** — `artificial-world.html` o despliega en GitHub Pages
 
 ---

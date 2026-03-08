@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aceptación de términos — Sistema Chess</title>
+  <style>
+    :root { --accent: #0088aa; --bg: #f7fafc; --text: #1a1d21; --border: #e2e8f0; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; max-width: 640px; margin: 0 auto; padding: 24px; background: var(--bg); color: var(--text); line-height: 1.6; }
+    h1 { color: var(--accent); font-size: 1.5rem; margin-bottom: 16px; }
+    .terms { background: #fff; padding: 20px; border-radius: 8px; border: 1px solid var(--border); margin: 20px 0; font-size: 14px; max-height: 300px; overflow-y: auto; }
+    .checkbox { display: flex; align-items: flex-start; gap: 12px; margin: 20px 0; }
+    .checkbox input { margin-top: 4px; }
+    button { background: var(--accent); color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button:hover:not(:disabled) { opacity: 0.9; }
+    .success { color: #166534; margin-top: 16px; }
+    .link { word-break: break-all; color: var(--accent); }
+  </style>
+</head>
+<body>
+  <h1>Sistema Chess — Aceptación de términos</h1>
+  <p>Para acceder al contenedor con las mejoras implementadas, debe aceptar las siguientes condiciones.</p>
+
+  <div class="terms">
+    <h3>Condiciones de uso</h3>
+    <ol>
+      <li><strong>Recibe</strong> un contenedor privado con las mejoras implementadas sobre su proyecto auditado.</li>
+      <li><strong>Autoriza</strong> a Artificial World / DobackSoft a utilizar la información derivada de la auditoría y las mejoras (código, patrones, hallazgos, métricas) para fines de <strong>entrenamiento, mejora de modelos y desarrollo de productos</strong>.</li>
+      <li><strong>Reconoce</strong> que el contenedor entregado es de su propiedad; la autorización de uso para entrenamiento no transfiere propiedad del código al proveedor.</li>
+      <li><strong>Acepta</strong> que los datos utilizados para entrenamiento serán anonimizados o agregados cuando sea técnicamente posible y legalmente requerido.</li>
+    </ol>
+  </div>
+
+  <div class="checkbox">
+    <input type="checkbox" id="accept" />
+    <label for="accept">He leído y acepto las condiciones anteriores.</label>
+  </div>
+
+  <button id="btn" disabled>Aceptar y continuar</button>
+
+  <div id="result"></div>
+
+  <script>
+    const cb = document.getElementById('accept');
+    const btn = document.getElementById('btn');
+    const result = document.getElementById('result');
+
+    cb.addEventListener('change', () => { btn.disabled = !cb.checked; });
+
+    btn.addEventListener('click', async () => {
+      if (!cb.checked) return;
+      const params = new URLSearchParams(location.search);
+      const link = params.get('link') || '';
+      btn.disabled = true;
+      const apiBase = window.location.port === '5173' ? 'http://' + window.location.hostname + ':3001/api' : '/api';
+      try {
+        const r = await fetch(apiBase + '/chess/terms/accept', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ link: link || null })
+        });
+        const data = await r.json();
+        const ts = data?.data?.timestamp || new Date().toISOString();
+        result.innerHTML = '<p class="success">Aceptación registrada: ' + ts + '</p>' +
+          (link ? '<p>Enlace de descarga: <a class="link" href="' + link + '" target="_blank">' + link + '</a></p>' : '');
+      } catch (e) {
+        result.innerHTML = '<p class="success">Aceptación registrada (offline).</p>' +
+          (link ? '<p>Enlace: <a class="link" href="' + link + '" target="_blank">' + link + '</a></p>' : '');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -176,6 +176,28 @@ Swagger en `/api-docs/` — el spec puede estar desincronizado con las rutas act
 
 Existe un proyecto hermano "Artificial World" que tiene un módulo DobackSoft demo (Fire Simulator). El producto comercial completo está en este repo (dobackv2). Puertos distintos: Artificial World usa 3001/5173; DobackSoft usa 9998/5174.
 
+### Qué sí asumir
+
+- `Artificial World` puede servir como **laboratorio local** para documentación, copilotos, memoria local, datasets demo y automatización.
+- La integración local con `Ollama` y el patrón de agente de `HeroRefuge` pueden inspirar herramientas internas para DobackSoft.
+- La documentación de `Artificial World` puede actuar como base metodológica para bootstrap, debugging y flujos guiados.
+
+### Qué no asumir
+
+- No asumir que `Artificial World` ya está integrado de extremo a extremo con DobackSoft real.
+- No asumir que el módulo `DobackSoft` del repo Artificial World equivale al producto B2B.
+- No asumir que una demo mock o un flujo visual en Artificial World valida datos reales, multitenancy o seguridad de DobackSoft.
+
+### Enfoque recomendado de adopción
+
+Si trabajas en DobackSoft y quieres aprovechar el ecosistema de Artificial World:
+
+1. Usa Artificial World como **sandbox local** para probar ideas de copiloto, memoria, resúmenes y debugging.
+2. Define contratos claros para artefactos compartibles: `session`, `route`, `event`, `severity`, `recommendation`, `report`.
+3. Integra primero por **artefactos y export/import controlado**, no por acoplamiento interno prematuro.
+4. Mantén a DobackSoft como producto multi-tenant serio y a Artificial World como laboratorio y entorno de entrenamiento.
+5. Si necesitas una base inicial de contrato en este repo, parte de `docs/DOBACKSOFT_FUTURE_CONTRACTS.json` y trátala como borrador de interoperabilidad, no como integración viva.
+
 ---
 
 Por favor, actúa como programador en pareja: explica qué vas a hacer antes de hacerlo, pide confirmación antes de ejecutar comandos, respeta todas las reglas anteriores, y ten en cuenta los problemas encontrados al trabajar en código relacionado. Si corriges alguno, documéntalo.

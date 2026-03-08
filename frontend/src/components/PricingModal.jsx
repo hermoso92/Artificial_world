@@ -3,10 +3,12 @@
  * Supports Stripe Checkout (when enabled) and local coupon flow.
  */
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { api } from '../services/api';
 import logger from '../utils/logger';
 
 export function PricingModal({ open, onClose, onSubscribed, currentTier }) {
+  const { t } = useTranslation();
   const [tiers, setTiers] = useState([]);
   const [coupon, setCoupon] = useState('');
   const [couponResult, setCouponResult] = useState(null);
@@ -91,8 +93,8 @@ export function PricingModal({ open, onClose, onSubscribed, currentTier }) {
         <button className="pricing-close" onClick={onClose}>✕</button>
 
         <div className="pricing-header">
-          <h2 className="pricing-title">Elige cómo construir</h2>
-          <p className="pricing-subtitle">Tu mundo, a tu ritmo</p>
+          <h2 className="pricing-title">{t('pricing.title')}</h2>
+          <p className="pricing-subtitle">{t('pricing.subtitle')}</p>
         </div>
 
         {success ? (
@@ -100,7 +102,7 @@ export function PricingModal({ open, onClose, onSubscribed, currentTier }) {
             <div className="pricing-success-icon">🌍</div>
             <p className="pricing-success-msg">{success}</p>
             <button className="pricing-cta" onClick={onClose}>
-              Volver a mi mundo
+              {t('pricing.return_world')}
             </button>
           </div>
         ) : (
@@ -117,22 +119,22 @@ export function PricingModal({ open, onClose, onSubscribed, currentTier }) {
                     className={`pricing-tier ${isCurrent ? 'pricing-tier--current' : ''} ${tier.id === 'constructor' ? 'pricing-tier--featured' : ''}`}
                   >
                     {tier.id === 'constructor' && (
-                      <div className="pricing-tier-badge">Recomendado</div>
+                      <div className="pricing-tier-badge">{t('pricing.recommended')}</div>
                     )}
                     {isFundador && tier.slotsRemaining != null && (
                       <div className="pricing-tier-badge pricing-tier-badge--fundador">
-                        {tier.slotsRemaining} plazas
+                        {t('pricing.slots', { count: tier.slotsRemaining })}
                       </div>
                     )}
 
                     <div className="pricing-tier-name">{tier.name}</div>
                     <div className="pricing-tier-price">
                       {tier.price === 0 ? (
-                        <span className="pricing-price-free">Gratis</span>
+                        <span className="pricing-price-free">{t('pricing.free')}</span>
                       ) : (
                         <>
                           <span className="pricing-price-amount">€{tier.price}</span>
-                          <span className="pricing-price-interval">/mes</span>
+                          <span className="pricing-price-interval">{t('pricing.per_month')}</span>
                         </>
                       )}
                     </div>
@@ -145,14 +147,14 @@ export function PricingModal({ open, onClose, onSubscribed, currentTier }) {
 
                     {isCurrent ? (
                       <div className="pricing-current-label">
-                        Tu plan actual
+                        {t('pricing.current_plan')}
                         {stripeEnabled && tier.price > 0 && (
                           <button
                             className="pricing-manage-btn"
                             onClick={handleManageSubscription}
                             disabled={loading}
                           >
-                            Gestionar suscripción
+                            {t('pricing.manage_subscription')}
                           </button>
                         )}
                       </div>
@@ -161,9 +163,13 @@ export function PricingModal({ open, onClose, onSubscribed, currentTier }) {
                         className="pricing-cta"
                         onClick={() => handleSubscribe(tier.id)}
                         disabled={loading || (needsCoupon)}
-                        title={needsCoupon ? 'Introduce el cupón fundador primero' : ''}
+                        title={needsCoupon ? t('pricing.coupon_hint') : ''}
                       >
-                        {loading ? 'Procesando…' : stripeEnabled && tier.id !== 'fundador' ? `Pagar con Stripe — €${tier.price}/mes` : `Ser ${tier.name}`}
+                        {loading
+                          ? t('pricing.processing')
+                          : stripeEnabled && tier.id !== 'fundador'
+                            ? t('pricing.pay_stripe', { price: tier.price })
+                            : t('pricing.become', { name: tier.name })}
                       </button>
                     )}
                   </div>
@@ -172,7 +178,7 @@ export function PricingModal({ open, onClose, onSubscribed, currentTier }) {
             </div>
 
             <div className="pricing-coupon">
-              <p className="pricing-coupon-label">¿Tienes un cupón de fundador?</p>
+              <p className="pricing-coupon-label">{t('pricing.coupon_label')}</p>
               <div className="pricing-coupon-row">
                 <input
                   className="pricing-coupon-input"
@@ -187,7 +193,7 @@ export function PricingModal({ open, onClose, onSubscribed, currentTier }) {
                   onClick={handleValidateCoupon}
                   disabled={loading || !coupon.trim()}
                 >
-                  Validar
+                  {t('pricing.validate')}
                 </button>
               </div>
               {couponResult && (

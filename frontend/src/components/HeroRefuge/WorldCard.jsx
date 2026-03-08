@@ -58,6 +58,17 @@ export function WorldCard({ world, onDestroy, onEnter }) {
         </div>
       </div>
       <div style={{ display: 'flex', gap: '8px', marginTop: '8px', flexWrap: 'wrap' }}>
+        {world.civilizationSeed?.label && (
+          <span style={{
+            background: `${colors.accent}22`,
+            borderRadius: '4px',
+            padding: '2px 6px',
+            fontSize: '10px',
+            color: colors.accent,
+          }}>
+            Semilla: {world.civilizationSeed.label}
+          </span>
+        )}
         {[
           { label: '⚡ Energía', val: Math.round(world.resources?.energy ?? 0) },
           { label: '🪨 Materia', val: Math.round(world.resources?.matter ?? 0) },
@@ -90,7 +101,7 @@ export function WorldCard({ world, onDestroy, onEnter }) {
           marginTop: '6px', fontSize: '9px',
           color: colors.accent, opacity: 0.6,
         }}>
-          🔗 Refugio #{world.simulationRefugeIndex + 1} en la simulación
+          🔗 Refugio #{world.simulationRefugeIndex + 1} en la simulacion · {world.foundingRefuge?.name ?? world.name}
         </div>
       )}
       {world.recentHistory?.[0] && (

@@ -4,6 +4,8 @@
 > **Fecha:** Marzo 2025  
 > **Alcance:** Repositorio Artificial World (incluye módulo DobackSoft), visión DobackSoft/StabilSafe V3.
 
+**Ownership:** DobackSoft = producto principal (dobackv2). Artificial World = laboratorio. FireSimulator = superficie de demo. Ver [docs/OWNERSHIP_ESTRATEGICO.md](OWNERSHIP_ESTRATEGICO.md).
+
 ---
 
 ## 1. Resumen ejecutivo

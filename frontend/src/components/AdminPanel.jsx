@@ -3,10 +3,12 @@
  * Operaciones: reset simulación, destruir mundos Hero, eliminar refugios, reset DobackSoft.
  */
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { api, getPlayerId } from '../services/api.js';
 import logger from '../utils/logger.js';
 
 export function AdminPanel({ onBack }) {
+  const { t } = useTranslation();
   const [overview, setOverview] = useState(null);
   const [hero, setHero] = useState(null);
   const [error, setError] = useState(null);
@@ -18,7 +20,7 @@ export function AdminPanel({ onBack }) {
     api.adminOverview()
       .then(setOverview)
       .catch((err) => {
-        setError(err.message ?? 'Error al cargar');
+        setError(err.message ?? t('common.error_load'));
         setOverview(null);
         logger.warn('Admin overview failed', err);
       });
@@ -51,19 +53,19 @@ export function AdminPanel({ onBack }) {
   };
 
   const handleDestroyWorld = (worldId) => {
-    if (!confirm(`¿Destruir mundo ${worldId}?`)) return;
+    if (!confirm(t('admin.confirm_destroy_world', { id: worldId }))) return;
     handleAction(() => api.adminHeroWorldDestroy(worldId), 'Destruir mundo');
   };
 
   if (error && !overview) {
     return (
       <div className="admin-panel">
-        <button className="back-btn" onClick={onBack}>← Constructor de Mundos</button>
+        <button className="back-btn" onClick={onBack}>{t('common.back')}</button>
         <div className="admin-error">
-          <h2>Acceso denegado</h2>
+          <h2>{t('admin.access_denied')}</h2>
           <p>{error}</p>
           <p className="admin-hint">
-            Solo los administradores (ADMIN_PLAYER_IDS en .env) pueden acceder. Tu playerId: <code>{getPlayerId()}</code>
+            {t('admin.access_hint')} <code>{getPlayerId()}</code>
           </p>
         </div>
       </div>
@@ -73,9 +75,9 @@ export function AdminPanel({ onBack }) {
   return (
     <div className="admin-panel">
       <div className="admin-header">
-        <button className="back-btn" onClick={onBack}>← Constructor de Mundos</button>
-        <h1 className="admin-title">Panel Administrador</h1>
-        <span className="admin-badge">Modo dios</span>
+        <button className="back-btn" onClick={onBack}>{t('common.back')}</button>
+        <h1 className="admin-title">{t('admin.title')}</h1>
+        <span className="admin-badge">{t('admin.badge')}</span>
       </div>
 
       {error && <p className="admin-error-msg">{error}</p>}
@@ -83,23 +85,27 @@ export function AdminPanel({ onBack }) {
       {overview && (
         <div className="admin-overview">
           <section className="admin-section">
-            <h3>Simulación</h3>
+            <h3>{t('admin.section_simulation')}</h3>
             <p className="admin-stats">
-              Tick: {overview.simulation.tick} · Refugios: {overview.simulation.refugeCount} · Blueprints: {overview.simulation.blueprintsCount}
+              {t('admin.simulation_stats', {
+                tick: overview.simulation.tick,
+                refuges: overview.simulation.refugeCount,
+                blueprints: overview.simulation.blueprintsCount,
+              })}
             </p>
             <button
               className="admin-btn admin-btn-danger"
               onClick={() => handleAction(api.adminSimulationReset, 'Reset')}
               disabled={loading}
             >
-              {loading && action === 'Reset' ? '...' : 'Reset simulación'}
+              {loading && action === 'Reset' ? t('common.loading') : t('admin.reset_simulation')}
             </button>
           </section>
 
           <section className="admin-section">
-            <h3>Mundos Hero</h3>
+            <h3>{t('admin.section_hero')}</h3>
             <p className="admin-stats">
-              Vivos: {overview.hero.worldsCount} · Total: {overview.hero.totalWorlds}
+              {t('admin.hero_stats', { alive: overview.hero.worldsCount, total: overview.hero.totalWorlds })}
             </p>
             {hero?.aliveWorlds?.length > 0 && (
               <ul className="admin-worlds-list">
@@ -111,7 +117,7 @@ export function AdminPanel({ onBack }) {
                       onClick={() => handleDestroyWorld(w.id)}
                       disabled={loading}
                     >
-                      Destruir
+                      {t('admin.destroy')}
                     </button>
                   </li>
                 ))}
@@ -121,39 +127,39 @@ export function AdminPanel({ onBack }) {
               <button
                 className="admin-btn admin-btn-danger"
                 onClick={() => {
-                  if (!confirm('¿Destruir TODOS los mundos Hero?')) return;
+                  if (!confirm(t('admin.confirm_destroy_all'))) return;
                   handleAction(api.adminHeroWorldsWipe, 'Wipe');
                 }}
                 disabled={loading || overview.hero.worldsCount === 0}
               >
-                {loading && action === 'Wipe' ? '...' : 'Destruir todos'}
+                {loading && action === 'Wipe' ? t('common.loading') : t('admin.destroy_all')}
               </button>
             </div>
           </section>
 
           <section className="admin-section">
-            <h3>DobackSoft</h3>
+            <h3>{t('admin.section_dobacksoft')}</h3>
             <p className="admin-stats">
-              Ciudadanos: {overview.dobacksoft.citizensCount} / {overview.dobacksoft.maxCitizens}
+              {t('admin.dobacksoft_stats', { count: overview.dobacksoft.citizensCount, max: overview.dobacksoft.maxCitizens })}
             </p>
             <button
               className="admin-btn admin-btn-danger"
               onClick={() => handleAction(api.adminDobackSoftReset, 'Reset DobackSoft')}
               disabled={loading}
             >
-              {loading && action === 'Reset DobackSoft' ? '...' : 'Reset ciudadanos'}
+              {loading && action === 'Reset DobackSoft' ? t('common.loading') : t('admin.reset_citizens')}
             </button>
           </section>
 
           <section className="admin-section">
-            <h3>Auditoría</h3>
-            <p className="admin-stats">Eventos: {overview.audit.eventCount}</p>
+            <h3>{t('admin.section_audit')}</h3>
+            <p className="admin-stats">{t('admin.audit_stats', { count: overview.audit.eventCount })}</p>
           </section>
         </div>
       )}
 
       <footer className="admin-footer">
-        <p>PlayerId: <code>{getPlayerId()}</code></p>
+        <p>{t('admin.player_id')} <code>{getPlayerId()}</code></p>
       </footer>
     </div>
   );

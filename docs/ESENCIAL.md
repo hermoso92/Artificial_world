@@ -10,7 +10,7 @@
 
 **Artificial World** es una simulación de vida artificial 2D con agentes autónomos. IA por utilidad (sin LLMs), grid 2D, recursos, refugios, memoria espacial y social.
 
-**Estrategia:** Python = motor completo (13 acciones, Modo Sombra, relaciones, persistencia). Web = demo sin instalación.
+**Estrategia:** Python = motor completo (13 acciones, Modo Sombra, relaciones, persistencia). Web = demo funcional separada, con flujo fundador parcial para crear refugio y mundo ligero desde una semilla de civilización.
 
 ### Cómo ejecutar
 
@@ -77,10 +77,16 @@ cd frontend; npm test
 
 | Tema | Documento |
 |------|-----------|
+| Ownership (DobackSoft, AW, juego) | `docs/OWNERSHIP_ESTRATEGICO.md` |
 | Motor, modo sombra, estructura completa | `AGENTE_ENTRANTE.md` |
 | Python vs Web, diferencias | `docs/MODOS_EJECUCION.md` |
+| Tesis de producto y foco | `docs/VISION_CIVILIZACIONES_VIVAS.md` |
 | Guía ampliada | `docs/PROYECTO_GUIA.md` |
 | Estrategia y próximos pasos | `docs/ESTRATEGIA_PRODUCTO.md` |
+| Cronograma real, GitHub, motor creador | `docs/ARTIFICIAL_WORD_CRONOGRAMA.md` |
+| Documento único (todo en uno) | `docs/DOCUMENTO_UNICO.md` |
+| Documentación ampliada | `docs/DOCUMENTACION_COMPLETA.md` |
+| Relato para dirección, inversores, familia | `docs/PAQUETE_RELATO/` |
 
 ---
 

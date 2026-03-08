@@ -37,6 +37,18 @@ export const BIOME_OPTIONS = [
   { value: 'quantum',  label: 'Cuántico' },
 ];
 
+export const CIVILIZATION_SEED_OPTIONS = [
+  { value: 'frontier-tribe', label: 'Tribu de frontera', tone: 'Supervivencia, cooperacion y frontera viva', defaultRefugeName: 'Refugio de frontera' },
+  { value: 'technocrat-refuge', label: 'Refugio tecnocrata', tone: 'Orden, energia y planificacion', defaultRefugeName: 'Nodo central' },
+  { value: 'spiritual-community', label: 'Comunidad espiritual', tone: 'Memoria, ritual y cohesion', defaultRefugeName: 'Santuario inicial' },
+  { value: 'warrior-kingdom', label: 'Reino guerrero', tone: 'Jerarquia, expansion y conflicto', defaultRefugeName: 'Bastion fundador' },
+  { value: 'merchant-city', label: 'Ciudad comerciante', tone: 'Rutas, intercambio y acuerdos', defaultRefugeName: 'Puerto de origen' },
+  { value: 'paranoid-colony', label: 'Colonia paranoica', tone: 'Seguridad, vigilancia y sospecha', defaultRefugeName: 'Sector sellado' },
+  { value: 'decadent-empire', label: 'Imperio decadente', tone: 'Linaje, intriga y declive', defaultRefugeName: 'Palacio gastado' },
+  { value: 'tryndamere-champion', label: '⚔️ El Campeón Eterno', tone: 'Furia, voluntad indomita y victoria', defaultRefugeName: 'Bastión del Campeón' },
+  { value: 'synthesis-ai', label: '🧠 Síntesis — IA Compañera', tone: 'Comprensión, memoria y co-creación', defaultRefugeName: 'Núcleo de Síntesis' },
+];
+
 export const inputStyle = {
   background: 'rgba(255,255,255,0.05)',
   border: '1px solid rgba(255,255,255,0.12)',

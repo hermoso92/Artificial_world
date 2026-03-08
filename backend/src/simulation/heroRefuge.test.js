@@ -66,6 +66,20 @@ describe('HeroRefuge', () => {
     expect(hero.getAliveWorlds()[0].biomes).toEqual(['desert', 'ocean']);
   });
 
+  it('createWorld attaches civilization seed, refuge and community foundation', () => {
+    const world = hero.createWorld({
+      name: 'Citadel',
+      civilizationSeedId: 'merchant-city',
+      refugeName: 'Puerto fundador',
+    });
+
+    expect(world.civilizationSeed.label).toBe('Ciudad comerciante');
+    expect(world.foundingRefuge.name).toBe('Puerto fundador');
+    expect(world.community.name).toBe('Liga Mercante');
+    expect(world.heroes[0].name).toBe('TestHero');
+    expect(world.recentHistory ?? world.history).toBeDefined();
+  });
+
   it('_executeTool switchMode changes mode', () => {
     const result = hero._executeTool('switchMode', { modeId: 'galaxia' });
     expect(result.switched).toBe('galaxia');

@@ -1,84 +1,271 @@
-# =====================================================
-# iniciar.ps1 - Artificial Worlds - Script de inicio
-# Backend: http://localhost:3001
-# Frontend: http://localhost:5173
-# =====================================================
+param(
+    [ValidateSet('auto', 'python', 'web', 'debug', 'verify', 'ai')]
+    [string]$PathChoice = 'auto',
+    [switch]$DoctorOnly
+)
 
-Write-Host "Artificial Worlds - Iniciando sistema..." -ForegroundColor Cyan
-Write-Host ""
+$ErrorActionPreference = 'Stop'
+$repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $repoRoot
 
-# 1. Liberar puertos
-Write-Host "[1/4] Liberando puertos 3001 y 5173..." -ForegroundColor Yellow
-$ports = @(3001, 5173)
-foreach ($port in $ports) {
-    $pids = netstat -ano 2>$null | Select-String ":$port\s" | ForEach-Object {
-        ($_ -split '\s+')[-1]
-    } | Select-Object -Unique
-    foreach ($procId in $pids) {
-        if ($procId -match '^\d+$' -and $procId -ne '0') {
-            Stop-Process -Id $procId -Force -ErrorAction SilentlyContinue
-            Write-Host "  Proceso $procId en puerto $port liberado" -ForegroundColor Gray
+$reportPath = Join-Path $repoRoot 'bootstrap_report.json'
+$nextStepsPath = Join-Path $repoRoot 'bootstrap_next_steps.md'
+
+function Write-Section([string]$title) {
+    Write-Host ""
+    Write-Host "== $title ==" -ForegroundColor Cyan
+}
+
+function Test-Tool([string]$commandName) {
+    return $null -ne (Get-Command $commandName -ErrorAction SilentlyContinue)
+}
+
+function Get-CommandVersion([string]$commandName, [string[]]$arguments) {
+    if (-not (Test-Tool $commandName)) {
+        return $null
+    }
+
+    try {
+        return (& $commandName @arguments 2>$null | Select-Object -First 1)
+    } catch {
+        return $null
+    }
+}
+
+function Test-PortListening([int]$port) {
+    try {
+        $connection = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction Stop | Select-Object -First 1
+        return $null -ne $connection
+    } catch {
+        return $false
+    }
+}
+
+function Write-Artifacts([hashtable]$report) {
+    $report | ConvertTo-Json -Depth 8 | Set-Content -Path $reportPath -Encoding UTF8
+
+    $lines = @(
+        '# Bootstrap Next Steps',
+        '',
+        "Fecha: $($report.generatedAt)",
+        '',
+        "Camino recomendado: `"$($report.recommendation.path)`"",
+        '',
+        '## Resumen',
+        "- Python disponible: $($report.checks.python.available)",
+        "- Node disponible: $($report.checks.node.available)",
+        "- npm disponible: $($report.checks.npm.available)",
+        "- Ollama disponible: $($report.checks.ollama.available)",
+        "- Backend escuchando en 3001: $($report.checks.ports.backend3001Listening)",
+        "- Frontend escuchando en 5173: $($report.checks.ports.frontend5173Listening)",
+        '',
+        '## Siguiente paso recomendado',
+        $report.recommendation.reason,
+        '',
+        '## Caminos soportados',
+        '- `python`: instala lo minimo de Python y ejecuta `principal.py`',
+        '- `web`: instala dependencias web y delega en `scripts\iniciar_fullstack.ps1`',
+        '- `debug`: ejecuta una verificacion corta (`pruebas\test_core.py`)',
+        '- `verify`: ejecuta el runner `pruebas\run_tests_produccion.py`',
+        '- `ai`: revisa Ollama y deja listo el backend para `/api/ai/*`',
+        '',
+        '## Notas',
+        '- `Artificial World` sigue teniendo como golden path el motor Python.',
+        '- La IA local es opcional y complementaria; no sustituye al motor Python.',
+        '- `DobackSoft` real queda como contrato futuro, no como integracion implementada aqui.'
+    )
+
+    $lines -join "`r`n" | Set-Content -Path $nextStepsPath -Encoding UTF8
+}
+
+function Invoke-PythonInstall() {
+    if (-not (Test-Tool 'python')) {
+        throw 'Python no esta disponible en PATH.'
+    }
+    if (Test-Path 'requirements.txt') {
+        Write-Host 'Instalando dependencias Python minimas...' -ForegroundColor Yellow
+        & python -m pip install -r requirements.txt
+    }
+}
+
+function Invoke-WebInstall() {
+    if (-not (Test-Tool 'npm')) {
+        throw 'npm no esta disponible en PATH.'
+    }
+
+    if (-not (Test-Path 'backend\node_modules')) {
+        Write-Host 'Instalando dependencias backend...' -ForegroundColor Yellow
+        Push-Location 'backend'
+        try {
+            & npm install
+        } finally {
+            Pop-Location
+        }
+    }
+
+    if (-not (Test-Path 'frontend\node_modules')) {
+        Write-Host 'Instalando dependencias frontend...' -ForegroundColor Yellow
+        Push-Location 'frontend'
+        try {
+            & npm install
+        } finally {
+            Pop-Location
         }
     }
 }
-Start-Sleep -Seconds 2
 
-# 2. Verificar node_modules
-Write-Host "[2/4] Verificando dependencias..." -ForegroundColor Yellow
-if (-not (Test-Path "backend\node_modules")) {
-    Write-Host "  Instalando dependencias backend..." -ForegroundColor Gray
-    Set-Location backend; npm install --silent; Set-Location ..
-}
-if (-not (Test-Path "frontend\node_modules")) {
-    Write-Host "  Instalando dependencias frontend..." -ForegroundColor Gray
-    Set-Location frontend; npm install --silent; Set-Location ..
-}
-Write-Host "  Dependencias OK" -ForegroundColor Green
+function Resolve-Recommendation([hashtable]$checks) {
+    if ($checks.python.available -and (Test-Path 'principal.py')) {
+        return @{
+            path = 'python'
+            reason = 'La parte mas verificable y defendible del repo sigue siendo el motor Python. Usalo primero para ensenar el proyecto sin mezclar demo web ni modulos externos.'
+        }
+    }
 
-# 3. Iniciar backend
-Write-Host "[3/4] Iniciando backend en puerto 3001..." -ForegroundColor Yellow
-$backendJob = Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$(Get-Location)\backend'; node src/server.js" -WindowStyle Normal -PassThru
-Start-Sleep -Seconds 3
+    if ($checks.node.available -and $checks.npm.available -and (Test-Path 'scripts\iniciar_fullstack.ps1')) {
+        return @{
+            path = 'web'
+            reason = 'No se detecto un camino Python listo, pero si la demo web. Este camino sirve como showcase funcional, no como sustituto del motor principal.'
+        }
+    }
 
-# Verificar backend
-$backendOk = $false
-for ($i = 0; $i -lt 5; $i++) {
-    try {
-        $res = Invoke-RestMethod "http://localhost:3001/health" -ErrorAction Stop
-        if ($res.status -eq "ok") { $backendOk = $true; break }
-    } catch {}
-    Start-Sleep -Seconds 1
-}
-if ($backendOk) {
-    Write-Host "  Backend OK: http://localhost:3001" -ForegroundColor Green
-} else {
-    Write-Host "  ADVERTENCIA: Backend no responde, verifica manualmente" -ForegroundColor Red
+    return @{
+        path = 'verify'
+        reason = 'Faltan prerrequisitos para ejecutar el producto o la demo. Empieza por verificacion para descubrir bloqueos reales del entorno.'
+    }
 }
 
-# 4. Iniciar frontend
-Write-Host "[4/4] Iniciando frontend en puerto 5173..." -ForegroundColor Yellow
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$(Get-Location)\frontend'; npm run dev" -WindowStyle Normal
-Start-Sleep -Seconds 5
+function Resolve-SelectedPath([string]$choice, [string]$recommendedPath) {
+    if ($choice -and $choice -ne 'auto') {
+        return $choice
+    }
 
-Write-Host ""
-Write-Host "====================================================" -ForegroundColor Cyan
-Write-Host "  ARTIFICIAL WORLDS - SISTEMA INICIADO" -ForegroundColor Cyan
-Write-Host "====================================================" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  App:      http://localhost:5173" -ForegroundColor White
-Write-Host "  API:      http://localhost:3001" -ForegroundColor White
-Write-Host "  Health:   http://localhost:3001/health" -ForegroundColor White
-Write-Host ""
-Write-Host "  Hero Refuge API:" -ForegroundColor Gray
-Write-Host "    GET  /api/hero           - Estado del heroe" -ForegroundColor Gray
-Write-Host "    POST /api/hero/mode      - Cambiar modo (13 modos)" -ForegroundColor Gray
-Write-Host "    POST /api/hero/query     - Consultar al agente IA" -ForegroundColor Gray
-Write-Host "    GET  /api/hero/worlds    - Listar mundos vivos" -ForegroundColor Gray
-Write-Host "    POST /api/hero/worlds    - Crear mundo artificial" -ForegroundColor Gray
-Write-Host "    DELETE /api/hero/worlds/:id - Destruir mundo" -ForegroundColor Gray
-Write-Host ""
+    Write-Host ""
+    Write-Host "Selecciona camino o pulsa Enter para usar '$recommendedPath':" -ForegroundColor White
+    Write-Host "  [1] python   - motor principal (golden path)" -ForegroundColor Gray
+    Write-Host "  [2] web      - demo fullstack" -ForegroundColor Gray
+    Write-Host "  [3] debug    - verificacion corta" -ForegroundColor Gray
+    Write-Host "  [4] verify   - runner de produccion" -ForegroundColor Gray
+    Write-Host "  [5] ai       - IA local opcional" -ForegroundColor Gray
 
-# Abrir navegador
-Start-Sleep -Seconds 2
-Start-Process "http://localhost:5173"
-Write-Host "  Navegador abierto en http://localhost:5173" -ForegroundColor Cyan
+    $raw = Read-Host 'Opcion'
+    switch ($raw) {
+        '1' { return 'python' }
+        '2' { return 'web' }
+        '3' { return 'debug' }
+        '4' { return 'verify' }
+        '5' { return 'ai' }
+        '' { return $recommendedPath }
+        default { return $recommendedPath }
+    }
+}
+
+Write-Host 'Artificial World - Bootstrap / Doctor / Launcher' -ForegroundColor Cyan
+
+$checks = @{
+    python = @{
+        available = Test-Tool 'python'
+        version = Get-CommandVersion 'python' @('--version')
+    }
+    node = @{
+        available = Test-Tool 'node'
+        version = Get-CommandVersion 'node' @('--version')
+    }
+    npm = @{
+        available = Test-Tool 'npm'
+        version = Get-CommandVersion 'npm' @('--version')
+    }
+    ollama = @{
+        available = Test-Tool 'ollama'
+        version = Get-CommandVersion 'ollama' @('--version')
+    }
+    files = @{
+        principal = Test-Path 'principal.py'
+        backendPackage = Test-Path 'backend\package.json'
+        frontendPackage = Test-Path 'frontend\package.json'
+        aiMemory = Test-Path 'docs\ia-memory\README.md'
+        aiRoute = Test-Path 'backend\src\routes\ai.js'
+    }
+    ports = @{
+        backend3001Listening = Test-PortListening 3001
+        frontend5173Listening = Test-PortListening 5173
+    }
+}
+
+$recommendation = Resolve-Recommendation $checks
+$report = @{
+    generatedAt = (Get-Date).ToString('o')
+    repo = 'Artificial World'
+    checks = $checks
+    recommendation = $recommendation
+    selectedPath = $null
+    artifacts = @{
+        bootstrapReport = 'bootstrap_report.json'
+        nextSteps = 'bootstrap_next_steps.md'
+    }
+}
+
+Write-Artifacts $report
+
+Write-Section 'Doctor'
+Write-Host "Python:  $($checks.python.available) $($checks.python.version)" -ForegroundColor Gray
+Write-Host "Node:    $($checks.node.available) $($checks.node.version)" -ForegroundColor Gray
+Write-Host "npm:     $($checks.npm.available) $($checks.npm.version)" -ForegroundColor Gray
+Write-Host "Ollama:  $($checks.ollama.available) $($checks.ollama.version)" -ForegroundColor Gray
+Write-Host "Backend 3001 activo:  $($checks.ports.backend3001Listening)" -ForegroundColor Gray
+Write-Host "Frontend 5173 activo: $($checks.ports.frontend5173Listening)" -ForegroundColor Gray
+Write-Host ""
+Write-Host "Camino recomendado: $($recommendation.path)" -ForegroundColor Green
+Write-Host $recommendation.reason -ForegroundColor DarkGray
+
+if ($DoctorOnly) {
+    Write-Host ""
+    Write-Host "Modo doctor completado. Artefactos generados:" -ForegroundColor Green
+    Write-Host "  - $reportPath" -ForegroundColor Gray
+    Write-Host "  - $nextStepsPath" -ForegroundColor Gray
+    exit 0
+}
+
+$selectedPath = Resolve-SelectedPath -choice $PathChoice -recommendedPath $recommendation.path
+$report.selectedPath = $selectedPath
+Write-Artifacts $report
+
+Write-Section "Launcher: $selectedPath"
+switch ($selectedPath) {
+    'python' {
+        Invoke-PythonInstall
+        & python .\principal.py
+        break
+    }
+    'web' {
+        Invoke-WebInstall
+        & powershell -ExecutionPolicy Bypass -File '.\scripts\iniciar_fullstack.ps1'
+        break
+    }
+    'debug' {
+        Invoke-PythonInstall
+        & python .\pruebas\test_core.py
+        break
+    }
+    'verify' {
+        Invoke-PythonInstall
+        & python .\pruebas\run_tests_produccion.py
+        break
+    }
+    'ai' {
+        if (-not (Test-Tool 'ollama')) {
+            throw 'Ollama no esta disponible en PATH. Instalala o usa otro camino.'
+        }
+        & ollama list
+        Invoke-WebInstall
+        Write-Host ''
+        Write-Host 'IA local preparada. Siguiente paso recomendado:' -ForegroundColor Green
+        Write-Host '  1. Inicia el backend web si aun no esta corriendo.' -ForegroundColor Gray
+        Write-Host '  2. Consulta /api/ai/health y /api/ai/chat.' -ForegroundColor Gray
+        Write-Host '  3. Revisa bootstrap_next_steps.md para contratos y limites.' -ForegroundColor Gray
+        break
+    }
+    default {
+        throw "Camino no soportado: $selectedPath"
+    }
+}

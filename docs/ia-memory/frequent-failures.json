@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "ollama-unavailable",
+      "symptom": "El modelo local no responde o devuelve timeout",
+      "probableCause": "Ollama no está iniciado, host incorrecto o modelo no descargado",
+      "firstSteps": [
+        "Verificar OLLAMA_HOST",
+        "Comprobar que Ollama responde en /api/tags",
+        "Confirmar que el modelo configurado existe"
+      ]
+    },
+    {
+      "id": "hero-tool-json-invalid",
+      "symptom": "HeroRefuge devuelve texto cuando debía lanzar una herramienta",
+      "probableCause": "El modelo no respetó el formato JSON o el prompt no tenía contexto suficiente",
+      "firstSteps": [
+        "Revisar el prompt de herramientas",
+        "Reducir ambigüedad en la instrucción del usuario",
+        "Inspeccionar la respuesta bruta del modelo"
+      ]
+    },
+    {
+      "id": "demo-session-thin-context",
+      "symptom": "El análisis de sesión demo es demasiado genérico",
+      "probableCause": "La sesión o la ruta contienen pocos eventos verificables",
+      "firstSteps": [
+        "Adjuntar eventos además de la ruta",
+        "Incluir identificador de sesión y severidad",
+        "Etiquetar como demo si faltan datos reales"
+      ]
+    }
+  ]
+}

@@ -32,12 +32,11 @@ function log(level, message, ...args) {
   if (LEVEL_RANK[level] < MIN_LEVEL) return;
   const ts = new Date().toISOString();
   const prefix = `[${ts}] [${level.toUpperCase()}]`;
+  const line = [prefix, message, ...args].map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ');
   if (level === 'error') {
-    console.error(prefix, message, ...args);
-  } else if (level === 'warn') {
-    console.warn(prefix, message, ...args);
+    process.stderr.write(line + '\n');
   } else {
-    console.log(prefix, message, ...args);
+    process.stdout.write(line + '\n');
   }
 
   if (_broadcastLog) {

@@ -1,0 +1,200 @@
+% ============================================================
+%  PORTFOLIO EXTERNO --- Generado automáticamente desde el repo
+%  Por el sistema de agentes de Artificial World / Cosigein SL
+%  Variables: {{NOMBRE}} {{DESCRIPCION}} {{FECHA}} etc.
+% ============================================================
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[spanish]{babel}
+\usepackage[top=1.8cm,bottom=1.8cm,left=2cm,right=2cm]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[colorlinks=true,linkcolor=teal,urlcolor=teal,pdfborder={0 0 0}]{hyperref}
+
+% ---- Paleta ----
+\definecolor{accent}{HTML}{0d9488}
+\definecolor{dark}{HTML}{1a202c}
+\definecolor{muted}{HTML}{4a5568}
+\definecolor{light}{HTML}{e2e8f0}
+\definecolor{warn}{HTML}{b45309}
+\definecolor{crit}{HTML}{b91c1c}
+\definecolor{green}{HTML}{065f46}
+\definecolor{blue}{HTML}{1d4ed8}
+
+% ---- Espaciado ----
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\setlength{\columnsep}{1cm}
+
+% ---- Cabecera ----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{muted}Análisis de Repositorio --- {{NOMBRE}}}
+\fancyhead[R]{\small\color{muted}Generado por Artificial World \textperiodcentered{} {{FECHA}}}
+\fancyfoot[C]{\small\color{muted}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---- Secciones ----
+\titleformat{\section}{\large\bfseries\color{accent}}{}{0em}{}[\vspace{-4pt}\color{accent}\rule{\linewidth}{1.2pt}]
+\titleformat{\subsection}{\normalsize\bfseries\color{dark}}{}{0em}{}
+\titlespacing{\section}{0pt}{12pt}{6pt}
+\titlespacing{\subsection}{0pt}{8pt}{3pt}
+
+% ---- Badges ----
+\newcommand{\badge}[2][accent]{\colorbox{#1!15}{\small\color{#1}\textbf{#2}}}
+\newcommand{\real}{\badge[green]{REAL}}
+\newcommand{\demo}{\badge[warn]{DEMO}}
+\newcommand{\parcial}{\badge[blue]{PARCIAL}}
+\newcommand{\roadmap}{\badge[muted]{ROADMAP}}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% ---- CABECERA PRINCIPAL ----
+\begin{center}
+  {\color{accent}\rule{\linewidth}{2.5pt}}\\[0.6em]
+  {\LARGE\bfseries\color{dark} {{NOMBRE}}}\\[0.3em]
+  {\large\color{accent} {{TAGLINE}}}\\[0.3em]
+  {\small\color{muted}
+    {{LENGUAJE_PRINCIPAL}}
+    \quad\textperiodcentered\quad
+    {{FECHA}}
+    \quad\textperiodcentered\quad
+    \textit{Análisis automático de repositorio}
+  }\\[0.5em]
+  {\color{accent}\rule{\linewidth}{2.5pt}}
+\end{center}
+
+\vspace{0.3em}
+
+% ============================================================
+\section{Descripción del proyecto}
+% ============================================================
+
+\noindent\colorbox{accent!8}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+  {{DESCRIPCION}}
+}}
+
+\vspace{0.5em}
+
+% ============================================================
+\section{Stack tecnológico detectado}
+% ============================================================
+
+\begin{multicols}{3}
+
+\subsection*{Motor / Backend}
+\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=1pt]
+{{STACK_BACKEND}}
+\end{itemize}
+
+\columnbreak
+\subsection*{Frontend / UI}
+\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=1pt]
+{{STACK_FRONTEND}}
+\end{itemize}
+
+\columnbreak
+\subsection*{Infraestructura / IA}
+\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=1pt]
+{{STACK_INFRA}}
+\end{itemize}
+
+\end{multicols}
+
+% ============================================================
+\section{Estadísticas del repositorio}
+% ============================================================
+
+\begin{tabularx}{\linewidth}{>{\bfseries}p{4.5cm} X}
+  \toprule
+  Métrica & Valor \\
+  \midrule
+  Archivos totales & {{TOTAL_ARCHIVOS}} \\[2pt]
+  Lenguaje principal & {{LENGUAJE_PRINCIPAL}} \\[2pt]
+  Tests encontrados & {{TESTS_TOTAL}} archivos de test \\[2pt]
+  Commits en git & {{COMMITS_TOTAL}} \\[2pt]
+  Último commit & \texttt{\small{{ULTIMO_COMMIT}}} \\[2pt]
+  Autor & {{AUTOR}} \\[2pt]
+  Documentación & {{TIENE_DOCS}} \\
+  \bottomrule
+\end{tabularx}
+
+% ============================================================
+\section{Características detectadas}
+% ============================================================
+
+\begin{tabularx}{\linewidth}{>{\centering\arraybackslash}p{0.5cm} X}
+  \toprule
+  & Característica \\
+  \midrule
+{{FEATURES_ROWS}}
+  \bottomrule
+\end{tabularx}
+
+% ============================================================
+\section{Lenguajes por frecuencia}
+% ============================================================
+
+\begin{tabularx}{\linewidth}{>{\bfseries}p{4cm} >{\centering\arraybackslash}p{2.5cm} X}
+  \toprule
+  Lenguaje & Archivos & Indicador \\
+  \midrule
+{{LENGUAJES_ROWS}}
+  \bottomrule
+\end{tabularx}
+
+% ============================================================
+\section{Documentación encontrada}
+% ============================================================
+
+{{DOCS_SECTION}}
+
+% ============================================================
+\section{Valoración técnica automática}
+% ============================================================
+
+\begin{tabularx}{\linewidth}{>{\bfseries}p{4.5cm} >{\centering\arraybackslash}p{2.5cm} X}
+  \toprule
+  Área & Estado & Notas \\
+  \midrule
+  Tests automatizados   & {{BADGE_TESTS}}   & {{NOTA_TESTS}} \\[3pt]
+  Documentación README  & {{BADGE_README}}  & {{NOTA_README}} \\[3pt]
+  CI/CD pipeline        & {{BADGE_CI}}      & {{NOTA_CI}} \\[3pt]
+  Containerización      & {{BADGE_DOCKER}}  & {{NOTA_DOCKER}} \\[3pt]
+  Variables de entorno  & {{BADGE_ENV}}     & {{NOTA_ENV}} \\[3pt]
+  Frontend moderno      & {{BADGE_FRONTEND}} & {{NOTA_FRONTEND}} \\[3pt]
+  Backend API           & {{BADGE_BACKEND}} & {{NOTA_BACKEND}} \\
+  \bottomrule
+\end{tabularx}
+
+% ============================================================
+\section{Próximos pasos recomendados}
+% ============================================================
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=4pt]
+{{RECOMENDACIONES}}
+\end{enumerate}
+
+% ============================================================
+%  PIE
+% ============================================================
+\vfill
+\begin{center}
+  \color{muted}\small\rule{0.6\linewidth}{0.4pt}\\[4pt]
+  Análisis generado automáticamente por \textbf{Artificial World} \textperiodcentered{} Cosigein SL \textperiodcentered{} {{FECHA}}\\
+  \textit{Este documento fue creado por el sistema de agentes desde el repositorio \texttt{{{NOMBRE_REPO}}}.}\\
+  \textit{Constrúyelo. Habítalo. Haz que crezca.}
+\end{center}
+
+\end{document}

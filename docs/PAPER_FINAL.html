@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Artificial World — Paper Final</title>
+<style>
+:root {
+  --accent: #0d9488;
+  --accent-light: #ccfbf1;
+  --text: #1a202c;
+  --muted: #4a5568;
+  --bg: #fff;
+  --border: #e2e8f0;
+  --code-bg: #1e293b;
+  --code-text: #e2e8f0;
+}
+@media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 12.5px;
+  background: #f8fafc;
+}
+.page {
+  max-width: 720px;
+  margin: 20px auto;
+  padding: 52px 56px;
+  background: var(--bg);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+h1 {
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--accent);
+  border-bottom: 3px solid var(--accent);
+  padding-bottom: 10px;
+  margin: 28px 0 18px;
+  line-height: 1.3;
+  font-family: system-ui, sans-serif;
+}
+h1:first-child { margin-top: 0; }
+h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 28px 0 12px;
+  padding-left: 12px;
+  border-left: 4px solid var(--accent);
+  font-family: system-ui, sans-serif;
+}
+h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 20px 0 8px;
+  font-family: system-ui, sans-serif;
+}
+h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 14px 0 6px;
+  font-family: system-ui, sans-serif;
+}
+p {
+  margin-bottom: 10px;
+  text-align: justify;
+  hyphens: auto;
+}
+p.numbered { margin-bottom: 6px; padding-left: 16px; }
+ul { margin: 8px 0 12px 22px; }
+li { margin-bottom: 4px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 11.5px;
+  font-family: system-ui, sans-serif;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 7px 11px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: var(--accent-light);
+  font-weight: 700;
+  color: #0f766e;
+}
+tr:nth-child(even) td { background: #f8fffe; }
+code {
+  background: #f1f5f9;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  color: #0f766e;
+}
+pre.code {
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 14px 16px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  overflow-x: auto;
+  margin: 14px 0;
+  line-height: 1.6;
+}
+blockquote {
+  border-left: 4px solid var(--accent);
+  padding: 10px 16px;
+  margin: 14px 0;
+  color: var(--muted);
+  font-style: italic;
+  background: var(--accent-light);
+  border-radius: 0 6px 6px 0;
+}
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 28px 0;
+}
+a { color: var(--accent); text-decoration: none; }
+.header-meta {
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 28px;
+  background: #f8fffe;
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header-meta">
+    <strong>Artificial World</strong> — Paper Fundacional · 2026-03-08 ·
+    Repositorio: <code>artificial-word</code> · Autor: Cosigein SL
+  </div>
+  <h1>Artificial World: Arquitectura de un Motor de Civilizaciones Emergentes con Agentes Autónomos Basados en Utilidad, Memoria Persistente y Auditoría Trazable</h1>
+<p><strong>Autor:</strong> Cosigein SL  </p>
+<p><strong>Fecha:</strong> 2026-03-08  </p>
+<p><strong>Repositorio:</strong> <code>artificial-word</code> — github.com/artificial-word  </p>
+<p><strong>Versión:</strong> 1.0 — Paper fundacional  </p>
+<hr>
+<h2>Abstract</h2>
+<p>Presentamos <strong>Artificial World</strong>, un sistema de simulación de vida artificial 2D orientado a la generación de civilizaciones emergentes con memoria persistente, héroes fundadores, refugios como unidades de organización social, y comunidades con tensiones internas. El sistema implementa dos capas técnicas diferenciadas: un motor Python con función de utilidad multidimensional (13 tipos de acción, 9 modificadores, ruido determinista por semilla), y una capa web fullstack en Node.js/React con siete arquetipos de civilización (<em>CivilizationSeed</em>) y un sistema de refugios persistentes (<em>HeroRefuge</em>). Ambas capas son deliberadamente independientes, compartiendo un modelo conceptual común pero no una integración técnica en tiempo real, lo que constituye una decisión arquitectónica explícita documentada y defendida. El sistema incorpora además un mecanismo de auditoría independiente con agentes dockerizados en red aislada (<em>Sistema Chess</em>), un modo de simulación especular sin efectos secundarios (<em>Modo Sombra</em>), un sistema de vigilancia activa (<em>Watchdog</em>) y una infraestructura documental que genera crónicas verificables en JSON, Markdown y PDF desde el propio código. Los resultados de la sesión canónica (semilla 42, 200 ticks, 8 agentes) revelan comportamientos emergentes no programados: cohesión grupal bajo escasez severa (62.4% de acciones <code>SEGUIR</code>), agotamiento zonal en el cuadrante oeste, y divergencia individual exitosa como estrategia no codificada. El paper argumenta que la trazabilidad radical —cada decisión de agente es reproducible, cada claim de sistema es verificable contra el código— es una propiedad de diseño de primer orden, no una característica opcional.</p>
+<p><strong>Palabras clave:</strong> vida artificial, agentes autónomos, función de utilidad, civilizaciones emergentes, simulación 2D, memoria social, modo sombra, auditoría de código, trazabilidad, comportamiento emergente.</p>
+<hr>
+<h2>1. Introducción</h2>
+<h3>1.1 El problema de la afirmación sin evidencia</h3>
+<p>El campo de la inteligencia artificial atraviesa una paradoja: nunca ha habido más capacidad de generar texto convincente sobre sistemas, y nunca ha sido más difícil distinguir qué parte de un sistema existe realmente de qué parte existe solo como afirmación. Esta paradoja no es únicamente un problema de marketing: afecta directamente a la arquitectura de los sistemas. Un sistema diseñado para <em>parecer</em> capaz tiende a optimizar la superficie de presentación en detrimento de la profundidad verificable.</p>
+<p>Artificial World parte de la premisa contraria: <strong>la trazabilidad radical es una propiedad de diseño de primer orden</strong>. Cada comportamiento de agente debe ser reproducible mediante semilla fija. Cada claim de capacidad debe apuntar a una línea de código. Cada crónica generada debe ser verificable contra el estado del sistema en el tick correspondiente.</p>
+<h3>1.2 Motivación y contexto</h3>
+<p>Los sistemas clásicos de vida artificial (Conway, 1970; Reynolds, 1987; Langton, 1989) priorizan la simplicidad de las reglas locales sobre la riqueza del estado interno de los agentes. Los sistemas más complejos (Creatures, Dwarf Fortress, RimWorld) enriquecen el estado interno pero tienden a oscurecer los mecanismos de decisión bajo capas de abstracción que dificultan la auditoría.</p>
+<p>Artificial World busca un punto de equilibrio diferente: <strong>estado interno rico y decisión completamente transparente</strong>. La función de utilidad que gobierna cada decisión de cada agente en cada tick es pública, parametrizada y reproducible. No hay componentes estocásticos no acotados: el ruido es determinista por semilla.</p>
+<p>Adicionalmente, el sistema propone una separación explícita entre:</p>
+<ul>
+<li>la <strong>verdad sistémica</strong> (lo que existe, lo que está implementado, lo que los tests verifican)</li>
+<li>la <strong>tesis de producto</strong> (lo que el sistema se propone demostrar)</li>
+<li>la <strong>visión futura</strong> (lo que el sistema podría llegar a ser con trabajo adicional)</li>
+</ul>
+<p>Esta separación, documentada en los metadocumentos del repositorio (<code>DOCUMENTO_UNICO.md</code>, <code>VISION_CIVILIZACIONES_VIVAS.md</code>, <code>ESTRATEGIA_PRODUCTO.md</code>), es en sí misma una contribución metodológica: un modelo de honestidad técnica aplicado a un proyecto de software activo.</p>
+<h3>1.3 Contribuciones principales</h3>
+<p>Este trabajo documenta las siguientes contribuciones:</p>
+<p class="numbered">1. <strong>Arquitectura dual de motor de simulación</strong>: separación explícita entre motor de alta fidelidad (Python/pygame) y capa de demostración web (Node.js/React), con modelo conceptual compartido y sin integración técnica forzada.</p>
+<p class="numbered">2. <strong>Función de utilidad multidimensional con 9 modificadores</strong>: incluyendo estado fisiológico, rasgos de personalidad, memoria espacial y social, relaciones inter-agente, directivas externas y capa de autonomía de emergencia.</p>
+<p class="numbered">3. <strong>Sistema de civilizaciones con semilla arquetipal</strong>: siete arquetipos (<em>CivilizationSeed</em>) que condicionan valores, tensiones, héroe probable y tono del mundo desde el momento fundacional.</p>
+<p class="numbered">4. <strong>Modo Sombra</strong>: simulación especular que evalúa contrafácticos sin modificar el estado observable del mundo principal.</p>
+<p class="numbered">5. <strong>Sistema Chess</strong>: auditoría independiente con seis agentes dockerizados especializados en red aislada con montaje read-only del repositorio.</p>
+<p class="numbered">6. <strong>Infraestructura de crónica automática</strong>: generación de historiales verificables en JSON, Markdown y PDF desde el runtime de simulación.</p>
+<p class="numbered">7. <strong>Modelo de trazabilidad radical</strong>: como propiedad de diseño, no como característica opcional.</p>
+<hr>
+<h2>2. Trabajo Relacionado</h2>
+<h3>2.1 Sistemas de vida artificial basados en agentes</h3>
+<p>La tradición de la vida artificial (Alife) se divide en dos familias principales. Los <strong>sistemas de reglas locales</strong> (autómatas celulares de Conway, 1970; Boids de Reynolds, 1987) logran comportamiento emergente complejo a partir de reglas simples por agente. Los <strong>sistemas de agentes con estado interno</strong> (Creatures, The Sims, Dwarf Fortress) priorizan la riqueza del estado individual sobre la simplicidad de las reglas.</p>
+<p>Artificial World pertenece a la segunda familia, pero con una distinción importante respecto a los sistemas existentes: la <strong>decisión por utilidad es completamente transparente y reproducible</strong>. En Dwarf Fortress (Adams, 2006), el sistema de needs y thoughts de los enanos es verificable a nivel de UI pero opaco a nivel de código. En Artificial World, la función de puntuación es pública, parametrizable y reproducible mediante semilla.</p>
+<h3>2.2 Función de utilidad en sistemas multiagente</h3>
+<p>La teoría de la utilidad esperada (Von Neumann & Morgenstern, 1944) ha sido adaptada extensamente para sistemas multiagente. La arquitectura BDI (Belief-Desire-Intention) de Rao & Georgeff (1991) propone separar creencias, deseos e intenciones como componentes del razonamiento deliberativo. Artificial World simplifica esta separación reemplazando la selección de intenciones por una <strong>función de puntuación continua</strong> que permite graduación natural entre opciones competidoras, con fallback garantizado a <code>DESCANSAR</code> cuando ninguna acción es viable.</p>
+<p>La ventaja de esta aproximación frente a la arquitectura BDI completa es la reducción de complejidad de implementación sin sacrificar la capacidad de expresar preferencias graduadas. La desventaja es la mayor dificultad para modelar compromisos de largo plazo (goals) que persistan sobre múltiples ticks.</p>
+<h3>2.3 Sistemas de refugio y organización social emergente</h3>
+<p>RimWorld (Sylvester, 2013) trata la colonia como unidad de organización, pero las relaciones entre colonos son diádicas y el concepto de "colonia" no tiene estado propio más allá de la suma de sus miembros. Dwarf Fortress tiene una noción de fortaleza más rica, pero los sistemas de legado, memoria y diplomacia son difíciles de auditar externamente.</p>
+<p>Artificial World formaliza el <strong>refugio como entidad de primer orden</strong> con estado propio independiente de sus ocupantes: <code>nombre</code>, <code>recursos</code>, <code>seguridad</code>, <code>moral</code>, <code>amenazas</code>, <code>memoria_local</code>, <code>fase_de_crecimiento</code>. Esta formalización es importante porque permite que la historia del refugio persista incluso si todos sus ocupantes originales mueren o migran.</p>
+<h3>2.4 Sistemas de memoria en agentes autónomos</h3>
+<p>La memoria espacial en agentes simulados ha sido tratada principalmente como mapa de exploración (sistemas de niebla de guerra). Artificial World extiende este concepto con <strong>memoria social</strong>: cada agente mantiene vectores de <code>confianza</code>, <code>hostilidad</code> y <code>miedo</code> por par de agentes, que evolucionan con cada interacción y condicionan directamente la función de utilidad en los ticks posteriores.</p>
+<p>Esta memoria social retroalimenta el sistema de acciones sociales: un agente que recuerda haber sido robado por otro incrementa su <code>hostilidad</code> y <code>miedo</code> hacia ese agente, reduciendo la probabilidad de acciones de <code>COMPARTIR</code> y <code>SEGUIR</code> con él en el futuro.</p>
+<hr>
+<h2>3. Arquitectura del Sistema</h2>
+<h3>3.1 Capas del sistema</h3>
+<p>El sistema se compone de tres capas independientes con un modelo conceptual compartido:</p>
+<pre class="code">┌─────────────────────────────────────────────────────────────┐
+│              MODELO CONCEPTUAL COMPARTIDO                   │
+│  World · CivilizationSeed · Refuge · Hero · Community       │
+│  MemoryEntry · HistoricalRecord · Territory                 │
+└──────────────────┬──────────────────────┬───────────────────┘
+                   │                      │
+┌──────────────────▼──────┐  ┌────────────▼────────────────┐
+│   MOTOR PYTHON (REAL)   │  │   CAPA WEB (DEMO FUNCIONAL) │
+│                         │  │                             │
+│  principal.py           │  │  backend/src/ (Node/Express)│
+│  nucleo/simulacion.py   │  │  frontend/src/ (React/Vite) │
+│  agentes/               │  │  HeroRefuge + 7 semillas    │
+│  acciones/ (13 tipos)   │  │  civilizationSeeds.js       │
+│  sistemas/ (persistencia│  │  aiCore.js (Ollama)         │
+│    Modo Sombra, watchdog│  │                             │
+│    competencia)         │  └─────────────────────────────┘
+│  mundo/ (grid 60×60)    │
+│  SQLite (persisted)     │  ┌─────────────────────────────┐
+│  68+ tests              │  │  SISTEMA CHESS (AUDITORÍA)  │
+│                         │  │  6 agentes dockerizados     │
+└─────────────────────────┘  │  red aislada (read-only)    │
+                             │  REPORTE_CHESS_1.md         │
+                             └─────────────────────────────┘</pre>
+<p>La separación entre motor Python y capa web <strong>no es un error de diseño sino una decisión arquitectónica explícita</strong>, documentada en <code>docs/DECISION_PUENTE_PYTHON_JS.md</code>. Las razones son:</p>
+<p class="numbered">1. Cada motor está optimizado para su contexto (alta fidelidad vs. demostración web)</p>
+<p class="numbered">2. No existe necesidad operativa de integración en tiempo real a corto plazo</p>
+<p class="numbered">3. El coste de implementar el puente (API Python o WASM) supera el beneficio en la fase actual</p>
+<p class="numbered">4. La narrativa clara de "dos motores, dos propósitos" es más honesta que una integración superficial</p>
+<h3>3.2 Motor Python: ciclo de tick</h3>
+<p>El orquestador principal (<code>nucleo/simulacion.py</code>, ~848 líneas) inicializa y coordina doce subsistemas:</p>
+<p>| Subsistema | Clase | Función |</p>
+<p>|---|---|---|</p>
+<p>| Ticks | <code>GestorTicks</code> | Control de tiempo y velocidad |</p>
+<p>| Eventos | <code>BusEventos</code> | Publicación/suscripción de eventos entre sistemas |</p>
+<p>| Logs | <code>SistemaLogs</code> | Registro estructurado de la sesión |</p>
+<p>| Métricas | <code>SistemaMetricas</code> | Conteo de acciones y estados |</p>
+<p>| Regeneración | <code>SistemaRegeneracion</code> | Reposición de recursos en el mapa |</p>
+<p>| Persistencia | <code>SistemaPersistencia</code> | Guardar/cargar en SQLite |</p>
+<p>| Watchdog | <code>SistemaWatchdog</code> | Alertas de condiciones anómalas |</p>
+<p>| Reporte | <code>SistemaReporte</code> | Generación de crónica fundacional |</p>
+<p>| Competencia | <code>SistemaModoCompetencia</code> | Modo multi-jugador por turnos |</p>
+<p>| Modo Sombra | <code>GestorModoSombra</code> | Simulación especular |</p>
+<p>| Renderizador | <code>Renderizador</code> | Representación visual pygame |</p>
+<p>El ciclo por tick, por entidad, es:</p>
+<pre class="code">actualizar_estado_interno()          ← fisiología: hambre++, energía--
+percibir_entorno()                   ← percepción local + amenaza_local
+actualizar_memoria()                 ← registra recursos/refugios visibles
+actualizar_directivas()              ← expira directivas caducadas
+ContextoDecision(tick, mapa, ...)    ← construye contexto de decisión
+decidir_accion() → MotorDecision     ← función de utilidad → acción ganadora
+ejecutar_accion()                    ← aplica efectos en el mundo</pre>
+<h3>3.3 Función de utilidad: formulación completa</h3>
+<p>La puntuación de una acción \(a\) para el agente \(i\) en el tick \(t\) es:</p>
+<p>$$U(a, i, t) = U_{\text{base}}(a) + \sum_{k=1}^{9} \delta_k(a, i, t) + \epsilon(i, t)$$</p>
+<p>donde:</p>
+<ul>
+<li>$U_{\text{base}}(a)$ es la utilidad intrínseca de la acción (tabla fija por tipo, ver Tabla 1)</li>
+<li>$\delta_k$ son los nueve modificadores contextuales (ver Tabla 2)</li>
+<li>$\epsilon(i,t) \sim \mathcal{U}(-0.08, 0.08)$ es ruido determinista: <code>random.Random(entidad.id * 1000 + tick).uniform(-0.08, 0.08)</code></li>
+</ul>
+<p><strong>Tabla 1. Utilidades base por tipo de acción</strong></p>
+<p>| Acción | $U_{\text{base}}$ | Condición de viabilidad |</p>
+<p>|---|---|---|</p>
+<p>| <code>COMER</code> | 0.65 | Comida en inventario > 0 |</p>
+<p>| <code>RECOGER_COMIDA</code> | 0.55 | Celda actual tiene recurso COMIDA |</p>
+<p>| <code>EXPLORAR</code> | 0.50 | Energía > 0.20 |</p>
+<p>| <code>HUIR</code> | 0.40 | Riesgo percibido > 0.3 |</p>
+<p>| <code>EVITAR</code> | 0.25 | Riesgo percibido > 0.3 |</p>
+<p>| <code>DESCANSAR</code> | 0.30 | (fallback garantizado) |</p>
+<p>| <code>MOVER</code> | 0.30 | Posición vecina disponible |</p>
+<p>| <code>RECOGER_MATERIAL</code> | 0.30 | Celda actual tiene recurso MATERIAL |</p>
+<p>| <code>IR_REFUGIO</code> | 0.25 | Refugio adyacente + (energía < 0.45 OR riesgo > 0.5) |</p>
+<p>| <code>COMPARTIR</code> | 0.20 | Inventario ≥ 3 OR (cooperativo + inventario ≥ 1 + hambre < 0.5) |</p>
+<p>| <code>ROBAR</code> | 0.20 | Oportunista/agresivo + hambre ≥ 0.75 + sin comida + energía > 0.30 |</p>
+<p>| <code>SEGUIR</code> | 0.20 | Cooperativo/neutral + entidades visibles cercanas |</p>
+<p>| <code>ATACAR</code> | 0.18 (var.) | Condición contextual agresiva |</p>
+<blockquote><em><code>COMER</code> tiene la máxima prioridad base (0.65) porque solo es candidato cuando hay comida en inventario — condición de alta certeza de éxito.</em></blockquote>
+<p><strong>Tabla 2. Los nueve modificadores de la función de utilidad</strong></p>
+<p>| # | Modificador | Variable fuente | Efecto |</p>
+<p>|---|---|---|---|</p>
+<p>| 1 | <code>mod_hambre</code> | <code>estado.hambre</code> | Escala utilidad de COMER/RECOGER con la hambre actual |</p>
+<p>| 2 | <code>mod_energia</code> | <code>estado.energia</code> | Aumenta utilidad de DESCANSAR cuando energía < 0.6 |</p>
+<p>| 3 | <code>mod_riesgo</code> | <code>estado.riesgo_percibido</code> | Aumenta HUIR/EVITAR cuando riesgo > 0.3 |</p>
+<p>| 4 | <code>mod_rasgo</code> | <code>rasgo_principal</code> | Ajusta preferencias según arquetipo conductual |</p>
+<p>| 5 | <code>mod_anti_oscilacion</code> | <code>posicion_anterior</code> | Penaliza −0.40 si destino MOVER = celda anterior |</p>
+<p>| 6 | <code>mod_memoria</code> | <code>memoria.recursos_recientes</code> | +0.15–0.25 hacia comida visible/recordada; +0.10 hacia refugio |</p>
+<p>| 7 | <code>mod_relaciones</code> | <code>relaciones.obtener_relacion()</code> | Confianza → COMPARTIR/SEGUIR; hostilidad → HUIR/EVITAR |</p>
+<p>| 8 | <code>mod_directivas</code> | <code>contexto.directivas_activas</code> | Órdenes externas con intensidad variable |</p>
+<p>| 9 | <code>mod_autonomia</code> | múltiple | Override de emergencia: supervivencia anula directivas |</p>
+<p><strong>La capa de autonomía como override de emergencia:</strong></p>
+<p>La capa <code>mod_autonomia</code> actúa como corrector de último recurso independiente de cualquier directiva:</p>
+<pre class="code">if hambre &gt; 0.85:      penaliza EXPLORAR y MOVER_LIBRE
+if energia &lt; 0.15:     penaliza MOVER y ROBAR
+if riesgo &gt; 0.80:      bonifica HUIR sobre cualquier directiva activa</pre>
+<p>Esta capa garantiza que ningún agente pueda ser enviado a su muerte por una directiva mal calibrada. Es un mecanismo de seguridad intrínseco al diseño.</p>
+<p><strong>Directivas externas (modo investigador):</strong></p>
+<p>El modificador <code>mod_directivas</code> permite al operador exterior emitir instrucciones a agentes individuales con intensidades variables:</p>
+<p>| Directiva | Efecto en utilidad |</p>
+<p>|---|---|</p>
+<p>| <code>PRIORIZAR_SUPERVIVENCIA</code> | +0.85 a acciones de subsistencia |</p>
+<p>| <code>IR_A_POSICION</code> | +1.50 a la acción de movimiento hacia destino |</p>
+<p>| <code>QUEDARSE_AQUI</code> | −2.00 a todas las acciones de desplazamiento |</p>
+<p>| <code>EXPLORAR_ZONA</code> | Bonus proporcional a exploración en área objetivo |</p>
+<h3>3.4 Rasgos conductuales y arquetipo de agente</h3>
+<p>Cada agente tiene un rasgo principal que modifica su función de utilidad:</p>
+<p><strong>Agentes sociales (tipo <code>EntidadSocial</code>):</strong></p>
+<p>| Rasgo | Bonus principal | Penalización principal |</p>
+<p>|---|---|---|</p>
+<p>| <code>COOPERATIVO</code> | COMPARTIR +0.25, SEGUIR leve | ROBAR −0.25 |</p>
+<p>| <code>NEUTRAL</code> | — | — |</p>
+<p>| <code>AGRESIVO</code> | ROBAR +0.30 | COMPARTIR −0.20, HUIR −0.10 |</p>
+<p>| <code>EXPLORADOR</code> | MOVER +0.35, EXPLORAR +0.35 | SEGUIR −0.05 |</p>
+<p>| <code>OPORTUNISTA</code> | ROBAR +0.15, RECOGER_MATERIAL +0.08 | leve COMPARTIR |</p>
+<p><strong>Agentes tipo <code>EntidadGato</code> (5 rasgos felinos diferenciados):</strong></p>
+<p>| Rasgo | Tendencia |</p>
+<p>|---|---|</p>
+<p>| <code>CURIOSO</code> | Bonus explorar/mover (+0.35), bonus seguir leve |</p>
+<p>| <code>APEGADO</code> | Penaliza mover/explorar (−0.05), bonus seguir (+0.25) |</p>
+<p>| <code>INDEPENDIENTE</code> | Bonus mover/explorar (+0.20), penaliza seguir (−0.25) |</p>
+<p>| <code>TERRITORIAL</code> | Bonus ir_refugio (+0.15), penaliza mover/explorar |</p>
+<p>| <code>OPORTUNISTA</code> | Bonus mover/explorar/recoger_comida, bonus seguir |</p>
+<h3>3.5 Memoria de agente: estructura y uso</h3>
+<p>Cada agente mantiene dos estructuras de memoria persistentes entre ticks:</p>
+<p><strong>Memoria espacial:</strong> registro de posiciones de recursos (comida, material) y refugios observados recientemente. El modificador <code>mod_memoria</code> usa esta estructura para generar bonus direccionales: si un agente recuerda una celda con comida, recibe un bonus de +0.15 a +0.25 en acciones de movimiento hacia esa celda, proporcional a su nivel de hambre actual.</p>
+<p><strong>Memoria social:</strong> para cada par de agentes $(i, j)$, se mantiene un vector tridimensional $(\text{confianza}_{ij}, \text{hostilidad}_{ij}, \text{miedo}_{ij}) \in [0, 1]^3$. Este vector evoluciona con cada interacción:</p>
+<p>| Evento | Efecto en relaciones |</p>
+<p>|---|---|</p>
+<p>| <code>COMPARTIO</code> | Donante: confianza +1.2; Receptor: confianza +1.5 |</p>
+<p>| <code>ROBO</code> | Víctima: hostilidad +0.4, confianza −0.3 |</p>
+<p>| <code>ATAQUE_EJECUTADO</code> | Objetivo: hostilidad +0.4, confianza −0.3 |</p>
+<p>| <code>SIGUIO</code> | Leve incremento de confianza bilateral |</p>
+<h3>3.6 Modo Sombra: simulación especular</h3>
+<p>El Modo Sombra (<code>sistemas/gestor_modo_sombra.py</code>) implementa una simulación paralela que replica el estado del mundo principal pero acepta intervenciones sin modificar el mundo observable. Permite:</p>
+<p class="numbered">1. <strong>Evaluación de contrafácticos</strong>: ¿qué habría ocurrido si el agente X hubiera tomado la decisión Y en el tick T?</p>
+<p class="numbered">2. <strong>Control manual</strong>: el operador puede asumir el control de un agente específico con entrada WASD en tiempo real, la IA cede el turno para ese agente</p>
+<p class="numbered">3. <strong>Modo investigador</strong>: directivas experimentales sin contaminar la simulación principal</p>
+<p>El Modo Sombra no se activa en la sesión canónica estándar pero está completamente verificado mediante suite de tests propia.</p>
+<h3>3.7 Sistema Watchdog: vigilancia activa</h3>
+<p>El subsistema <code>SistemaWatchdog</code> monitoriza condiciones anómalas en tiempo real y emite alertas estructuradas:</p>
+<pre class="code">{
+  "nivel": "CRITICAL",
+  "codigo": "HAMBRE_CRITICA_SIN_RESPUESTA",
+  "tick": 189,
+  "entidad_id": 2,
+  "entidad_nombre": "Bruno",
+  "descripcion": "Hambre &gt;= 0.9 durante 8 ticks consecutivos sin acción COMER"
+}</pre>
+<p>Las alertas forman parte de la crónica fundacional y son verificables contra el log de acciones del mismo período.</p>
+<hr>
+<h2>4. Capa Web: Semillas, Refugios y Civilizaciones</h2>
+<h3>4.1 Los siete arquetipos de civilización</h3>
+<p>La capa web implementa siete <code>CivilizationSeed</code> con estado fundacional completo:</p>
+<p>| ID | Arquetipo | Valores centrales | Tensiones internas | Héroe probable |</p>
+<p>|---|---|---|---|---|</p>
+<p>| <code>frontier-tribe</code> | Survivalist | Adaptación, cooperación, resistencia | Clima hostil, escasez, frontera inestable | Explorador/Guardián |</p>
+<p>| <code>technocrat-refuge</code> | Planner | Orden, eficiencia, conocimiento | Rigidez, elitismo, dependencia energética | Ingeniero/Estratega |</p>
+<p>| <code>spiritual-community</code> | Ritual | Fe, vínculo, memoria | Dogma, miedo al cambio, presagios | Guardián/Profeta |</p>
+<p>| <code>warrior-kingdom</code> | Militant | Honor, fuerza, jerarquía | Expansión, rivalidad, coste humano | Campeón/Conquistador |</p>
+<p>| <code>merchant-city</code> | Mercantile | Intercambio, movilidad, acuerdos | Desigualdad, corrupción, dependencia de rutas | Negociador/Explorador |</p>
+<p>| <code>paranoid-colony</code> | Fortress | Seguridad, vigilancia, autarquía | Sospecha, aislamiento, fractura interna | Vigía/Ingeniero |</p>
+<p>| <code>decadent-empire</code> | Legacy | Linaje, poder, apariencia | Declive, intriga, sobrecoste | Heredero/Diplomático |</p>
+<p>Cada semilla genera un estado fundacional completo vía <code>createFoundingWorldState()</code>:</p>
+<pre class="code">{
+  name: "Refugio Fundador",
+  resources: { food: 60, shelter: 75, security: 55, morale: 58 },
+  foundingHero: { name, role: "Constructor de Mundos", archetype },
+  community: { name, culture, tensions, cohesion: 0.72 },
+  memory: [{ type: "founding", summary: "...", significance: 10 }],
+  territory: { influenceRadius: 1, routes: [] }
+}</pre>
+<h3>4.2 HeroRefuge: el sistema de persistencia de mundos</h3>
+<p><code>HeroRefuge</code> gestiona hasta 256 mundos vivos persistentes en SQLite, con:</p>
+<ul>
+<li><strong>Companion IA</strong> (<code>PersonalAgent</code>): memoria circular de 100 entradas, rasgos estables (<code>loyalty=1.0, curiosity=0.8</code>), fallback determinista si Ollama no está disponible</li>
+<li><strong>Mundo artificial</strong> (<code>ArtificialWorld</code>): recursos con degradación estocástica, 5% probabilidad de evento aleatorio por tick (7 tipos: discovery, threat, birth, death, conflict, alliance, migration)</li>
+<li><strong>Persistencia debounced</strong>: escritura a SQLite tras 2s de inactividad post-modificación</li>
+</ul>
+<h3>4.3 IA local: diseño sin dependencias de pago</h3>
+<p>El módulo <code>aiCore.js</code> utiliza Ollama como proveedor local. Su diseño incluye:</p>
+<p class="numbered">1. <strong>Fallback determinista</strong>: si Ollama no responde, genera texto estructurado desde datos locales sin inventar</p>
+<p class="numbered">2. <strong>Tracing completo</strong>: cada operación registra <code>{operation, provider, model, durationMs, success, fallback, error}</code></p>
+<p class="numbered">3. <strong>Memoria estructurada</strong>: las operaciones <code>analyzeTestFailure</code> y <code>analyzeSession</code> consultan claves de memoria específicas antes de llamar al LLM</p>
+<p>Esta arquitectura garantiza que el sistema funciona sin conexión a internet y sin coste por token en el núcleo.</p>
+<hr>
+<h2>5. Sistema Chess: Auditoría Independiente</h2>
+<h3>5.1 Filosofía del sistema</h3>
+<p>El Sistema Chess resuelve un problema fundamental en proyectos donde el mismo equipo construye y audita: <strong>los creadores no pueden auditarse a sí mismos con objetividad</strong>. La solución es un conjunto de agentes completamente separados, sin acceso de escritura, que analizan el mismo repositorio desde fuera.</p>
+<p><strong>Principios de diseño:</strong></p>
+<ul>
+<li>Los agentes montan el repositorio en modo <strong>READ-ONLY</strong> (<code>:ro</code>)</li>
+<li>Cada ejecución es desde cero (sin estado entre ejecuciones)</li>
+<li>Los agentes no pueden comunicarse con producción ni con el entorno de tests</li>
+<li>Cada agente tiene una especialidad y un dominio de preguntas acotado</li>
+</ul>
+<h3>5.2 Los seis agentes auditores</h3>
+<p>| Agente | Especialidad | Dominio de detección |</p>
+<p>|---|---|---|</p>
+<p>| <code>agent-docs</code> | Documentación | Claims prohibidos, enlaces rotos, inconsistencias README |</p>
+<p>| <code>agent-backend</code> | API y seguridad | <code>console.log</code>, URLs hardcodeadas, <code>catch</code> vacíos |</p>
+<p>| <code>agent-frontend</code> | React | Componentes >300 líneas, imports incorrectos, sin <code>alt</code> |</p>
+<p>| <code>agent-bd</code> | Base de datos | SQL injection patterns, <code>SELECT *</code>, sin <code>IF NOT EXISTS</code> |</p>
+<p>| <code>agent-tests</code> | Cobertura | Tests sin assertions, ratio cobertura <30%, TODOs |</p>
+<p>| <code>agent-marketing</code> | Narrativa | Claims sin evidencia, overselling, SEO/OG faltantes |</p>
+<h3>5.3 Aislamiento de red</h3>
+<p>Los tres entornos operan en redes Docker completamente separadas:</p>
+<pre class="code">prod-net:   backend-prod + frontend-prod (puertos 3001/5173)
+tests-net:  python-tests + backend-tests (puerto 3002)
+audit-net:  6 agentes + coordinator (sin acceso a prod ni tests)</pre>
+<p>El coordinator espera la finalización de los seis agentes, agrega resultados por severidad (<code>high → medium → low</code>) y genera <code>REPORTE_CHESS_1.md</code>.</p>
+<hr>
+<h2>6. Experimento Canónico: Sesión Fundacional</h2>
+<h3>6.1 Parámetros</h3>
+<p>| Parámetro | Valor |</p>
+<p>|---|---|</p>
+<p>| Semilla | 42 |</p>
+<p>| Mapa | 60 × 60 celdas |</p>
+<p>| Entidades iniciales | 8 (7 sociales + 1 gato) |</p>
+<p>| Ticks ejecutados | 200 |</p>
+<p>| Héroe fundador | Tryndamere |</p>
+<p>| Refugio fundador | Refugio Fundador |</p>
+<p>| Timestamp | 2026-03-08T12:53:48 |</p>
+<h3>6.2 Estado final de la población</h3>
+<p>| ID | Nombre | Tipo | Posición | Hambre | Energía |</p>
+<p>|---|---|---|---|---|---|</p>
+<p>| 1 | Ana | social | (47, 21) | 0.68 | 0.38 |</p>
+<p>| 2 | Bruno | social | (0, 34) | <strong>1.00</strong> | 0.36 |</p>
+<p>| 3 | Clara | social | (25, 5) | <strong>1.00</strong> | 0.26 |</p>
+<p>| 4 | David | social | (10, 22) | <strong>0.90</strong> | <strong>0.18</strong> |</p>
+<p>| 5 | Eva | social | (13, 5) | <strong>1.00</strong> | 0.40 |</p>
+<p>| 6 | Félix | social | (0, 52) | <strong>1.00</strong> | 0.38 |</p>
+<p>| 7 | Amiguisimo | gato | (12, 42) | <strong>1.00</strong> | 0.30 |</p>
+<p>| 8 | Tryndamere | social | (2, 51) | <strong>1.00</strong> | 0.40 |</p>
+<blockquote>Salud = 1.0 para todos. Ningún agente alcanzó el estado de muerte.</blockquote>
+<h3>6.3 Métricas de acción</h3>
+<p>| Acción | Ejecuciones | Proporción |</p>
+<p>|---|---|---|</p>
+<p>| <code>SEGUIR</code> | 998 | 62.4% |</p>
+<p>| <code>DESCANSAR</code> | 492 | 30.8% |</p>
+<p>| <code>RECOGER_RECURSO</code> | 55 | 3.4% |</p>
+<p>| <code>COMER</code> | 55 | 3.4% |</p>
+<p>| <strong>Total</strong> | <strong>1.600</strong> | <strong>100%</strong> |</p>
+<p><strong>Veredicto del sistema:</strong> TENSIÓN  </p>
+<p><strong>Alertas Watchdog:</strong> 65 (30 WARN + 35 CRITICAL)</p>
+<h3>6.4 Reproducibilidad completa</h3>
+<pre class="code">python cronica_fundacional.py --seed 42 --ticks 200 \
+  --founder "Tryndamere" --refuge "Refugio Fundador"</pre>
+<p>El uso de <code>random.Random(entidad.id * 1000 + tick)</code> garantiza que cada ejecución produce exactamente el mismo conjunto de decisiones dado el mismo estado inicial.</p>
+<hr>
+<h2>7. Análisis: Comportamientos Emergentes</h2>
+<h3>7.1 La trampa dinámica de la cohesión</h3>
+<p>El resultado más significativo es la <strong>dominancia de <code>SEGUIR</code> (62.4%) en un contexto de escasez severa</strong>. Este comportamiento no fue codificado como respuesta directa a la escasez. Emerge de la interacción entre tres mecanismos:</p>
+<p class="numbered">1. El modificador de relaciones sociales (confianza alta → bonus SEGUIR entre agentes con historia de cooperación)</p>
+<p class="numbered">2. La penalización de autonomía sobre exploración cuando <code>hambre > 0.85</code> (el agente con hambre crítica no puede explorar agresivamente)</p>
+<p class="numbered">3. La ausencia de recursos en las celdas cercanas (COMER y RECOGER no son viables la mayor parte del tiempo)</p>
+<p>El resultado es una <strong>trampa dinámica</strong>: los agentes cohesionados en grupo mantienen relaciones de alta confianza que refuerzan el seguimiento mutuo, pero esto reduce la exploración individual necesaria para encontrar recursos. El grupo se desplaza unido hacia zonas que ya han sido agotadas por el propio grupo.</p>
+<p>Este resultado es análogo al fenómeno de "información cascade" en economía del comportamiento (Bikhchandani et al., 1992): los agentes imitan el comportamiento del grupo incluso cuando esa imitación es colectivamente subóptima, porque la señal social (confianza, cohesión) supera la señal individual (hambre).</p>
+<h3>7.2 Agotamiento zonal y degradación espacial</h3>
+<p>Las 65 alertas se concentran en el cluster oeste del mapa (ticks 180–200). Los agentes en este cuadrante (Tryndamere, Félix, Amiguisimo) sufren hambre crítica crónica no por fallo del algoritmo de decisión sino por <strong>agotamiento zonal</strong>: han consumido los recursos locales disponibles y el modificador anti-oscilación (−0.40 sobre la celda anterior) dificulta el retroceso eficiente.</p>
+<p>El modificador anti-oscilación fue diseñado para evitar el comportamiento de "ping-pong" (agente que oscila entre dos celdas sin progresar). Sin embargo, en condiciones de agotamiento zonal, este modificador tiene el efecto secundario no deseado de dificultar la migración de retroceso hacia zonas con recursos. Este trade-off es un ejemplo de <strong>emergencia negativa</strong>: una regla diseñada para mejorar el comportamiento promedio crea un caso extremo patológico.</p>
+<h3>7.3 El caso anómalo: Ana y la divergencia individual exitosa</h3>
+<p>Ana es la única entidad con hambre sub-crítica al final de la simulación (H=0.68), ubicada en (47, 21) — la posición más alejada de todos los demás agentes (distancia Euclidiana media ≈ 38 unidades al centroide del grupo).</p>
+<p>Su aislamiento no fue una estrategia codificada ni una directiva del investigador. Fue el resultado acumulado de decisiones individuales de exploración que la llevaron progresivamente a una zona con densidad de recursos superior al cuadrante oeste donde se concentró el grupo.</p>
+<p>Este resultado tiene una implicación teórica relevante: <strong>la divergencia individual de la cohesión grupal puede ser una estrategia emergentemente superior bajo presión de escasez</strong>, aunque el sistema no la codifica como tal. Un agente con rasgo <code>EXPLORADOR</code> tiene más probabilidad de reproducir el patrón de Ana por diseño; un agente <code>COOPERATIVO</code> tiene más probabilidad de quedar atrapado en la trampa de la cohesión.</p>
+<h3>7.4 Tabla resumen de fenómenos emergentes</h3>
+<p>| Fenómeno | Mecanismo generador | ¿Programado? |</p>
+<p>|---|---|---|</p>
+<p>| Cohesión bajo escasez | mod_relaciones > mod_autonomia en estadios medios | No (emergente) |</p>
+<p>| Agotamiento zonal | mod_anti_oscilacion + densidad de recursos local | Parcial (efecto lateral) |</p>
+<p>| Divergencia individual exitosa | rasgo_explorador + exploración no competida | No (emergente) |</p>
+<p>| Supervivencia total | mod_autonomia activa en estados críticos | Sí (diseñado) |</p>
+<p>| Fragmentación en 3 clusters | dispersión exploratoria + gradiente de recursos | Parcial (emergente) |</p>
+<hr>
+<h2>8. Trazabilidad Radical como Propiedad de Diseño</h2>
+<h3>8.1 Definición operacional</h3>
+<p>La trazabilidad radical, tal como se implementa en Artificial World, implica que para cualquier decisión del sistema en cualquier tick, existe una cadena completa de evidencia verificable:</p>
+<pre class="code">Tick T → Estado(agente_i, T) → Candidatos(T) → Scores(T) → Decisión(T) → Efecto(T)</pre>
+<p>Y para cualquier claim sobre el sistema:</p>
+<pre class="code">Claim → Evidencia(código || test || log) → Verificable_sin_acceso_al_autor</pre>
+<h3>8.2 La taxonomía real/demo/roadmap</h3>
+<p>Una de las contribuciones metodológicas más importantes de este proyecto es la taxonomía explícita del estado de cada componente:</p>
+<p>| Estado | Definición | Ejemplos en el proyecto |</p>
+<p>|---|---|---|</p>
+<p>| <strong>REAL</strong> | Existe, está testeado, es reproducible | Motor Python, persistencia, Modo Sombra, 11 suites |</p>
+<p>| <strong>DEMO</strong> | Existe, funciona, pero no es el motor principal | Web fullstack, DobackSoft en este repo |</p>
+<p>| <strong>PARCIAL</strong> | Existe pero con funcionalidad incompleta | HeroRefuge, CivilizationSeed web, IA local |</p>
+<p>| <strong>ROADMAP</strong> | Diseñado pero no implementado | 3D runtime, integración Python/JS, diplomacia |</p>
+<p>Esta taxonomía es pública, está documentada en el repositorio y es verificable por cualquier persona que lea el código. No es una concesión a la transparencia: es una herramienta activa de gestión de producto.</p>
+<h3>8.3 El Sistema Chess como implementación institucional</h3>
+<p>El Sistema Chess institucionaliza la trazabilidad radical al nivel de proceso: los agentes auditores no pueden ser influenciados por el equipo que construye, no tienen acceso de escritura y no tienen estado entre ejecuciones. Cada reporte es verificable, reproducible y fechado.</p>
+<p>Este diseño refleja una convicción filosófica documentada en el Manifiesto del proyecto:</p>
+<blockquote><em>"Una respuesta sin rastro no es una base seria de decisión."</em></blockquote>
+<hr>
+<h2>9. Arquitectura Conceptual: El Modelo de Civilizaciones Vivas</h2>
+<h3>9.1 Entidades de dominio y relaciones</h3>
+<p>El modelo conceptual que subyace a ambas capas técnicas define ocho entidades de primer orden:</p>
+<pre class="code">CivilizationSeed
+    │ condiciona tono y valores
+    ▼
+  World ──── tiene ────► Refuge (fundador)
+    │                        │
+    │                    organiza
+    │                        │
+    │                        ▼
+    │                    Community
+    │                        │
+    │                    incluye / lidera
+    │                        │
+    └───── genera ──────► Hero
+                            │
+                         produce
+                            │
+                            ▼
+                        Event → MemoryEntry → HistoricalRecord
+                                                    │
+                                              alimenta
+                                                    │
+                                                    ▼
+                                              Territory / Route
+                                       (lectura estratégica 2D)</pre>
+<h3>9.2 El flujo fundador mínimo</h3>
+<p>El flujo mínimo verificable para crear una civilización es:</p>
+<pre class="code">1. Usuario elige CivilizationSeed (uno de 7 arquetipos)
+2. Usuario nombra al héroe fundador
+3. Usuario nombra el refugio fundador
+4. Sistema crea:
+   - Hero (fundador, con rol "Constructor de Mundos")
+   - Refuge (recursos: food=60, shelter=75, security=55, morale=58)
+   - Community (cultura y tensiones derivadas de la semilla)
+   - MemoryEntry ("fundación iniciada")
+   - World (contenedor global con tick=0)
+5. Simulación avanza produciendo eventos → memoria → historia</pre>
+<p>Tiempo total: < 2 minutos desde onboarding hasta mundo activo.</p>
+<h3>9.3 La regla 2D/3D: separación de verdad y presencia</h3>
+<p>Una decisión arquitectónica fundamental del sistema es la separación estricta entre capas:</p>
+<p>| Capa | Rol | Estado actual |</p>
+<p>|---|---|---|</p>
+<p>| <strong>2D</strong> | Verdad sistémica: mapa, grid, rutas, nodos, recursos, refugios, influencia, fronteras | Implementada |</p>
+<p>| <strong>3D</strong> | Encarnación futura: héroes de gran presencia, refugios encarnados, eventos históricos visuales | <strong>No implementada (Roadmap)</strong> |</p>
+<p>Esta separación evita la confusión frecuente en simulaciones de vida artificial entre la lógica del sistema (donde vive la verdad) y su representación visual. La capa 3D, cuando se implemente, será subordinada a la verdad sistémica 2D, no un sistema paralelo con su propia lógica.</p>
+<hr>
+<h2>10. Limitaciones y Trabajo Futuro</h2>
+<h3>10.1 Limitaciones actuales verificadas</h3>
+<p><strong>L1. Ausencia de integración Python/JS.</strong> Los dos motores son sistemas independientes sin comunicación en tiempo real. La verdad sistémica de alta fidelidad (motor Python) y la demo web (motor JS) no comparten estado. Esta es una limitación conocida y documentada, no un error no detectado.</p>
+<p><strong>L2. Escasez de eventos narrativos intermedios.</strong> La sesión de 200 ticks registró solo 55 eventos de intercambio de recursos (COMER, RECOGER). Los eventos de <code>compartio</code>, <code>robo</code> y <code>ataque</code>, aunque implementados, fueron marginales porque sus condiciones de viabilidad son más restrictivas que SEGUIR y DESCANSAR.</p>
+<p><strong>L3. Comunidad como contrato de datos, no como simulación social.</strong> El concepto de <code>Community</code> existe con estado inicial (cultura, tensiones, cohesión, liderazgo) pero no como simulación social rica. Las relaciones inter-agente son diádicas; no hay dinámicas grupales emergentes de normas o liderazgo.</p>
+<p><strong>L4. Diplomacia y linajes no implementados.</strong> Civilizaciones completas con diplomacia, guerras, migraciones y linajes permanecen en roadmap.</p>
+<p><strong>L5. Historial multi-sesión no agregado.</strong> Cada ejecución produce su propia crónica pero el sistema aún no compara ni agrega historial entre sesiones distintas con la misma semilla.</p>
+<p><strong>L6. Capturas visuales no integradas en crónica.</strong> El sistema genera la crónica en JSON y Markdown pero no incluye screenshots automáticos del estado del mundo en ticks clave.</p>
+<h3>10.2 Líneas de trabajo futuro</h3>
+<p><strong>F1. Mecanismo de migración adaptativa.</strong> Implementar un subsistema que detecte el agotamiento zonal y genere una directiva grupal de migración cuando la densidad de recursos en el cuadrante actual cae por debajo de un umbral. Esto transformaría la trampa dinámica identificada en §7.1 en comportamiento adaptativo verificable.</p>
+<p><strong>F2. Historia profunda: más eventos → más crónica.</strong> Hacer que acciones como <code>compartio</code>, <code>robo</code>, <code>atacó</code>, <code>huyó_de</code> alimenten directamente <code>MemoryEntry</code> e <code>HistoricalRecord</code>, generando crónicas más ricas que reflejen la dinámica real de la simulación.</p>
+<p><strong>F3. Comunidades con normas emergentes.</strong> Implementar un mecanismo donde la frecuencia de ciertos tipos de acción en un grupo (alta frecuencia de COMPARTIR, baja frecuencia de ROBAR) se traduzca en una norma cultural que modifique los modificadores de utilidad de todos los miembros del grupo.</p>
+<p><strong>F4. Puente Python/JS.</strong> Definir un protocolo de API REST o WebSocket que permita que el motor Python sea el backend de verdad sistémica y el motor JS sea la capa de presentación web en tiempo real. El roadmap técnico en 4 fases está documentado en <code>docs/ARTIFICIAL_WORD_CRONOGRAMA.md</code>.</p>
+<p><strong>F5. Integración del Sistema Chess en CI.</strong> Ejecutar el ciclo de auditoría Chess automáticamente en cada push, no solo manualmente, generando un reporte diferencial que identifique regresos en la calidad del código.</p>
+<p><strong>F6. CivilizationSeeds condicionando efectivamente el runtime.</strong> Los siete arquetipos existen como estado fundacional en la capa web, pero no condicionan aún el comportamiento de los agentes en el motor Python. La integración de la semilla en la distribución inicial de rasgos de agente es el siguiente paso lógico.</p>
+<hr>
+<h2>11. Discusión: La Filosofía de Sistemas que se Explican Solos</h2>
+<h3>11.1 Por qué la trazabilidad es una ventaja competitiva</h3>
+<p>En el contexto actual de proliferación de sistemas de IA con capacidades difíciles de verificar externamente, la trazabilidad radical no es solo un valor ético: es una <strong>ventaja competitiva demostrable</strong>. Un sistema que puede decir "esta decisión ocurrió en el tick 189, fue tomada por el agente Tryndamere, la acción ganadora fue SEGUIR con puntuación 0.73, y los cinco modificadores que más la elevaron fueron X, Y, Z, W, V" es cualitativamente diferente de un sistema que devuelve un comportamiento sin rastro.</p>
+<p>Este principio, central en el diseño de Artificial World, tiene implicaciones más amplás para el diseño de sistemas de IA en general: <strong>la opacidad de un sistema no es un defecto técnico inevitable sino una elección de diseño</strong>.</p>
+<h3>11.2 El modelo de honestidad técnica como metodología</h3>
+<p>La taxonomía real/demo/roadmap que Artificial World implementa activamente es, en sí misma, una metodología de gestión de producto y comunicación técnica. El criterio de éxito documentado en múltiples archivos del proyecto ("una persona nueva entiende en menos de 5 minutos qué es real y qué es demo") es un indicador de producto, no solo de documentación.</p>
+<p>Esta metodología tiene un costo: requiere resistir la tentación de presentar el sistema en su estado óptimo teórico. Pero el beneficio es la <strong>credibilidad acumulada</strong>: cada claim verificable fortalece la confianza en los claims no verificados de inmediato.</p>
+<h3>11.3 Local, auditable, open source: una tesis sobre dónde vive la inteligencia útil</h3>
+<p>El manifiesto del proyecto articula una posición específica sobre la arquitectura de la IA útil:</p>
+<blockquote><em>"Local, porque la confianza empieza por el control. Open source, porque la inteligencia sin inspección es fe. Auditable, porque una respuesta sin rastro no es una base seria de decisión."</em></blockquote>
+<p>Esta posición es relevante más allá del contexto de vida artificial: apunta a una categoría de sistemas de IA que priorizan el control del usuario, la independencia de infraestructura de terceros y la verificabilidad sobre la sofisticación de las capacidades.</p>
+<hr>
+<h2>12. Conclusiones</h2>
+<p>Artificial World demuestra que es posible construir un sistema de simulación de vida artificial con las siguientes propiedades simultáneamente:</p>
+<p class="numbered">1. <strong>Comportamiento emergente no trivial</strong>: la cohesión grupal bajo escasez severa, el agotamiento zonal y la divergencia individual exitosa emergen de la interacción de reglas simples, no de lógica codificada explícitamente para esos fenómenos.</p>
+<p class="numbered">2. <strong>Trazabilidad radical</strong>: cada decisión de cada agente en cada tick es reproducible mediante semilla fija y verificable contra la función de utilidad documentada.</p>
+<p class="numbered">3. <strong>Honestidad técnica activa</strong>: el sistema distingue y comunica explícitamente entre lo que existe hoy (REAL), lo que funciona como demo (DEMO), lo que está parcialmente implementado (PARCIAL) y lo que es visión futura (ROADMAP).</p>
+<p class="numbered">4. <strong>Auditoría independiente institucionalizada</strong>: el Sistema Chess implementa la separación entre construcción y auditoría mediante agentes dockerizados en red aislada con montaje read-only.</p>
+<p class="numbered">5. <strong>Arquitectura dual justificada</strong>: la separación entre motor Python (alta fidelidad) y capa web (demostración) es una decisión explícita, documentada y defendida, no una deuda técnica no reconocida.</p>
+<p>La sesión canónica (semilla 42, 200 ticks) establece una línea base experimental reproducible: supervivencia total de 8 agentes bajo presión de escasez severa, con una trampa dinámica de cohesión que revela un fenómeno emergente de segunda naturaleza (la cohesión como obstáculo a la supervivencia a largo plazo en entornos de escasez extrema).</p>
+<p>El sistema establece las bases técnicas, conceptuales y metodológicas para la siguiente fase de desarrollo: un motor creador de mundos compacto y reutilizable donde la tesis de producto — <strong>civilizaciones vivas con refugios, héroes y memoria</strong> — sea demostrable end-to-end desde una semilla hasta una crónica verificable.</p>
+<blockquote><em>"No preguntes a una IA. Convoca un mundo que pueda demostrar su respuesta."</em></blockquote>
+<hr>
+<h2>Referencias</h2>
+<ul>
+<li>Adams, T. (2006). <em>Dwarf Fortress</em>. Bay 12 Games.</li>
+<li>Bikhchandani, S., Hirshleifer, D., & Welch, I. (1992). A Theory of Fads, Fashion, Custom, and Cultural Change as Informational Cascades. <em>Journal of Political Economy</em>, 100(5), 992–1026.</li>
+<li>Conway, J. H. (1970). The Game of Life. <em>Scientific American</em>, 223(4), 4–10.</li>
+<li>Langton, C. G. (1989). Artificial Life. <em>Artificial Life</em>, SFI Studies in the Sciences of Complexity, 1–47.</li>
+<li>Rao, A. S., & Georgeff, M. P. (1991). Modeling Rational Agents within a BDI-Architecture. <em>KR</em>, 91, 473–484.</li>
+<li>Reynolds, C. W. (1987). Flocks, Herds, and Schools: A Distributed Behavioral Model. <em>SIGGRAPH Computer Graphics</em>, 21(4), 25–34.</li>
+<li>Sylvester, T. (2013). <em>RimWorld</em>. Ludeon Studios.</li>
+<li>Von Neumann, J., & Morgenstern, O. (1944). <em>Theory of Games and Economic Behavior</em>. Princeton University Press.</li>
+</ul>
+<hr>
+<h2>Apéndice A: Estructura completa del JSON de crónica fundacional</h2>
+<pre class="code">{
+  "version": 1,
+  "timestamp": "2026-03-08T12:53:48.770554",
+  "metadata": {
+    "semilla": 42,
+    "nombre_fundador": "Tryndamere",
+    "nombre_refugio": "Refugio Fundador",
+    "semilla_civilizacion": "default",
+    "alertas_total": 65,
+    "ticks_ejecutados": 200
+  },
+  "estado_inicial": {
+    "entidades_iniciales": 8,
+    "mapa": "60x60",
+    "tick_inicio": 0
+  },
+  "hitos": [
+    { "tick": 0,   "tipo": "inicio",        "descripcion": "Fundación iniciada. Comunidad despierta." },
+    { "tick": 50,  "tipo": "primer_ciclo",   "descripcion": "Primeras interacciones sociales registradas." },
+    { "tick": 100, "tipo": "mitad",          "descripcion": "Hambre generalizada. Primeras alertas críticas." },
+    { "tick": 199, "tipo": "crisis",         "descripcion": "65 alertas. 7/8 entidades en hambre crítica ≥ 0.9." },
+    { "tick": 200, "tipo": "cierre",         "descripcion": "Sesión completada. Supervivencia en tensión." }
+  ],
+  "metricas": {
+    "siguio": 998,
+    "descanso": 492,
+    "recogio_recurso": 55,
+    "comio": 55,
+    "total_acciones": 1600
+  },
+  "veredicto": "tension",
+  "resumen": "Supervivencia en tensión. 8 entidades vivas. Hambre máxima 1.00."
+}</pre>
+<h2>Apéndice B: Reproducción de la sesión canónica</h2>
+<pre class="code"># Instalar dependencias
+pip install -r requirements.txt
+
+# Ejecutar sesión reproducible (headless)
+$env:SDL_VIDEODRIVER="dummy"
+$env:SDL_AUDIODRIVER="dummy"
+python cronica_fundacional.py --seed 42 --ticks 200 `
+  --founder "Tryndamere" --refuge "Refugio Fundador"
+
+# Artefactos generados:
+# cronica_fundacional.json  ← datos completos verificables
+# cronica_fundacional.md    ← resumen legible
+# cronica_fundacional.pdf   ← documento LaTeX compilado (requiere MiKTeX)
+
+# Ejecutar suite completa de tests
+python pruebas/run_tests_produccion.py</pre>
+<h2>Apéndice C: Taxonomía de componentes — Estado verificado</h2>
+<p>| Componente | Estado | Evidencia verificable |</p>
+<p>|---|---|---|</p>
+<p>| Motor Python 2D | REAL | <code>principal.py</code>, <code>nucleo/simulacion.py</code>, 13 acciones |</p>
+<p>| Función de utilidad | REAL | <code>agentes/motor_decision.py</code> (415 líneas) |</p>
+<p>| Memoria espacial/social | REAL | <code>systems/memory/</code>, <code>agentes/relaciones.py</code> |</p>
+<p>| Persistencia SQLite | REAL | <code>mundo_artificial.db</code>, <code>sistema_persistencia.py</code> |</p>
+<p>| Modo Sombra | REAL | <code>gestor_modo_sombra.py</code>, suite de tests |</p>
+<p>| Watchdog | REAL | <code>SistemaWatchdog</code>, 65 alertas en sesión canónica |</p>
+<p>| Crónica fundacional | REAL | JSON + MD + PDF desde runtime |</p>
+<p>| 11 suites Python (68+ tests) | REAL | <code>pruebas/run_tests_produccion.py</code> |</p>
+<p>| CI GitHub Actions | REAL | <code>.github/workflows/ci-completo.yml</code> |</p>
+<p>| Web fullstack (Node+React) | DEMO | <code>backend/src/</code>, <code>frontend/src/</code> |</p>
+<p>| HeroRefuge | PARCIAL | <code>heroRefuge.js</code>, hasta 256 mundos persistentes |</p>
+<p>| CivilizationSeed (7 arquetipos) | PARCIAL | <code>civilizationSeeds.js</code>, estado fundacional completo |</p>
+<p>| IA local (Ollama) | PARCIAL | <code>aiCore.js</code>, fallback determinista |</p>
+<p>| Sistema Chess | REAL | <code>docker/agents/</code>, <code>docker/coordinator/</code> |</p>
+<p>| Runtime 3D | ROADMAP | Diseñado, no implementado |</p>
+<p>| Integración Python/JS | ROADMAP | Documentado, no implementado |</p>
+<p>| Diplomacia / linajes | ROADMAP | Conceptualizado, no implementado |</p>
+<hr>
+<p><em>Artificial World — Constrúyelo. Habítalo. Haz que crezca.</em>  </p>
+<p><em>Motor creador de mundos — El destino.</em></p>
+  <hr>
+  <p style="font-size:11px;color:#64748b;text-align:center;margin-top:16px;">
+    Artificial World · Cosigein SL · 2026 ·
+    Constrúyelo. Habítalo. Haz que crezca.
+  </p>
+</div>
+</body>
+</html>

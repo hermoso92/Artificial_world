@@ -1,0 +1,7 @@
+{
+  "name": "agent-docs",
+  "version": "1.0.0",
+  "description": "Agente de auditoría de documentación",
+  "main": "audit.js",
+  "type": "module"
+}

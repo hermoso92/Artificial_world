@@ -1,0 +1,237 @@
+% ============================================================
+%  PORTFOLIO EXTERNO --- Generado automáticamente desde el repo
+%  Por el sistema de agentes de Artificial World / Cosigein SL
+%  Variables: Artificial World Artificial World es una base para crear civilizaciones vivas con memoria, héroes, refugios y comunidades. Proyecto local-first y open source. 2026-03-08 etc.
+% ============================================================
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[spanish]{babel}
+\usepackage[top=1.8cm,bottom=1.8cm,left=2cm,right=2cm]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[colorlinks=true,linkcolor=teal,urlcolor=teal,pdfborder={0 0 0}]{hyperref}
+
+% ---- Paleta ----
+\definecolor{accent}{HTML}{0d9488}
+\definecolor{dark}{HTML}{1a202c}
+\definecolor{muted}{HTML}{4a5568}
+\definecolor{light}{HTML}{e2e8f0}
+\definecolor{warn}{HTML}{b45309}
+\definecolor{crit}{HTML}{b91c1c}
+\definecolor{green}{HTML}{065f46}
+\definecolor{blue}{HTML}{1d4ed8}
+
+% ---- Espaciado ----
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\setlength{\columnsep}{1cm}
+
+% ---- Cabecera ----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{muted}Análisis de Repositorio --- Artificial World}
+\fancyhead[R]{\small\color{muted}Generado por Artificial World \textperiodcentered{} 2026-03-08}
+\fancyfoot[C]{\small\color{muted}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---- Secciones ----
+\titleformat{\section}{\large\bfseries\color{accent}}{}{0em}{}[\vspace{-4pt}\color{accent}\rule{\linewidth}{1.2pt}]
+\titleformat{\subsection}{\normalsize\bfseries\color{dark}}{}{0em}{}
+\titlespacing{\section}{0pt}{12pt}{6pt}
+\titlespacing{\subsection}{0pt}{8pt}{3pt}
+
+% ---- Badges ----
+\newcommand{\badge}[2][accent]{\colorbox{#1!15}{\small\color{#1}\textbf{#2}}}
+\newcommand{\real}{\badge[green]{REAL}}
+\newcommand{\demo}{\badge[warn]{DEMO}}
+\newcommand{\parcial}{\badge[blue]{PARCIAL}}
+\newcommand{\roadmap}{\badge[muted]{ROADMAP}}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% ---- CABECERA PRINCIPAL ----
+\begin{center}
+  {\color{accent}\rule{\linewidth}{2.5pt}}\\[0.6em]
+  {\LARGE\bfseries\color{dark} Artificial World}\\[0.3em]
+  {\large\color{accent} civilizaciones vivas}\\[0.3em]
+  {\small\color{muted}
+    Python
+    \quad\textperiodcentered\quad
+    2026-03-08
+    \quad\textperiodcentered\quad
+    \textit{Análisis automático de repositorio}
+  }\\[0.5em]
+  {\color{accent}\rule{\linewidth}{2.5pt}}
+\end{center}
+
+\vspace{0.3em}
+
+% ============================================================
+\section{Descripción del proyecto}
+% ============================================================
+
+\noindent\colorbox{accent!8}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+  Artificial World es una base para crear civilizaciones vivas con memoria, héroes, refugios y comunidades. Proyecto local-first y open source.
+}}
+
+\vspace{0.5em}
+
+% ============================================================
+\section{Stack tecnológico detectado}
+% ============================================================
+
+\begin{multicols}{3}
+
+\subsection*{Motor / Backend}
+\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=1pt]
+  \item Python 3
+  \item pygame
+  \item Node.js
+\end{itemize}
+
+\columnbreak
+\subsection*{Frontend / UI}
+\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=1pt]
+  \item ---
+\end{itemize}
+
+\columnbreak
+\subsection*{Infraestructura / IA}
+\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=1pt]
+  \item GitHub CI/CD
+  \item Variables de entorno
+  \item LaTeX / PDF generation
+  \item SQLite (5 BD)
+\end{itemize}
+
+\end{multicols}
+
+% ============================================================
+\section{Estadísticas del repositorio}
+% ============================================================
+
+\begin{tabularx}{\linewidth}{>{\bfseries}p{4.5cm} X}
+  \toprule
+  Métrica & Valor \\
+  \midrule
+  Archivos totales & 634 \\[2pt]
+  Lenguaje principal & Python \\[2pt]
+  Tests encontrados & 18 archivos de test \\[2pt]
+  Commits en git & 39 \\[2pt]
+  Último commit & \texttt{\small2026-03-08 11:23:01 +0100 feat: cronica fundaciona} \\[2pt]
+  Autor & TU\_NOMBRE \\[2pt]
+  Documentación & Sí — carpeta /docs presente \\
+  \bottomrule
+\end{tabularx}
+
+% ============================================================
+\section{Características detectadas}
+% ============================================================
+
+\begin{tabularx}{\linewidth}{>{\centering\arraybackslash}p{0.5cm} X}
+  \toprule
+  & Característica \\
+  \midrule
+  🐳 & Docker containerizado \\
+  🔄 & CI/CD automatizado (GitHub Actions) \\
+  📡 & API documentada (OpenAPI / Swagger) \\
+  ✅ & Suite de tests automatizados \\
+  ▶️ & Script de inicio único (1 comando) \\
+  🔐 & Configuración por variables de entorno \\
+  🖥️ & Frontend React modular \\
+  ⚙️ & Backend API REST \\
+  📚 & Documentación técnica incluida \\
+  📄 & README verificable \\
+  \bottomrule
+\end{tabularx}
+
+% ============================================================
+\section{Lenguajes por frecuencia}
+% ============================================================
+
+\begin{tabularx}{\linewidth}{>{\bfseries}p{4cm} >{\centering\arraybackslash}p{2.5cm} X}
+  \toprule
+  Lenguaje & Archivos & Indicador \\
+  \midrule
+  Python & 140 & \texttt{\small ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓} \\
+[2pt]
+  JavaScript & 80 & \texttt{\small ▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░} \\
+[2pt]
+  React/JSX & 28 & \texttt{\small ▓▓▓▓░░░░░░░░░░░░░░░░} \\
+[2pt]
+  Go & 22 & \texttt{\small ▓▓▓░░░░░░░░░░░░░░░░░} \\
+[2pt]
+  PowerShell & 13 & \texttt{\small ▓▓░░░░░░░░░░░░░░░░░░} \\
+[2pt]
+  Shell & 7 & \texttt{\small ▓░░░░░░░░░░░░░░░░░░░} \\
+[2pt]
+  LaTeX & 3 & \texttt{\small ░░░░░░░░░░░░░░░░░░░░} \\
+[2pt]
+  SQL & 1 & \texttt{\small ░░░░░░░░░░░░░░░░░░░░} \\
+  \bottomrule
+\end{tabularx}
+
+% ============================================================
+\section{Documentación encontrada}
+% ============================================================
+
+\begin{itemize}[leftmargin=1em, itemsep=2pt]
+  \item \texttt{ACCESO\_TESTERS.md}
+  \item \texttt{AGENT\_SKILLS\_01\_MEMORIA\_ESPACIAL.md}
+  \item \texttt{AGENT\_SKILLS\_02\_INVENTARIO.md}
+  \item \texttt{AGENT\_SKILLS\_03\_REFUGIOS.md}
+  \item \texttt{AGENT\_SKILLS\_04\_RASGOS\_PERSONALIDAD.md}
+  \item \texttt{AGENT\_SKILLS\_05\_COMPARTIR.md}
+  \item \texttt{AGENT\_SKILLS\_INDEX.md}
+  \item \texttt{API\_INDEX.md}
+\end{itemize}
+
+% ============================================================
+\section{Valoración técnica automática}
+% ============================================================
+
+\begin{tabularx}{\linewidth}{>{\bfseries}p{4.5cm} >{\centering\arraybackslash}p{2.5cm} X}
+  \toprule
+  Área & Estado & Notas \\
+  \midrule
+  Tests automatizados   & \real   & 18 archivos de test (pytest / runner Python) \\[3pt]
+  Documentación README  & \real  & README.md presente y con contenido \\[3pt]
+  CI/CD pipeline        & \real      & GitHub Actions configurado \\[3pt]
+  Containerización      & \real  & Dockerfile / docker-compose detectado \\[3pt]
+  Variables de entorno  & \real     & .env / .env.example detectado \\[3pt]
+  Frontend moderno      & \real & Frontend moderno detectado \\[3pt]
+  Backend API           & \real & Backend / API detectado \\
+  \bottomrule
+\end{tabularx}
+
+% ============================================================
+\section{Próximos pasos recomendados}
+% ============================================================
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=4pt]
+  \item El repositorio tiene una base técnica sólida — continuar con las mismas prácticas
+\end{enumerate}
+
+% ============================================================
+%  PIE
+% ============================================================
+\vfill
+\begin{center}
+  \color{muted}\small\rule{0.6\linewidth}{0.4pt}\\[4pt]
+  Análisis generado automáticamente por \textbf{Artificial World} \textperiodcentered{} Cosigein SL \textperiodcentered{} 2026-03-08\\
+  \textit{Este documento fue creado por el sistema de agentes desde el repositorio \texttt{artificial word}.}\\
+  \textit{Constrúyelo. Habítalo. Haz que crezca.}
+\end{center}
+
+\end{document}

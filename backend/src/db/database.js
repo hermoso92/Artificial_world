@@ -6,8 +6,9 @@
  *   players       — registered player identities
  *   heroes        — hero profiles (one per player)
  *   hero_worlds   — artificial worlds owned by heroes
- *   subscriptions — subscription tiers
- *   audit_events  — append-only simulation event log
+ *   subscriptions — subscription tiers (see subscription/store.js for its own DB)
+ *
+ * Note: audit_events live in audit/eventStore.js (audit_simulacion.db).
  */
 import Database from 'better-sqlite3';
 import path from 'path';
@@ -21,6 +22,14 @@ const DB_PATH = IS_PROD
   : path.join(__dirname, '../../../constructor.db');
 
 let _db = null;
+
+function ensureColumn(db, tableName, columnName, definition) {
+  const columns = db.prepare(`PRAGMA table_info(${tableName})`).all();
+  const exists = columns.some((column) => column.name === columnName);
+  if (!exists) {
+    db.exec(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${definition}`);
+  }
+}
 
 export function getDb() {
   if (_db) return _db;
@@ -84,6 +93,8 @@ export function getDb() {
     CREATE INDEX IF NOT EXISTS idx_hero_worlds_hero ON hero_worlds(hero_id);
     CREATE INDEX IF NOT EXISTS idx_hero_worlds_alive ON hero_worlds(alive);
   `);
+
+  ensureColumn(_db, 'hero_worlds', 'metadata', "TEXT NOT NULL DEFAULT '{}'");
 
   logger.info(`[db] SQLite initialized at ${DB_PATH}`);
   return _db;
@@ -156,8 +167,8 @@ export function getAliveWorldsByHero(heroId) {
 export function upsertWorld(world) {
   const db = getDb();
   db.prepare(`
-    INSERT INTO hero_worlds (id, hero_id, name, type, scale, biomes, population, resources, tick, alive, history, destroyed_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO hero_worlds (id, hero_id, name, type, scale, biomes, population, resources, tick, alive, history, destroyed_at, metadata)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(id) DO UPDATE SET
       name = excluded.name,
       population = excluded.population,
@@ -165,7 +176,8 @@ export function upsertWorld(world) {
       tick = excluded.tick,
       alive = excluded.alive,
       history = excluded.history,
-      destroyed_at = excluded.destroyed_at
+      destroyed_at = excluded.destroyed_at,
+      metadata = excluded.metadata
   `).run(
     world.id,
     world.heroId,
@@ -179,6 +191,7 @@ export function upsertWorld(world) {
     world.alive ? 1 : 0,
     JSON.stringify(world.history ?? []),
     world.destroyedAt ?? null,
+    JSON.stringify(world.metadata ?? {}),
   );
 }
 
@@ -193,6 +206,7 @@ function deserializeWorld(row) {
     biomes: JSON.parse(row.biomes),
     resources: JSON.parse(row.resources),
     history: JSON.parse(row.history),
+    metadata: row.metadata ? JSON.parse(row.metadata) : {},
     alive: Boolean(row.alive),
   };
 }
@@ -231,6 +245,17 @@ export function saveHeroState(hero) {
         alive: w.alive,
         history: w.history,
         destroyedAt: w.destroyedAt,
+        metadata: {
+          civilizationSeed: w.civilizationSeed,
+          foundingRefuge: w.foundingRefuge,
+          community: w.community,
+          heroes: w.heroes,
+          memoryEntries: w.memoryEntries,
+          historicalRecords: w.historicalRecords,
+          territory: w.territory,
+          future3dHooks: w.future3dHooks,
+          simulationRefugeIndex: w.simulationRefugeIndex ?? null,
+        },
       });
     }
   });

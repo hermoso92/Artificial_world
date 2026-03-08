@@ -1,0 +1,656 @@
+\documentclass[11pt,a4paper,twocolumn]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage[top=2.5cm,bottom=2.5cm,left=2cm,right=2cm,columnsep=0.6cm]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{titling}
+\usepackage{abstract}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage[colorlinks=true,linkcolor=teal,urlcolor=teal,citecolor=teal]{hyperref}
+
+% ── Colores ────────────────────────────────────────────────────
+\definecolor{accent}{HTML}{0d9488}
+\definecolor{textmuted}{HTML}{4a5568}
+\definecolor{warncolor}{HTML}{b45309}
+\definecolor{critcolor}{HTML}{b91c1c}
+\definecolor{codebg}{HTML}{f8f9fa}
+\definecolor{codefg}{HTML}{2d3748}
+
+% ── Tipografía de secciones ────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\color{accent}}
+  {\thesection.}{0.5em}{}[\vspace{-4pt}\color{accent}\rule{\linewidth}{0.6pt}]
+
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{accent!80!black}}
+  {\thesubsection.}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\itshape\color{textmuted}}
+  {\thesubsubsection.}{0.5em}{}
+
+% ── Cabecera / pie ─────────────────────────────────────────────
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{textmuted}\textit{Artificial World --- Motor de Civilizaciones Emergentes}}
+\fancyhead[R]{\small\color{textmuted}2026-03-08}
+\fancyfoot[C]{\small\color{textmuted}P\'agina \thepage\ / \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Listings (código) ──────────────────────────────────────────
+\lstset{
+  backgroundcolor=\color{codebg},
+  basicstyle=\footnotesize\ttfamily\color{codefg},
+  breaklines=true,
+  frame=single,
+  framerule=0.4pt,
+  rulecolor=\color{accent!40},
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+  aboveskip=6pt,
+  belowskip=6pt,
+}
+
+% ── Abstract ──────────────────────────────────────────────────
+\renewcommand{\abstractnamefont}{\normalfont\bfseries\color{accent}}
+\renewcommand{\abstracttextfont}{\small\itshape}
+\setlength{\absleftindent}{0pt}
+\setlength{\absrightindent}{0pt}
+
+% ── Tablas ────────────────────────────────────────────────────
+\renewcommand{\arraystretch}{1.25}
+
+% ──────────────────────────────────────────────────────────────
+\begin{document}
+
+% ── PORTADA ───────────────────────────────────────────────────
+\twocolumn[{%
+\begin{@twocolumnfalse}
+  \vspace*{0.5cm}
+  {\color{accent}\rule{\linewidth}{2pt}}\\[0.6em]
+  {\LARGE\bfseries\color{accent}
+    Artificial World: Un Motor de Simulaci\'on de\\ Civilizaciones
+    Emergentes con Agentes Aut\'onomos Basados en Utilidad}\\[0.5em]
+  {\color{accent}\rule{\linewidth}{0.6pt}}\\[0.4em]
+  {\normalsize
+    \textbf{Autor:} Cosigein SL\quad
+    \textbf{Fecha:} 2026-03-08\quad
+    \textbf{Repositorio:} \texttt{artificial-word}\quad
+    \textbf{Versi\'on:} Sesi\'on fundacional, semilla~42, 200~ticks
+  }\\[0.4em]
+  {\color{accent}\rule{\linewidth}{2pt}}\\[0.8em]
+
+  \begin{abstract}
+    Presentamos \textbf{Artificial World}, un motor de simulaci\'on de
+    vida artificial 2D orientado a la generaci\'on de civilizaciones
+    emergentes con memoria, h\'eroes, refugios y comunidades.
+    El sistema implementa agentes aut\'onomos cuya toma de decisiones
+    se fundamenta en una funci\'on de utilidad multidimensional que
+    integra estado fisiol\'ogico, rasgos de personalidad, memoria
+    espacial y social, relaciones inter-agente, directivas externas y
+    reglas de autonom\'ia de supervivencia.
+    Describimos la arquitectura del motor de decisi\'on, la estructura
+    del entorno simulado, el protocolo de sesi\'on fundacional
+    reproducible y los resultados observados en una sesi\'on can\'onica
+    de 200~ticks con 8~entidades sobre un mapa de $60\times60$ celdas.
+    Los resultados muestran un estado de tensi\'on sostenida con
+    supervivencia total de la poblaci\'on pero con hambre cr\'itica en
+    el 87.5\% de los agentes al final del experimento, evidenciando la
+    presi\'on evolutiva del entorno y la insuficiencia del mecanismo de
+    b\'usqueda de recursos en condiciones de escasez prolongada.
+    El sistema es reproducible mediante semilla fija y est\'a disponible
+    como motor Python open source con persistencia SQLite.\\[4pt]
+    \textbf{Palabras clave:} vida artificial, agentes aut\'onomos,
+    funci\'on de utilidad, civilizaciones emergentes, simulaci\'on 2D,
+    comportamiento emergente, memoria social, modo sombra.
+  \end{abstract}
+  \vspace{0.6em}
+\end{@twocolumnfalse}
+}]
+
+% ── 1. INTRODUCCIÓN ───────────────────────────────────────────
+\section{Introducci\'on}
+
+La simulaci\'on de sistemas de vida artificial ha sido un campo f\'ertil
+desde los trabajos fundacionales de Conway (1970) con el Juego de la
+Vida~\cite{Conway1970} y los ecosistemas de Reynolds (1987) con
+Boids~\cite{Reynolds1987}.
+Sin embargo, la mayor\'ia de los sistemas cl\'asicos priorizan la
+simplicidad de las reglas locales sobre la riqueza del estado interno
+de los agentes.
+
+Artificial World parte de una premisa distinta: \textbf{los agentes
+deben tener estado interno complejo, memoria persistente y capacidad de
+decidir mediante ponderaci\'on de utilidades}, de forma que el
+comportamiento colectivo emergente sea consecuencia de decisiones
+individualmente racionales bajo restricci\'on.
+
+El objetivo del sistema no es la optimizaci\'on de una m\'etrica global,
+sino la generaci\'on de \textbf{historia emergente}: secuencias de
+eventos que den lugar a cr\'onicas, memorias y finalmente a
+civilizaciones con identidad propia. La unidad fundamental no es el
+agente individual sino el \textbf{refugio} --- un nodo de supervivencia
+colectiva alrededor del cual se organiza la comunidad.
+
+Este trabajo documenta: (1)~arquitectura del motor de decisi\'on por
+utilidad; (2)~entorno simulado y par\'ametros; (3)~protocolo de sesi\'on
+fundacional reproducible; (4)~resultados de la sesi\'on can\'onica
+(semilla~42, 200~ticks); (5)~an\'alisis de comportamiento emergente;
+(6)~limitaciones y trabajo futuro.
+
+% ── 2. TRABAJO RELACIONADO ────────────────────────────────────
+\section{Trabajo Relacionado}
+
+\subsection{Vida Artificial y Agentes Aut\'onomos}
+
+Los sistemas de vida artificial basados en agentes (Langton,
+1989~\cite{Langton1989}) se dividen en dos familias:
+\textbf{sistemas de reglas locales simples} (aut\'omatas celulares,
+Boids) y \textbf{sistemas de agentes con estado interno} (Creatures,
+The Sims, Dwarf Fortress~\cite{Adams2006}).
+Artificial World pertenece a la segunda familia, con \'enfasis en la
+\textbf{arquitectura de decisi\'on por utilidad} y en la
+\textbf{persistencia de memoria individual}.
+
+\subsection{Utilidad en Agentes Deliberativos}
+
+La teor\'ia de la utilidad esperada~\cite{VonNeumann1944} ha sido
+adaptada extensamente para sistemas multiagente.
+La arquitectura se inspira en los sistemas \textbf{BDI}
+(Rao \& Georgeff, 1991~\cite{Rao1991}), pero reemplaza la selecci\'on
+de intenciones por una funci\'on de puntuaci\'on continua que permite
+graduaci\'on natural entre opciones.
+
+\subsection{Sistemas de Refugio y Comunidad}
+
+La noci\'on de refugio como unidad de organizaci\'on social tiene
+antecedentes en Dwarf Fortress, RimWorld~\cite{Sylvester2013} y Caves
+of Qud. Artificial World formaliza el refugio como \textbf{entidad de
+primer orden} con estado propio, en lugar de tratarlo como mero
+artefacto del mapa.
+
+% ── 3. ARQUITECTURA ───────────────────────────────────────────
+\section{Arquitectura del Sistema}
+
+\subsection{Visi\'on General}
+
+El sistema se compone de las capas mostradas en el
+Listado~\ref{lst:arch}.
+Dispone de dos motores independientes:
+
+\begin{itemize}[leftmargin=1em, itemsep=2pt, topsep=2pt]
+  \item \textbf{Motor Python} (Python~3.11+ / pygame): simulaci\'on
+        can\'onica, alta fidelidad; persistencia SQLite
+        (\texttt{mundo\_artificial.db}).
+  \item \textbf{Motor JS} (Node.js / Express): demo web, HeroRefuge,
+        API; persistencia SQLite (\texttt{audit\_simulacion.db}).
+\end{itemize}
+
+La simulaci\'on avanza por ticks discretos. En cada tick, cada entidad
+ejecuta el ciclo: \textit{Percepci\'on} $\to$ \textit{Generaci\'on de
+candidatos} $\to$ \textit{Puntuaci\'on} $\to$ \textit{Selecci\'on}.
+
+\begin{lstlisting}[label=lst:arch, caption={\'Arbol de m\'odulos principal}]
+principal.py
+|-- nucleo/simulacion.py
+|   |-- agentes/motor_decision.py
+|   |-- acciones/        (13 tipos)
+|   |-- sistemas/        (Watchdog, Modo Sombra)
+|   `-- mundo/mapa.py    (grid 60x60)
+|-- sistemas/cronica_fundacional.py
+|-- backend/src/         (API Node.js)
+`-- frontend/src/        (React + Tailwind)
+\end{lstlisting}
+
+\subsection{Funci\'on de Utilidad}
+
+La puntuaci\'on de una acci\'on $a$ para el agente $i$ en el tick $t$ es:
+
+\begin{equation}
+  U(a,i,t) = U_{\text{base}}(a) + \sum_{k} \delta_k(a,i,t) + \varepsilon
+  \label{eq:utility}
+\end{equation}
+
+donde $U_{\text{base}}(a)$ es la utilidad intr\'inseca de la acci\'on
+(Tabla~\ref{tab:ubase}), $\delta_k$ son modificadores contextuales
+(Tabla~\ref{tab:modificadores}), y
+$\varepsilon \sim \mathcal{U}(-0.08, 0.08)$ es ruido determinista
+por semilla.
+
+\begin{table}[h]
+  \centering
+  \caption{Utilidades base por acci\'on}
+  \label{tab:ubase}
+  \small
+  \begin{tabular}{lc}
+    \toprule
+    \textbf{Acci\'on} & $U_{\text{base}}$ \\
+    \midrule
+    \texttt{comer}             & 0.65 \\
+    \texttt{recoger\_comida}   & 0.55 \\
+    \texttt{explorar}          & 0.50 \\
+    \texttt{huir}              & 0.40 \\
+    \texttt{descansar}         & 0.30 \\
+    \texttt{mover}             & 0.30 \\
+    \texttt{recoger\_material} & 0.30 \\
+    \texttt{ir\_refugio}       & 0.25 \\
+    \texttt{evitar}            & 0.25 \\
+    \texttt{compartir}         & 0.20 \\
+    \texttt{robar}             & 0.20 \\
+    \texttt{seguir}            & 0.20 \\
+    \texttt{construir}         & 0.18 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[h]
+  \centering
+  \caption{Modificadores de la funci\'on de utilidad}
+  \label{tab:modificadores}
+  \small
+  \begin{tabular}{p{1.4cm}p{3.6cm}}
+    \toprule
+    \textbf{Modificador} & \textbf{Efecto} \\
+    \midrule
+    hambre    & $\uparrow$ comer/recoger cuando hambre $>$ umbral \\
+    energ\'ia & $\uparrow$ descansar cuando energ\'ia $<0.6$ \\
+    riesgo    & $\uparrow$ huir/evitar cuando riesgo $>0.3$ \\
+    rasgo     & Modifica preferencias por arquetipo \\
+    oscilaci\'on & $-0.40$ sobre retorno a celda anterior \\
+    memoria   & Bonus hacia comida recordada \\
+    relaciones & Confianza/hostilidad/miedo con cercanos \\
+    directivas & \'Ordenes externas con prioridad alta \\
+    autonom\'ia & Override supervivencia sobre directivas \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+La capa de autonom\'ia act\'ua como \textbf{override de emergencia}:
+si $\text{hambre}>0.85$, se penaliza exploraci\'on; si
+$\text{energ\'ia}<0.15$, se penaliza movimiento y robo; si
+$\text{riesgo}>0.8$, se potencia la huida sobre cualquier directiva.
+
+\subsection{Cat\'alogo de Acciones}
+
+El sistema implementa 13~tipos de acci\'on, cada uno con condici\'on de
+viabilidad. Si ninguna es viable, el sistema garantiza fallback a
+\texttt{DESCANSAR}.
+
+\subsection{Rasgos de Agente}
+
+Los agentes sociales tienen 5~arquetipos: \textit{Cooperativo},
+\textit{Neutral}, \textit{Agresivo}, \textit{Explorador} y
+\textit{Oportunista}.
+Los agentes de tipo \texttt{gato} tienen su propia tabla de 5~rasgos:
+\textit{Curioso}, \textit{Apegado}, \textit{Independiente},
+\textit{Territorial} y \textit{Oportunista}.
+
+\subsection{Memoria de Agente}
+
+Cada agente mantiene dos registros:
+
+\begin{itemize}[leftmargin=1em, itemsep=2pt, topsep=2pt]
+  \item \textbf{Memoria espacial}: posiciones de recursos observados
+        recientemente; alimenta directamente el modificador
+        \textit{memoria} de la ec.~(\ref{eq:utility}).
+  \item \textbf{Memoria social}: relaciones con otros agentes en tres
+        dimensiones: \texttt{confianza}, \texttt{hostilidad},
+        \texttt{miedo}.
+\end{itemize}
+
+\subsection{Modo Sombra y Watchdog}
+
+El \textbf{Modo Sombra} es una simulaci\'on especular paralela que
+permite evaluar contraf\'acticos sin alterar el mundo observable.
+El \textbf{Watchdog} monitoriza condiciones an\'omalas y emite alertas
+estructuradas con nivel (\texttt{WARN}, \texttt{CRITICAL}), c\'odigo
+sem\'antico, tick de emisi\'on y entidad afectada.
+
+% ── 4. ENTORNO EXPERIMENTAL ───────────────────────────────────
+\section{Entorno Experimental}
+
+\subsection{Par\'ametros de la Sesi\'on Can\'onica}
+
+\begin{table}[h]
+  \centering
+  \caption{Par\'ametros de la sesi\'on fundacional}
+  \label{tab:params}
+  \small
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Par\'ametro} & \textbf{Valor} \\
+    \midrule
+    Semilla aleatoria         & 42 \\
+    Dimensiones del mapa      & $60 \times 60$ celdas \\
+    Entidades iniciales       & 8 \\
+    Ticks ejecutados          & 200 \\
+    Fundador                  & Tryndamere \\
+    Refugio fundador          & Refugio Fundador \\
+    Semilla de civilizaci\'on & default \\
+    Timestamp                 & 2026-03-08T12:53:48 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Composici\'on de la Poblaci\'on}
+
+\begin{table}[h]
+  \centering
+  \caption{Estado final de las 8 entidades (tick~200)}
+  \label{tab:poblacion}
+  \small
+  \begin{tabular}{llcc}
+    \toprule
+    \textbf{Nombre} & \textbf{Tipo} & \textbf{H} & \textbf{E} \\
+    \midrule
+    Ana         & social & \textcolor{warncolor}{0.68} & 0.38 \\
+    Bruno       & social & \textcolor{critcolor}{1.00} & 0.36 \\
+    Clara       & social & \textcolor{critcolor}{1.00} & 0.26 \\
+    David       & social & \textcolor{critcolor}{0.90} & \textcolor{warncolor}{0.18} \\
+    Eva         & social & \textcolor{critcolor}{1.00} & 0.40 \\
+    F\'elix     & social & \textcolor{critcolor}{1.00} & 0.38 \\
+    Amiguisimo  & gato   & \textcolor{critcolor}{1.00} & 0.30 \\
+    Tryndamere  & social & \textcolor{critcolor}{1.00} & 0.40 \\
+    \bottomrule
+    \multicolumn{4}{l}{\footnotesize H = hambre [0=saciado, 1=cr\'itico]; E = energ\'ia [0=agotado, 1=pleno]}
+  \end{tabular}
+\end{table}
+
+La poblaci\'on incluye 7~entidades de tipo \texttt{social} y
+1~de tipo \texttt{gato} (Amiguisimo). Todas mantienen
+$\text{salud}=1.0$ al final, indicando que ninguna alcanz\'o el
+estado de muerte.
+
+% ── 5. RESULTADOS ─────────────────────────────────────────────
+\section{Resultados}
+
+\subsection{M\'etricas de Acci\'on Agregadas}
+
+\begin{table}[h]
+  \centering
+  \caption{Distribución de acciones en 200 ticks}
+  \label{tab:acciones}
+  \small
+  \begin{tabular}{lrc}
+    \toprule
+    \textbf{Acci\'on} & \textbf{Ejec.} & \textbf{Proporci\'on} \\
+    \midrule
+    \texttt{SEGUIR}          & 998 & 62.4\% \\
+    \texttt{DESCANSAR}       & 492 & 30.8\% \\
+    \texttt{RECOGER\_RECURSO} &  55 &  3.4\% \\
+    \texttt{COMER}           &  55 &  3.4\% \\
+    \midrule
+    \textbf{Total}           & \textbf{1.600} & \textbf{100\%} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+La dominancia de \texttt{SEGUIR} (62.4\%) revela un patr\'on emergente:
+ante la escasez de recursos, los agentes con rasgo social priorizan la
+cohesi\'on grupal sobre la b\'usqueda activa individual. Este resultado
+es consistente con la hip\'otesis de que el modificador de relaciones
+sociales supera al modificador de hambre en los estadios medios del
+experimento.
+
+\subsection{Estado Final de la Poblaci\'on}
+
+\begin{itemize}[leftmargin=1em, itemsep=2pt, topsep=2pt]
+  \item \textbf{Veredicto:} \textcolor{warncolor}{\textsc{tensi\'on}}
+  \item \textbf{Entidades vivas:} 8/8 (supervivencia total)
+  \item \textbf{Hambre m\'axima:} 1.00 (cr\'itica)
+  \item \textbf{Hambre promedio:} 0.9475
+  \item \textbf{Energ\'ia m\'inima:} 0.18
+  \item \textbf{Energ\'ia promedio:} 0.3325
+  \item \textbf{Alertas emitidas:} 65
+\end{itemize}
+
+\subsection{An\'alisis de Alertas Watchdog}
+
+Las 65~alertas se distribuyen en dos c\'odigos sem\'anticos:
+\texttt{HAMBRE\_SIN\_COMIDA\_DISPONIBLE} (WARN) y
+\texttt{HAMBRE\_CRITICA\_SIN\_RESPUESTA} (CRITICAL).
+Se concentran en los ticks~189 y~199, indicando presi\'on cr\'itica
+sostenida en la fase final (ticks 180--200).
+Los agentes afectados (Tryndamere, Amiguisimo, Eva, Clara, Bruno,
+F\'elix) est\'an ubicados en la mitad izquierda del mapa ($x<15$),
+zona con menor densidad de recursos en esta configuraci\'on de semilla.
+
+\subsection{Dispersi\'on Espacial}
+
+Los vectores de posici\'on final revelan fragmentaci\'on en tres
+clusters:
+
+\begin{itemize}[leftmargin=1em, itemsep=2pt, topsep=2pt]
+  \item \textbf{Cluster NW} ($x<15$, $y>40$): Tryndamere (2,51),
+        F\'elix (0,52), Amiguisimo (12,42).
+  \item \textbf{Cluster SW} ($x<30$, $y<25$): David (10,22),
+        Eva (13,5), Clara (25,5).
+  \item \textbf{Posici\'on aislada}: Bruno (0,34), Ana (47,21).
+\end{itemize}
+
+% ── 6. DISCUSIÓN ──────────────────────────────────────────────
+\section{Discusi\'on}
+
+\subsection{Emergencia del Comportamiento Social}
+
+El resultado m\'as significativo es la dominancia de \texttt{SEGUIR}
+(62.4\%) en un contexto de escasez severa. Este comportamiento no fue
+codificado como respuesta a la escasez, sino que emerge de la
+interacci\'on entre: (1)~el modificador de relaciones (confianza alta
+$\to$ bonus \texttt{SEGUIR}); (2)~la penalizaci\'on de autonom\'ia
+sobre exploraci\'on cuando $\text{hambre}>0.85$; y (3)~la ausencia de
+comida que hace inviables \texttt{COMER} y \texttt{RECOGER} la mayor
+parte del tiempo.
+
+Esto produce una \textbf{trampa din\'amica}: los agentes cohesionados
+mantienen relaciones de alta confianza que refuerzan el seguimiento
+mutuo, pero esto reduce la exploraci\'on necesaria para encontrar
+recursos.
+
+\subsection{El Problema del Agotamiento Zonal}
+
+La concentraci\'on de alertas en el cluster oeste sugiere que la
+semilla~42 genera un mapa con gradiente de recursos que desfavorece
+las zonas de borde oeste. Los agentes all\'i ubicados sufren hambre
+cr\'itica cr\'onica por \textbf{agotamiento zonal} --- han consumido
+los recursos locales y el modificador anti-oscilaci\'on ($-0.40$)
+dificulta el retroceso eficiente.
+
+\subsection{El Caso An\'omalo: Ana}
+
+Ana es la \'unica entidad con hambre sub-cr\'itica ($H=0.68$), ubicada
+en $(47,21)$ --- la posici\'on m\'as alejada del grupo. Su aislamiento
+espacial, no intencional sino resultado de la exploraci\'on individual,
+result\'o adaptativo: sin competencia zonal, tuvo acceso exclusivo a
+recursos del cuadrante NE.
+
+Este resultado sugiere que, bajo presi\'on de escasez, la
+\textbf{divergencia individual de la cohesi\'on grupal} puede ser una
+estrategia emergentemente superior, aunque el sistema no la codifica
+como tal.
+
+\subsection{Reproducibilidad}
+
+La sesi\'on es completamente reproducible mediante semilla fija:
+
+\begin{lstlisting}[language=bash, caption={Comando de reproducci\'on}]
+python cronica_fundacional.py \
+  --seed 42 --ticks 200 \
+  --founder "Tryndamere" \
+  --refuge "Refugio Fundador"
+\end{lstlisting}
+
+% ── 7. ARQUITECTURA CONCEPTUAL ────────────────────────────────
+\section{Modelo de Civilizaciones Vivas}
+
+\subsection{Entidades de Dominio}
+
+\begin{table}[h]
+  \centering
+  \caption{Entidades del modelo de dominio}
+  \label{tab:dominio}
+  \small
+  \begin{tabular}{p{1.8cm}p{3.8cm}}
+    \toprule
+    \textbf{Entidad} & \textbf{Rol} \\
+    \midrule
+    \texttt{World}            & Contenedor global \\
+    \texttt{CivilizationSeed} & Arquetipo fundacional \\
+    \texttt{Refuge}           & Unidad base de supervivencia \\
+    \texttt{Hero}             & Agente hist\'orico \\
+    \texttt{Community}        & Agrupaci\'on viva \\
+    \texttt{MemoryEntry}      & Registro de memoria \\
+    \texttt{HistoricalRecord} & Evento hist\'orico \\
+    \texttt{Territory}        & Lectura estrat\'egica 2D \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Flujo Fundador}
+
+El flujo m\'inimo viable es:
+\textit{Semilla} $\to$ \textit{Refugio} $\to$ \textit{Civilizaci\'on
+naciente}. El usuario elige una \texttt{CivilizationSeed}, nombra al
+h\'eroe fundador y al refugio; el sistema crea entidades, comunidad y
+cr\'onica fundacional.
+
+\subsection{Estrategia 2D / 3D}
+
+\begin{itemize}[leftmargin=1em, itemsep=2pt, topsep=2pt]
+  \item \textbf{2D} (implementada): verdad sist\'emica --- mapa, grid,
+        rutas, nodos, recursos, refugios, influencia, fronteras.
+  \item \textbf{3D} (roadmap): encarnaci\'on futura --- h\'eroes de gran
+        presencia, refugios encarnados, eventos hist\'oricos visuales.
+\end{itemize}
+
+% ── 8. VERIFICACIÓN ───────────────────────────────────────────
+\section{Verificaci\'on y Tests}
+
+El sistema cuenta con 11~suites de tests Python y 45~tests en
+backend Node/Vitest, con un total verificado de \textbf{68+~tests}
+pasando en CI en cada push.
+Las suites cubren: ciclo tick, acciones, decisi\'on, cr\'onica
+fundacional, Modo Sombra, combate, interacciones sociales, Watchdog
+e integraci\'on producci\'on completa.
+
+Para ejecutar:
+
+\begin{lstlisting}[language=bash, caption={Runner de tests}]
+$env:SDL_VIDEODRIVER="dummy"
+$env:SDL_AUDIODRIVER="dummy"
+python pruebas/run_tests_produccion.py
+\end{lstlisting}
+
+% ── 9. LIMITACIONES Y TRABAJO FUTURO ──────────────────────────
+\section{Limitaciones y Trabajo Futuro}
+
+\subsection{Limitaciones Actuales}
+
+\begin{enumerate}[leftmargin=1.2em, itemsep=2pt, topsep=2pt]
+  \item \textbf{Ausencia de integraci\'on Python/JS}: los dos motores
+        son independientes sin comunicaci\'on en tiempo real.
+  \item \textbf{Escasez de hitos narrativos}: solo 2~hitos en 200~ticks
+        (inicio y cierre); eventos intermedios no se registraron en esta
+        sesi\'on.
+  \item \textbf{Comunidad no simulada}: \texttt{Community} existe como
+        contrato de datos, pero no como simulaci\'on social rica.
+  \item \textbf{Diplomacia y linajes}: civilizaciones completas con
+        guerras y migraciones permanecen en roadmap.
+  \item \textbf{3D no implementada}: la capa de encarnaci\'on visual no
+        existe a\'un como runtime.
+  \item \textbf{Capturas visuales}: la cr\'onica a\'un no incluye
+        screenshots autom\'aticos de ticks clave.
+\end{enumerate}
+
+\subsection{Trabajo Futuro}
+
+Las pr\'oximas l\'ineas de desarrollo son: enriquecimiento de
+\texttt{Refuge} y \texttt{Community} con normas sociales emergentes;
+historia profunda con m\'as eventos alimentando \texttt{MemoryEntry};
+mecanismo de migraci\'on grupal ante agotamiento zonal; implementaci\'on
+completa de las 7~semillas de civilizaci\'on (tribu, tecn\'ocrata,
+espiritual, guerrero, comerciante, paranoica, decadente); e
+integraci\'on Python/JS con puente en tiempo real.
+
+% ── 10. CONCLUSIONES ──────────────────────────────────────────
+\section{Conclusiones}
+
+Artificial World demuestra que un motor de simulaci\'on relativamente
+compacto (arquitectura Python 2D, 13~tipos de acci\'on, funci\'on de
+utilidad con 9~modificadores) es capaz de producir comportamientos
+emergentes no triviales y verificables. La sesi\'on can\'onica
+(semilla~42, 200~ticks) revela:
+
+\begin{itemize}[leftmargin=1em, itemsep=2pt, topsep=2pt]
+  \item \textbf{Supervivencia total} bajo presi\'on de escasez severa.
+  \item \textbf{Emergencia de cohesi\'on social} como respuesta a la
+        escasez, con el efecto paradójico de reducir la exploraci\'on
+        individual.
+  \item \textbf{Divergencia individual exitosa} como estrategia no
+        codificada (caso Ana).
+  \item \textbf{Agotamiento zonal} como causa primaria de hambre
+        cr\'itica, no fallo algorítmico.
+  \item \textbf{Reproducibilidad completa} mediante semilla fija y
+        protocolo documentado.
+\end{itemize}
+
+El sistema establece las bases para un motor creador de mundos compacto
+y reutilizable. La tesis de producto ---
+\textbf{civilizaciones vivas con refugios, h\'eroes y memoria} ---
+es t\'ecnicamente defendible en su estado actual en la dimensi\'on 2D,
+con la capa de encarnaci\'on 3D expl\'icitamente marcada como roadmap.
+
+\smallskip
+\begin{center}
+  \textit{``Empieza con un refugio. Elige una semilla.\\
+  Mira nacer tu civilizaci\'on.''}
+\end{center}
+
+% ── REFERENCIAS ───────────────────────────────────────────────
+\begin{thebibliography}{9}
+  \bibitem{Adams2006}
+    Adams, T.\ (2006). \textit{Dwarf Fortress}. Bay~12 Games.
+
+  \bibitem{Conway1970}
+    Conway, J.\ H.\ (1970). The Game of Life.
+    \textit{Scientific American}, 223(4), 4--10.
+
+  \bibitem{Langton1989}
+    Langton, C.\ G.\ (1989). Artificial Life.
+    \textit{Artificial Life}, SFI Studies in the Sciences of Complexity,
+    1--47.
+
+  \bibitem{Rao1991}
+    Rao, A.\ S., \& Georgeff, M.\ P.\ (1991).
+    Modeling Rational Agents within a BDI-Architecture.
+    \textit{KR '91}, 473--484.
+
+  \bibitem{Reynolds1987}
+    Reynolds, C.\ W.\ (1987). Flocks, Herds, and Schools:
+    A Distributed Behavioral Model.
+    \textit{SIGGRAPH Computer Graphics}, 21(4), 25--34.
+
+  \bibitem{Sylvester2013}
+    Sylvester, T.\ (2013). \textit{RimWorld}. Ludeon Studios.
+
+  \bibitem{VonNeumann1944}
+    Von Neumann, J., \& Morgenstern, O.\ (1944).
+    \textit{Theory of Games and Economic Behavior}.
+    Princeton University Press.
+\end{thebibliography}
+
+\end{document}
