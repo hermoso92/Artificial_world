@@ -81,10 +81,11 @@ router.post('/blueprints', requireBody, validateBlueprint, asyncHandler((req, re
 
 router.post('/refuges', requireBody, asyncHandler((req, res) => {
   const world = getWorld();
-  const { name, ownerId } = req.body ?? {};
+  const { name } = req.body ?? {};
+  const ownerId = req.playerId ?? req.body.ownerId ?? null;
   const refuge = world.createRefuge({
     name: typeof name === 'string' ? name : 'Mi casa',
-    ownerId: ownerId ?? null,
+    ownerId,
   });
   if (!refuge) {
     throw new ApiError('LIMIT_EXCEEDED', 'Se alcanzó el límite de refugios', 429);
@@ -95,7 +96,7 @@ router.post('/refuges', requireBody, asyncHandler((req, res) => {
 
 router.post('/refuge/node', requireBody, asyncHandler((req, res) => {
   const { type, gridX, gridY } = req.body ?? {};
-  const { refuge, idx } = getOwnedRefuge(req.body);
+  const { refuge, idx } = getOwnedRefuge(req);
   const world = getWorld();
   const result = world.addRefugeNode(idx, type ?? 'solar', Number(gridX), Number(gridY));
   if (!result) throw new ApiError('VALIDATION_ERROR', 'No se pudo colocar el nodo (celda ocupada o inválida)', 422);
@@ -115,7 +116,8 @@ router.post('/refuge/select', requireBody, asyncHandler((req, res) => {
 
 router.post('/release', requireBody, asyncHandler((req, res) => {
   const world = getWorld();
-  const { refugeIndex, blueprintId, count, playerId } = req.body ?? {};
+  const { refugeIndex, blueprintId, count } = req.body ?? {};
+  const playerId = req.playerId;
   const bpId = typeof blueprintId === 'string' ? parseInt(blueprintId, 10) : blueprintId;
   const blueprint = world.blueprints.find((b) => b.id === bpId);
   if (!blueprint) {
@@ -147,13 +149,16 @@ router.post('/release', requireBody, asyncHandler((req, res) => {
 
 // --- Refuge Interior: Ownership helper ---
 
-function getOwnedRefuge(body) {
+function getOwnedRefuge(req) {
   const world = getWorld();
-  const idx = Number(body.refugeIndex ?? world.activeRefugeIndex ?? 0);
+  const body = req.body ?? {};
+  const query = req.query ?? {};
+  const playerId = req.playerId ?? null;
+  const idx = Number(body.refugeIndex ?? query.refugeIndex ?? world.activeRefugeIndex ?? 0);
   const refuge = world.refuges[idx];
   if (!refuge) throw new ApiError('NOT_FOUND', 'Refugio no encontrado', 404);
   if (!refuge.ownerId) throw new ApiError('FORBIDDEN', 'Este refugio no tiene dueño', 403);
-  if (body.ownerId && refuge.ownerId !== body.ownerId) {
+  if (playerId && refuge.ownerId !== playerId) {
     throw new ApiError('FORBIDDEN', 'Este refugio no es tuyo', 403);
   }
   return { refuge, idx };
@@ -167,7 +172,7 @@ router.get('/refuge/furniture/catalog', (req, res) => {
 
 router.post('/refuge/furniture', requireBody, asyncHandler((req, res) => {
   const { type, gridX, gridY } = req.body ?? {};
-  const { refuge } = getOwnedRefuge(req.body);
+  const { refuge } = getOwnedRefuge(req);
   if (!isValidFurnitureType(type)) {
     throw new ApiError('VALIDATION_ERROR', `Tipo de mueble inválido: ${type}`, 422);
   }
@@ -179,7 +184,7 @@ router.post('/refuge/furniture', requireBody, asyncHandler((req, res) => {
 
 router.post('/refuge/interact', requireBody, asyncHandler((req, res) => {
   const { furnitureId } = req.body ?? {};
-  const { refuge } = getOwnedRefuge(req.body);
+  const { refuge } = getOwnedRefuge(req);
   const fId = Number(furnitureId);
   if (isNaN(fId)) throw new ApiError('VALIDATION_ERROR', 'furnitureId requerido', 422);
   const result = refuge.useFurniture(fId);
@@ -192,7 +197,7 @@ router.post('/refuge/interact', requireBody, asyncHandler((req, res) => {
 }));
 
 router.delete('/refuge/furniture/:id', asyncHandler((req, res) => {
-  const { refuge } = getOwnedRefuge({ ownerId: req.query.ownerId, refugeIndex: req.query.refugeIndex });
+  const { refuge } = getOwnedRefuge(req);
   const fId = Number(req.params.id);
   const removed = refuge.removeFurniture(fId);
   if (!removed) throw new ApiError('NOT_FOUND', 'Mueble no encontrado', 404);
@@ -204,7 +209,7 @@ router.delete('/refuge/furniture/:id', asyncHandler((req, res) => {
 
 router.post('/refuge/pet/adopt', requireBody, asyncHandler((req, res) => {
   const { species } = req.body ?? {};
-  const { refuge } = getOwnedRefuge(req.body);
+  const { refuge } = getOwnedRefuge(req);
   const pet = refuge.adoptPet(species ?? 'cat');
   if (!pet) throw new ApiError('VALIDATION_ERROR', 'Ya tienes una mascota de ese tipo', 422);
   logger.info('Pet adopted', { species: pet.species, refugeId: refuge.id });
@@ -215,7 +220,7 @@ router.post('/refuge/pet/adopt', requireBody, asyncHandler((req, res) => {
 // simulation loop once the backend tracks player position natively.
 router.post('/refuge/pet/tick', requireBody, asyncHandler((req, res) => {
   const { playerX, playerY } = req.body ?? {};
-  const { refuge } = getOwnedRefuge(req.body);
+  const { refuge } = getOwnedRefuge(req);
   refuge.tickPets(Number(playerX ?? 16), Number(playerY ?? 16));
   res.json({ success: true, data: { pets: refuge.pets, stats: refuge.getPlayerStats() } });
 }));

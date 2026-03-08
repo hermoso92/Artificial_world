@@ -64,7 +64,7 @@ export function SimulationView({ onBack, onNavigate }) {
         let myIdx = refList.findIndex((r) => r.ownerId === pid);
         if (myIdx < 0) {
           try {
-            await api.createRefuge('Mi casa', pid);
+            await api.createRefuge('Mi casa');
             const freshRefuges = await api.getRefuges();
             const freshList = Array.isArray(freshRefuges) ? freshRefuges : [];
             setRefuges(freshList);

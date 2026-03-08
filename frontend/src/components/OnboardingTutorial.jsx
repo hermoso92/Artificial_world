@@ -68,7 +68,7 @@ export function OnboardingTutorial({ onComplete }) {
     setLoading(true);
     setError(null);
     try {
-      await api.createRefuge(refugeName.trim() || 'Mi refugio', getPlayerId());
+      await api.createRefuge(refugeName.trim() || 'Mi refugio');
       setStepIndex((i) => Math.min(i + 1, STEPS.length - 1));
     } catch (err) {
       setError(err.message);

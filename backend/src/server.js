@@ -14,6 +14,7 @@ import dobacksoftRoutes from './routes/dobacksoft.js';
 import subscriptionRoutes from './routes/subscription.js';
 import adminRoutes from './routes/admin.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { playerContext } from './middleware/playerContext.js';
 import { initWebSocket, broadcastLog } from './realtime/websocket.js';
 import logger, { setLogBroadcaster } from './utils/logger.js';
 
@@ -26,6 +27,7 @@ const server = createServer(app);
 
 app.use(cors());
 app.use(express.json());
+app.use(playerContext);
 
 app.use('/api', apiRoutes);
 app.use('/api/hero', heroRefugeRoutes);

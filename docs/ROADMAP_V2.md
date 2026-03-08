@@ -41,7 +41,7 @@ Rama: `feature/roadmap-v2`
 - ~~⚠️ Damas marcado como "Próximamente"~~ → ✅ Funcional
 - ~~⚠️ Límites de suscripción no se aplican~~ → ✅ Enforcement completo
 - ~~⚠️ Hero y simulación desconectados~~ → ✅ Flujo unificado
-- ⚠️ Un solo usuario (singleton, sin scoping completo por playerId)
+- ~~⚠️ Un solo usuario~~ → ✅ Scoping por playerId en todos los endpoints
 - ⚠️ "Unirme con código" deshabilitado
 - ⚠️ Sin pagos reales (Stripe no integrado)
 
@@ -80,18 +80,20 @@ Todo lo que se pierde al reiniciar el servidor debe persistir.
 
 Sin esto, solo puede haber un jugador.
 
-#### 2.1 Identidad de jugador
-- [ ] Tabla `players`: id, display_name, created_at, last_seen
-- [ ] El `playerId` de localStorage se registra en la DB al primer uso
-- [ ] Todos los endpoints reciben `playerId` (header `x-player-id`)
+#### 2.1 Identidad de jugador ✅
+- [x] Tabla `players`: id, display_name, created_at, last_seen
+- [x] El `playerId` de localStorage se registra en la DB al primer uso (middleware `playerContext`)
+- [x] Todos los endpoints reciben `playerId` (header `x-player-id` automático)
 
-#### 2.2 Scoping por jugador
-- [ ] Hero pertenece a un player_id (ya parcialmente implementado)
-- [ ] Mundos pertenecen a un player_id
-- [ ] Refugios pertenecen a un player_id
-- [ ] Agentes pertenecen a un mundo → a un player
-- [ ] Cada jugador solo ve sus datos
-- [ ] Validar en cada endpoint que el recurso pertenece al player
+#### 2.2 Scoping por jugador ✅
+- [x] Middleware global `playerContext` extrae `playerId` de header y lo adjunta a `req`
+- [x] Hero pertenece a un player_id (routes usan `req.playerId`)
+- [x] Refugios validan propiedad via `req.playerId` (no body.ownerId)
+- [x] Mundos artificiales scoped por playerId
+- [x] Subscriptions scoped por playerId (header, no body)
+- [x] Frontend: `fetchApi` envía `x-player-id` automáticamente en todas las requests
+- [x] Frontend: eliminado `playerId`/`ownerId` redundante de todos los body requests
+- [x] Admin middleware usa `req.playerId` como fallback
 
 #### 2.3 Simulación multi-mundo
 - [ ] El engine puede correr múltiples mundos en paralelo

@@ -21,7 +21,7 @@ router.get('/tiers', asyncHandler((req, res) => {
 }));
 
 router.get('/me', asyncHandler((req, res) => {
-  const playerId = req.query.playerId ?? req.headers['x-player-id'];
+  const playerId = req.playerId;
   if (!playerId) throw new ApiError('VALIDATION_ERROR', 'playerId required', 422);
   const sub = getSubscription(playerId);
   const limits = getLimits(playerId);
@@ -35,7 +35,8 @@ router.post('/coupon/validate', requireBody, asyncHandler((req, res) => {
 }));
 
 router.post('/subscribe', requireBody, asyncHandler((req, res) => {
-  const { playerId, tier, coupon } = req.body ?? {};
+  const playerId = req.playerId;
+  const { tier, coupon } = req.body ?? {};
   if (!playerId || !tier) throw new ApiError('VALIDATION_ERROR', 'playerId and tier required', 422);
   const result = subscribe(playerId, tier, coupon);
   if (!result.success) throw new ApiError('VALIDATION_ERROR', result.message, 422);
@@ -43,7 +44,7 @@ router.post('/subscribe', requireBody, asyncHandler((req, res) => {
 }));
 
 router.post('/cancel', requireBody, asyncHandler((req, res) => {
-  const { playerId } = req.body ?? {};
+  const playerId = req.playerId;
   if (!playerId) throw new ApiError('VALIDATION_ERROR', 'playerId required', 422);
   const result = cancelSubscription(playerId);
   if (!result.success) throw new ApiError('VALIDATION_ERROR', result.message, 422);

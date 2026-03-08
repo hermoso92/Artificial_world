@@ -39,12 +39,12 @@ async function fetchApi(path, options = {}) {
   let res;
   try {
     res = await fetch(fullPath, {
+      ...options,
       headers: {
         'Content-Type': 'application/json',
         ...(playerId ? { 'x-player-id': playerId } : {}),
         ...options.headers,
       },
-      ...options,
     });
   } catch (err) {
     throw new Error('No se pudo conectar al backend. Ejecuta .\\scripts\\iniciar_fullstack.ps1 para iniciar el sistema.');
@@ -76,10 +76,10 @@ export const api = {
   getWorld: () => fetchApi('/world'),
   getAgents: () => fetchApi('/agents'),
   getRefuges: () => fetchApi('/refuges'),
-  createRefuge: (name, ownerId) =>
+  createRefuge: (name) =>
     fetchApi('/refuges', {
       method: 'POST',
-      body: JSON.stringify({ name: name ?? 'Mi refugio', ownerId: ownerId ?? getPlayerId() }),
+      body: JSON.stringify({ name: name ?? 'Mi refugio' }),
     }),
   getBlueprints: () => fetchApi('/blueprints'),
   getLogs: () => fetchApi('/logs'),
@@ -91,7 +91,7 @@ export const api = {
   addRefugeNode: (refugeIndex, type, gridX, gridY) =>
     fetchApi('/refuge/node', {
       method: 'POST',
-      body: JSON.stringify({ refugeIndex, type, gridX, gridY, ownerId: getPlayerId() }),
+      body: JSON.stringify({ refugeIndex, type, gridX, gridY }),
     }),
   selectRefuge: (index) =>
     fetchApi('/refuge/select', {
@@ -101,31 +101,31 @@ export const api = {
   releaseAgents: (refugeIndex, blueprintId, count) =>
     fetchApi('/release', {
       method: 'POST',
-      body: JSON.stringify({ refugeIndex, blueprintId, count, playerId: getPlayerId() }),
+      body: JSON.stringify({ refugeIndex, blueprintId, count }),
     }),
   // Refuge Interior
   getFurnitureCatalog: () => fetchApi('/refuge/furniture/catalog'),
   placeFurniture: (refugeIndex, type, gridX, gridY) =>
     fetchApi('/refuge/furniture', {
       method: 'POST',
-      body: JSON.stringify({ refugeIndex, type, gridX, gridY, ownerId: getPlayerId() }),
+      body: JSON.stringify({ refugeIndex, type, gridX, gridY }),
     }),
   removeFurniture: (furnitureId) =>
     fetchApi(`/refuge/furniture/${furnitureId}`, { method: 'DELETE' }),
   interactFurniture: (refugeIndex, furnitureId) =>
     fetchApi('/refuge/interact', {
       method: 'POST',
-      body: JSON.stringify({ refugeIndex, furnitureId, ownerId: getPlayerId() }),
+      body: JSON.stringify({ refugeIndex, furnitureId }),
     }),
   adoptPet: (refugeIndex, species) =>
     fetchApi('/refuge/pet/adopt', {
       method: 'POST',
-      body: JSON.stringify({ refugeIndex, species: species ?? 'cat', ownerId: getPlayerId() }),
+      body: JSON.stringify({ refugeIndex, species: species ?? 'cat' }),
     }),
   tickPets: (refugeIndex, playerX, playerY) =>
     fetchApi('/refuge/pet/tick', {
       method: 'POST',
-      body: JSON.stringify({ refugeIndex, playerX, playerY, ownerId: getPlayerId() }),
+      body: JSON.stringify({ refugeIndex, playerX, playerY }),
     }),
 
   startSimulation: () => fetchApi('/simulation/start', { method: 'POST' }),
@@ -147,7 +147,7 @@ export const api = {
     fetchApi('/hero/query', { method: 'POST', body: JSON.stringify({ query, context, playerId: getPlayerId() }) }),
   getHeroWorlds: () => fetchApi(`/hero/worlds?playerId=${getPlayerId()}`),
   createHeroWorld: (params) =>
-    fetchApi('/hero/worlds', { method: 'POST', body: JSON.stringify({ ...params, playerId: getPlayerId() }) }),
+    fetchApi('/hero/worlds', { method: 'POST', body: JSON.stringify(params) }),
   destroyHeroWorld: (worldId) =>
     fetchApi(`/hero/worlds/${worldId}?playerId=${getPlayerId()}`, { method: 'DELETE' }),
   tickHeroWorlds: () =>
@@ -156,7 +156,7 @@ export const api = {
   // Suscripciones — Constructor de Mundos
   getSubscriptionTiers: () => fetchApi('/subscription/tiers'),
   getMySubscription: () =>
-    fetchApi(`/subscription/me?playerId=${getPlayerId()}`),
+    fetchApi('/subscription/me'),
   validateSubscriptionCoupon: (code) =>
     fetchApi('/subscription/coupon/validate', {
       method: 'POST',
@@ -165,12 +165,12 @@ export const api = {
   subscribe: (tier, coupon) =>
     fetchApi('/subscription/subscribe', {
       method: 'POST',
-      body: JSON.stringify({ playerId: getPlayerId(), tier, coupon }),
+      body: JSON.stringify({ tier, coupon }),
     }),
   cancelSubscription: () =>
     fetchApi('/subscription/cancel', {
       method: 'POST',
-      body: JSON.stringify({ playerId: getPlayerId() }),
+      body: JSON.stringify({}),
     }),
 
   // DobackSoft — acceso por cupón limitado

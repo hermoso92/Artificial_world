@@ -10,13 +10,13 @@ const ADMIN_IDS = (process.env.ADMIN_PLAYER_IDS || '')
   .filter(Boolean);
 
 export function requireAdmin(req, _res, next) {
-  const playerId = (
-    req.headers['x-admin-player-id'] ||
-    req.body?.playerId ||
-    req.query?.playerId
-  );
+  const playerId =
+    req.playerId
+    ?? req.headers['x-admin-player-id']
+    ?? req.body?.playerId
+    ?? req.query?.playerId;
   if (!playerId) {
-    throw new ApiError('FORBIDDEN', 'playerId requerido (header X-Admin-Player-Id o body)', 403);
+    throw new ApiError('FORBIDDEN', 'playerId requerido (header x-player-id)', 403);
   }
   const normalized = String(playerId).trim().toLowerCase();
   if (!ADMIN_IDS.includes(normalized)) {
