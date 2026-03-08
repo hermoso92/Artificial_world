@@ -16,6 +16,8 @@ env/
 # Logs y datos de sesión
 *.log
 reporte_sesion.json
+cronica_fundacional.json
+cronica_fundacional.md
 verificacion_completa.json
 mundo_artificial.db
 audit_competencia.db

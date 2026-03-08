@@ -1,149 +1,180 @@
-# MUNDO_ARTIFICIAL
+# Artificial World
 
-Simulacion de vida artificial 2D con agentes autonomos. Las entidades toman decisiones por utilidad, reaccionan al entorno y pueden ser controladas mediante Modo Sombra.
+Simulación de vida artificial 2D con agentes autónomos.
 
-## Requisitos
+La línea de verdad de este repositorio es esta:
 
-- Python 3.11+
-- pygame 2.6.1
+- `Artificial World` es, hoy, un **motor principal en Python + pygame**.
+- La web fullstack es una **demo funcional con motor JavaScript propio**, no una interfaz del motor Python.
+- `DobackSoft` dentro de este repo es una **vertical demo**; el producto completo de esa línea no vive aquí.
 
-## Instalacion
+La tesis de producto más fuerte y defendible desde este repo es:
 
-```powershell
-pip install -r requirements.txt
-```
+- `Artificial World` puede evolucionar hacia un **sistema de civilizaciones vivas con refugios, heroes y memoria**
+- la capa **2D** debe seguir siendo la verdad estrategica del sistema
+- la capa **3D** es, por ahora, solo una direccion de encarnacion futura; no existe runtime 3D verificable hoy
 
-## Ejecucion
+## Qué es
 
-```powershell
-python principal.py
-```
+`Artificial World` modela entidades que perciben, recuerdan, puntúan acciones y actúan dentro de un mundo persistente.
 
-## Modo Fullstack (Web)
+La parte más verificable del proyecto está en el motor Python:
 
-Backend (Node.js/Express) + Frontend (React/Vite):
+- 13 tipos de acción en `tipos/enums.py`
+- memoria espacial/social en `systems/memory/memoria_entidad.py`
+- persistencia SQLite en `sistemas/sistema_persistencia.py`
+- Modo Sombra en `sistemas/gestor_modo_sombra.py`
+- runner de pruebas en `pruebas/run_tests_produccion.py`
+
+## Qué incluye este repo
+
+| Componente | Estado | Qué es |
+|------------|--------|--------|
+| Motor Python (`principal.py`) | Real | Núcleo principal con persistencia, Modo Sombra, watchdog y pruebas |
+| Web fullstack (`scripts/iniciar_fullstack.ps1`) | Demo funcional | Motor JavaScript independiente con REST + WebSocket |
+| DobackSoft (`frontend/src/components/DobackSoft.jsx`) | Demo vertical | Landing, cupón, visor y ruta demo; no producto B2B completo |
+| HeroRefuge | Mixto | Módulo web con persistencia parcial, refugios jugables 2D, companion IA y mundos ligeros |
+
+## IA local y automatización
+
+La base mínima compartida ya implementada en este repo incluye:
+
+- `backend/src/services/aiCore.js` con `health`, `chat`, `summarize`, `analyzeTestFailure` y `analyzeSession`
+- `backend/src/services/llmService.mjs` como adaptador de `HeroRefuge` sobre el `ai-core`
+- memoria local versionada en `docs/ia-memory/`
+- endpoints `/api/ai/*`
+- `iniciar.ps1` como `bootstrap/doctor/launcher`
+
+Documentación asociada:
+
+- [docs/IMPLEMENTACION_AI_CORE_LOCAL.md](docs/IMPLEMENTACION_AI_CORE_LOCAL.md)
+- [docs/IA_LOCAL_BASE.md](docs/IA_LOCAL_BASE.md)
+
+## Qué existe hoy
+
+- Un motor Python ejecutable localmente con persistencia en `mundo_artificial.db`
+- Un modo web que arranca backend `3001` + frontend `5173`
+- Un flujo web fundacional: elegir semilla, crear heroe, crear refugio y crear un primer mundo ligero
+- Un runner de producción con **11 suites** en `pruebas/run_tests_produccion.py`
+- Crónica fundacional headless: `python cronica_fundacional.py` o `python principal.py --cronica`
+- Workflows CI en `.github/workflows/ci-completo.yml` y `.github/workflows/pipeline.yml`
+
+## Qué es demo
+
+- La simulación web usa un motor JavaScript distinto al motor Python
+- `DobackSoft` en este repo usa almacenamiento en memoria y rutas mock en `backend/src/routes/dobacksoft.js`
+- El modo “ruta real” del `FireSimulator` depende de datos entregados por el visor; no valida por sí solo una integración real con telemetría externa
+- No hay evidencia de runtime 3D interactivo en frontend o backend
+
+## Qué está en otro repositorio
+
+- El `DobackSoft` comercial completo o `StabilSafe V3` no está implementado aquí como producto cerrado
+- Este repo solo contiene una vertical demo relacionada con esa idea
+
+## Qué puede probar alguien hoy en 3 minutos
+
+### Vista rápida de la demo web
 
 ```powershell
 .\scripts\iniciar_fullstack.ps1
 ```
 
-Abre automaticamente `http://localhost:5173`. Backend en puerto 3001, frontend en 5173. Ver [docs/MODOS_EJECUCION.md](docs/MODOS_EJECUCION.md).
+Resultado esperado:
 
-## Demo web / Landing
+- se abre `http://localhost:5173`
+- puedes navegar el hub y ver la demo web
+- esto demuestra la **capa demo web**, no el motor principal Python
+
+### Golden path recomendado
+
+Para probar la parte más real del proyecto, sigue [docs/GOLDEN_PATH.md](docs/GOLDEN_PATH.md).
+
+Resumen corto:
+
+```powershell
+pip install -r requirements.txt
+python principal.py
+```
+
+Eso demuestra el motor principal: simulación, persistencia, Modo Sombra y flujo core.
+
+### Crónica fundacional (headless reproducible)
+
+```powershell
+python cronica_fundacional.py --seed 42 --ticks 200
+```
+
+Genera `cronica_fundacional.json` y `cronica_fundacional.md` con hitos, entidades finales, alertas y veredicto de supervivencia.
+
+## Ejecución
+
+### Motor principal (Python)
+
+```powershell
+pip install -r requirements.txt
+python principal.py
+```
+
+### Demo web fullstack
+
+```powershell
+.\scripts\iniciar_fullstack.ps1
+```
+
+### Crónica fundacional (headless)
+
+```powershell
+python cronica_fundacional.py
+python principal.py --cronica
+```
+
+### Landing HTML
 
 ```powershell
 python principal.py --web
 ```
 
-O con el script: `.\scripts\abrir_web.ps1`
-
-La landing (`artificial-world.html`) incluye demo interactiva y documentación de todas las funcionalidades.
-
-## Generar ejecutable (Windows)
-
-Para distribuir a usuarios sin Python:
+### Generar ejecutable Windows
 
 ```powershell
 .\build_exe.ps1
 ```
 
-El archivo `dist\MundoArtificial.exe` se puede ejecutar en Windows sin instalar Python.
+El script existe en el repo. La disponibilidad del binario final depende de ejecutarlo localmente.
 
-**Logs al usar el .exe:** Los archivos `app_diagnostico.log`, `simulacion.log`, `mundo_artificial.db` y `error_critico.txt` se crean en la misma carpeta que el ejecutable (p. ej. `dist\`).
+## Evidencias verificables
 
-## Verificacion automatica
+- `tipos/enums.py` enumera **13** tipos de acción
+- `pruebas/run_tests_produccion.py` ejecuta **11 suites**
+- `backend/src/realtime/websocket.js` expone `/ws` para la demo web
+- `backend/src/routes/dobacksoft.js` deja explícito que sesiones y rutas son mock
 
-Ejecuta tests + simulacion + Modo Competencia + modo sombra en un solo comando:
+## Qué no afirmar con este repo
 
-```powershell
-python pruebas/verificar_todo.py
-```
+No conviene presentar como hecho, sin más evidencia, lo siguiente:
 
-Genera `verificacion_completa.json`. Exit 0 = todo OK.
+- latencia `< 1 ms`
+- miles de agentes
+- telemetría real integrada
+- producto `enterprise`
+- DobackSoft completo en este mismo repo
+- robustez total o escalado masivo
 
-## Tests de navegador (E2E)
+Si algo de eso se quiere defender, debe apoyarse en benchmarks, pruebas o integración real versionada.
 
-Para probar `artificial-world.html` con Playwright:
+## Documentación por audiencia
 
-```powershell
-pip install playwright
-python -m playwright install chromium
-python pruebas/test_browser_e2e.py
-```
+- Técnica: [docs/ESENCIAL.md](docs/ESENCIAL.md), [AGENTE_ENTRANTE.md](AGENTE_ENTRANTE.md)
+- Producto / dirección: [docs/DOCUMENTACION_COMPLETA.md](docs/DOCUMENTACION_COMPLETA.md)
+- Visión de producto: [docs/VISION_CIVILIZACIONES_VIVAS.md](docs/VISION_CIVILIZACIONES_VIVAS.md)
+- Inversor / partner: [docs/PAQUETE_RELATO/DOCUMENTO_2_BRIEF_INVERSION.md](docs/PAQUETE_RELATO/DOCUMENTO_2_BRIEF_INVERSION.md)
+- Exploración general: [docs/CONOCE_ARTIFICIAL_WORLD.md](docs/CONOCE_ARTIFICIAL_WORLD.md)
+- Ruta recomendada de prueba: [docs/GOLDEN_PATH.md](docs/GOLDEN_PATH.md)
+- IA local y automatización: [docs/IA_LOCAL_BASE.md](docs/IA_LOCAL_BASE.md)
 
-O usa el script: `.\scripts\install_playwright.ps1`
+## Documentación adicional
 
-Con `--visible` se abre el navegador para debug: `python pruebas/test_browser_e2e.py --visible`
-
-## Tests
-
-```powershell
-$env:SDL_VIDEODRIVER="dummy"
-$env:SDL_AUDIODRIVER="dummy"
-python pruebas/test_core.py
-python pruebas/test_modo_sombra_completo.py
-python pruebas/test_interacciones_sociales.py
-python pruebas/test_bug_robar.py
-python pruebas/test_watchdog_fixes.py
-python pruebas/test_watchdog_integracion.py
-python pruebas/test_arranque_limpio.py
-```
-
-## Despliegue en VPS (aplicacion completa)
-
-La aplicacion Pygame se puede ejecutar en un VPS y acceder desde el navegador:
-
-```bash
-docker build -f Dockerfile.vps -t artificial-world .
-docker compose -f docker-compose.vps.yml up -d
-```
-
-Abre `http://TU_IP:6080/vnc.html` para jugar. Ver [docs/DEPLOY_VPS_APLICACION.md](docs/DEPLOY_VPS_APLICACION.md).
-
-## Code Review automatico con IA (gga)
-
-Cada `git commit` es revisado automaticamente por una IA local (Ollama) contra las reglas del proyecto definidas en `AGENTS.md`.
-
-### Instalacion (una sola vez)
-
-**Requisitos:** [Ollama](https://ollama.com/download/windows) instalado en el sistema.
-
-Desde **Git Bash**:
-
-```bash
-bash install-gga.sh
-```
-
-El script descarga el modelo `qwen2.5-coder:7b` (~4GB), instala gga y activa el hook automaticamente.
-
-### Uso diario
-
-No necesitas hacer nada. Al hacer `git commit`, el hook se activa solo:
-
-- `STATUS: PASSED` → commit procede normalmente
-- `STATUS: FAILED` → commit bloqueado, se muestran las violaciones a corregir
-
-### Saltar el review puntualmente
-
-```bash
-git commit --no-verify -m "wip: trabajo en curso"
-```
-
-### Reglas activas
-
-Ver `AGENTS.md` en la raiz del proyecto. Revisa: no `console.log`, no URLs hardcodeadas, `organizationId` en requests, TypeScript estricto, componentes <300 lineas, y mas.
-
----
-
-## Documentacion
-
-- [docs/PAQUETE_RELATO/](docs/PAQUETE_RELATO/) — **Para dirección e inversores** — dossier ejecutivo, brief de inversión, manifiesto
-- [docs/tutorial/TUTORIAL.md](docs/tutorial/TUTORIAL.md) — **Tutorial con screenshots** — guía paso a paso de la demo web
-- [docs/INFOGRAFIA_ARTIFICIAL_WORLD.md](docs/INFOGRAFIA_ARTIFICIAL_WORLD.md) — **Infografía 6 páginas** — para informáticos, jefes, inversores y abuelos
-- [docs/CONOCE_ARTIFICIAL_WORLD.md](docs/CONOCE_ARTIFICIAL_WORLD.md) — Para el mundo — conócelo, pruébalo, adóptalo (2 páginas)
-- [docs/ESENCIAL.md](docs/ESENCIAL.md) — **Guía técnica en 2 páginas** — para desarrolladores
-- [docs/PROYECTO_GUIA.md](docs/PROYECTO_GUIA.md) — Guía completa (arquitectura, stack, ejecución)
-- [docs/ESTRATEGIA_PRODUCTO.md](docs/ESTRATEGIA_PRODUCTO.md) — Estrategia: Python motor, Web demo
-- [AGENTE_ENTRANTE.md](AGENTE_ENTRANTE.md) — Documentacion tecnica completa
-- [PRODUCCION_PLAN.md](PRODUCCION_PLAN.md) — Plan de produccion y checklist
-- [CAMINO_B_LISTO.md](CAMINO_B_LISTO.md) — Camino B (B2B): landing, emails, despliegue
+- [docs/MODOS_EJECUCION.md](docs/MODOS_EJECUCION.md) — diferencia entre Python y fullstack
+- [docs/ESTRATEGIA_PRODUCTO.md](docs/ESTRATEGIA_PRODUCTO.md) — decisión de foco del repo
+- [docs/tutorial/TUTORIAL.md](docs/tutorial/TUTORIAL.md) — recorrido visual de la demo web
+- [docs/INFOGRAFIA_ARTIFICIAL_WORLD.md](docs/INFOGRAFIA_ARTIFICIAL_WORLD.md) — versión divulgativa

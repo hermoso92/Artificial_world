@@ -107,8 +107,11 @@ class FabricaEntidades:
         if getattr(self.configuracion, "incluir_tryndamere", True):
             pos_fund = self._posicion_aleatoria_valida(mapa, posiciones_ocupadas)
             posiciones_ocupadas.add(pos_fund)
+            nombre_fund = getattr(
+                self.configuracion, "nombre_fundador", NOMBRE_FUNDADOR
+            )
             fundador = self.crear_entidad_social(
-                NOMBRE_FUNDADOR,
+                nombre_fund,
                 TipoRasgoSocial.NEUTRAL,
                 pos_fund,
                 color=COLOR_FUNDADOR,
