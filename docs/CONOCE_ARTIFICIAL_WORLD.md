@@ -67,6 +67,7 @@ Los personajes de muchos juegos no recuerdan. No evolucionan. No reaccionan a lo
 
 - **Repositorio** — Añade aquí la URL de tu repo (ej. `github.com/tu-usuario/artificial-word`)
 - **Documentación** — `docs/ESENCIAL.md` (2 páginas técnicas)
+- **Relato para dirección e inversores** — `docs/PAQUETE_RELATO/` (dossier, brief, manifiesto)
 - **Landing** — `artificial-world.html` o despliega en GitHub Pages
 
 ---

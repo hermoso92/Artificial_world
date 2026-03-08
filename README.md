@@ -137,6 +137,7 @@ Ver `AGENTS.md` en la raiz del proyecto. Revisa: no `console.log`, no URLs hardc
 
 ## Documentacion
 
+- [docs/PAQUETE_RELATO/](docs/PAQUETE_RELATO/) — **Para dirección e inversores** — dossier ejecutivo, brief de inversión, manifiesto
 - [docs/tutorial/TUTORIAL.md](docs/tutorial/TUTORIAL.md) — **Tutorial con screenshots** — guía paso a paso de la demo web
 - [docs/INFOGRAFIA_ARTIFICIAL_WORLD.md](docs/INFOGRAFIA_ARTIFICIAL_WORLD.md) — **Infografía 6 páginas** — para informáticos, jefes, inversores y abuelos
 - [docs/CONOCE_ARTIFICIAL_WORLD.md](docs/CONOCE_ARTIFICIAL_WORLD.md) — Para el mundo — conócelo, pruébalo, adóptalo (2 páginas)

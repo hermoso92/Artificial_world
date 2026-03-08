@@ -1,13 +1,15 @@
-# Artificial Word Engine — NPCs con memoria y relaciones
+# Artificial World Engine — NPCs con memoria y relaciones
 
 **Documento técnico para estudios de videojuegos**  
 Versión 1.0 | artificialword.io
+
+> **Nota:** Este documento describe el motor de decisión de **Artificial World**. El archivo conserva el nombre `ARTIFICIAL_WORD_ENGINE.md` por compatibilidad.
 
 ---
 
 ## 1. Qué es
 
-**Artificial Word Engine** es un motor de IA para NPCs que toma decisiones por utilidad, mantiene memoria del entorno y gestiona relaciones sociales dinámicas (confianza, miedo, hostilidad). No usa LLMs ni APIs externas.
+**Artificial World Engine** es un motor de IA para NPCs que toma decisiones por utilidad, mantiene memoria del entorno y gestiona relaciones sociales dinámicas (confianza, miedo, hostilidad). No usa LLMs ni APIs externas.
 
 ### Pipeline de decisión
 
@@ -27,7 +29,7 @@ Cada decisión es **trazable**: se conoce el motivo (ej. "hambre: +0.65", "relac
 
 ## 2. Por qué es distinto
 
-| Aspecto | LLM-based (Inworld, etc.) | Artificial Word Engine |
+| Aspecto | LLM-based (Inworld, etc.) | Artificial World Engine |
 |---------|---------------------------|------------------------|
 | **Coste por NPC** | $ por token / API call | Cero (local) |
 | **Latencia** | 100–500 ms por decisión | < 1 ms |
@@ -53,7 +55,7 @@ Cada decisión es **trazable**: se conoce el motivo (ej. "hambre: +0.65", "relac
 ## 4. Integración conceptual
 
 ```
-Tu juego                    Artificial Word Engine
+Tu juego                    Artificial World Engine
 ─────────                   ─────────────────────
 Mapa / mundo        →       ContextoDecision (mapa, tick, percepción)
 Entidades (tus)     →       Estado interno (hambre, energía, inventario)
