@@ -12,9 +12,12 @@ services:
       - "3001:3001"
     volumes:
       - app-data:/app/data
+      - ./.env:/app/.env:ro
     environment:
       - NODE_ENV=production
       - PORT=3001
+    env_file:
+      - .env
     mem_limit: 512m
     logging:
       driver: json-file

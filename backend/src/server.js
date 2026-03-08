@@ -10,7 +10,15 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { existsSync } from 'fs';
 
-dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '../../.env') });
+const __serverDir = dirname(fileURLToPath(import.meta.url));
+const envPaths = [
+  join(__serverDir, '../../.env'),
+  join(__serverDir, '../.env'),
+  '/app/.env',
+];
+for (const p of envPaths) {
+  if (existsSync(p)) { dotenv.config({ path: p }); break; }
+}
 import apiRoutes from './routes/api.js';
 import heroRefugeRoutes from './routes/heroRefuge.js';
 import dobacksoftRoutes from './routes/dobacksoft.js';
