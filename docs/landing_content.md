@@ -39,7 +39,7 @@ Los LLMs dan vida al texto, pero cuestan por uso, añaden latencia y son imprede
 
 ## Sección: Comparativa
 
-| | LLM-based | Artificial Word |
+| | LLM-based | Artificial World |
 |---|-----------|-----------------|
 | Coste | $ por token | Cero |
 | Latencia | 100–500 ms | < 1 ms |

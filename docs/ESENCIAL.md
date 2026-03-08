@@ -81,6 +81,7 @@ cd frontend; npm test
 | Python vs Web, diferencias | `docs/MODOS_EJECUCION.md` |
 | Guía ampliada | `docs/PROYECTO_GUIA.md` |
 | Estrategia y próximos pasos | `docs/ESTRATEGIA_PRODUCTO.md` |
+| Relato para dirección, inversores, familia | `docs/PAQUETE_RELATO/` |
 
 ---
 
