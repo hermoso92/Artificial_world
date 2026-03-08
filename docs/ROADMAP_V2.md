@@ -120,15 +120,15 @@ Sin esto, solo puede haber un jugador.
 
 ### Fase 4: Contenido y Juego (MEDIA)
 
-#### 4.1 Minijuego Damas
-- [ ] Implementar lógica de damas completa
-- [ ] IA opponent (utility-based, reutilizando motor de decisión)
-- [ ] Quitar badge "Próximamente"
+#### 4.1 Minijuego Damas ✅
+- [x] Implementar lógica de damas completa (ya existía Checkers + checkersAI)
+- [x] IA opponent (minimax con alpha-beta)
+- [x] Quitar badge "Próximamente" (solo Ajedrez lo tiene)
 
-#### 4.2 Enforcement de suscripciones
-- [ ] Verificar límites en TODOS los endpoints de creación
-- [ ] Mensajes claros cuando se alcanza un límite
-- [ ] Upsell natural (PricingModal) al alcanzar límites
+#### 4.2 Enforcement de suscripciones ✅
+- [x] Verificar límites en TODOS los endpoints de creación (createWorld, releaseAgents)
+- [x] Mensajes claros cuando se alcanza un límite
+- [x] Upsell natural (PricingModal) al alcanzar límites
 - [ ] Rate limiting por tier
 
 #### 4.3 Mejoras de simulación
