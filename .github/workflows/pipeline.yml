@@ -116,10 +116,14 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Verificar secrets VPS
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          if [ -z "${{ secrets.SSH_HOST }}" ] || [ -z "${{ secrets.SSH_USER }}" ] || [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
-            echo "::error::Faltan secrets: configura SSH_HOST, SSH_USER y SSH_PRIVATE_KEY en Settings > Secrets"
-            exit 1
+          if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$SSH_PRIVATE_KEY" ]; then
+            echo "::warning::Secrets VPS no configurados — saltando deploy"
+            exit 0
           fi
           echo "Secrets VPS OK"
 
@@ -129,11 +133,14 @@ jobs:
         run: echo "REMOTE_PATH=${RP:-/opt/constructor-de-mundos}" >> $GITHUB_ENV
 
       - name: Configurar SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Rsync al VPS
         run: |
