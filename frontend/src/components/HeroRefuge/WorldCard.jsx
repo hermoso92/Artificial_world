@@ -85,9 +85,17 @@ export function WorldCard({ world, onDestroy, onEnter }) {
           </span>
         ))}
       </div>
+      {world.simulationRefugeIndex != null && (
+        <div style={{
+          marginTop: '6px', fontSize: '9px',
+          color: colors.accent, opacity: 0.6,
+        }}>
+          🔗 Refugio #{world.simulationRefugeIndex + 1} en la simulación
+        </div>
+      )}
       {world.recentHistory?.[0] && (
         <div style={{
-          marginTop: '6px', fontSize: '10px',
+          marginTop: '4px', fontSize: '10px',
           color: 'rgba(255,255,255,0.35)', fontStyle: 'italic',
         }}>
           {world.recentHistory[0]}

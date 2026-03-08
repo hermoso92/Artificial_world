@@ -112,4 +112,12 @@ router.post('/worlds/tick', asyncHandler((req, res) => {
   res.json({ success: true, data: { totalTicks: hero.stats.totalTicks } });
 }));
 
+// GET /api/hero/unified — combined hero + simulation snapshot
+router.get('/unified', asyncHandler((req, res) => {
+  const playerId = resolvePlayerId(req);
+  if (!playerId) throw new ApiError('VALIDATION_ERROR', 'playerId is required', 422);
+  const hero = getOrCreateHero(playerId);
+  res.json({ success: true, data: hero.toJSON() });
+}));
+
 export default router;

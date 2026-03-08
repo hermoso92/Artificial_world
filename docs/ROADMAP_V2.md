@@ -16,7 +16,7 @@ Rama: `feature/roadmap-v2`
 |------|-----------|--------|
 | Frontend | React 18 + Vite 5 | ✅ Funcionando |
 | Backend | Node.js + Express | ✅ Funcionando |
-| Base de datos | SQLite (better-sqlite3) | ⚠️ Solo suscripciones persisten |
+| Base de datos | SQLite (better-sqlite3) | ✅ Heroes, mundos y suscripciones |
 | WebSocket | ws | ✅ Funcionando |
 | Deploy | Docker + Nginx en Hostinger VPS | ✅ Puerto 3001 |
 | SSL/Dominio | Certbot + Nginx | ❌ Pendiente (firewall Hostinger) |
@@ -37,11 +37,12 @@ Rama: `feature/roadmap-v2`
 
 ### Funcionalidades con limitaciones
 
-- ⚠️ Hero y mundos se pierden al reiniciar el servidor (en memoria)
-- ⚠️ Un solo usuario (singleton, sin scoping por playerId)
-- ⚠️ Damas marcado como "Próximamente"
+- ~~⚠️ Hero y mundos se pierden al reiniciar~~ → ✅ Persistencia SQLite
+- ~~⚠️ Damas marcado como "Próximamente"~~ → ✅ Funcional
+- ~~⚠️ Límites de suscripción no se aplican~~ → ✅ Enforcement completo
+- ~~⚠️ Hero y simulación desconectados~~ → ✅ Flujo unificado
+- ⚠️ Un solo usuario (singleton, sin scoping completo por playerId)
 - ⚠️ "Unirme con código" deshabilitado
-- ⚠️ Límites de suscripción no se aplican en todos los endpoints
 - ⚠️ Sin pagos reales (Stripe no integrado)
 
 ---
@@ -112,11 +113,15 @@ Sin esto, solo puede haber un jugador.
 - [x] "Unirme con código": quitada opción deshabilitada (se añadirá cuando esté lista)
 - [ ] Animaciones de transición entre pasos
 
-#### 3.3 Unificar HeroRefuge con simulación principal
-- [ ] El "Tu Mundo" del hub lleva directamente a la simulación del hero
-- [ ] No hay dos flujos separados (hero vs simulación genérica)
-- [ ] El canvas muestra el mundo del hero, no un mundo genérico
-- [ ] El compañero IA aparece en la simulación
+#### 3.3 Unificar HeroRefuge con simulación principal ✅
+- [x] Header de simulación muestra nombre del hero y compañero IA
+- [x] Hero data compartida entre SimulationView y HeroRefugePanel (single source of truth)
+- [x] Crear mundo artificial → crea refugio en la simulación real
+- [x] Compañero IA recibe contexto de la simulación (tick, agentes, refugios)
+- [x] HeroRefugePanel muestra estado en vivo de la simulación (habitantes, refugios, tick)
+- [x] WorldCard muestra link al refugio en la simulación cuando existe
+- [x] Endpoint `/api/hero/unified` para snapshot combinado hero + simulación
+- [x] toJSON() del hero incluye snapshot de la simulación
 
 ### Fase 4: Contenido y Juego (MEDIA)
 
