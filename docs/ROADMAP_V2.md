@@ -99,12 +99,12 @@ Sin esto, solo puede haber un jugador.
 
 ### Fase 3: Experiencia de usuario (ALTA)
 
-#### 3.1 Logs en tiempo real desde la app
-- [ ] Nuevo endpoint WebSocket: `type: 'log'` con level, message, timestamp, source
-- [ ] Backend: interceptar logger y emitir por WS
-- [ ] Frontend: panel de logs en MissionControl/Observatorio
-- [ ] Filtros por nivel (info, warn, error) y por fuente (engine, api, ws)
-- [ ] Auto-scroll con pause al hacer scroll manual
+#### 3.1 Logs en tiempo real desde la app ✅
+- [x] Nuevo endpoint WebSocket: `type: 'log'` con level, message, timestamp, source
+- [x] Backend: interceptar logger y emitir por WS
+- [x] Frontend: panel de logs en MissionControl/Observatorio
+- [x] Filtros por nivel (info, warn, error) y por fuente (engine, api, ws)
+- [x] Auto-scroll con pause al hacer scroll manual
 
 #### 3.2 Pulir onboarding
 - [ ] Unificar Landing.jsx y OnboardingTutorial.jsx en un solo flujo
