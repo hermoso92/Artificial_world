@@ -419,10 +419,188 @@
   color: var(--color-foreground);
 }
 
+/* Energy indicator */
+.mc-energy.low {
+  color: #ff5252;
+  font-weight: bold;
+}
+
 /* Empty state */
 .mc-empty {
   text-align: center;
   padding: 2rem;
   color: var(--color-muted);
   font-size: 0.9rem;
+}
+
+/* ─── Live Log ────────────────────────────────────────────────── */
+
+.mc-livelog {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 140px);
+  min-height: 400px;
+}
+
+.mc-livelog-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.mc-livelog-status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.mc-livelog-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff4444;
+}
+
+.mc-livelog-dot--on {
+  background: #00e676;
+  box-shadow: 0 0 6px #00e676;
+  animation: mc-pulse 2s infinite;
+}
+
+@keyframes mc-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.mc-livelog-filters {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.mc-livelog-filter {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.mc-livelog-filter:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.mc-livelog-filter--active {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: rgba(0, 212, 255, 0.3);
+  color: #00d4ff;
+}
+
+.mc-livelog-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.mc-livelog-btn {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.15s;
+}
+
+.mc-livelog-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.mc-livelog-btn--paused {
+  background: rgba(255, 193, 7, 0.15);
+  border-color: rgba(255, 193, 7, 0.3);
+  color: #ffc107;
+}
+
+.mc-livelog-count {
+  font-size: 0.7rem;
+  color: var(--color-muted);
+  opacity: 0.6;
+}
+
+.mc-livelog-container {
+  flex: 1;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', monospace;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  padding: 0.5rem;
+}
+
+.mc-livelog-empty {
+  padding: 3rem;
+  text-align: center;
+  color: var(--color-muted);
+  opacity: 0.5;
+}
+
+.mc-livelog-entry {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+
+.mc-livelog-entry:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.mc-livelog-entry--error {
+  background: rgba(255, 68, 68, 0.06);
+}
+
+.mc-livelog-entry--warn {
+  background: rgba(255, 193, 7, 0.04);
+}
+
+.mc-livelog-time {
+  color: var(--color-muted);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.mc-livelog-level {
+  font-weight: 600;
+  flex-shrink: 0;
+  min-width: 60px;
+}
+
+.mc-livelog-source {
+  color: var(--color-muted);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.mc-livelog-message {
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
