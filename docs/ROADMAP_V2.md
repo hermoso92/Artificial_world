@@ -52,13 +52,13 @@ Rama: `feature/roadmap-v2`
 
 Todo lo que se pierde al reiniciar el servidor debe persistir.
 
-#### 1.1 Persistencia de Hero y Refugio
-- [ ] Migrar `heroRefuge.js` de memoria a SQLite
-- [ ] Tabla `heroes`: id, player_id, name, active_mode, companion_name, companion_traits, created_at
-- [ ] Tabla `hero_worlds`: id, hero_id, name, type, biomes, scale, entities, state, created_at
-- [ ] Al crear hero → INSERT en SQLite
-- [ ] Al cargar hero → SELECT por player_id
-- [ ] Al modificar hero (modo, companion) → UPDATE
+#### 1.1 Persistencia de Hero y Refugio ✅
+- [x] Migrar `heroRefuge.js` de memoria a SQLite
+- [x] Tabla `heroes`: id, player_id, name, active_mode, companion_name, companion_traits, created_at
+- [x] Tabla `hero_worlds`: id, hero_id, name, type, biomes, scale, entities, state, created_at
+- [x] Al crear hero → INSERT en SQLite
+- [x] Al cargar hero → SELECT por player_id
+- [x] Al modificar hero (modo, companion) → UPDATE
 - [ ] Tests: reiniciar servidor y verificar que hero persiste
 
 #### 1.2 Persistencia del Mundo y Agentes
