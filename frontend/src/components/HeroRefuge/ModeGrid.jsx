@@ -1,6 +1,7 @@
 import { MODE_COLORS } from './constants';
 
 export function ModeGrid({ modes, activeMode, onSelect }) {
+  const safeModes = (Array.isArray(modes) ? modes : []).filter((m) => m && m.id);
   return (
     <div style={{
       display: 'grid',
@@ -8,13 +9,13 @@ export function ModeGrid({ modes, activeMode, onSelect }) {
       gap: '4px',
       marginTop: '8px',
     }}>
-      {modes.map((m) => {
+      {safeModes.map((m) => {
         const colors = MODE_COLORS[m.id] ?? MODE_COLORS.refugio;
         const isActive = m.id === activeMode;
         return (
           <button
             key={m.id}
-            title={m.description}
+            title={m.description ?? ''}
             onClick={() => onSelect(m.id)}
             style={{
               background: isActive
@@ -33,8 +34,8 @@ export function ModeGrid({ modes, activeMode, onSelect }) {
               color: isActive ? colors.text : 'rgba(255,255,255,0.55)',
             }}
           >
-            <span style={{ fontSize: '16px' }}>{m.icon}</span>
-            <span style={{ fontSize: '9px', fontWeight: isActive ? 700 : 400 }}>{m.label}</span>
+            <span style={{ fontSize: '16px' }}>{m.icon ?? '✨'}</span>
+            <span style={{ fontSize: '9px', fontWeight: isActive ? 700 : 400 }}>{m.label ?? m.id ?? ''}</span>
           </button>
         );
       })}
