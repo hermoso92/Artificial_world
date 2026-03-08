@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Artificial World — Motor de Civilizaciones Emergentes</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
+
+/* Fallback system fonts while Google Fonts loads */
+
+/* ── TOKENS ─────────────────────────────────────────────────── */
+:root {
+  /* Surfaces — from void to light, whisper-quiet steps */
+  --void:        #07090d;
+  --deep:        #0d1117;
+  --raised:      #131720;
+  --card:        #181e2a;
+  --elevated:    #1e2535;
+  --panel:       #242c3d;
+  --border:      rgba(255,255,255,0.07);
+  --border-mid:  rgba(255,255,255,0.12);
+  --border-soft: rgba(255,255,255,0.05);
+
+  /* Ink */
+  --ink:         #f0f4ff;
+  --ink-soft:    #8b95aa;
+  --ink-muted:   #4a5266;
+  --ink-ghost:   #2a3044;
+
+  /* Signature — terminal cyan, the color of this world */
+  --cyan:        #00d4e8;
+  --cyan-bright: #40e8f8;
+  --cyan-dim:    #007a8a;
+  --cyan-ghost:  rgba(0,212,232,0.08);
+  --cyan-glow:   rgba(0,212,232,0.20);
+
+  /* Semantic */
+  --amber:       #e8a020;
+  --amber-dim:   rgba(232,160,32,0.12);
+  --red:         #e84040;
+  --red-dim:     rgba(232,64,64,0.10);
+  --green:       #30c878;
+  --green-dim:   rgba(48,200,120,0.10);
+  --purple:      #9868f0;
+  --purple-dim:  rgba(152,104,240,0.12);
+
+  /* Type scale */
+  --font-body:   'Inter', system-ui, sans-serif;
+  --font-mono:   'JetBrains Mono', 'Courier New', monospace;
+  --font-display:'Playfair Display', Georgia, serif;
+
+  /* Space — 4px base unit */
+  --s1: 4px;  --s2: 8px;  --s3: 12px;  --s4: 16px;
+  --s5: 20px; --s6: 24px; --s7: 32px;  --s8: 40px;
+  --s9: 48px; --s10: 64px;
+
+  /* Radius */
+  --r-sm: 4px; --r-md: 6px; --r-lg: 10px; --r-xl: 14px;
+}
+
+/* ── RESET & BASE ────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 9.5pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body {
+  font-family: var(--font-body);
+  background: var(--deep);
+  color: var(--ink);
+  line-height: 1.7;
+}
+
+/* ── PAGE ────────────────────────────────────────────────────── */
+@page {
+  size: A4;
+  margin: 16mm 15mm 20mm 15mm;
+}
+@page :left  { margin-left: 18mm; }
+@page :right { margin-right: 18mm; }
+
+.page-break { page-break-after: always; }
+.no-break   { page-break-inside: avoid; }
+.avoid-before { page-break-before: avoid; }
+
+/* ═══════════════════════════════════════════════════════════════
+   COVER
+══════════════════════════════════════════════════════════════ */
+.cover {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--void);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--s10) var(--s10) var(--s8);
+  page-break-after: always;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Signature element: simulation grid, like the real 2D map */
+.cover-sim-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  grid-template-rows: repeat(32, 1fr);
+  pointer-events: none;
+  opacity: 1;
+}
+.sim-cell {
+  border-right: 1px solid rgba(0,212,232,0.028);
+  border-bottom: 1px solid rgba(0,212,232,0.028);
+}
+/* Lit cells — agents are here */
+.sim-cell.lit-cyan   { background: rgba(0,212,232,0.06); }
+.sim-cell.lit-amber  { background: rgba(232,160,32,0.05); }
+.sim-cell.lit-red    { background: rgba(232,64,64,0.04); }
+.sim-cell.lit-green  { background: rgba(48,200,120,0.04); }
+
+/* Radial vignette */
+.cover-vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 30%, transparent 30%, rgba(7,9,13,0.65) 80%);
+  pointer-events: none;
+}
+
+/* Scan line texture */
+.cover-scanlines {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0,0,0,0.08) 3px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.cover-body { position: relative; z-index: 2; }
+
+/* Terminal prompt line */
+.cover-prompt {
+  font-family: var(--font-mono);
+  font-size: 7.5pt;
+  color: var(--cyan-dim);
+  letter-spacing: .1em;
+  margin-bottom: var(--s6);
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.cover-prompt::before {
+  content: '';
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan-glow);
+}
+
+.cover-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 6.5pt;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: var(--s3);
+}
+
+.cover-title {
+  font-family: var(--font-display);
+  font-size: 60pt;
+  font-weight: 900;
+  line-height: .95;
+  letter-spacing: -.03em;
+  color: var(--ink);
+  margin-bottom: 0;
+}
+.cover-title-accent {
+  color: var(--cyan);
+  display: block;
+  text-shadow: 0 0 60px rgba(0,212,232,0.3);
+}
+
+.cover-rule {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--cyan-dim), transparent);
+  margin: var(--s7) 0 var(--s6);
+  opacity: .5;
+}
+
+.cover-tagline {
+  font-size: 10.5pt;
+  font-weight: 300;
+  color: var(--ink-soft);
+  max-width: 480px;
+  line-height: 1.65;
+  letter-spacing: .01em;
+}
+.cover-tagline strong { color: var(--ink); font-weight: 500; }
+
+/* Stats strip */
+.cover-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  margin-top: var(--s7);
+  position: relative; z-index: 2;
+}
+.cover-stat {
+  background: var(--raised);
+  padding: var(--s4) var(--s5);
+  text-align: center;
+}
+.cover-stat-val {
+  font-family: var(--font-display);
+  font-size: 22pt;
+  font-weight: 900;
+  color: var(--cyan);
+  letter-spacing: -.04em;
+  line-height: 1;
+  display: block;
+}
+.cover-stat-lbl {
+  font-size: 6.5pt;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  display: block;
+  margin-top: 4px;
+}
+
+/* Cover footer */
+.cover-footer {
+  position: relative; z-index: 2;
+  border-top: 1px solid var(--border);
+  padding-top: var(--s5);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.cover-author {
+  font-size: 9pt;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.cover-meta-row {
+  font-family: var(--font-mono);
+  font-size: 7pt;
+  color: var(--ink-muted);
+  margin-top: 3px;
+}
+.cover-verdict {
+  text-align: right;
+}
+.cover-verdict-label {
+  font-family: var(--font-mono);
+  font-size: 6.5pt;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  display: block;
+}
+.cover-verdict-value {
+  font-family: var(--font-display);
+  font-size: 13pt;
+  font-weight: 700;
+  color: var(--amber);
+  text-shadow: 0 0 20px rgba(232,160,32,0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TABLE OF CONTENTS
+══════════════════════════════════════════════════════════════ */
+.toc {
+  background: var(--deep);
+  page-break-after: always;
+  padding: var(--s8) var(--s8) var(--s10);
+  min-height: 100vh;
+}
+
+.toc-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 6.5pt;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--cyan-dim);
+  margin-bottom: var(--s3);
+}
+
+.toc-title {
+  font-family: var(--font-display);
+  font-size: 18pt;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: var(--s7);
+  padding-bottom: var(--s5);
+  border-bottom: 1px solid var(--border-mid);
+}
+
+.toc-group { margin-bottom: var(--s5); }
+.toc-group-label {
+  font-family: var(--font-mono);
+  font-size: 6pt;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+  margin-bottom: var(--s2);
+  padding-left: 28px;
+}
+.toc-row {
+  display: flex;
+  align-items: baseline;
+  padding: 6px 0 6px 0;
+  border-bottom: 1px solid var(--border-soft);
+  gap: var(--s3);
+}
+.toc-row:last-child { border-bottom: none; }
+.toc-n {
+  font-family: var(--font-mono);
+  font-size: 7pt;
+  color: var(--cyan-dim);
+  min-width: 28px;
+  font-weight: 700;
+}
+.toc-name {
+  font-size: 9pt;
+  font-weight: 500;
+  color: var(--ink-soft);
+  flex: 1;
+}
+.toc-name em { font-style: normal; color: var(--ink); font-weight: 600; }
+.toc-pg {
+  font-family: var(--font-mono);
+  font-size: 7.5pt;
+  color: var(--ink-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CHAPTER HEADER
+══════════════════════════════════════════════════════════════ */
+.ch {
+  background: var(--void);
+  padding: var(--s9) var(--s8) var(--s7);
+  page-break-before: always;
+  page-break-after: avoid;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Signature: chapter grid (the simulation) */
+.ch-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  pointer-events: none;
+}
+.ch-cell {
+  border-right: 1px solid rgba(0,212,232,0.04);
+  border-bottom: 1px solid rgba(0,212,232,0.04);
+}
+.ch-cell.active { background: rgba(0,212,232,0.05); }
+
+.ch-glow {
+  position: absolute;
+  bottom: -40px; right: -40px;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, var(--cyan-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.ch-inner { position: relative; z-index: 1; }
+
+.ch-num {
+  font-family: var(--font-mono);
+  font-size: 7pt;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--cyan-dim);
+  margin-bottom: var(--s3);
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+.ch-num::before {
+  content: '';
+  display: block;
+  width: 20px; height: 1px;
+  background: var(--cyan-dim);
+}
+
+.ch-title {
+  font-family: var(--font-display);
+  font-size: 22pt;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -.025em;
+  color: var(--ink);
+}
+.ch-accent { color: var(--cyan); }
+
+.ch-desc {
+  font-size: 9pt;
+  color: var(--ink-muted);
+  margin-top: var(--s3);
+  font-weight: 300;
+  letter-spacing: .01em;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTENT AREA
+══════════════════════════════════════════════════════════════ */
+.body {
+  background: var(--deep);
+  padding: var(--s7) var(--s8);
+}
+
+p {
+  font-size: 9pt;
+  color: var(--ink-soft);
+  line-height: 1.78;
+  margin-bottom: var(--s4);
+}
+p strong { color: var(--ink); font-weight: 600; }
+p em { color: var(--ink-soft); font-style: italic; }
+
+h3 {
+  font-size: 10pt;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -.01em;
+  margin: var(--s7) 0 var(--s4);
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+h3::before {
+  content: '';
+  display: block;
+  width: 3px; height: 14px;
+  background: var(--cyan);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TABLES — signature: semantic first-column color by row role
+══════════════════════════════════════════════════════════════ */
+.tbl-wrap {
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin: var(--s5) 0 var(--s7);
+  page-break-inside: avoid;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 8pt; }
+
+thead tr {
+  background: linear-gradient(135deg, var(--panel) 0%, var(--elevated) 100%);
+  border-bottom: 1px solid var(--border-mid);
+}
+thead th {
+  padding: var(--s3) var(--s4);
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 6.5pt;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+thead th:first-child { color: var(--cyan-dim); }
+
+tbody tr { border-bottom: 1px solid var(--border-soft); }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:nth-child(even) { background: rgba(255,255,255,0.015); }
+
+td {
+  padding: var(--s3) var(--s4);
+  color: var(--ink-soft);
+  vertical-align: top;
+  line-height: 1.55;
+}
+td:first-child {
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 8.5pt;
+}
+
+/* Mono cells */
+td.mono {
+  font-family: var(--font-mono);
+  font-size: 7.5pt;
+  color: var(--cyan-dim);
+}
+td.val-high  { color: var(--green); font-family: var(--font-mono); font-weight: 700; }
+td.val-crit  { color: var(--red);   font-family: var(--font-mono); font-weight: 700; }
+td.val-warn  { color: var(--amber); font-family: var(--font-mono); font-weight: 700; }
+td.val-mid   { color: var(--ink);   font-family: var(--font-mono); }
+
+/* ═══════════════════════════════════════════════════════════════
+   CODE BLOCKS — terminal aesthetic
+══════════════════════════════════════════════════════════════ */
+.code {
+  background: var(--void);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--cyan-dim);
+  border-radius: var(--r-lg);
+  padding: var(--s5) var(--s6);
+  margin: var(--s4) 0 var(--s6);
+  page-break-inside: avoid;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Terminal scanlines on code blocks */
+.code::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    to bottom, transparent 0px, transparent 2px,
+    rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 3px
+  );
+  pointer-events: none;
+}
+
+.code-label {
+  font-family: var(--font-mono);
+  font-size: 6pt;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--cyan-dim);
+  margin-bottom: var(--s3);
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.code-label::before {
+  content: '●';
+  color: var(--red);
+  font-size: 8pt;
+  text-shadow: 2px 0 0 var(--amber), 4px 0 0 var(--green);
+}
+
+pre {
+  font-family: var(--font-mono);
+  font-size: 7.5pt;
+  color: #c9d1d9;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  word-break: break-all;
+  position: relative; z-index: 1;
+}
+.t-cyan   { color: #79c0ff; }
+.t-green  { color: #56d364; }
+.t-amber  { color: #e3b341; }
+.t-red    { color: #ff7b72; }
+.t-purple { color: #d2a8ff; }
+.t-muted  { color: #484f58; }
+.t-string { color: #a5d6ff; }
+
+/* ═══════════════════════════════════════════════════════════════
+   CALLOUTS
+══════════════════════════════════════════════════════════════ */
+.callout {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--cyan);
+  background: var(--cyan-ghost);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  padding: var(--s4) var(--s5);
+  margin: var(--s5) 0;
+  page-break-inside: avoid;
+}
+.callout-warn    { border-left-color: var(--amber); background: var(--amber-dim); }
+.callout-danger  { border-left-color: var(--red);   background: var(--red-dim);   }
+.callout-insight { border-left-color: var(--green);  background: var(--green-dim);  }
+.callout-purple  { border-left-color: var(--purple); background: var(--purple-dim); }
+
+.callout-hd {
+  font-family: var(--font-mono);
+  font-size: 6.5pt;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--cyan-dim);
+  margin-bottom: var(--s2);
+}
+.callout-warn .callout-hd    { color: var(--amber); }
+.callout-danger .callout-hd  { color: var(--red);   }
+.callout-insight .callout-hd { color: var(--green);  }
+.callout-purple .callout-hd  { color: var(--purple); }
+
+.callout p { margin-bottom: 0; font-size: 8.5pt; line-height: 1.65; }
+
+/* ═══════════════════════════════════════════════════════════════
+   PULL QUOTE
+══════════════════════════════════════════════════════════════ */
+.pq {
+  padding: var(--s6) 0 var(--s5);
+  margin: var(--s7) 0;
+  border-top: 2px solid var(--cyan-dim);
+  border-bottom: 1px solid var(--border);
+  page-break-inside: avoid;
+}
+.pq-text {
+  font-family: var(--font-display);
+  font-size: 12pt;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.45;
+  letter-spacing: -.01em;
+  margin-bottom: var(--s3);
+}
+.pq-source {
+  font-family: var(--font-mono);
+  font-size: 6.5pt;
+  color: var(--ink-muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STAT CARDS
+══════════════════════════════════════════════════════════════ */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s3);
+  margin: var(--s5) 0 var(--s7);
+  page-break-inside: avoid;
+}
+.stats-row-3 { grid-template-columns: repeat(3, 1fr); }
+.stat-card {
+  background: var(--raised);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--cyan-dim);
+  border-radius: var(--r-md);
+  padding: var(--s4) var(--s5);
+  text-align: center;
+}
+.stat-card-v {
+  font-family: var(--font-display);
+  font-size: 18pt;
+  font-weight: 900;
+  color: var(--cyan);
+  letter-spacing: -.04em;
+  line-height: 1;
+  display: block;
+}
+.stat-card-l {
+  font-size: 6.5pt;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  display: block;
+  margin-top: 4px;
+}
+.sc-amber .stat-card-v { color: var(--amber); border-top-color: var(--amber); }
+.sc-red   .stat-card-v { color: var(--red);   border-top-color: var(--red);   }
+.sc-green .stat-card-v { color: var(--green);  border-top-color: var(--green);  }
+
+/* ═══════════════════════════════════════════════════════════════
+   BAR CHART — signature visual
+══════════════════════════════════════════════════════════════ */
+.bars { margin: var(--s5) 0 var(--s7); page-break-inside: avoid; }
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+  margin-bottom: var(--s3);
+}
+.bar-lbl {
+  font-family: var(--font-mono);
+  font-size: 7pt;
+  color: var(--ink-muted);
+  min-width: 110px;
+  text-align: right;
+  letter-spacing: .03em;
+}
+.bar-track {
+  flex: 1;
+  height: 20px;
+  background: var(--raised);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  position: relative;
+}
+.bar-fill {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: var(--s3);
+  border-radius: var(--r-sm);
+}
+.bf-primary {
+  background: linear-gradient(90deg, var(--cyan-dim) 0%, var(--cyan) 100%);
+  box-shadow: 0 0 12px rgba(0,212,232,0.2);
+}
+.bf-secondary { background: linear-gradient(90deg, #2a3044, #3d4a60); }
+.bf-minor     { background: linear-gradient(90deg, var(--green) 0%, #48e890 100%); }
+.bar-pct {
+  font-family: var(--font-mono);
+  font-size: 7pt;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
+.bar-meta {
+  font-family: var(--font-mono);
+  font-size: 7pt;
+  color: var(--ink-muted);
+  min-width: 72px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BADGES
+══════════════════════════════════════════════════════════════ */
+.badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 6pt;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 100px;
+  border: 1px solid transparent;
+}
+.b-real    { background: var(--green-dim);  color: var(--green);  border-color: rgba(48,200,120,.25); }
+.b-demo    { background: var(--cyan-ghost); color: var(--cyan);   border-color: rgba(0,212,232,.2);  }
+.b-parcial { background: var(--amber-dim);  color: var(--amber);  border-color: rgba(232,160,32,.25); }
+.b-road    { background: var(--raised);     color: var(--ink-muted); border-color: var(--border-mid); }
+
+/* Agent status dot */
+.dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.dot-red    { background: var(--red);   box-shadow: 0 0 5px rgba(232,64,64,.5);   }
+.dot-amber  { background: var(--amber); box-shadow: 0 0 5px rgba(232,160,32,.5);  }
+.dot-green  { background: var(--green); box-shadow: 0 0 5px rgba(48,200,120,.5);  }
+
+/* ═══════════════════════════════════════════════════════════════
+   ARCHITECTURE DIAGRAM
+══════════════════════════════════════════════════════════════ */
+.arch {
+  background: var(--void);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: var(--s5);
+  margin: var(--s5) 0 var(--s7);
+  page-break-inside: avoid;
+}
+.arch-layer {
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--r-md);
+  padding: var(--s4) var(--s5);
+  margin-bottom: var(--s3);
+}
+.arch-layer:last-child { margin-bottom: 0; }
+.arch-lbl {
+  font-family: var(--font-mono);
+  font-size: 6.5pt;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: var(--s3);
+}
+.arch-shared { border-color: rgba(0,212,232,.2); }
+.arch-shared .arch-lbl { color: var(--cyan); }
+.arch-py    { border-color: rgba(48,200,120,.2); }
+.arch-py .arch-lbl    { color: var(--green); }
+.arch-web   { border-color: rgba(232,160,32,.2); }
+.arch-web .arch-lbl   { color: var(--amber); }
+.arch-chess { border-color: rgba(152,104,240,.2); }
+.arch-chess .arch-lbl { color: var(--purple); }
+.arch-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); margin-bottom: var(--s3); }
+.arch-row .arch-layer { margin-bottom: 0; }
+.arch-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.arch-chip {
+  font-family: var(--font-mono);
+  font-size: 6.5pt;
+  color: rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--r-sm);
+  padding: 2px 7px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FEATURE CARDS
+══════════════════════════════════════════════════════════════ */
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s3);
+  margin: var(--s5) 0 var(--s7);
+  page-break-inside: avoid;
+}
+.feat-card {
+  background: var(--raised);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--s4) var(--s5);
+}
+.feat-icon {
+  font-size: 14pt;
+  line-height: 1;
+  margin-bottom: var(--s2);
+}
+.feat-title {
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: var(--s1);
+}
+.feat-desc {
+  font-size: 7.5pt;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LIST
+══════════════════════════════════════════════════════════════ */
+ul.aw-list { list-style: none; margin: var(--s4) 0 var(--s6); }
+ul.aw-list li {
+  padding: var(--s3) 0 var(--s3) 20px;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 8.5pt;
+  color: var(--ink-soft);
+  position: relative;
+  line-height: 1.65;
+}
+ul.aw-list li:last-child { border-bottom: none; }
+ul.aw-list li::before {
+  content: '▸';
+  position: absolute; left: 0;
+  color: var(--cyan-dim);
+  font-size: 7pt;
+  top: 13px;
+}
+ul.aw-list li strong { color: var(--ink); font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════════════
+   REFS & FOOTER
+══════════════════════════════════════════════════════════════ */
+ol.refs { list-style: none; counter-reset: ref-c; }
+ol.refs li {
+  counter-increment: ref-c;
+  padding: var(--s3) 0 var(--s3) 28px;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 8pt;
+  color: var(--ink-muted);
+  line-height: 1.6;
+  position: relative;
+}
+ol.refs li:last-child { border-bottom: none; }
+ol.refs li::before {
+  content: '[' counter(ref-c) ']';
+  position: absolute; left: 0;
+  font-family: var(--font-mono);
+  font-size: 6.5pt;
+  color: var(--cyan-dim);
+  top: 12px;
+}
+ol.refs li em { color: var(--ink-soft); }
+
+.doc-footer {
+  border-top: 1px solid var(--border-mid);
+  margin-top: var(--s8);
+  padding-top: var(--s5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.df-brand {
+  font-size: 7.5pt;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+.df-meta {
+  font-family: var(--font-mono);
+  font-size: 6.5pt;
+  color: var(--ink-ghost);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INLINE UTILITIES
+══════════════════════════════════════════════════════════════ */
+code {
+  font-family: var(--font-mono);
+  font-size: 7.5pt;
+  background: var(--raised);
+  border: 1px solid var(--border-mid);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: var(--cyan-dim);
+}
+.mt { margin-top: var(--s6); }
+.mt-sm { margin-top: var(--s4); }
+sub { font-size: 0.75em; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ COVER ══════════════════════════════════════ -->
+<div class="cover">
+  <!-- Signature grid: the 2D simulation map -->
+  <div class="cover-sim-grid" id="simgrid"></div>
+  <div class="cover-vignette"></div>
+  <div class="cover-scanlines"></div>
+
+  <div class="cover-body">
+    <div class="cover-prompt">artificial-word · v1.0 fundacional · seed:42</div>
+    <div class="cover-eyebrow">Motor de Civilizaciones Emergentes</div>
+    <div class="cover-title">
+      Artificial
+      <span class="cover-title-accent">World</span>
+    </div>
+    <div class="cover-rule"></div>
+    <div class="cover-tagline">
+      Agentes autónomos por <strong>función de utilidad</strong>.
+      Refugios con <strong>memoria persistente</strong>.
+      Héroes que dejan <strong>crónica verificable</strong>.
+      Sin LLMs en el núcleo.
+    </div>
+
+    <div class="cover-stats">
+      <div class="cover-stat">
+        <span class="cover-stat-val">13</span>
+        <span class="cover-stat-lbl">tipos de acción</span>
+      </div>
+      <div class="cover-stat">
+        <span class="cover-stat-val">9</span>
+        <span class="cover-stat-lbl">modificadores</span>
+      </div>
+      <div class="cover-stat">
+        <span class="cover-stat-val">200</span>
+        <span class="cover-stat-lbl">ticks canónicos</span>
+      </div>
+      <div class="cover-stat">
+        <span class="cover-stat-val">68+</span>
+        <span class="cover-stat-lbl">tests pasando</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <div>
+      <div class="cover-author">Cosigein SL</div>
+      <div class="cover-meta-row">2026-03-08 · artificial-word · Semilla 42 · 8 agentes · 60×60</div>
+    </div>
+    <div class="cover-verdict">
+      <span class="cover-verdict-label">Veredicto sistema</span>
+      <span class="cover-verdict-value">TENSIÓN</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TOC ════════════════════════════════════════ -->
+<div class="toc">
+  <div class="toc-eyebrow">Índice de contenidos</div>
+  <div class="toc-title">Lo que encontrarás aquí</div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">Fundamentos</div>
+    <div class="toc-row"><span class="toc-n">01</span><span class="toc-name"><em>Antes de empezar</em> — lo que existe y lo que no</span><span class="toc-pg">3</span></div>
+    <div class="toc-row"><span class="toc-n">02</span><span class="toc-name"><em>El problema</em> — por qué otro motor de vida artificial</span><span class="toc-pg">4</span></div>
+    <div class="toc-row"><span class="toc-n">03</span><span class="toc-name"><em>Arquitectura</em> — tres capas, un modelo, sin integración forzada</span><span class="toc-pg">5</span></div>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">El motor</div>
+    <div class="toc-row"><span class="toc-n">04</span><span class="toc-name"><em>Cómo decide un agente</em> — función de utilidad completa</span><span class="toc-pg">7</span></div>
+    <div class="toc-row"><span class="toc-n">05</span><span class="toc-name"><em>Sesión canónica</em> — lo que pasó en 200 ticks</span><span class="toc-pg">10</span></div>
+    <div class="toc-row"><span class="toc-n">06</span><span class="toc-name"><em>Tres cosas que nadie programó</em> — comportamiento emergente</span><span class="toc-pg">12</span></div>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">Infraestructura</div>
+    <div class="toc-row"><span class="toc-n">07</span><span class="toc-name"><em>Herramientas invisibles</em> — Modo Sombra, Watchdog, Chess</span><span class="toc-pg">14</span></div>
+    <div class="toc-row"><span class="toc-n">08</span><span class="toc-name"><em>Las 7 civilizaciones</em> — semillas arquetipos</span><span class="toc-pg">16</span></div>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">Posición</div>
+    <div class="toc-row"><span class="toc-n">09</span><span class="toc-name"><em>Lo que no hace todavía</em> — limitaciones documentadas</span><span class="toc-pg">17</span></div>
+    <div class="toc-row"><span class="toc-n">10</span><span class="toc-name"><em>La convicción</em> — trazabilidad radical como diseño</span><span class="toc-pg">18</span></div>
+    <div class="toc-row"><span class="toc-n">11</span><span class="toc-name"><em>Para reproducir esto</em> — comandos verificados</span><span class="toc-pg">19</span></div>
+    <div class="toc-row"><span class="toc-n">Ref</span><span class="toc-name">Referencias</span><span class="toc-pg">20</span></div>
+  </div>
+</div>
+
+<!-- ══════════════ CAP 01 ═════════════════════════════════════ -->
+<div class="ch">
+  <div class="ch-grid" id="ch1grid"></div>
+  <div class="ch-glow"></div>
+  <div class="ch-inner">
+    <div class="ch-num">Capítulo 01</div>
+    <div class="ch-title">Antes de empezar:<br><span class="ch-accent">lo que existe y lo que no</span></div>
+    <div class="ch-desc">La regla que hace que este documento valga algo.</div>
+  </div>
+</div>
+
+<div class="body">
+  <p>Este documento tiene una regla. Cada vez que se diga que algo "existe" o "funciona", existe y funciona de verdad, verificable con el código. Cuando algo es visión futura, se dice explícitamente.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Estado</th><th>Definición</th><th>Ejemplos en el proyecto</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="badge b-real">Real</span></td>
+          <td>Testeado, reproducible, en producción</td>
+          <td>Motor Python · 68+ tests · persistencia SQLite · Modo Sombra</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-demo">Demo</span></td>
+          <td>Existe y funciona, no es el motor principal</td>
+          <td>Capa web fullstack · DobackSoft integrado</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-parcial">Parcial</span></td>
+          <td>Existe con funcionalidad incompleta</td>
+          <td>HeroRefuge · CivilizationSeed web · IA local (Ollama)</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-road">Roadmap</span></td>
+          <td>Diseñado, no implementado</td>
+          <td>Runtime 3D · integración Python/JS · diplomacia entre civs</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <div class="callout-hd">Reproducibilidad garantizada</div>
+    <p>Todo lo que afirma este documento puede verificarse con un solo comando. La misma semilla produce exactamente los mismos resultados en cualquier máquina con Python 3.11+.</p>
+  </div>
+
+  <div class="code">
+    <div class="code-label">bash — reproducir la sesión canónica</div>
+    <pre><span class="t-green">python</span> cronica_fundacional.py <span class="t-amber">--seed</span> 42 <span class="t-amber">--ticks</span> 200 \
+  <span class="t-amber">--founder</span> <span class="t-string">"Tryndamere"</span> <span class="t-amber">--refuge</span> <span class="t-string">"Refugio Fundador"</span>
+<span class="t-muted"># salida: JSON + Markdown + PDF — idéntico en cada ejecución</span></pre>
+  </div>
+</div>
+
+<!-- ══════════════ CAP 02 ═════════════════════════════════════ -->
+<div class="ch">
+  <div class="ch-grid" id="ch2grid"></div>
+  <div class="ch-glow"></div>
+  <div class="ch-inner">
+    <div class="ch-num">Capítulo 02</div>
+    <div class="ch-title">El problema<br><span class="ch-accent">que resuelve</span></div>
+    <div class="ch-desc">Por qué otro motor de vida artificial.</div>
+  </div>
+</div>
+
+<div class="body">
+  <div class="pq">
+    <div class="pq-text">"El agente no recuerda. No tiene razones. Emerge, pero no decide."</div>
+    <div class="pq-source">Motivación central — sobre los sistemas clásicos de ALife</div>
+  </div>
+
+  <p>Los sistemas de vida artificial clásicos — el Game of Life de Conway (1970), los Boids de Reynolds (1987) — son elegantes. Priorizan la simplicidad de las reglas sobre la riqueza del estado interno. En los sistemas más complejos — Dwarf Fortress, RimWorld — el mecanismo de decisión tiende a ocultarse bajo capas de abstracción opacas.</p>
+
+  <p><strong>Artificial World busca un punto diferente: estado interno rico y decisión completamente transparente.</strong></p>
+
+  <div class="feature-grid">
+    <div class="feat-card">
+      <div class="feat-icon">🔬</div>
+      <div class="feat-title">Función de utilidad pública</div>
+      <div class="feat-desc">Cada decisión de cada agente en cada tick es pública, parametrizada y reproducible. No hay magia invisible.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🧠</div>
+      <div class="feat-title">Memoria persistente entre ticks</div>
+      <div class="feat-desc">Posiciones de recursos y relaciones sociales. Las decisiones pasadas condicionan las presentes.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🎯</div>
+      <div class="feat-title">Ruido determinista por semilla</div>
+      <div class="feat-desc"><code>random.Random(id × 1000 + tick)</code>. La misma semilla produce exactamente las mismas decisiones.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🏛️</div>
+      <div class="feat-title">Refugio como entidad de primer orden</div>
+      <div class="feat-desc">No es un artefacto del mapa. Tiene nombre, recursos, moral, memoria y fase de crecimiento propia.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ CAP 03 ═════════════════════════════════════ -->
+<div class="ch">
+  <div class="ch-grid" id="ch3grid"></div>
+  <div class="ch-glow"></div>
+  <div class="ch-inner">
+    <div class="ch-num">Capítulo 03</div>
+    <div class="ch-title">La arquitectura<br><span class="ch-accent">en una página</span></div>
+    <div class="ch-desc">Tres capas. Un modelo conceptual compartido. Sin integración forzada.</div>
+  </div>
+</div>
+
+<div class="body">
+  <div class="arch">
+    <div class="arch-layer arch-shared">
+      <div class="arch-lbl">Modelo conceptual compartido</div>
+      <div class="arch-chips">
+        <span class="arch-chip">World</span><span class="arch-chip">CivilizationSeed</span>
+        <span class="arch-chip">Refuge</span><span class="arch-chip">Hero</span>
+        <span class="arch-chip">Community</span><span class="arch-chip">MemoryEntry</span>
+        <span class="arch-chip">HistoricalRecord</span><span class="arch-chip">Territory</span>
+      </div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-layer arch-py">
+        <div class="arch-lbl">Motor Python — Real</div>
+        <div class="arch-chips">
+          <span class="arch-chip">principal.py</span><span class="arch-chip">nucleo/simulacion.py</span>
+          <span class="arch-chip">13 acciones</span><span class="arch-chip">68+ tests</span>
+          <span class="arch-chip">SQLite</span><span class="arch-chip">Modo Sombra</span>
+          <span class="arch-chip">Watchdog</span><span class="arch-chip">pygame</span>
+        </div>
+      </div>
+      <div class="arch-layer arch-web">
+        <div class="arch-lbl">Capa Web — Demo</div>
+        <div class="arch-chips">
+          <span class="arch-chip">Node + Express</span><span class="arch-chip">React + Vite</span>
+          <span class="arch-chip">HeroRefuge</span><span class="arch-chip">7 semillas</span>
+          <span class="arch-chip">IA local (Ollama)</span>
+        </div>
+      </div>
+    </div>
+    <div class="arch-layer arch-chess">
+      <div class="arch-lbl">Sistema Chess — Auditoría independiente</div>
+      <div class="arch-chips">
+        <span class="arch-chip">6 agentes Docker</span><span class="arch-chip">red aislada</span>
+        <span class="arch-chip">montaje :ro</span><span class="arch-chip">sin estado entre ejecuciones</span>
+        <span class="arch-chip">REPORTE_CHESS_1.md</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-hd">Decisión arquitectónica explícita</div>
+    <p>La separación Python/Web no es trabajo pendiente. Está documentada en <code>docs/DECISION_PUENTE_PYTHON_JS.md</code>. El coste de implementar el puente en tiempo real supera el beneficio en esta fase. Dos motores, dos propósitos — más honesto que una integración superficial.</p>
+  </div>
+
+  <h3>Los 12 subsistemas del motor Python</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Subsistema</th><th>Clase</th><th>Función</th></tr></thead>
+      <tbody>
+        <tr><td>Ticks</td><td class="mono">GestorTicks</td><td>Control de tiempo y velocidad de simulación</td></tr>
+        <tr><td>Eventos</td><td class="mono">BusEventos</td><td>Publicación / suscripción entre subsistemas</td></tr>
+        <tr><td>Métricas</td><td class="mono">SistemaMetricas</td><td>Conteo de acciones y estados por tick</td></tr>
+        <tr><td>Regeneración</td><td class="mono">SistemaRegeneracion</td><td>Reposición de recursos en el mapa grid</td></tr>
+        <tr><td>Persistencia</td><td class="mono">SistemaPersistencia</td><td>Guardar / cargar estado en SQLite</td></tr>
+        <tr><td>Watchdog</td><td class="mono">SistemaWatchdog</td><td>Alertas estructuradas de condiciones anómalas</td></tr>
+        <tr><td>Reporte</td><td class="mono">SistemaReporte</td><td>Generación de crónica fundacional (JSON/MD/PDF)</td></tr>
+        <tr><td>Modo Sombra</td><td class="mono">GestorModoSombra</td><td>Simulación especular sin efectos secundarios</td></tr>
+        <tr><td>Competencia</td><td class="mono">SistemaModoCompetencia</td><td>Modo multi-jugador por turnos</td></tr>
+        <tr><td>Renderizador</td><td class="mono">Renderizador</td><td>Representación visual pygame</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════ CAP 04 ═════════════════════════════════════ -->
+<div class="ch">
+  <div class="ch-grid" id="ch4grid"></div>
+  <div class="ch-glow"></div>
+  <div class="ch-inner">
+    <div class="ch-num">Capítulo 04</div>
+    <div class="ch-title">Cómo decide<br><span class="ch-accent">un agente</span></div>
+    <div class="ch-desc">La función de utilidad completa, sin omisiones.</div>
+  </div>
+</div>
+
+<div class="body">
+  <h3>El ciclo por tick, por entidad</h3>
+  <div class="code">
+    <div class="code-label">python — ciclo de decisión</div>
+    <pre><span class="t-cyan">actualizar_estado_interno()</span>   <span class="t-muted"># hambre++, energía--</span>
+<span class="t-cyan">percibir_entorno()</span>            <span class="t-muted"># radio local + amenaza_local</span>
+<span class="t-cyan">actualizar_memoria()</span>          <span class="t-muted"># registra recursos y refugios visibles</span>
+<span class="t-cyan">actualizar_directivas()</span>       <span class="t-muted"># expira instrucciones caducadas</span>
+<span class="t-green">ContextoDecision(tick, mapa)</span>  <span class="t-muted"># empaqueta todo</span>
+<span class="t-amber">decidir_accion()</span>              <span class="t-muted"># U(a,i,t) → acción ganadora</span>
+<span class="t-red">ejecutar_accion()</span>             <span class="t-muted"># aplica efectos en el mundo</span></pre>
+  </div>
+
+  <div class="callout">
+    <div class="callout-hd">La fórmula central</div>
+    <p><strong>U(a, i, t) = U<sub>base</sub>(a) + Σ<sub>k=1..9</sub> δ<sub>k</sub>(a,i,t) + ε(i,t)</strong><br>
+    Donde ε(i,t) = <code>random.Random(id × 1000 + t).uniform(−0.08, 0.08)</code> — ruido determinista por semilla.</p>
+  </div>
+
+  <h3>Las 13 acciones y sus utilidades base</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Acción</th><th>U<sub>base</sub></th><th>Condición de viabilidad</th></tr></thead>
+      <tbody>
+        <tr><td>COMER</td><td class="val-high">0.65</td><td>Comida en inventario &gt; 0</td></tr>
+        <tr><td>RECOGER_COMIDA</td><td class="val-mid">0.55</td><td>Celda actual tiene recurso COMIDA</td></tr>
+        <tr><td>EXPLORAR</td><td class="val-mid">0.50</td><td>Energía &gt; 0.20</td></tr>
+        <tr><td>HUIR</td><td class="val-mid">0.40</td><td>Riesgo percibido &gt; 0.3</td></tr>
+        <tr><td>DESCANSAR</td><td class="val-mid">0.30</td><td><em>Fallback garantizado — siempre viable</em></td></tr>
+        <tr><td>MOVER</td><td class="val-mid">0.30</td><td>Posición vecina disponible</td></tr>
+        <tr><td>RECOGER_MATERIAL</td><td class="val-mid">0.30</td><td>Celda actual tiene recurso MATERIAL</td></tr>
+        <tr><td>IR_REFUGIO</td><td class="val-mid">0.25</td><td>Refugio adyacente + (energía &lt; 0.45 OR riesgo &gt; 0.5)</td></tr>
+        <tr><td>EVITAR</td><td class="val-mid">0.25</td><td>Riesgo percibido &gt; 0.3</td></tr>
+        <tr><td>COMPARTIR</td><td class="val-mid">0.20</td><td>Inventario ≥ 3 OR (cooperativo + inv ≥ 1 + hambre &lt; 0.5)</td></tr>
+        <tr><td>ROBAR</td><td class="val-mid">0.20</td><td>Oportunista/agresivo + hambre ≥ 0.75 + sin comida</td></tr>
+        <tr><td>SEGUIR</td><td class="val-mid">0.20</td><td>Cooperativo/neutral + entidades cercanas visibles</td></tr>
+        <tr><td>ATACAR</td><td class="val-crit">0.18</td><td>Condición contextual agresiva</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Los 9 modificadores contextuales</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Modificador</th><th>Variable fuente</th><th>Efecto en U(a,i,t)</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="mono">mod_hambre</td><td>estado.hambre</td><td>Escala COMER/RECOGER según hambre actual</td></tr>
+        <tr><td>2</td><td class="mono">mod_energia</td><td>estado.energia</td><td>Aumenta DESCANSAR cuando energía &lt; 0.6</td></tr>
+        <tr><td>3</td><td class="mono">mod_riesgo</td><td>riesgo_percibido</td><td>Activa HUIR/EVITAR cuando riesgo &gt; 0.3</td></tr>
+        <tr><td>4</td><td class="mono">mod_rasgo</td><td>rasgo_principal</td><td>Ajusta preferencias por arquetipo conductual</td></tr>
+        <tr><td>5</td><td class="mono">mod_anti_oscilacion</td><td>posicion_anterior</td><td>Penaliza −0.40 retornar a la celda anterior</td></tr>
+        <tr><td>6</td><td class="mono">mod_memoria</td><td>memoria.recursos</td><td>Bonus +0.15–0.25 hacia recursos recordados</td></tr>
+        <tr><td>7</td><td class="mono">mod_relaciones</td><td>relaciones[i,j]</td><td>Confianza → SEGUIR; hostilidad → HUIR/EVITAR</td></tr>
+        <tr><td>8</td><td class="mono">mod_directivas</td><td>directivas_activas</td><td>Instrucciones externas del investigador</td></tr>
+        <tr><td style="color:var(--red);font-weight:800;">9</td><td class="mono" style="color:var(--red);">mod_autonomia</td><td>múltiple</td><td><strong>Override de emergencia — supervivencia anula directivas</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-danger">
+    <div class="callout-hd">El modificador 9 es el más importante del sistema</div>
+    <p>Si hambre &gt; 0.85 → penaliza EXPLORAR aunque haya directiva contraria.<br>
+    Si energía &lt; 0.15 → penaliza MOVER y ROBAR.<br>
+    Si riesgo &gt; 0.80 → bonifica HUIR sobre cualquier orden recibida.<br>
+    <strong>Ningún agente puede ser enviado a su muerte por una directiva mal calibrada.</strong></p>
+  </div>
+
+  <h3>Los 5 rasgos de los agentes sociales</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Rasgo</th><th>Potencia</th><th>Penaliza</th></tr></thead>
+      <tbody>
+        <tr><td>COOPERATIVO</td><td>COMPARTIR +0.25 · SEGUIR levemente</td><td>ROBAR −0.25</td></tr>
+        <tr><td>NEUTRAL</td><td colspan="2" style="color:var(--ink-muted);font-style:italic;text-align:center;">Sin modificaciones</td></tr>
+        <tr><td>AGRESIVO</td><td>ROBAR +0.30</td><td>COMPARTIR −0.20 · HUIR −0.10</td></tr>
+        <tr><td>EXPLORADOR</td><td>MOVER +0.35 · EXPLORAR +0.35</td><td>SEGUIR levemente</td></tr>
+        <tr><td>OPORTUNISTA</td><td>ROBAR +0.15 · RECOGER_MATERIAL +0.08</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════ CAP 05 ═════════════════════════════════════ -->
+<div class="ch">
+  <div class="ch-grid" id="ch5grid"></div>
+  <div class="ch-glow"></div>
+  <div class="ch-inner">
+    <div class="ch-num">Capítulo 05</div>
+    <div class="ch-title">Lo que pasó en<br><span class="ch-accent">la sesión canónica</span></div>
+    <div class="ch-desc">Semilla 42 · Mapa 60×60 · 7 sociales + 1 gato · 200 ticks.</div>
+  </div>
+</div>
+
+<div class="body">
+  <div class="stats-row">
+    <div class="stat-card sc-green"><span class="stat-card-v">8/8</span><span class="stat-card-l">agentes vivos</span></div>
+    <div class="stat-card sc-amber"><span class="stat-card-v">0.95</span><span class="stat-card-l">hambre promedio</span></div>
+    <div class="stat-card sc-red"><span class="stat-card-v">65</span><span class="stat-card-l">alertas watchdog</span></div>
+    <div class="stat-card sc-amber"><span class="stat-card-v" style="font-size:12pt;padding-top:4px;">TENSIÓN</span><span class="stat-card-l">veredicto</span></div>
+  </div>
+
+  <h3>Estado final de la población (tick 200)</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Agente</th><th>Tipo</th><th>Posición</th><th>Hambre</th><th>Energía</th><th>Estado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Ana</td><td>social</td><td class="mono">(47, 21)</td>
+          <td class="val-warn">0.68</td><td class="val-mid">0.38</td>
+          <td><span class="dot dot-amber"></span>Advertencia</td>
+        </tr>
+        <tr>
+          <td>Bruno</td><td>social</td><td class="mono">(0, 34)</td>
+          <td class="val-crit">1.00</td><td class="val-mid">0.36</td>
+          <td><span class="dot dot-red"></span>Crítico</td>
+        </tr>
+        <tr>
+          <td>Clara</td><td>social</td><td class="mono">(25, 5)</td>
+          <td class="val-crit">1.00</td><td class="val-mid">0.26</td>
+          <td><span class="dot dot-red"></span>Crítico</td>
+        </tr>
+        <tr>
+          <td>David</td><td>social</td><td class="mono">(10, 22)</td>
+          <td class="val-crit">0.90</td><td class="val-warn">0.18</td>
+          <td><span class="dot dot-red"></span>Crítico</td>
+        </tr>
+        <tr>
+          <td>Eva</td><td>social</td><td class="mono">(13, 5)</td>
+          <td class="val-crit">1.00</td><td class="val-mid">0.40</td>
+          <td><span class="dot dot-red"></span>Crítico</td>
+        </tr>
+        <tr>
+          <td>Félix</td><td>social</td><td class="mono">(0, 52)</td>
+          <td class="val-crit">1.00</td><td class="val-mid">0.38</td>
+          <td><span class="dot dot-red"></span>Crítico</td>
+        </tr>
+        <tr>
+          <td>Amiguisimo</td><td>gato</td><td class="mono">(12, 42)</td>
+          <td class="val-crit">1.00</td><td class="val-mid">0.30</td>
+          <td><span class="dot dot-red"></span>Crítico</td>
+        </tr>
+        <tr>
+          <td>Tryndamere</td><td>social</td><td class="mono">(2, 51)</td>
+          <td class="val-crit">1.00</td><td class="val-mid">0.40</td>
+          <td><span class="dot dot-red"></span>Crítico</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:7.5pt;color:var(--ink-muted);">Salud = 1.0 para todos. Ningún agente alcanzó el estado de muerte. Hambre: 0 = saciado · 1 = crítico.</p>
+
+  <h3>Distribución de 1.600 acciones</h3>
+  <div class="bars">
+    <div class="bar-row">
+      <span class="bar-lbl">SEGUIR</span>
+      <div class="bar-track"><div class="bar-fill bf-primary" style="width:62.4%;"><span class="bar-pct">62.4 %</span></div></div>
+      <span class="bar-meta">998 acciones</span>
+    </div>
+    <div class="bar-row">
+      <span class="bar-lbl">DESCANSAR</span>
+      <div class="bar-track"><div class="bar-fill bf-secondary" style="width:30.8%;"><span class="bar-pct">30.8 %</span></div></div>
+      <span class="bar-meta">492 acciones</span>
+    </div>
+    <div class="bar-row">
+      <span class="bar-lbl">RECOGER</span>
+      <div class="bar-track"><div class="bar-fill bf-minor" style="width:6%;"><span class="bar-pct" style="font-size:6pt;">3.4</span></div></div>
+      <span class="bar-meta">55 acciones</span>
+    </div>
+    <div class="bar-row">
+      <span class="bar-lbl">COMER</span>
+      <div class="bar-track"><div class="bar-fill bf-minor" style="width:6%;"><span class="bar-pct" style="font-size:6pt;">3.4</span></div></div>
+      <span class="bar-meta">55 acciones</span>
+    </div>
+  </div>
+
+  <div class="callout callout-insight">
+    <div class="callout-hd">El hallazgo principal</div>
+    <p>Bajo hambre crítica generalizada, el <strong>62.4% de las acciones fue SEGUIR</strong> — seguirse los unos a los otros. No fue codificado como respuesta a la escasez. <em>Emergió.</em></p>
+  </div>
+</div>
+
+<!-- ══════════════ CAP 06 ═════════════════════════════════════ -->
+<div class="ch">
+  <div class="ch-grid" id="ch6grid"></div>
+  <div class="ch-glow"></div>
+  <div class="ch-inner">
+    <div class="ch-num">Capítulo 06</div>
+    <div class="ch-title">Tres cosas<br><span class="ch-accent">que nadie programó</span></div>
+    <div class="ch-desc">Comportamiento emergente verificable.</div>
+  </div>
+</div>
+
+<div class="body">
+  <h3>1 · La trampa dinámica de la cohesión</h3>
+  <p>SEGUIR dominando al 62.4% bajo escasez severa no fue diseñado como respuesta a la escasez. Es el resultado de tres mecanismos interactuando:</p>
+  <ul class="aw-list">
+    <li><strong>mod_relaciones:</strong> Los agentes con historia de cooperación tienen confianza alta. Confianza alta → bonus SEGUIR. La señal social supera la señal de hambre.</li>
+    <li><strong>mod_autonomia:</strong> Con hambre &gt; 0.85, el override penaliza EXPLORAR. El agente hambriento no puede explorar agresivamente aunque quiera.</li>
+    <li><strong>Ausencia de recursos:</strong> COMER y RECOGER no son candidatos la mayor parte del tiempo. Las celdas están vacías.</li>
+  </ul>
+
+  <div class="callout callout-danger">
+    <div class="callout-hd">La trampa</div>
+    <p>Los agentes cohesionados se mueven juntos hacia zonas que el propio grupo ha agotado. La confianza social supera la señal de hambre. Análogo al <em>information cascade</em> de Bikhchandani et al. (1992): se imita al grupo incluso cuando esa imitación es colectivamente subóptima.</p>
+  </div>
+
+  <h3>2 · El agotamiento zonal del cuadrante oeste</h3>
+  <p>Las 65 alertas se concentran en x &lt; 15, y &gt; 40: Tryndamere (2,51), Félix (0,52), Amiguisimo (12,42). La semilla 42 genera un gradiente de recursos que desfavorece el borde oeste.</p>
+
+  <div class="callout callout-warn">
+    <div class="callout-hd">Efecto lateral no esperado</div>
+    <p><code>mod_anti_oscilacion</code> penaliza −0.40 regresar a la celda anterior. Diseñado para evitar el "ping-pong". Funciona. Pero en agotamiento zonal total, ese mismo modificador dificulta el retroceso hacia zonas con recursos. <strong>Una regla que mejora el comportamiento promedio crea un caso extremo patológico.</strong></p>
+  </div>
+
+  <h3>3 · Ana y la divergencia individual exitosa</h3>
+  <p>Ana termina con hambre <strong>0.68</strong> — la única sub-crítica. Posición: (47, 21), ~38 unidades del centroide del grupo. Nadie la envió ahí. No hay directiva. Es el resultado acumulado de exploración individual que la llevó al cuadrante noreste, donde el grupo nunca llegó.</p>
+
+  <div class="callout callout-insight">
+    <div class="callout-hd">Implicación teórica</div>
+    <p>La divergencia individual de la cohesión grupal puede ser una estrategia emergentemente superior bajo presión de escasez, aunque el sistema no la codifica como tal. Un agente EXPLORADOR reproduce el patrón de Ana por diseño. Un COOPERATIVO tiende a quedar atrapado en la trampa.</p>
+  </div>
+
+  <h3>Tabla de fenómenos emergentes</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Fenómeno</th><th>Mecanismo generador</th><th>¿Programado?</th></tr></thead>
+      <tbody>
+        <tr><td>Cohesión bajo escasez</td><td>mod_relaciones &gt; mod_autonomia en estadios medios</td><td><span class="badge" style="background:var(--amber-dim);color:var(--amber);border-color:rgba(232,160,32,.2);">No</span></td></tr>
+        <tr><td>Agotamiento zonal</td><td>mod_anti_oscilacion + gradiente de recursos</td><td><span class="badge b-parcial">Parcial</span></td></tr>
+        <tr><td>Divergencia exitosa</td><td>rasgo_explorador + exploración no competida</td><td><span class="badge" style="background:var(--amber-dim);color:var(--amber);border-color:rgba(232,160,32,.2);">No</span></td></tr>
+        <tr><td>Supervivencia total</td><td>mod_autonomia activa en estados críticos</td><td><span class="badge b-real">Sí</span></td></tr>
+        <tr><td>Fragmentación en 3 clusters</td><td>Dispersión exploratoria + gradiente de recursos</td><td><span class="badge b-parcial">Parcial</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════ CAP 07 ═════════════════════════════════════ -->
+<div class="ch">
+  <div class="ch-grid" id="ch7grid"></div>
+  <div class="ch-glow"></div>
+  <div class="ch-inner">
+    <div class="ch-num">Capítulo 07</div>
+    <div class="ch-title">Las herramientas<br><span class="ch-accent">que nadie ve</span></div>
+    <div class="ch-desc">Modo Sombra · Watchdog · Sistema Chess.</div>
+  </div>
+</div>
+
+<div class="body">
+  <h3>Modo Sombra</h3>
+  <p>Simulación paralela que replica el estado del mundo principal y acepta intervenciones sin modificar lo observable. Permite evaluar contrafácticos: <em>¿qué habría pasado si David hubiera tomado la decisión Y en el tick 147?</em></p>
+  <ul class="aw-list">
+    <li><strong>Contrafácticos:</strong> evaluación sin contaminar la simulación principal</li>
+    <li><strong>Control manual WASD:</strong> el investigador toma el control de un agente; la IA cede el turno</li>
+    <li><strong>Modo investigador:</strong> directivas experimentales en entorno aislado</li>
+  </ul>
+
+  <h3>Watchdog</h3>
+  <p>Cada alerta tiene estructura formal verificable contra el log de acciones del mismo período:</p>
+  <div class="code">
+    <div class="code-label">json — alerta watchdog real (sesión canónica, tick 189)</div>
+    <pre>{
+  <span class="t-amber">"nivel"</span>:          <span class="t-string">"CRITICAL"</span>,
+  <span class="t-amber">"codigo"</span>:         <span class="t-string">"HAMBRE_CRITICA_SIN_RESPUESTA"</span>,
+  <span class="t-amber">"tick"</span>:           <span class="t-cyan">189</span>,
+  <span class="t-amber">"entidad_nombre"</span>: <span class="t-string">"Bruno"</span>,
+  <span class="t-amber">"descripcion"</span>:    <span class="t-string">"Hambre >= 0.9 durante 8 ticks sin COMER"</span>
+}</pre>
+  </div>
+
+  <h3>Sistema Chess — auditoría independiente</h3>
+  <p>El mismo equipo que construye no puede auditarse a sí mismo con objetividad. El Sistema Chess resuelve esto con 6 agentes dockerizados en red aislada, sin acceso de escritura.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Agente</th><th>Especialidad</th><th>Detecta</th></tr></thead>
+      <tbody>
+        <tr><td>agent-docs</td><td>Documentación</td><td>Claims sin evidencia · enlaces rotos</td></tr>
+        <tr><td>agent-backend</td><td>API / seguridad</td><td><code>console.log</code> · URLs hardcodeadas · catch vacíos</td></tr>
+        <tr><td>agent-frontend</td><td>React</td><td>Componentes &gt;300 líneas · imports incorrectos</td></tr>
+        <tr><td>agent-bd</td><td>Base de datos</td><td>SQL injection · SELECT * · sin IF NOT EXISTS</td></tr>
+        <tr><td>agent-tests</td><td>Cobertura</td><td>Tests sin assertions · ratio &lt;30%</td></tr>
+        <tr><td>agent-marketing</td><td>Narrativa</td><td>Claims sin evidencia · overselling</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-purple">
+    <div class="callout-hd">Aislamiento de red</div>
+    <p><strong>prod-net:</strong> backend + frontend (3001/5173) · <strong>tests-net:</strong> python-tests + backend-tests (3002) · <strong>audit-net:</strong> 6 agentes + coordinator, sin acceso a prod ni a tests. Repositorio montado en <code>:ro</code>.</p>
+  </div>
+</div>
+
+<!-- ══════════════ CAP 08 ═════════════════════════════════════ -->
+<div class="ch">
+  <div class="ch-grid" id="ch8grid"></div>
+  <div class="ch-glow"></div>
+  <div class="ch-inner">
+    <div class="ch-num">Capítulo 08</div>
+    <div class="ch-title">Las 7 civilizaciones<br><span class="ch-accent">posibles</span></div>
+    <div class="ch-desc">Semillas arquetipos que condicionan la historia antes del tick 0.</div>
+  </div>
+</div>
+
+<div class="body">
+  <p>Cada semilla no es solo un nombre. Condiciona valores, tensiones internas, el tipo de héroe probable y el tono de la historia que emerge.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Arquetipo</th><th>Valores centrales</th><th>Tensión principal</th><th>Héroe probable</th></tr></thead>
+      <tbody>
+        <tr><td>🏕️ Tribu Fronteriza</td><td>Adaptación · cooperación</td><td>Clima hostil · escasez</td><td>Explorador / Guardián</td></tr>
+        <tr><td>🔬 Refugio Tecnócrata</td><td>Orden · eficiencia · conocimiento</td><td>Rigidez · elitismo</td><td>Ingeniero / Estratega</td></tr>
+        <tr><td>🕍 Comunidad Espiritual</td><td>Fe · vínculo · memoria</td><td>Dogma · miedo al cambio</td><td>Guardián / Profeta</td></tr>
+        <tr><td>⚔️ Reino Guerrero</td><td>Honor · fuerza · jerarquía</td><td>Expansión · coste humano</td><td>Campeón / Conquistador</td></tr>
+        <tr><td>🏛️ Ciudad Mercante</td><td>Intercambio · movilidad</td><td>Desigualdad · corrupción</td><td>Negociador / Explorador</td></tr>
+        <tr><td>🔒 Colonia Paranoica</td><td>Seguridad · vigilancia</td><td>Sospecha · fractura interna</td><td>Vigía / Ingeniero</td></tr>
+        <tr><td>👑 Imperio Decadente</td><td>Linaje · poder · apariencia</td><td>Declive · intriga</td><td>Heredero / Diplomático</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <div class="callout-hd">El flujo fundador mínimo</div>
+    <p><strong>Elige semilla → nombra héroe → nombra refugio.</strong> El sistema crea: Hero · Refuge (food=60, shelter=75, security=55, morale=58) · Community · MemoryEntry inicial · World con tick=0. Tiempo total: menos de 2 minutos desde el onboarding.</p>
+  </div>
+</div>
+
+<!-- ══════════════ CAP 09 ═════════════════════════════════════ -->
+<div class="ch">
+  <div class="ch-grid" id="ch9grid"></div>
+  <div class="ch-glow"></div>
+  <div class="ch-inner">
+    <div class="ch-num">Capítulo 09</div>
+    <div class="ch-title">Lo que el sistema<br><span class="ch-accent">no hace todavía</span></div>
+    <div class="ch-desc">Limitaciones documentadas, sin rodeos.</div>
+  </div>
+</div>
+
+<div class="body">
+  <ul class="aw-list">
+    <li><strong>Los dos motores no están integrados.</strong> Python y la capa web comparten modelo conceptual pero no hablan en tiempo real. Es una decisión documentada, no un olvido. <span class="badge b-road">Roadmap</span></li>
+    <li><strong>Community existe como contrato de datos.</strong> Los grupos tienen tensiones declaradas pero no simuladas tick a tick. <span class="badge b-parcial">Parcial</span></li>
+    <li><strong>No hay diplomacia entre civilizaciones.</strong> Guerras, linajes, migraciones entre mundos. <span class="badge b-road">Roadmap</span></li>
+    <li><strong>El runtime 3D no existe.</strong> La verdad sistémica vive en 2D. La encarnación visual con héroes y eventos históricos visuales es la capa futura. <span class="badge b-road">Roadmap</span></li>
+    <li><strong>Las crónicas no incluyen capturas automáticas de ticks clave.</strong> La historia se genera en texto y JSON, pero sin snapshots visuales de los momentos críticos. <span class="badge b-road">Roadmap</span></li>
+  </ul>
+</div>
+
+<!-- ══════════════ CAP 10 ═════════════════════════════════════ -->
+<div class="ch">
+  <div class="ch-grid" id="ch10grid"></div>
+  <div class="ch-glow"></div>
+  <div class="ch-inner">
+    <div class="ch-num">Capítulo 10</div>
+    <div class="ch-title">La convicción<br><span class="ch-accent">detrás del diseño</span></div>
+    <div class="ch-desc">Por qué la trazabilidad radical es una propiedad de primer orden.</div>
+  </div>
+</div>
+
+<div class="body">
+  <div class="pq">
+    <div class="pq-text">"Nunca ha sido más fácil generar texto convincente sobre sistemas. Y nunca ha sido más difícil distinguir qué parte de un sistema existe de verdad de qué parte existe solo como afirmación."</div>
+    <div class="pq-source">Manifiesto fundacional · Artificial World</div>
+  </div>
+
+  <p>Artificial World parte de la premisa contraria: <strong>la trazabilidad radical es una propiedad de diseño de primer orden, no una característica opcional.</strong></p>
+
+  <div class="feature-grid">
+    <div class="feat-card">
+      <div class="feat-icon">🔗</div>
+      <div class="feat-title">Cada comportamiento es reproducible</div>
+      <div class="feat-desc">Mediante semilla fija. No hay decisiones que no puedan reconstruirse desde el estado inicial.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📌</div>
+      <div class="feat-title">Cada claim apunta a código</div>
+      <div class="feat-desc">Si se dice que hay 13 acciones, hay 13 clases en <code>acciones/</code>. Si el Watchdog emite alertas estructuradas, hay tests que lo verifican.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🗂️</div>
+      <div class="feat-title">Taxonomía real / demo / roadmap</div>
+      <div class="feat-desc">Pública, verificable por cualquier persona que lea el código. No es una concesión — es una herramienta activa de gestión de producto.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🎭</div>
+      <div class="feat-title">Chess como auditoría institucional</div>
+      <div class="feat-desc">6 agentes que no pueden ser influenciados por el equipo que construye. El reporte es verificable, reproducible y fechado.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-danger">
+    <div class="callout-hd">Manifiesto del proyecto</div>
+    <p><em>"Una respuesta sin rastro no es una base seria de decisión."</em></p>
+  </div>
+</div>
+
+<!-- ══════════════ CAP 11 ═════════════════════════════════════ -->
+<div class="ch">
+  <div class="ch-grid" id="ch11grid"></div>
+  <div class="ch-glow"></div>
+  <div class="ch-inner">
+    <div class="ch-num">Capítulo 11</div>
+    <div class="ch-title">Para reproducir<br><span class="ch-accent">exactamente esto</span></div>
+    <div class="ch-desc">Comandos verificados. Sin sorpresas.</div>
+  </div>
+</div>
+
+<div class="body">
+  <div class="code">
+    <div class="code-label">powershell — sesión canónica (motor Python)</div>
+    <pre><span class="t-green">python</span> cronica_fundacional.py <span class="t-amber">--seed</span> 42 <span class="t-amber">--ticks</span> 200 \
+  <span class="t-amber">--founder</span> <span class="t-string">"Tryndamere"</span> <span class="t-amber">--refuge</span> <span class="t-string">"Refugio Fundador"</span>
+<span class="t-muted"># Duración: &lt; 30 segundos · Salida: JSON + Markdown + PDF</span></pre>
+  </div>
+
+  <div class="code">
+    <div class="code-label">powershell — tests completos (68+ tests, 11 suites)</div>
+    <pre><span class="t-cyan">$env:SDL_VIDEODRIVER</span> = <span class="t-string">"dummy"</span>
+<span class="t-cyan">$env:SDL_AUDIODRIVER</span> = <span class="t-string">"dummy"</span>
+<span class="t-green">python</span> pruebas/run_tests_produccion.py</pre>
+  </div>
+
+  <div class="code">
+    <div class="code-label">powershell — fullstack web</div>
+    <pre>.\scripts\iniciar_fullstack.ps1
+<span class="t-muted"># Backend: puerto 3001 · Frontend: puerto 5173</span>
+<span class="t-muted"># Demo pública: https://artificialworld.es</span></pre>
+  </div>
+</div>
+
+<!-- ══════════════ REFERENCIAS ════════════════════════════════ -->
+<div class="ch">
+  <div class="ch-grid" id="ch12grid"></div>
+  <div class="ch-glow"></div>
+  <div class="ch-inner">
+    <div class="ch-num">Referencias</div>
+    <div class="ch-title">Trabajo<br><span class="ch-accent">relacionado</span></div>
+    <div class="ch-desc">Las bases sobre las que se construye este sistema.</div>
+  </div>
+</div>
+
+<div class="body">
+  <ol class="refs">
+    <li>Adams, T. (2006). <em>Dwarf Fortress.</em> Bay 12 Games.</li>
+    <li>Bikhchandani, S., Hirshleifer, D., & Welch, I. (1992). A Theory of Fads, Fashion, Custom, and Cultural Change as Informational Cascades. <em>Journal of Political Economy,</em> 100(5), 992–1026.</li>
+    <li>Conway, J. H. (1970). The Game of Life. <em>Scientific American,</em> 223(4), 4–10.</li>
+    <li>Langton, C. G. (1989). Artificial Life. <em>SFI Studies in the Sciences of Complexity,</em> 1–47.</li>
+    <li>Rao, A. S., & Georgeff, M. P. (1991). Modeling Rational Agents within a BDI-Architecture. <em>KR '91,</em> 473–484.</li>
+    <li>Reynolds, C. W. (1987). Flocks, Herds, and Schools: A Distributed Behavioral Model. <em>SIGGRAPH,</em> 21(4), 25–34.</li>
+    <li>Sylvester, T. (2013). <em>RimWorld.</em> Ludeon Studios.</li>
+    <li>Von Neumann, J., & Morgenstern, O. (1944). <em>Theory of Games and Economic Behavior.</em> Princeton University Press.</li>
+  </ol>
+
+  <div class="doc-footer">
+    <span class="df-brand">Artificial World · Motor Python + React · Agentes autónomos por utilidad · Sin LLMs en el núcleo</span>
+    <span class="df-meta">artificial-word · v1.0 · 2026-03-08</span>
+  </div>
+</div>
+
+<!-- ══════════════ GENERATIVE GRIDS (JS) ═══════════════════════
+  Runs before print to populate the simulation grids
+════════════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+  // Cover sim grid: 24×32 = 768 cells with lit agents
+  const coverGrid = document.getElementById('simgrid');
+  const litPatterns = [
+    {i:42, cls:'lit-cyan'},{i:85, cls:'lit-cyan'},{i:130, cls:'lit-cyan'},
+    {i:201, cls:'lit-amber'},{i:350, cls:'lit-amber'},{i:410, cls:'lit-red'},
+    {i:520, cls:'lit-green'},{i:600, cls:'lit-cyan'},{i:650, cls:'lit-amber'},
+    {i:700, cls:'lit-cyan'},{i:123, cls:'lit-green'},{i:333, cls:'lit-red'},
+    {i:444, cls:'lit-cyan'},{i:555, cls:'lit-amber'},{i:666, cls:'lit-cyan'},
+    {i:720, cls:'lit-green'},{i:30, cls:'lit-cyan'},{i:60, cls:'lit-amber'},
+    {i:250, cls:'lit-green'},{i:380, cls:'lit-red'},{i:470, cls:'lit-cyan'},
+    {i:580, cls:'lit-amber'},{i:630, cls:'lit-red'},{i:690, cls:'lit-green'},
+  ];
+  const litSet = {};
+  litPatterns.forEach(p => { litSet[p.i] = p.cls; });
+  for (let i = 0; i < 768; i++) {
+    const c = document.createElement('div');
+    c.className = 'sim-cell' + (litSet[i] ? ' ' + litSet[i] : '');
+    coverGrid.appendChild(c);
+  }
+
+  // Chapter grids: 16×8 = 128 cells, random sparse lit cells
+  const chIds = ['ch1grid','ch2grid','ch3grid','ch4grid','ch5grid',
+                 'ch6grid','ch7grid','ch8grid','ch9grid','ch10grid',
+                 'ch11grid','ch12grid'];
+  const chColors = ['lit-cyan','lit-amber','lit-red','lit-green'];
+
+  chIds.forEach((id, idx) => {
+    const g = document.getElementById(id);
+    if (!g) return;
+    const seed = (idx + 1) * 17;
+    for (let i = 0; i < 128; i++) {
+      const c = document.createElement('div');
+      c.className = 'ch-cell';
+      // pseudo-random sparse lighting based on index
+      const v = (seed * (i + 1) * 31337) % 1000;
+      if (v < 18) {
+        c.className += ' active';
+      }
+      g.appendChild(c);
+    }
+  });
+})();
+</script>
+</body>
+</html>

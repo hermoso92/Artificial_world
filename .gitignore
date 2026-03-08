@@ -13,8 +13,16 @@ __pycache__/
 venv/
 env/
 
+# Chess audit output
+docker/chess-output/
+chess-output/
+
+# Chess data
+data/chess_acceptances.json
+
 # Logs y datos de sesión
 *.log
+.cursor/debug*.log
 reporte_sesion.json
 cronica_fundacional.json
 cronica_fundacional.md
@@ -36,6 +44,8 @@ node_modules/
 # Build
 build/
 dist/
+*.aux
+*.out
 *.spec
 *.egg-info/
 

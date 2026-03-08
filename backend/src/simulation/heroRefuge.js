@@ -15,6 +15,10 @@ import {
   ensurePlayer,
 } from '../db/database.js';
 import { getWorld } from './worldManager.js';
+import {
+  createFoundingWorldState,
+  listCivilizationSeeds,
+} from './civilizationSeeds.js';
 
 const HERO_MODES = [
   { id: 'personal',    label: 'Yo',          icon: '🪞', scale: 1,   description: 'Tu espacio interior. Desde aquí nace todo.' },
@@ -133,19 +137,39 @@ class PersonalAgent {
 
 class ArtificialWorld {
   constructor(heroId, params = {}) {
+    const foundingState = createFoundingWorldState({
+      worldName: params.name ?? `World-${Date.now()}`,
+      heroName: params.heroName,
+      seedId: params.civilizationSeedId,
+      refugeName: params.refugeName,
+    });
+
     this.id = `world-${randomUUID()}`;
     this.heroId = heroId;
     this.name = params.name ?? `World-${Date.now()}`;
     this.type = params.type ?? 'standard';
     this.scale = params.scale ?? 'mundo';
-    this.biomes = params.biomes ?? ['forest', 'plains'];
+    this.biomes = params.biomes ?? foundingState.civilizationSeed.defaultBiomes ?? ['forest', 'plains'];
     this.population = 0;
     this.resources = { energy: 1000, matter: 500, information: 200 };
     this.tick = 0;
     this.alive = true;
     this.createdAt = Date.now();
     this.destroyedAt = null;
-    this.history = [`World "${this.name}" created at tick 0`];
+    this.civilizationSeed = params.civilizationSeed ?? foundingState.civilizationSeed;
+    this.foundingRefuge = params.foundingRefuge ?? foundingState.foundingRefuge;
+    this.community = params.community ?? foundingState.community;
+    this.heroes = params.heroes ?? foundingState.heroes;
+    this.memoryEntries = params.memoryEntries ?? foundingState.memoryEntries;
+    this.historicalRecords = params.historicalRecords ?? foundingState.historicalRecords;
+    this.territory = params.territory ?? foundingState.territory;
+    this.future3dHooks = params.future3dHooks ?? foundingState.future3dHooks;
+    this.refugeName = this.foundingRefuge?.name ?? params.refugeName ?? 'Refugio inicial';
+    this.history = params.history ?? [
+      `World "${this.name}" created at tick 0`,
+      `Seed chosen: ${this.civilizationSeed.label}`,
+      `Founding refuge: ${this.refugeName}`,
+    ];
   }
 
   tick_forward() {
@@ -196,6 +220,14 @@ class ArtificialWorld {
       destroyedAt: this.destroyedAt,
       historyCount: this.history.length,
       recentHistory: this.history.slice(0, 5),
+      civilizationSeed: this.civilizationSeed,
+      foundingRefuge: this.foundingRefuge,
+      community: this.community,
+      heroes: this.heroes,
+      memoryEntries: this.memoryEntries,
+      historicalRecords: this.historicalRecords,
+      territory: this.territory,
+      future3dHooks: this.future3dHooks,
       simulationRefugeIndex: this.simulationRefugeIndex ?? null,
     };
   }
@@ -265,6 +297,14 @@ export class HeroRefuge {
           type: wr.type,
           scale: wr.scale,
           biomes: wr.biomes,
+          civilizationSeed: wr.metadata?.civilizationSeed,
+          foundingRefuge: wr.metadata?.foundingRefuge,
+          community: wr.metadata?.community,
+          heroes: wr.metadata?.heroes,
+          memoryEntries: wr.metadata?.memoryEntries,
+          historicalRecords: wr.metadata?.historicalRecords,
+          territory: wr.metadata?.territory,
+          future3dHooks: wr.metadata?.future3dHooks,
         });
         w.id = wr.id;
         w.population = wr.population;
@@ -272,6 +312,7 @@ export class HeroRefuge {
         w.tick = wr.tick;
         w.alive = wr.alive;
         w.history = wr.history;
+        w.simulationRefugeIndex = wr.metadata?.simulationRefugeIndex ?? null;
         w.createdAt = new Date(wr.created_at).getTime();
         w.destroyedAt = wr.destroyed_at ? new Date(wr.destroyed_at).getTime() : null;
         hero.worlds.push(w);
@@ -316,16 +357,17 @@ export class HeroRefuge {
     if (this.worlds.filter((w) => w.alive).length >= this.maxWorlds) return null;
     const world = new ArtificialWorld(this.id, {
       scale: this.activeMode,
+      heroName: this.name,
       ...params,
     });
     this.worlds.push(world);
     this.stats.worldsCreated++;
-    this.agent._remember(`Created world "${world.name}" (${world.scale})`);
+    this.agent._remember(`Created world "${world.name}" with seed ${world.civilizationSeed.label}`);
 
     try {
       const simWorld = getWorld();
       const refuge = simWorld.createRefuge({
-        name: world.name,
+        name: world.refugeName,
         ownerId: this.playerId,
       });
       if (refuge) {
@@ -448,6 +490,7 @@ export class HeroRefuge {
       stats: this.stats,
       simulation,
       createdAt: this.createdAt,
+      civilizationSeeds: listCivilizationSeeds(),
     };
   }
 }

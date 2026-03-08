@@ -1,60 +1,57 @@
 # Modos de ejecución — Python vs Fullstack
 
-Este documento describe las **dos formas distintas** de ejecutar Artificial World. Son implementaciones paralelas del mismo concepto (simulación de vida artificial), pero con tecnologías y alcance diferentes.
+Este documento separa las dos formas reales de ejecutar el proyecto sin mezclar producto, demo y roadmap.
 
 ---
 
 ## Resumen rápido
 
-| Aspecto | `python principal.py` | Fullstack (`iniciar_fullstack.ps1`) |
-|---------|------------------------|-------------------------------------|
-| **Tecnología** | Python 3.11+ + pygame | Node.js + React + Vite |
-| **Interfaz** | Ventana de escritorio (pygame) | Navegador web |
-| **Motor** | `nucleo.Simulacion` (Python) | `backend/simulation/` (JavaScript) |
-| **Inicio** | `python principal.py` | `.\scripts\iniciar_fullstack.ps1` |
-| **Puertos** | N/A (aplicación local) | Backend 3001, Frontend 5173 |
+| Aspecto | `python principal.py` | Fullstack (`.\scripts\iniciar_fullstack.ps1`) |
+|---------|------------------------|-----------------------------------------------|
+| Tecnología | Python 3.11+ + pygame | Node.js + React + Vite |
+| Interfaz | Ventana local | Navegador |
+| Motor | `nucleo.Simulacion` | `backend/src/simulation/` |
+| Rol | Producto real del repo | Demo funcional del concepto |
+| Persistencia principal | Sí | No, salvo módulos concretos |
+| DobackSoft | No aplica | Vertical demo dentro del hub |
 
 ---
 
-## 1. Python + pygame (`principal.py`)
+## 1. Python + pygame
 
 ### Qué es
 
-Simulación de escritorio con interfaz gráfica nativa. Es el **motor principal** del proyecto, con la arquitectura más completa.
+Es el **motor principal** del repositorio y la forma más defendible de mostrar `Artificial World`.
 
 ### Cómo iniciar
 
-```bash
-python principal.py          # Simulación pygame
-python principal.py --web    # Abre landing HTML en el navegador
+```powershell
+python principal.py
 ```
 
-### Componentes
+O, para abrir la landing HTML:
 
-- **Motor**: `nucleo.Simulacion` → `core.simulation.tick_runner`
-- **Mundo**: `mundo/` (mapa, celdas, recursos, refugios)
-- **Entidades**: `entidades/` (EntidadSocial, EntidadGato, etc.)
-- **IA**: `agentes/` (MotorDecision, memoria espacial, relaciones)
-- **Interfaz**: `interfaz/` (Renderizador pygame, paneles, controles)
-- **Sistemas**: persistencia SQLite, modo sombra, watchdog, competencia
-
-### Características
-
-- Grid 2D configurable
-- Memoria espacial (recursos, refugios vistos)
-- Relaciones sociales (confianza, miedo, hostilidad)
-- Modo Sombra (control manual de una entidad)
-- Persistencia en `mundo_artificial.db`
-- Modo competencia (umbrales de alerta)
-- 12 tipos de acciones (mover, comer, compartir, robar, huir, etc.)
-
-### Tests
-
-```bash
-SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_core.py
-SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_modo_sombra_completo.py
-SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_interacciones_sociales.py
+```powershell
+python principal.py --web
 ```
+
+### Qué demuestra
+
+- simulación principal
+- 13 tipos de acción
+- memoria espacial y social
+- Modo Sombra
+- persistencia SQLite
+- watchdog
+
+### Evidencia asociada
+
+- `tipos/enums.py`
+- `agentes/motor_decision.py`
+- `systems/memory/memoria_entidad.py`
+- `sistemas/sistema_persistencia.py`
+- `sistemas/gestor_modo_sombra.py`
+- `pruebas/run_tests_produccion.py`
 
 ---
 
@@ -62,7 +59,8 @@ SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_interacciones_so
 
 ### Qué es
 
-Versión web con API REST y WebSocket. Motor de simulación **independiente** en JavaScript, pensado para uso en navegador.
+Es una **demo funcional** con backend y frontend propios.  
+No ejecuta el motor Python; usa un motor JavaScript independiente.
 
 ### Cómo iniciar
 
@@ -70,77 +68,112 @@ Versión web con API REST y WebSocket. Motor de simulación **independiente** en
 .\scripts\iniciar_fullstack.ps1
 ```
 
-Inicia:
-1. **Backend** (Node.js, puerto 3001)
-2. **Frontend** (Vite + React, puerto 5173)
-3. Abre el navegador en http://localhost:5173
+Arranca:
 
-### Componentes
+1. backend en `3001`
+2. frontend en `5173`
+3. navegador en `http://localhost:5173`
 
-- **Backend**: `backend/src/`
-  - `server.js` — Express, CORS, WebSocket
-  - `simulation/` — World, Refuge, Agent, Blueprint
-  - `routes/` — API REST (refuges, agents, blueprints, simulation)
-- **Frontend**: `frontend/src/`
-  - React, Mission Control, Simulation Canvas
-  - Hub, Hero Refuge, DobackSoft
+### Qué demuestra
 
-### Características
+- demo navegable del concepto
+- API REST
+- WebSocket `/ws`
+- hub con módulos como `HeroRefuge` y `DobackSoft`
+- flujo fundador parcial: semilla -> constructor -> refugio -> mundo ligero
 
-- Modelo **AW-256**: 16 refugios iniciales, grid 32×32 por refugio
-- Refugios personales ("Mi casa") con ownerId
-- Blueprints (especies) y liberación de agentes
-- API REST + WebSocket
-- Sin persistencia entre reinicios (estado en memoria)
+### Qué no demuestra por sí sola
 
-### Modelo de simulación
-
-El backend usa su propio motor:
-
-- `world.js` — Mundo con refugios y blueprints
-- `refuge.js` — Refugio 32×32 con nodos solares/minerales
-- `agent.js` — Agentes con energía, inventario
-- `refugeSimulation.js` — Tick loop por refugio activo
+- que el motor Python esté expuesto por web
+- que exista una única base de verdad entre Python y JS
+- que `DobackSoft` sea aquí un producto B2B completo
+- que exista una capa 3D interactiva integrada
 
 ---
 
-## Comparación
+## 3. DobackSoft dentro del modo web
 
-### Lo que comparten
+`DobackSoft` aparece en la capa web como vertical demo.
 
-- Concepto: simulación de vida artificial con agentes autónomos
-- Grid 2D, recursos, refugios
-- Agentes con energía, hambre, inventario
+Estado verificable actual:
 
-### Lo que NO comparten
+- `frontend/src/components/DobackSoft.jsx` ofrece tabs de subida, rutas y juego
+- `frontend/src/components/FireSimulator.jsx` puede reproducir datos entregados por el visor
+- `backend/src/routes/dobacksoft.js` mantiene sesiones y rutas en memoria y devuelve `MOCK_ROUTE`
+
+Conclusión:
+
+- **hay base demo real**
+- **no hay evidencia suficiente para tratarlo aquí como MVP completo cerrado**
+
+---
+
+## 4. Comparación práctica
 
 | Aspecto | Python | Fullstack |
 |---------|--------|-----------|
-| Persistencia | SQLite | En memoria |
+| Producto real del repo | Sí | No |
+| Demo visual rápida | No | Sí |
+| Persistencia del mundo | Sí | No en la simulación principal |
 | Modo Sombra | Sí | No |
-| Relaciones sociales | Sí (confianza, miedo) | No |
-| Memoria espacial | Sí | Sí (recuerdos básicos) |
-| Modo competencia | Sí | No |
-| Interfaz | Pygame (ventana) | Web (React) |
-| API | No | REST + WebSocket |
+| Relaciones sociales completas | Sí | No equivalentes |
+| REST + WebSocket | No principal | Sí |
+| DobackSoft demo | No | Sí |
 
 ---
 
-## Cuándo usar cada uno
+## 5. Cuándo usar cada uno
 
-| Objetivo | Usar |
-|----------|------|
-| Desarrollo del motor core, IA, memoria | `python principal.py` |
-| Tests del core, modo sombra, persistencia | `python principal.py` |
-| Demo web, compartir por URL | Fullstack |
-| Integración con APIs, frontend React | Fullstack |
-| Debug interactivo (consola de comandos) | Fullstack + `debug_consola.ps1` |
+| Objetivo | Modo recomendado |
+|----------|------------------|
+| Entender el núcleo real | Python |
+| Probar la parte más sólida | Python |
+| Enseñar una demo rápida en navegador | Fullstack |
+| Explorar la vertical DobackSoft demo | Fullstack |
+| Validar la tesis principal del repositorio | Python |
 
 ---
 
-## Referencias
+## 6. Decisión de foco
 
-- `docs/architecture.md` — Arquitectura del motor Python
-- `docs/ARTIFICIAL_WORD_ENGINE.md` — Motor de decisión e IA
-- `docs/DEBUG_FULLSTACK.md` — Debug del fullstack
-- `AGENTS.md` — Reglas de inicio y tests
+Mientras no exista una integración real entre ambos motores, la documentación debe asumir:
+
+- Python = producto real
+- fullstack = showcase/demo funcional
+- DobackSoft = vertical demo dentro del showcase
+
+La capa de IA local propuesta debe seguir la misma lógica:
+
+- IA local = complemento operativo del laboratorio y del debugging
+- no = prueba de integración completa entre Python, web y DobackSoft real
+
+La tesis 2D/3D debe seguir esta separación:
+
+- 2D = estado, rutas, refugios, lectura sistemica
+- 3D = futura encarnacion visual
+- 3D hoy = roadmap, no evidencia implementada
+
+La decisión futura se documenta en [docs/ESTRATEGIA_PRODUCTO.md](ESTRATEGIA_PRODUCTO.md).
+
+---
+
+## 7. Referencias
+
+- [README.md](../README.md)
+- [docs/DOCUMENTACION_COMPLETA.md](DOCUMENTACION_COMPLETA.md)
+- [docs/ESTRATEGIA_PRODUCTO.md](ESTRATEGIA_PRODUCTO.md)
+- [docs/GOLDEN_PATH.md](GOLDEN_PATH.md)
+- [docs/IA_LOCAL_BASE.md](IA_LOCAL_BASE.md)
+- [docs/IMPLEMENTACION_AI_CORE_LOCAL.md](IMPLEMENTACION_AI_CORE_LOCAL.md)
+- [docs/VISION_CIVILIZACIONES_VIVAS.md](VISION_CIVILIZACIONES_VIVAS.md)
+- [AGENTE_ENTRANTE.md](../AGENTE_ENTRANTE.md)
+
+## 8. Launcher único
+
+`iniciar.ps1` ya puede actuar como `doctor` y `launcher` de varios caminos.
+
+Importante:
+
+- si el entorno lo permite, debe recomendar `python`
+- la ruta `web` sigue siendo showcase funcional
+- la ruta `ai` es opcional y complementaria al backend web

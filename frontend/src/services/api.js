@@ -105,27 +105,32 @@ export const api = {
     }),
   // Refuge Interior
   getFurnitureCatalog: () => fetchApi('/refuge/furniture/catalog'),
-  placeFurniture: (refugeIndex, type, gridX, gridY) =>
+  placeFurniture: (refugeIndex, type, gridX, gridY, refugeId) =>
     fetchApi('/refuge/furniture', {
       method: 'POST',
-      body: JSON.stringify({ refugeIndex, type, gridX, gridY }),
+      body: JSON.stringify({ refugeIndex, refugeId, type, gridX, gridY }),
     }),
-  removeFurniture: (furnitureId) =>
-    fetchApi(`/refuge/furniture/${furnitureId}`, { method: 'DELETE' }),
-  interactFurniture: (refugeIndex, furnitureId) =>
+  removeFurniture: (furnitureId, opts = {}) => {
+    const q = new URLSearchParams();
+    if (opts.refugeIndex != null) q.set('refugeIndex', opts.refugeIndex);
+    if (opts.refugeId != null) q.set('refugeId', opts.refugeId);
+    const suffix = q.toString() ? `?${q.toString()}` : '';
+    return fetchApi(`/refuge/furniture/${furnitureId}${suffix}`, { method: 'DELETE' });
+  },
+  interactFurniture: (refugeIndex, furnitureId, refugeId) =>
     fetchApi('/refuge/interact', {
       method: 'POST',
-      body: JSON.stringify({ refugeIndex, furnitureId }),
+      body: JSON.stringify({ refugeIndex, refugeId, furnitureId }),
     }),
-  adoptPet: (refugeIndex, species) =>
+  adoptPet: (refugeIndex, species, refugeId) =>
     fetchApi('/refuge/pet/adopt', {
       method: 'POST',
-      body: JSON.stringify({ refugeIndex, species: species ?? 'cat' }),
+      body: JSON.stringify({ refugeIndex, refugeId, species: species ?? 'cat' }),
     }),
-  tickPets: (refugeIndex, playerX, playerY) =>
+  tickPets: (refugeIndex, playerX, playerY, refugeId) =>
     fetchApi('/refuge/pet/tick', {
       method: 'POST',
-      body: JSON.stringify({ refugeIndex, playerX, playerY }),
+      body: JSON.stringify({ refugeIndex, refugeId, playerX, playerY }),
     }),
 
   startSimulation: () => fetchApi('/simulation/start', { method: 'POST' }),
@@ -145,6 +150,7 @@ export const api = {
     fetchApi('/hero/mode', { method: 'POST', body: JSON.stringify({ modeId, playerId: getPlayerId() }) }),
   queryHeroAgent: (query, context) =>
     fetchApi('/hero/query', { method: 'POST', body: JSON.stringify({ query, context, playerId: getPlayerId() }) }),
+  getHeroCivilizationSeeds: () => fetchApi('/hero/civilization-seeds'),
   getHeroWorlds: () => fetchApi(`/hero/worlds?playerId=${getPlayerId()}`),
   createHeroWorld: (params) =>
     fetchApi('/hero/worlds', { method: 'POST', body: JSON.stringify(params) }),

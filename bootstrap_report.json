@@ -1,0 +1,42 @@
+﻿{
+    "selectedPath":  null,
+    "checks":  {
+                   "python":  {
+                                  "version":  "Python 3.13.3",
+                                  "available":  true
+                              },
+                   "ollama":  {
+                                  "version":  null,
+                                  "available":  false
+                              },
+                   "files":  {
+                                 "aiRoute":  true,
+                                 "principal":  true,
+                                 "frontendPackage":  true,
+                                 "backendPackage":  true,
+                                 "aiMemory":  true
+                             },
+                   "node":  {
+                                "version":  "v24.11.0",
+                                "available":  true
+                            },
+                   "npm":  {
+                               "version":  "11.6.1",
+                               "available":  true
+                           },
+                   "ports":  {
+                                 "frontend5173Listening":  false,
+                                 "backend3001Listening":  true
+                             }
+               },
+    "generatedAt":  "2026-03-08T10:30:01.7908098+01:00",
+    "artifacts":  {
+                      "nextSteps":  "bootstrap_next_steps.md",
+                      "bootstrapReport":  "bootstrap_report.json"
+                  },
+    "recommendation":  {
+                           "path":  "python",
+                           "reason":  "La parte mas verificable y defendible del repo sigue siendo el motor Python. Usalo primero para ensenar el proyecto sin mezclar demo web ni modulos externos."
+                       },
+    "repo":  "Artificial World"
+}

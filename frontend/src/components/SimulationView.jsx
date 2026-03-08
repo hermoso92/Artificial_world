@@ -4,9 +4,10 @@
  * Uses WebSocket via useRealtimeSimulation for real-time state,
  * plus one-shot HTTP calls after mutations.
  */
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { api, getPlayerId } from '../services/api';
 import { useRealtimeSimulation } from '../hooks/useRealtimeSimulation';
+import { useSimulationData } from '../hooks/useSimulationData';
 import { SimulationCanvas } from './SimulationCanvas';
 import { ControlPanel } from './ControlPanel';
 import { WorldPanel } from './WorldPanel';
@@ -17,126 +18,63 @@ import { LogPanel } from './LogPanel';
 import { AgentDetailPanel } from './AgentDetailPanel';
 import { HeroRefugePanel } from './HeroRefugePanel';
 import { DetectionBanner } from './DetectionBanner';
+import { SimulationViewHeader } from './SimulationView/SimulationViewHeader';
+import { SimulationViewBanners } from './SimulationView/SimulationViewBanners';
 import logger from '../utils/logger';
 
 export function SimulationView({ onBack, onNavigate }) {
-  const [world, setWorld] = useState(null);
-  const [agents, setAgents] = useState([]);
-  const [blueprints, setBlueprints] = useState([]);
-  const [selectedAgentId, setSelectedAgentId] = useState(null);
-  const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [initialLoad, setInitialLoad] = useState(true);
-  const [activeRefugeIndex, setActiveRefugeIndex] = useState(0);
-  const [refuges, setRefuges] = useState([]);
-  const [hero, setHero] = useState(null);
+  const [selectedAgentId, setSelectedAgentId] = useState(null);
+
+  const {
+    world,
+    agents,
+    blueprints,
+    logs,
+    refuges,
+    hero,
+    setHero,
+    activeRefugeIndex,
+    setActiveRefugeIndex,
+    initialLoad,
+    error,
+    setError,
+    setInitialLoad,
+    fetchData,
+  } = useSimulationData();
 
   const { connected, refuge: wsRefuge, tick: wsTick, running: wsRunning } = useRealtimeSimulation();
 
   const effectiveRefuge = wsRefuge ?? world?.refuge;
   const effectiveAgents = effectiveRefuge?.agents ?? agents;
+  const selectedAgent = effectiveAgents.find((a) => a.id === selectedAgentId) || null;
+  const isOwnedRefuge = effectiveRefuge?.ownerId === getPlayerId();
+  const hasPets = (effectiveRefuge?.pets ?? []).length > 0;
+  const furniture = effectiveRefuge?.furniture ?? [];
+  const liveWorld = world ? { ...world, refuge: effectiveRefuge, tick: wsTick ?? world.tick, running: wsRunning ?? world.running } : null;
 
-  const autoSelectedRef = useRef(false);
-
-  const fetchData = useCallback(async () => {
-    try {
-      const [worldData, agentsData, blueprintsData, logsData, refugesData, heroData] = await Promise.all([
-        api.getWorld(),
-        api.getAgents(),
-        api.getBlueprints(),
-        api.getLogs(),
-        api.getRefuges(),
-        api.getHero().catch(() => null),
-      ]);
-      setWorld(worldData ?? null);
-      setAgents(Array.isArray(agentsData) ? agentsData : []);
-      setBlueprints(Array.isArray(blueprintsData) ? blueprintsData : []);
-      setLogs(Array.isArray(logsData) ? logsData : []);
-      const refList = Array.isArray(refugesData) ? refugesData : [];
-      setRefuges(refList);
-      if (heroData) setHero(heroData);
-
-      const pid = getPlayerId();
-
-      // Auto-seleccionar refugio propio, o crearlo si no existe
-      if (!autoSelectedRef.current && pid) {
-        let myIdx = refList.findIndex((r) => r.ownerId === pid);
-        if (myIdx < 0) {
-          try {
-            await api.createRefuge('Mi casa');
-            const freshRefuges = await api.getRefuges();
-            const freshList = Array.isArray(freshRefuges) ? freshRefuges : [];
-            setRefuges(freshList);
-            myIdx = freshList.findIndex((r) => r.ownerId === pid);
-          } catch (err) {
-            logger.warn('Could not auto-create personal refuge', err);
-          }
-        }
-        if (myIdx >= 0) {
-          setActiveRefugeIndex(myIdx);
-          autoSelectedRef.current = true;
-          try { await api.selectRefuge(myIdx); } catch (err) { logger.warn('SimulationView: select refuge failed', err); }
-        } else {
-          setActiveRefugeIndex(worldData?.activeRefugeIndex ?? 0);
-        }
-      } else if (!autoSelectedRef.current) {
-        setActiveRefugeIndex(worldData?.activeRefugeIndex ?? 0);
-      }
-
-      setError(null);
-    } catch (err) {
-      logger.error('Failed to fetch simulation data', err);
-      setError(err.message || 'Error al conectar con el backend');
-      setWorld(null);
-      setAgents([]);
-      setBlueprints([]);
-      setLogs([]);
-    } finally {
-      setInitialLoad(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    let retries = 0;
-    const maxRetries = 3;
-    const retryDelay = 1500;
-
-    const attemptFetch = async () => {
-      if (cancelled) return;
-      try {
-        await api.checkHealth();
-        if (cancelled) return;
-        await fetchData();
-      } catch (err) {
-        if (cancelled) return;
-        if (retries < maxRetries) {
-          retries++;
-          setTimeout(attemptFetch, retryDelay);
-        } else {
-          setError(err.message || 'Error al conectar con el backend');
-          setInitialLoad(false);
-        }
-      }
-    };
-
-    attemptFetch();
-    const timeout = setTimeout(() => {
-      if (!cancelled) setInitialLoad(false);
-    }, 8000);
-    return () => {
-      cancelled = true;
-      clearTimeout(timeout);
-    };
-  }, [fetchData]);
-
-  // Polling fallback when WebSocket disconnected — ensures agents/tick update
+  // Polling fallback when WebSocket disconnected
   useEffect(() => {
     if (connected) return;
     const interval = setInterval(fetchData, 2000);
     return () => clearInterval(interval);
   }, [connected, fetchData]);
+
+  // Pet tick + stat decay — runs every 3s when viewing own refuge
+  useEffect(() => {
+    if (!isOwnedRefuge) return;
+    const interval = setInterval(async () => {
+      try {
+        if (hasPets) {
+          await api.tickPets(activeRefugeIndex, 16, 16, effectiveRefuge?.id);
+        }
+        await fetchData();
+      } catch (err) {
+        logger.warn('SimulationView: pet tick / fetch failed', err);
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [isOwnedRefuge, hasPets, activeRefugeIndex, effectiveRefuge?.id, fetchData]);
 
   const handleStart = async () => {
     setLoading(true);
@@ -217,9 +155,9 @@ export function SimulationView({ onBack, onNavigate }) {
     }
   };
 
-  const handlePlaceFurniture = async (refugeIdx, type, gridX, gridY) => {
+  const handlePlaceFurniture = async (refugeIdx, type, gridX, gridY, refugeId) => {
     try {
-      await api.placeFurniture(refugeIdx, type, gridX, gridY);
+      await api.placeFurniture(refugeIdx, type, gridX, gridY, refugeId);
       await fetchData();
     } catch (err) {
       setError(err.message);
@@ -239,34 +177,35 @@ export function SimulationView({ onBack, onNavigate }) {
 
   const handleAdoptPet = async () => {
     try {
-      await api.adoptPet(activeRefugeIndex, 'cat');
+      await api.adoptPet(activeRefugeIndex, 'cat', effectiveRefuge?.id);
       await fetchData();
     } catch (err) {
       setError(err.message);
     }
   };
 
-  const selectedAgent = effectiveAgents.find((a) => a.id === selectedAgentId) || null;
-  const isOwnedRefuge = effectiveRefuge?.ownerId === getPlayerId();
-  const hasPets = (effectiveRefuge?.pets ?? []).length > 0;
-  const furniture = effectiveRefuge?.furniture ?? [];
-  const liveWorld = world ? { ...world, refuge: effectiveRefuge, tick: wsTick ?? world.tick, running: wsRunning ?? world.running } : null;
+  const handleCreateRefuge = async (name) => {
+    setLoading(true);
+    try {
+      await api.createRefuge(name);
+      await fetchData();
+    } catch (err) { setError(err.message); }
+    finally { setLoading(false); }
+  };
 
-  // Pet tick + stat decay — runs every 3s when viewing own refuge
-  useEffect(() => {
-    if (!isOwnedRefuge) return;
-    const interval = setInterval(async () => {
-      try {
-        if (hasPets) {
-          await api.tickPets(activeRefugeIndex, 16, 16);
-        }
-        await fetchData();
-      } catch (err) {
-        logger.warn('SimulationView: pet tick / fetch failed', err);
-      }
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [isOwnedRefuge, hasPets, activeRefugeIndex, fetchData]);
+  const handleEnterWorld = async (worldData) => {
+    if (worldData?.simulationRefugeIndex == null) return;
+    setLoading(true);
+    try {
+      await api.selectRefuge(worldData.simulationRefugeIndex);
+      setActiveRefugeIndex(worldData.simulationRefugeIndex);
+      await fetchData();
+    } catch (err) {
+      logger.warn('SimulationView: enter world failed', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (initialLoad && !error) {
     return (
@@ -278,74 +217,22 @@ export function SimulationView({ onBack, onNavigate }) {
 
   return (
     <div className="simulation-view">
-      <header className="header">
-        <div className="header-left">
-          <button className="back-btn" onClick={onBack}>← Hub</button>
-        </div>
-        <div className="header-center">
-          <h1>{hero?.name ? `${hero.name} — Tu Mundo` : 'Tu Mundo'}</h1>
-          <p className="subtitle">
-            {hero?.companion?.name
-              ? `${hero.companion.name} te acompaña · ${hero.modes?.find(m => m.id === hero.activeMode)?.label ?? 'Refugio'}`
-              : 'Constrúyelo. Habítalo. Haz que crezca.'}
-          </p>
-        </div>
-        <div className="header-right">
-          {onNavigate && (
-            <button type="button" className="header-link" onClick={() => onNavigate('missioncontrol')}>
-              Observatorio
-            </button>
-          )}
-          <span className={`ws-indicator ${connected ? 'ws-connected' : 'ws-disconnected'}`}>
-            {connected ? '● Live' : '○ Offline'}
-          </span>
-        </div>
-      </header>
-
-      {error && (
-        <div className="error-banner">
-          <span>{error}</span>
-          <button type="button" className="btn btn-inline" onClick={() => { setError(null); setInitialLoad(true); fetchData(); }}>
-            Actualizar
-          </button>
-        </div>
-      )}
+      <SimulationViewHeader hero={hero} connected={connected} onBack={onBack} onNavigate={onNavigate} />
 
       <DetectionBanner wsConnected={connected} onRefresh={fetchData} />
 
-      {isOwnedRefuge && (
-        <div className="home-banner">
-          <div className="home-banner-icon">🏠</div>
-          <div className="home-banner-text">
-            <strong>Estás en tu casa — {effectiveRefuge?.name ?? 'Mi casa'}</strong>
-            <span className="home-banner-hint">
-              Muévete con WASD · Pulsa E para usar muebles · Pulsa "Editar" para decorar
-            </span>
-          </div>
-        </div>
-      )}
-
-      {!isOwnedRefuge && effectiveAgents.length === 0 && !error && (
-        <div className="quick-start-banner">
-          <span>Tu mundo está vacío. </span>
-          <button
-            type="button"
-            className="btn btn-primary btn-inline"
-            onClick={handleQuickStart}
-            disabled={loading}
-          >
-            Empezar rápido — crear especie y traer 5 habitantes
-          </button>
-        </div>
-      )}
-
-      {isOwnedRefuge && furniture.length === 0 && (
-        <div className="home-empty-state" id="home-empty-state">
-          <div className="home-empty-state-arrow" aria-hidden="true">↓</div>
-          <p className="home-empty-state-main">Tu casa está vacía. Pulsa <strong>"Editar"</strong> debajo del mapa para colocar muebles.</p>
-          <p className="home-empty-state-tip">Prueba a poner una <strong>Cama</strong> en el Dormitorio, una <strong>Mesa</strong> en la Cocina o un <strong>Sofá</strong> en el Salón.</p>
-        </div>
-      )}
+      <SimulationViewBanners
+        error={error}
+        setError={setError}
+        setInitialLoad={setInitialLoad}
+        fetchData={fetchData}
+        isOwnedRefuge={isOwnedRefuge}
+        effectiveRefuge={effectiveRefuge}
+        effectiveAgents={effectiveAgents}
+        furniture={furniture}
+        onQuickStart={handleQuickStart}
+        loading={loading}
+      />
 
       <div className="main-layout">
         <aside className="sidebar left">
@@ -357,14 +244,7 @@ export function SimulationView({ onBack, onNavigate }) {
             world={liveWorld}
             refuges={refuges}
             playerId={getPlayerId()}
-            onCreateRefuge={async (name) => {
-              setLoading(true);
-              try {
-                await api.createRefuge(name);
-                await fetchData();
-              } catch (err) { setError(err.message); }
-              finally { setLoading(false); }
-            }}
+            onCreateRefuge={handleCreateRefuge}
             loading={loading}
           />
         </aside>
@@ -389,7 +269,7 @@ export function SimulationView({ onBack, onNavigate }) {
         </main>
 
         <aside className="sidebar right">
-          <HeroRefugePanel heroData={hero} onHeroUpdate={setHero} />
+          <HeroRefugePanel heroData={hero} onHeroUpdate={setHero} onEnterWorld={handleEnterWorld} />
           <AgentDetailPanel selectedAgent={selectedAgent} agents={effectiveAgents} onSelectAgent={(a) => setSelectedAgentId(a?.id ?? null)} />
           <LogPanel logs={logs} />
         </aside>

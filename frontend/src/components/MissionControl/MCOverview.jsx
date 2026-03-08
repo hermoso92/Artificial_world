@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { api, getPlayerId } from '../../services/api.js';
 import { PricingModal } from '../PricingModal.jsx';
-import logger from '../../utils/logger.js';
+import { useMCOverviewActions } from './useMCOverviewActions.js';
 
 export function MCOverview({ onEnterSimulation }) {
   const [data, setData] = useState(null);
@@ -13,11 +13,8 @@ export function MCOverview({ onEnterSimulation }) {
   const [refuges, setRefuges] = useState([]);
   const [selectedRefugeIndex, setSelectedRefugeIndex] = useState(0);
   const [selectedBlueprintId, setSelectedBlueprintId] = useState(null);
-  const [releaseLoading, setReleaseLoading] = useState(false);
   const [releaseCount, setReleaseCount] = useState(5);
-  const [actionFeedback, setActionFeedback] = useState(null);
   const [createRefugeName, setCreateRefugeName] = useState('Mi refugio');
-  const [createRefugeLoading, setCreateRefugeLoading] = useState(false);
   const [pricingOpen, setPricingOpen] = useState(false);
   const [subscription, setSubscription] = useState(null);
 
@@ -36,7 +33,6 @@ export function MCOverview({ onEnterSimulation }) {
         setSelectedBlueprintId(bpList[0].id);
       }
     } catch (err) {
-      logger.warn('MCOverview: failed to fetch', err);
       setError(err.message);
     }
   };
@@ -47,124 +43,31 @@ export function MCOverview({ onEnterSimulation }) {
     return () => clearInterval(interval);
   }, []);
 
-  const handleSelectRefuge = async (index) => {
-    setSelectedRefugeIndex(index);
-    try {
-      await api.selectRefuge(index);
-      setActionFeedback({ type: 'success', msg: `${refuges[index]?.name ?? `Refugio ${index + 1}`} seleccionado` });
-      setTimeout(() => setActionFeedback(null), 2500);
-    } catch (err) {
-      logger.warn('MCOverview: select refuge failed', err);
-      setActionFeedback({ type: 'error', msg: err.message });
-    }
-  };
+  const {
+    releaseLoading,
+    createRefugeLoading,
+    actionFeedback,
+    setActionFeedback,
+    handleSelectRefuge,
+    handleStartSimulation,
+    handlePauseSimulation,
+    handleResetSimulation,
+    handleRelease,
+    handleCreateBlueprint,
+    handleCreateRefuge,
+  } = useMCOverviewActions({
+    selectedRefugeIndex,
+    selectedBlueprintId,
+    blueprints,
+    refuges,
+    releaseCount,
+    refresh,
+  });
 
-  const handleStartSimulation = async () => {
-    try {
-      await api.startSimulation();
-      await refresh();
-      setActionFeedback({ type: 'success', msg: 'Tu mundo cobra vida' });
-      setTimeout(() => setActionFeedback(null), 2500);
-    } catch (err) {
-      logger.warn('MCOverview: start simulation failed', err);
-      setActionFeedback({ type: 'error', msg: err.message });
-    }
-  };
+  if (error) return <div className="mc-empty">Error al cargar estado: {error}</div>;
+  if (!data) return <div className="mc-empty">Cargando...</div>;
 
-  const handlePauseSimulation = async () => {
-    try {
-      await api.pauseSimulation();
-      await refresh();
-      setActionFeedback({ type: 'success', msg: 'Mundo en pausa' });
-      setTimeout(() => setActionFeedback(null), 2500);
-    } catch (err) {
-      logger.warn('MCOverview: pause failed', err);
-      setActionFeedback({ type: 'error', msg: err.message });
-    }
-  };
-
-  const handleResetSimulation = async () => {
-    try {
-      await api.resetSimulation();
-      await refresh();
-      setActionFeedback({ type: 'success', msg: 'Un nuevo comienzo' });
-      setTimeout(() => setActionFeedback(null), 2500);
-    } catch (err) {
-      logger.warn('MCOverview: reset failed', err);
-      setActionFeedback({ type: 'error', msg: err.message });
-    }
-  };
-
-  const handleRelease = async () => {
-    const bpId = selectedBlueprintId ?? blueprints[0]?.id;
-    if (!bpId) return;
-    setReleaseLoading(true);
-    setActionFeedback(null);
-    try {
-      const result = await api.releaseAgents(selectedRefugeIndex, bpId, releaseCount);
-      const added = typeof result === 'object' ? result?.added ?? 0 : result;
-      await refresh();
-      setActionFeedback({ type: 'success', msg: `${added} habitantes llegan a tu mundo` });
-      setTimeout(() => setActionFeedback(null), 2500);
-    } catch (err) {
-      logger.warn('MCOverview: release failed', err);
-      if (err.message?.includes('plan') || err.message?.includes('Mejora') || err.message?.includes('habitantes')) {
-        setActionFeedback({ type: 'limit', msg: err.message });
-      } else {
-        setActionFeedback({ type: 'error', msg: err.message });
-      }
-    } finally {
-      setReleaseLoading(false);
-    }
-  };
-
-  const handleCreateBlueprint = async () => {
-    try {
-      await api.createBlueprint('Nueva especie', { movementSpeed: 1, metabolism: 0.3, gatheringRate: 1.2, reproductionThreshold: 0.8 });
-      await refresh();
-      setActionFeedback({ type: 'success', msg: 'Especie creada' });
-      setTimeout(() => setActionFeedback(null), 2500);
-    } catch (err) {
-      logger.warn('MCOverview: create blueprint failed', err);
-      setActionFeedback({ type: 'error', msg: err.message });
-    }
-  };
-
-  const handleCreateRefuge = async () => {
-    setCreateRefugeLoading(true);
-    setActionFeedback(null);
-    try {
-      const refuge = await api.createRefuge(createRefugeName.trim() || 'Mi refugio');
-      await refresh();
-      setSelectedRefugeIndex(refuges.length);
-      setActionFeedback({ type: 'success', msg: `¡${refuge?.name ?? 'Mi refugio'} está listo! Empieza a habitarlo.` });
-      setTimeout(() => setActionFeedback(null), 3500);
-    } catch (err) {
-      logger.warn('MCOverview: create refuge failed', err);
-      setActionFeedback({ type: 'error', msg: err.message });
-    } finally {
-      setCreateRefugeLoading(false);
-    }
-  };
-
-  if (error) {
-    return (
-      <div className="mc-empty">
-        Error al cargar estado: {error}
-      </div>
-    );
-  }
-
-  if (!data) {
-    return <div className="mc-empty">Cargando...</div>;
-  }
-
-  const formatUptime = (sec) => {
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${m}m ${s}s`;
-  };
-
+  const formatUptime = (sec) => `${Math.floor(sec / 60)}m ${sec % 60}s`;
   const currentBp = blueprints.find((b) => b.id === selectedBlueprintId) ?? blueprints[0];
   const playerId = getPlayerId();
   const myRefugeIndex = refuges.findIndex((r) => r.ownerId === playerId);
@@ -224,7 +127,7 @@ export function MCOverview({ onEnterSimulation }) {
             <button
               type="button"
               className="mc-btn mc-btn-primary"
-              onClick={handleCreateRefuge}
+              onClick={() => handleCreateRefuge(createRefugeName, () => setSelectedRefugeIndex(refuges.length))}
               disabled={createRefugeLoading}
             >
               {createRefugeLoading ? 'Construyendo…' : 'Crear mi refugio'}
@@ -237,7 +140,7 @@ export function MCOverview({ onEnterSimulation }) {
               <button
                 type="button"
                 className={`mc-refuge-btn ${selectedRefugeIndex === i ? 'active' : ''}`}
-                onClick={() => handleSelectRefuge(i)}
+                onClick={() => handleSelectRefuge(i, setSelectedRefugeIndex)}
               >
                 {r.name ?? `Refugio ${i + 1}`}
                 {r.ownerId === playerId && <span className="mc-refuge-badge">🏠 mío</span>}
@@ -247,7 +150,7 @@ export function MCOverview({ onEnterSimulation }) {
                 type="button"
                 className="mc-btn mc-btn-entrar"
                 onClick={async () => {
-                  await handleSelectRefuge(i);
+                  await handleSelectRefuge(i, setSelectedRefugeIndex);
                   onEnterSimulation?.();
                 }}
                 title="Entrar y ver la simulación"

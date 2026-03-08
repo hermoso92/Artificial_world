@@ -2,6 +2,8 @@
 
 > **Objetivo:** Convertir el minijuego Emergencias en una aplicación completa de telemetría y estabilidad: subida de archivos → visualización de rutas → juego de conducción. DobackSoft como creador y visualizador de rutas; Artificial World como plataforma integrada.
 
+**Ownership:** DobackSoft = producto principal. Artificial World = laboratorio. FireSimulator = superficie de demo/entrenamiento. Ver [docs/OWNERSHIP_ESTRATEGICO.md](OWNERSHIP_ESTRATEGICO.md) y [docs/FRONTERA_CONTRATOS.md](FRONTERA_CONTRATOS.md).
+
 **Fecha:** Marzo 2025  
 **Estado:** Diseño — revisar antes de implementar  
 **Referencias:** [AUDITORIA_DOBACKSOFT_ARTIFICIAL_WORLD.md](AUDITORIA_DOBACKSOFT_ARTIFICIAL_WORLD.md), [AUDITORIA_DOBACKV2_PROFUNDA.md](AUDITORIA_DOBACKV2_PROFUNDA.md)

@@ -9,6 +9,7 @@
  */
 import Database from 'better-sqlite3';
 import path from 'path';
+import { mkdirSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import logger from '../utils/logger.js';
 
@@ -17,6 +18,11 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 const DB_PATH = IS_PROD
   ? path.join(__dirname, '../../data/subscriptions.db')
   : path.join(__dirname, '../../../subscriptions.db');
+
+const dbDir = path.dirname(DB_PATH);
+if (!existsSync(dbDir)) {
+  mkdirSync(dbDir, { recursive: true });
+}
 
 const db = new Database(DB_PATH);
 db.pragma('journal_mode = WAL');

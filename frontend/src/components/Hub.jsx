@@ -3,8 +3,10 @@
  * No persigas la IA. Construye un mundo que la necesite.
  */
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { api } from '../services/api';
 import { PricingModal } from './PricingModal';
+import { LanguageSelector } from './LanguageSelector';
 
 const TIER_LABELS = {
   free: 'Explorador',
@@ -12,61 +14,82 @@ const TIER_LABELS = {
   fundador: 'Fundador',
 };
 
-const PILLARS = [
-  {
-    id: 'simulation',
-    icon: '🌍',
-    title: 'Tu Mundo',
-    subtitle: 'Crea. Habita. Expande.',
-    description: 'Construye un refugio, dale vida con habitantes que piensan y sienten, y observa cómo crece hasta convertirse en algo que no esperabas.',
-    features: ['Crea tu refugio', 'Habitantes con memoria', 'De refugio a aldea a ciudad', 'Tu mundo, tus reglas'],
-    color: '#00d4ff',
-    bg: '#001a20',
-    available: true,
-    badge: 'Demo web',
-  },
-  {
-    id: 'minigames',
-    icon: '⚔️',
-    title: 'Arena',
-    subtitle: 'Desafía a tus habitantes',
-    description: 'Reta a otros jugadores o a los habitantes de tu mundo. Ellos aprenden, recuerdan y se adaptan a tu forma de jugar.',
-    features: ['3 en raya contra tu IA', 'Damas (próximamente)', 'Ajedrez (próximamente)', 'Rivales que evolucionan'],
-    color: '#7c3aed',
-    bg: '#0d0520',
-    available: true,
-  },
-  {
-    id: 'dobacksoft',
-    icon: '🚒',
-    title: 'Emergencias',
-    subtitle: 'Protege tu comunidad',
-    description: 'Conduce hasta la emergencia. Tu comunidad depende de ti. Cada decisión importa, cada segundo cuenta.',
-    features: ['Misiones de rescate', 'Tu vehículo, tu ruta', 'Escenarios reales', 'Protege lo que construiste'],
-    color: '#f97316',
-    bg: '#1c0800',
-    available: true,
-    badge: 'Acceso anticipado',
-  },
-  {
-    id: 'missioncontrol',
-    icon: '🛰️',
-    title: 'Observatorio',
-    subtitle: 'Mira tu mundo desde arriba',
-    description: 'Observa en tiempo real cómo viven tus habitantes. Quién prospera, quién lucha, qué pasa cuando no miras.',
-    features: ['Vista en vivo', 'Quién hace qué', 'Eventos del mundo', 'Historia de tu civilización'],
-    color: '#00e676',
-    bg: '#001a0d',
-    available: true,
-  },
-];
-
 export function Hub({ onNavigate }) {
+  const { t } = useTranslation();
   const [hero, setHero] = useState(null);
   const [status, setStatus] = useState(null);
   const [subscription, setSubscription] = useState(null);
   const [pricingOpen, setPricingOpen] = useState(false);
   const [checkoutMsg, setCheckoutMsg] = useState(null);
+
+  const PILLARS = [
+    {
+      id: 'simulation',
+      icon: '🌍',
+      title: t('hub.pillars.simulation_title'),
+      subtitle: t('hub.pillars.simulation_subtitle'),
+      description: t('hub.pillars.simulation_desc'),
+      features: [
+        t('hub.pillars.simulation_f1'),
+        t('hub.pillars.simulation_f2'),
+        t('hub.pillars.simulation_f3'),
+        t('hub.pillars.simulation_f4'),
+      ],
+      color: '#00d4ff',
+      bg: '#001a20',
+      available: true,
+      badge: t('hub.pillars.simulation_badge'),
+    },
+    {
+      id: 'minigames',
+      icon: '⚔️',
+      title: t('hub.pillars.minigames_title'),
+      subtitle: t('hub.pillars.minigames_subtitle'),
+      description: t('hub.pillars.minigames_desc'),
+      features: [
+        t('hub.pillars.minigames_f1'),
+        t('hub.pillars.minigames_f2'),
+        t('hub.pillars.minigames_f3'),
+        t('hub.pillars.minigames_f4'),
+      ],
+      color: '#7c3aed',
+      bg: '#0d0520',
+      available: true,
+    },
+    {
+      id: 'dobacksoft',
+      icon: '🚒',
+      title: t('hub.pillars.dobacksoft_title'),
+      subtitle: t('hub.pillars.dobacksoft_subtitle'),
+      description: t('hub.pillars.dobacksoft_desc'),
+      features: [
+        t('hub.pillars.dobacksoft_f1'),
+        t('hub.pillars.dobacksoft_f2'),
+        t('hub.pillars.dobacksoft_f3'),
+        t('hub.pillars.dobacksoft_f4'),
+      ],
+      color: '#f97316',
+      bg: '#1c0800',
+      available: true,
+      badge: t('hub.pillars.dobacksoft_badge'),
+    },
+    {
+      id: 'missioncontrol',
+      icon: '🛰️',
+      title: t('hub.pillars.missioncontrol_title'),
+      subtitle: t('hub.pillars.missioncontrol_subtitle'),
+      description: t('hub.pillars.missioncontrol_desc'),
+      features: [
+        t('hub.pillars.missioncontrol_f1'),
+        t('hub.pillars.missioncontrol_f2'),
+        t('hub.pillars.missioncontrol_f3'),
+        t('hub.pillars.missioncontrol_f4'),
+      ],
+      color: '#00e676',
+      bg: '#001a0d',
+      available: true,
+    },
+  ];
 
   const fetchAll = () => {
     api.getHero().then(setHero).catch(() => {});
@@ -79,7 +102,7 @@ export function Hub({ onNavigate }) {
     const params = new URLSearchParams(window.location.hash.split('?')[1] ?? '');
     if (params.get('checkout') === 'success') {
       const tier = params.get('tier') ?? 'constructor';
-      setCheckoutMsg(`¡Bienvenido, ${tier === 'fundador' ? 'Fundador' : 'Constructor'}! Tu mundo no tiene límites.`);
+      setCheckoutMsg(tier === 'fundador' ? t('hub.checkout_success_fundador') : t('hub.checkout_success_constructor'));
       window.location.hash = '';
     }
   }, []);
@@ -89,13 +112,15 @@ export function Hub({ onNavigate }) {
   const modeName = hero?.modes?.find((m) => m.id === hero?.activeMode)?.label ?? hero?.activeMode;
 
   return (
-    <div className="hub">
+    <div className="hub" style={{ position: 'relative' }}>
+      <LanguageSelector variant="hub" />
+
       <div className="hub-hero">
-        <p className="hub-manifesto">No persigas la IA. Construye un mundo que la necesite.</p>
+        <p className="hub-manifesto">{t('hub.manifesto')}</p>
         <h1 className="hub-title">
-          <span className="hub-title-accent">Constructor</span> de Mundos
+          <span className="hub-title-accent">{t('hub.title_accent')}</span> {t('hub.title')}
         </h1>
-        <p className="hub-subtitle">Refugiarte. Habitar. Expandir. Pertenecer. Gobernar.</p>
+        <p className="hub-subtitle">{t('hub.subtitle')}</p>
       </div>
 
       {checkoutMsg && (
@@ -108,46 +133,46 @@ export function Hub({ onNavigate }) {
       <div className="hub-personal">
         <div className="hub-personal-greeting">
           {heroName ? (
-            <>Bienvenido, <strong>{heroName}</strong></>
+            <>{t('hub.welcome_prefix', 'Bienvenido, ')} <strong>{heroName}</strong></>
           ) : (
-            <>Tu refugio te espera. Haz clic en <strong>Tu Mundo</strong> abajo para entrar.</>
+            <span dangerouslySetInnerHTML={{ __html: t('hub.no_world') }} />
           )}
         </div>
         {(heroName || worldCount > 0 || status) && (
           <div className="hub-personal-stats">
             <span className="hub-stat">
-              🌍 {worldCount} {worldCount === 1 ? 'mundo' : 'mundos'}
+              {t('hub.stat_worlds', { count: worldCount })}
             </span>
             {modeName && (
               <span className="hub-stat">
-                🔭 Escala: {modeName}
+                {t('hub.stat_scale', { mode: modeName })}
               </span>
             )}
             {status && (
               <span className="hub-stat">
-                👥 {status.agentCount ?? 0} habitantes
+                {t('hub.stat_inhabitants', { count: status.agentCount ?? 0 })}
               </span>
             )}
           </div>
         )}
         <div className="hub-personal-actions">
+          <button
+            className="hub-personal-cta"
+            onClick={() => onNavigate('simulation')}
+          >
+            {t('hub.enter_world')}
+          </button>
+          {subscription && (
             <button
-              className="hub-personal-cta"
-              onClick={() => onNavigate('simulation')}
+              className="hub-plan-btn"
+              onClick={() => setPricingOpen(true)}
             >
-              Entrar en tu mundo →
+              {subscription.tier === 'free'
+                ? t('hub.upgrade_plan')
+                : `✓ ${TIER_LABELS[subscription.tier] ?? subscription.tier}`}
             </button>
-            {subscription && (
-              <button
-                className="hub-plan-btn"
-                onClick={() => setPricingOpen(true)}
-              >
-                {subscription.tier === 'free'
-                  ? '⭐ Mejorar plan'
-                  : `✓ ${TIER_LABELS[subscription.tier] ?? subscription.tier}`}
-              </button>
-            )}
-          </div>
+          )}
+        </div>
       </div>
 
       <div className="hub-grid">
@@ -157,7 +182,7 @@ export function Hub({ onNavigate }) {
             className={`pillar-card ${!pillar.available ? 'pillar-card--disabled' : ''}`}
             style={{ '--pillar-color': pillar.color, '--pillar-bg': pillar.bg }}
             onClick={() => pillar.available && onNavigate(pillar.id)}
-            aria-label={`Ir a ${pillar.title}`}
+            aria-label={`${t('hub.enter_arrow')} ${pillar.title}`}
           >
             {pillar.badge && (
               <span className="pillar-badge">{pillar.badge}</span>
@@ -174,15 +199,16 @@ export function Hub({ onNavigate }) {
               </ul>
             </div>
             {pillar.available && (
-              <div className="pillar-cta">Entrar →</div>
+              <div className="pillar-cta">{t('hub.enter_arrow')}</div>
             )}
           </button>
         ))}
       </div>
 
       <footer className="hub-footer">
-        <span>Constructor de Mundos · Crea tu refugio · Hazlo crecer · Invita a tu gente</span>
-        <a href="#admin" className="hub-admin-link" title="Panel administrador">⚙️ Admin</a>
+        <span>{t('hub.footer')}</span>
+        <a href="#docs" className="hub-admin-link" title="Docs">{t('hub.docs')}</a>
+        <a href="#admin" className="hub-admin-link" title="Admin">{t('hub.admin')}</a>
       </footer>
 
       <PricingModal

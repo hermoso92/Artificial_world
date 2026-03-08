@@ -2,9 +2,10 @@ import { MODE_COLORS, BIOME_OPTIONS } from './constants';
 
 const BIOME_LABELS = Object.fromEntries(BIOME_OPTIONS.map((b) => [b.value, b.label]));
 
-export function WorldDetailModal({ world, onClose }) {
+export function WorldDetailModal({ world, onClose, onEnter }) {
   if (!world) return null;
   const colors = MODE_COLORS[world.scale] ?? MODE_COLORS.mundo;
+  const canEnter = world.simulationRefugeIndex != null;
 
   return (
     <div
@@ -41,24 +42,71 @@ export function WorldDetailModal({ world, onClose }) {
           <h2 id="world-detail-title" style={{ margin: 0, fontSize: '18px', color: colors.accent }}>
             {world.name}
           </h2>
-          <button
-            onClick={onClose}
-            style={{
-              background: 'rgba(255,255,255,0.1)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              color: '#fff',
-              borderRadius: '6px',
-              padding: '4px 10px',
-              cursor: 'pointer',
-              fontSize: '12px',
-            }}
-          >
-            ✕ Cerrar
-          </button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {onEnter && canEnter && (
+              <button
+                onClick={() => { onEnter(world); onClose(); }}
+                style={{
+                  background: `${colors.accent}33`,
+                  border: `1px solid ${colors.accent}66`,
+                  color: colors.accent,
+                  borderRadius: '6px',
+                  padding: '4px 12px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                }}
+              >
+                Entrar →
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              style={{
+                background: 'rgba(255,255,255,0.1)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                color: '#fff',
+                borderRadius: '6px',
+                padding: '4px 10px',
+                cursor: 'pointer',
+                fontSize: '12px',
+              }}
+            >
+              ✕ Cerrar
+            </button>
+          </div>
         </div>
         <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', marginBottom: '12px' }}>
           {world.type} · edad {world.tick}
         </div>
+        {world.civilizationSeed && (
+          <div style={{ marginBottom: '12px' }}>
+            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginBottom: '6px' }}>SEMILLA DE CIVILIZACION</div>
+            <div style={{ fontSize: '12px', color: colors.accent, marginBottom: '4px' }}>{world.civilizationSeed.label}</div>
+            <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)' }}>
+              Valores: {(world.civilizationSeed.values ?? []).join(', ') || 'sin definir'}
+            </div>
+            <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.55)' }}>
+              Tensiones: {(world.civilizationSeed.tensions ?? []).join(', ') || 'sin definir'}
+            </div>
+          </div>
+        )}
+        {world.foundingRefuge && (
+          <div style={{ marginBottom: '12px' }}>
+            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginBottom: '6px' }}>REFUGIO FUNDADOR</div>
+            <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.85)' }}>
+              {world.foundingRefuge.name} · seguridad {world.foundingRefuge.resources?.security ?? 0} · moral {world.foundingRefuge.resources?.morale ?? 0}
+            </div>
+          </div>
+        )}
+        {world.community && (
+          <div style={{ marginBottom: '12px' }}>
+            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginBottom: '6px' }}>COMUNIDAD INICIAL</div>
+            <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.85)' }}>
+              {world.community.name} · cohesion {world.community.cohesion ?? 0}
+            </div>
+          </div>
+        )}
         <div style={{ marginBottom: '12px' }}>
           <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginBottom: '6px' }}>RIQUEZA DEL MUNDO</div>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>

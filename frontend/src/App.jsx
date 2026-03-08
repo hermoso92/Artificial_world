@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Landing } from './components/Landing';
+import { LandingPublic } from './components/LandingPublic';
 import { Hub } from './components/Hub';
 import { SimulationView } from './components/SimulationView';
 import { MinigamesLobby } from './components/MinigamesLobby';
@@ -7,9 +8,10 @@ import { DobackSoft } from './components/DobackSoft';
 import { FireSimulator } from './components/FireSimulator';
 import { MissionControl } from './components/MissionControl';
 import { AdminPanel } from './components/AdminPanel';
+import { Docs } from './components/Docs';
 
 const ONBOARDED_KEY = 'aw_onboarded';
-const VALID_ROUTES = ['landing', 'hub', 'simulation', 'minigames', 'dobacksoft', 'firesimulator', 'missioncontrol', 'admin'];
+const VALID_ROUTES = ['home', 'landing', 'hub', 'simulation', 'minigames', 'dobacksoft', 'firesimulator', 'missioncontrol', 'admin', 'docs'];
 
 function hasOnboarded() {
   return typeof window !== 'undefined' && localStorage.getItem(ONBOARDED_KEY) === '1';
@@ -18,7 +20,8 @@ function hasOnboarded() {
 function getInitialRoute() {
   const hash = window.location.hash.replace('#', '');
   if (VALID_ROUTES.includes(hash)) return hash;
-  return hasOnboarded() ? 'hub' : 'landing';
+  if (hasOnboarded()) return 'hub';
+  return 'home';
 }
 
 export default function App() {
@@ -41,7 +44,21 @@ export default function App() {
     navigate('hub');
   };
 
-  if (route === 'landing' || (!hasOnboarded() && route !== 'admin')) {
+  const handleEnterDirect = () => {
+    localStorage.setItem(ONBOARDED_KEY, '1');
+    navigate('hub');
+  };
+
+  if (route === 'home') {
+    return (
+      <LandingPublic
+        onStartOnboarding={() => navigate('landing')}
+        onEnterDirect={handleEnterDirect}
+      />
+    );
+  }
+
+  if (route === 'landing' || (!hasOnboarded() && route !== 'admin' && route !== 'docs')) {
     return <Landing onEnter={handleOnboardingComplete} />;
   }
 
@@ -51,6 +68,7 @@ export default function App() {
   if (route === 'firesimulator')  return <FireSimulator onBack={() => navigate('dobacksoft')} />;
   if (route === 'missioncontrol') return <MissionControl onBack={() => navigate('hub')} onNavigate={navigate} />;
   if (route === 'admin') return <AdminPanel onBack={() => navigate('hub')} />;
+  if (route === 'docs') return <Docs onBack={() => navigate('hub')} />;
 
   return <Hub onNavigate={navigate} />;
 }

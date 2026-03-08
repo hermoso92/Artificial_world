@@ -1,0 +1,19 @@
+{
+  "session": {
+    "id": "demo-session-001",
+    "source": "dobacksoft-demo",
+    "vehicleId": "demo-firetruck-01",
+    "mode": "demo",
+    "startedAt": "2026-03-08T10:00:00Z",
+    "endedAt": "2026-03-08T10:12:00Z"
+  },
+  "route": [
+    { "lat": 40.4168, "lng": -3.7038, "ts": "2026-03-08T10:00:00Z", "speed": 0 },
+    { "lat": 40.4172, "lng": -3.7031, "ts": "2026-03-08T10:04:00Z", "speed": 28 },
+    { "lat": 40.4184, "lng": -3.7015, "ts": "2026-03-08T10:09:00Z", "speed": 34 }
+  ],
+  "events": [
+    { "type": "rotation_on", "severity": "info", "ts": "2026-03-08T10:03:00Z" },
+    { "type": "roundabout_turn", "severity": "medium", "ts": "2026-03-08T10:08:00Z" }
+  ]
+}

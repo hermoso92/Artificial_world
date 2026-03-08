@@ -1,0 +1,285 @@
+% ============================================================
+%  PORTFOLIO --- Constructor de Mundos con IA
+%  Generado desde Artificial World --- artificial-word repo
+% ============================================================
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[spanish]{babel}
+\usepackage[top=1.8cm,bottom=1.8cm,left=2cm,right=2cm]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[colorlinks=true,linkcolor=teal,urlcolor=teal,pdfborder={0 0 0}]{hyperref}
+% ---- Paleta ----
+\definecolor{accent}{HTML}{0d9488}
+\definecolor{dark}{HTML}{1a202c}
+\definecolor{muted}{HTML}{4a5568}
+\definecolor{light}{HTML}{e2e8f0}
+\definecolor{warn}{HTML}{b45309}
+\definecolor{crit}{HTML}{b91c1c}
+\definecolor{green}{HTML}{065f46}
+
+% ---- Espaciado ----
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\setlength{\columnsep}{1cm}
+
+% ---- Cabecera ----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{muted}Portfolio --- Constructor de Mundos con IA}
+\fancyhead[R]{\small\color{muted}Artificial World \textperiodcentered{} DobackSoft \textperiodcentered{} 2026}
+\fancyfoot[C]{\small\color{muted}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---- Secciones ----
+\titleformat{\section}{\large\bfseries\color{accent}}{}{0em}{}[\vspace{-4pt}\color{accent}\rule{\linewidth}{1.2pt}]
+\titleformat{\subsection}{\normalsize\bfseries\color{dark}}{}{0em}{}
+\titlespacing{\section}{0pt}{12pt}{6pt}
+\titlespacing{\subsection}{0pt}{8pt}{3pt}
+
+% ---- Utilidades ----
+\newcommand{\badge}[2][accent]{%
+  \colorbox{#1!15}{\small\color{#1}\textbf{#2}}%
+}
+\newcommand{\real}{\badge[green]{REAL}}
+\newcommand{\demo}{\badge[warn]{DEMO}}
+\newcommand{\roadmap}{\badge[muted]{ROADMAP}}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% ---- CABECERA PRINCIPAL ----
+\begin{center}
+  {\color{accent}\rule{\linewidth}{2.5pt}}\\[0.6em]
+  {\LARGE\bfseries\color{dark} Constructor de Mundos con Inteligencia Artificial}\\[0.3em]
+  {\large\color{accent} Artificial World \textperiodcentered{} DobackSoft \textperiodcentered{} Infraestructura de Agentes}\\[0.3em]
+  {\small\color{muted}
+    \href{https://github.com}{github.com/artificial-word}
+    \quad\textperiodcentered\quad
+    2026
+    \quad\textperiodcentered\quad
+    \textit{``Pongo la intenci\'on. La IA construye el mundo.''}
+  }\\[0.5em]
+  {\color{accent}\rule{\linewidth}{2.5pt}}
+\end{center}
+
+\vspace{0.3em}
+
+% ============================================================
+\section{Mi forma de pensar}
+% ============================================================
+
+\begin{multicols}{2}
+
+\noindent\colorbox{accent!8}{\parbox{0.44\textwidth}{%
+  \textbf{Principio:} Yo defino la intenci\'on, la arquitectura de
+  decisi\'on y los l\'imites del sistema.
+  La IA documenta, propone, implementa y audita.
+  Yo apruebo. Yo dirijo.
+  \medskip
+
+  No uso la IA para que me escriba frases.\\
+  La uso para que construya infraestructura.
+}}
+
+\columnbreak
+
+\noindent\colorbox{light}{\parbox{0.44\textwidth}{%
+  \raggedright
+  \textbf{En la pr\'actica significa:}
+  \begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=2pt]
+    \item Motor de simulaci\'on 2D con 13 acciones
+    \item Plataforma B2B de telemetr\'ia vehicular
+    \item Sistema de auditor\'ia documental con agentes
+    \item Cr\'onicas generadas autom\'aticamente con \LaTeX{}
+    \item Tests, CI/CD, Docker, reportes PDF
+  \end{itemize}
+}}
+
+\end{multicols}
+
+% ============================================================
+\section{Lo que existe hoy --- Evidencia verificable}
+% ============================================================
+
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{3.8cm} X >{\centering\arraybackslash}p{1.9cm}}
+  \toprule
+  Proyecto & Descripci\'on & Estado \\
+  \midrule
+  Artificial World &
+    Motor Python 2D, 13 acciones, memoria, persistencia SQLite,
+    Modo Sombra, 68+ tests, CI GitHub & \real \\[3pt]
+  DobackSoft StabilSafe V3 &
+    Plataforma B2B multi-tenant estabilidad y telemetr\'ia CAN/GPS
+    vehicular (repo separado) & \real \\[3pt]
+  HeroRefuge &
+    7 semillas de civilizaci\'on, flujo fundador web,
+    compa\~nero IA con Ollama & \demo \\[3pt]
+  FireSimulator &
+    Simulaci\'on de emergencias vehiculares,
+    storytelling, entrenamiento & \demo \\[3pt]
+  Sistema de agentes IA &
+    Auditor\'ia documental, generaci\'on de cr\'onicas,
+    coordinaci\'on Cursor / Claude / GPT & \real \\[3pt]
+  Infraestructura \LaTeX{} &
+    Generaci\'on de PDFs t\'ecnicos y narrativos desde c\'odigo
+    (esta p\'agina es un ejemplo) & \real \\[3pt]
+  Motor creador de mundos &
+    Exporta mundos, semillas, cr\'onicas;
+    reutilizable como SDK & \roadmap \\
+  \bottomrule
+\end{tabularx}
+
+% ============================================================
+\section{Stack y herramientas}
+% ============================================================
+
+\begin{multicols}{3}
+\subsection*{Motor / Backend}
+\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=1pt]
+  \item Python 3.11+ / pygame
+  \item Node.js / Express
+  \item SQLite \textperiodcentered{} PostgreSQL
+  \item WebSocket tiempo real
+  \item Docker / docker-compose
+\end{itemize}
+
+\columnbreak
+\subsection*{Frontend / UI}
+\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=1pt]
+  \item React + Tailwind CSS
+  \item Leaflet + TomTom (mapas)
+  \item Vite \textperiodcentered{} TypeScript
+  \item PDF export 1-clic
+  \item Responsive / dark mode
+\end{itemize}
+
+\columnbreak
+\subsection*{IA / Agentes}
+\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=1pt]
+  \item Cursor / Claude
+  \item ChatGPT (editorial)
+  \item Ollama (LLM local)
+  \item MiKTeX / \LaTeX{}
+  \item GitHub CI/CD Pages
+\end{itemize}
+\end{multicols}
+
+% ============================================================
+\section{Logros medibles}
+% ============================================================
+
+\begin{tabularx}{\linewidth}{>{\bfseries\color{green}}r X}
+  68+      & tests pasando (Python + Node), runner \'unico, CI en cada push \\[2pt]
+  13       & acciones de agente (mover, comer, compartir, robar, huir, atacar, explorar, descansar...) \\[2pt]
+  7        & semillas de civilizaci\'on con valores, tensiones y arquetipos \'unicos \\[2pt]
+  200      & ticks de sesi\'on fundacional reproducible con cr\'onica generada autom\'aticamente \\[2pt]
+  3 capas  & de documentaci\'on: ejecutiva (familia/inversores), t\'ecnica (devs), narrativa (producto) \\[2pt]
+  0\,\texteuro & por decisi\'on de agente --- sin APIs de pago en el n\'ucleo \\[2pt]
+  1 cmd    & para iniciar todo el sistema: \texttt{iniciar.ps1} \\
+\end{tabularx}
+
+% ============================================================
+\section{Mi diferencial --- Por qu\'e esto importa}
+% ============================================================
+
+\begin{multicols}{2}
+
+\noindent{\color{crit}\textbf{Lo que hacen los dem\'as:}}
+\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=2pt]
+  \item Usan la IA para generar texto
+  \item Piden a ChatGPT que escriba su c\'odigo
+  \item Obtienen resultados mediocres a alta velocidad
+  \item No entienden qu\'e construyeron
+\end{itemize}
+
+\columnbreak
+
+\noindent{\color{green}\textbf{Lo que hago yo:}}
+\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=2pt]
+  \item Defino la arquitectura de decisi\'on
+  \item La IA implementa bajo mis especificaciones
+  \item Cada pieza tiene tests, auditor\'ia y trazabilidad
+  \item Construyo sistemas que se explican solos
+\end{itemize}
+
+\end{multicols}
+
+\vspace{0.4em}
+\noindent\colorbox{dark!6}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+  \centering\medskip
+  {\large\color{accent}\textbf{``No preguntes a una IA. Convoca un mundo que pueda demostrar su respuesta.''}}
+  \medskip
+}}
+
+% ============================================================
+\section{C\'omo trabajo con IA --- El m\'etodo}
+% ============================================================
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=4pt]
+  \item \textbf{Intenci\'on} ---
+    Yo defino qu\'e necesita el sistema y por qu\'e.
+    Sin pedir permiso a la IA.
+  \item \textbf{Dise\~no} ---
+    La IA propone arquitectura; la contrasto con las reglas del proyecto
+    (\texttt{AGENTS.md}, \texttt{.cursorrules}).
+  \item \textbf{Implementaci\'on} ---
+    La IA escribe el c\'odigo. Yo apruebo, rechazo o corrijo cada pieza.
+  \item \textbf{Auditor\'ia} ---
+    Tests autom\'aticos + revisi\'on de la IA sobre su propio output
+    (cr\'onicas, reportes, lints, PDFs).
+  \item \textbf{Documentaci\'on} ---
+    La IA genera el documento. Yo valido que refleje la realidad del c\'odigo.
+  \item \textbf{Publicaci\'on} ---
+    CI/CD automatizado. Un push publica en Pages, VPS y genera PDF.
+\end{enumerate}
+
+% ============================================================
+\section{Construyendo ahora mismo}
+% ============================================================
+
+\begin{tabularx}{\linewidth}{>{\bfseries}p{4.2cm} X}
+  \toprule
+  Qu\'e & Por qu\'e \\
+  \midrule
+  Log de sesi\'on + historial &
+    Cada simulaci\'on deja rastro auditable;
+    el sistema recuerda su propia historia \\[3pt]
+  Capturas autom\'aticas &
+    La cr\'onica incluye screenshots del estado
+    del mundo en ticks clave \\[3pt]
+  Panel de juego &
+    Modo Sombra jugable desde web;
+    civilizaciones con persistencia cross-sesi\'on \\[3pt]
+  Agentes de documentaci\'on &
+    Claude + GPT + Cursor coordinados para
+    mantener docs siempre sincronizadas con c\'odigo \\[3pt]
+  Portfolio p\'ublico &
+    Esta p\'agina --- generada desde
+    \texttt{portfolio.tex} en el repo \\
+  \bottomrule
+\end{tabularx}
+
+% ============================================================
+%  PIE
+% ============================================================
+\vfill
+\begin{center}
+  \color{muted}\small\rule{0.6\linewidth}{0.4pt}\\[4pt]
+  Artificial World \textperiodcentered{} DobackSoft \textperiodcentered{} 2026\\
+  \textit{Este documento fue generado por \LaTeX{} desde el repositorio
+  \texttt{artificial-word}.}\\
+  \textit{Es evidencia de lo que digo que hago.}
+\end{center}
+
+\end{document}

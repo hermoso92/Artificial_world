@@ -27,6 +27,7 @@ export function startSimulation() {
 
   if (!tickInterval) {
     tickInterval = setInterval(() => {
+      if (!world.running) return;
       world.tick++;
       const refuge = world.getActiveRefuge();
       const addLog = (msg, type) => world.addLog(msg, type);
@@ -51,6 +52,10 @@ export function startSimulation() {
 export function pauseSimulation() {
   const world = getWorld();
   world.running = false;
+  if (tickInterval) {
+    clearInterval(tickInterval);
+    tickInterval = null;
+  }
   world.addLog('Simulation paused', 'system');
   onSimEvent(world.tick, 'sim_pause', {});
 }

@@ -71,6 +71,26 @@ try {
   await page.screenshot({ path: path.join(outDir, '05-hub-cards.png'), fullPage: true });
   console.log('  ✓ 05-hub-cards.png');
 
+  // 6. Panel Administrador (si existe enlace #admin)
+  try {
+    await page.goto(`${BASE}#admin`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(2000);
+    await page.screenshot({ path: path.join(outDir, '06-admin-panel.png'), fullPage: true });
+    console.log('  ✓ 06-admin-panel.png');
+  } catch {
+    console.log('  ⚠ 06-admin-panel.png omitido (requiere ADMIN_PLAYER_IDS en .env)');
+  }
+
+  // 7. DobackSoft (si existe)
+  try {
+    await page.goto(`${BASE}#dobacksoft`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: path.join(outDir, '07-dobacksoft.png'), fullPage: true });
+    console.log('  ✓ 07-dobacksoft.png');
+  } catch {
+    console.log('  ⚠ 07-dobacksoft.png omitido');
+  }
+
   console.log('\nScreenshots guardados en docs/tutorial/screenshots/');
 } catch (err) {
   console.error('Error:', err.message);

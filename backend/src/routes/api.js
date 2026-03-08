@@ -106,9 +106,19 @@ router.post('/refuge/node', requireBody, asyncHandler((req, res) => {
 router.post('/refuge/select', requireBody, asyncHandler((req, res) => {
   const world = getWorld();
   const { index } = req.body ?? {};
-  const idx = Number(index);
+  const playerId = req.playerId ?? null;
+  let idx = Number(index);
   if (isNaN(idx) || idx < 0 || idx >= world.refuges.length) {
-    throw new ApiError('VALIDATION_ERROR', 'Índice de refugio inválido', 422);
+    // FIX: Si el índice es inválido, intentar resolver por playerId antes de fallar
+    if (playerId) {
+      const byPlayerIdx = world.refuges.findIndex((r) => r.ownerId === playerId);
+      if (byPlayerIdx >= 0) {
+        idx = byPlayerIdx;
+      }
+    }
+    if (isNaN(idx) || idx < 0 || idx >= world.refuges.length) {
+      throw new ApiError('VALIDATION_ERROR', 'Índice de refugio inválido', 422);
+    }
   }
   world.setActiveRefuge(idx);
   res.json({ success: true, data: { activeRefugeIndex: world.activeRefugeIndex } });
@@ -154,9 +164,40 @@ function getOwnedRefuge(req) {
   const body = req.body ?? {};
   const query = req.query ?? {};
   const playerId = req.playerId ?? null;
-  const idx = Number(body.refugeIndex ?? query.refugeIndex ?? world.activeRefugeIndex ?? 0);
-  const refuge = world.refuges[idx];
-  if (!refuge) throw new ApiError('NOT_FOUND', 'Refugio no encontrado', 404);
+
+  let refuge = null;
+  let idx;
+
+  const refugeId = body.refugeId ?? query.refugeId;
+  const refugeIndexRaw = body.refugeIndex ?? query.refugeIndex ?? world.activeRefugeIndex ?? 0;
+
+  if (refugeId != null && refugeId !== '') {
+    const id = Number(refugeId);
+    const foundIdx = world.refuges.findIndex((r) => r.id === id);
+    if (foundIdx >= 0) {
+      idx = foundIdx;
+      refuge = world.refuges[idx];
+    }
+  }
+  if (!refuge) {
+    idx = Number(refugeIndexRaw);
+    refuge = world.refuges[idx];
+  }
+
+  // Si el índice no resuelve un refugio válido, buscar por playerId.
+  // El mundo en memoria se reinicia entre sesiones; el índice del frontend puede quedar desfasado.
+  if ((!refuge || !refuge.ownerId) && playerId) {
+    const byPlayerIdx = world.refuges.findIndex((r) => r.ownerId === playerId);
+    if (byPlayerIdx >= 0) {
+      idx = byPlayerIdx;
+      refuge = world.refuges[idx];
+      world.setActiveRefuge(idx);
+    }
+  }
+
+  if (!refuge) {
+    throw new ApiError('NOT_FOUND', 'Refugio no encontrado', 404);
+  }
   if (!refuge.ownerId) throw new ApiError('FORBIDDEN', 'Este refugio no tiene dueño', 403);
   if (playerId && refuge.ownerId !== playerId) {
     throw new ApiError('FORBIDDEN', 'Este refugio no es tuyo', 403);

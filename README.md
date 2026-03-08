@@ -1,30 +1,54 @@
 # Artificial World
 
-Simulación de vida artificial 2D con agentes autónomos.
+Artificial World es una base para crear **civilizaciones vivas** con memoria, héroes, refugios y comunidades. Proyecto local-first y open source.
 
-La línea de verdad de este repositorio es esta:
+## Tesis principal
+
+**Empieza con un refugio. Elige una semilla. Mira nacer tu civilización.**
+
+- **2D** = verdad sistémica (mapa, rutas, recursos, refugios)
+- **3D** = encarnación futura (roadmap, no implementada hoy)
+
+Lema interno: *No persigas la IA. Construye un mundo que la necesite.*
+
+## La verdad actual del repo
+
+La línea de verdad de este repositorio sigue siendo esta:
 
 - `Artificial World` es, hoy, un **motor principal en Python + pygame**.
 - La web fullstack es una **demo funcional con motor JavaScript propio**, no una interfaz del motor Python.
 - `DobackSoft` dentro de este repo es una **vertical demo**; el producto completo de esa línea no vive aquí.
 
-La tesis de producto más fuerte y defendible desde este repo es:
+La nueva narrativa del proyecto no sustituye esta base. La reorganiza y la proyecta hacia una categoría más ambiciosa sin confundir presente con visión.
 
-- `Artificial World` puede evolucionar hacia un **sistema de civilizaciones vivas con refugios, heroes y memoria**
-- la capa **2D** debe seguir siendo la verdad estrategica del sistema
-- la capa **3D** es, por ahora, solo una direccion de encarnacion futura; no existe runtime 3D verificable hoy
+## Ownership estratégico
 
-## Qué es
+| Marca | Rol |
+|-------|-----|
+| **DobackSoft** | Producto principal / empresa (repo `dobackv2`) |
+| **Artificial World** | Laboratorio local, auditable y open source |
+| **Juego / FireSimulator** | Superficie de demo y entrenamiento, no núcleo de negocio |
 
-`Artificial World` modela entidades que perciben, recuerdan, puntúan acciones y actúan dentro de un mundo persistente.
+Documentos maestros: [docs/OWNERSHIP_ESTRATEGICO.md](docs/OWNERSHIP_ESTRATEGICO.md), [docs/SUPERFICIE_JUEGO.md](docs/SUPERFICIE_JUEGO.md)
+
+## Qué es hoy
+
+`Artificial World` modela entidades que perciben, recuerdan, puntúan acciones y actúan dentro de un mundo persistente. Esa base técnica es el cimiento desde el que ahora se plantea una evolución hacia sistemas locales de comprensión, comparación y auditoría.
 
 La parte más verificable del proyecto está en el motor Python:
 
 - 13 tipos de acción en `tipos/enums.py`
-- memoria espacial/social en `systems/memory/memoria_entidad.py`
+- memoria espacial y social en `systems/memory/memoria_entidad.py`
 - persistencia SQLite en `sistemas/sistema_persistencia.py`
 - Modo Sombra en `sistemas/gestor_modo_sombra.py`
 - runner de pruebas en `pruebas/run_tests_produccion.py`
+
+## Qué puede llegar a ser
+
+- **Motor creador de mundos** compacto y reutilizable
+- Civilizaciones con historia emergente, memoria y comunidad
+- Puente opcional entre motor Python y capa web
+- Análisis de proyectos y auditoría (visión futura)
 
 ## Qué incluye este repo
 
@@ -34,6 +58,7 @@ La parte más verificable del proyecto está en el motor Python:
 | Web fullstack (`scripts/iniciar_fullstack.ps1`) | Demo funcional | Motor JavaScript independiente con REST + WebSocket |
 | DobackSoft (`frontend/src/components/DobackSoft.jsx`) | Demo vertical | Landing, cupón, visor y ruta demo; no producto B2B completo |
 | HeroRefuge | Mixto | Módulo web con persistencia parcial, refugios jugables 2D, companion IA y mundos ligeros |
+| IA local base | Real pero acotada | Servicios de chat, resumen, análisis de fallos y memoria documental |
 
 ## IA local y automatización
 
@@ -50,40 +75,28 @@ Documentación asociada:
 - [docs/IMPLEMENTACION_AI_CORE_LOCAL.md](docs/IMPLEMENTACION_AI_CORE_LOCAL.md)
 - [docs/IA_LOCAL_BASE.md](docs/IA_LOCAL_BASE.md)
 
-## Qué existe hoy
+## Realidad, demo y visión
+
+### Real hoy
 
 - Un motor Python ejecutable localmente con persistencia en `mundo_artificial.db`
-- Un modo web que arranca backend `3001` + frontend `5173`
-- Un flujo web fundacional: elegir semilla, crear heroe, crear refugio y crear un primer mundo ligero
 - Un runner de producción con **11 suites** en `pruebas/run_tests_produccion.py`
 - Crónica fundacional headless: `python cronica_fundacional.py` o `python principal.py --cronica`
-- Workflows CI en `.github/workflows/ci-completo.yml` y `.github/workflows/pipeline.yml`
+- Base documental extensa y una primera capa de IA local utilitaria
 
-## Qué es demo
+### Demo hoy
 
 - La simulación web usa un motor JavaScript distinto al motor Python
 - `DobackSoft` en este repo usa almacenamiento en memoria y rutas mock en `backend/src/routes/dobacksoft.js`
 - El modo “ruta real” del `FireSimulator` depende de datos entregados por el visor; no valida por sí solo una integración real con telemetría externa
-- No hay evidencia de runtime 3D interactivo en frontend o backend
 
-## Qué está en otro repositorio
+### Visión defendible
 
-- El `DobackSoft` comercial completo o `StabilSafe V3` no está implementado aquí como producto cerrado
-- Este repo solo contiene una vertical demo relacionada con esa idea
+- Convertir Artificial World en una infraestructura local para comprender proyectos reales con IA coordinada y trazable
+- Mantener la filosofía local-first, open source y auditable como rasgo central
+- Hacer que la narrativa, el producto y la arquitectura dependan de evidencia y no de promesas sueltas
 
 ## Qué puede probar alguien hoy en 3 minutos
-
-### Vista rápida de la demo web
-
-```powershell
-.\scripts\iniciar_fullstack.ps1
-```
-
-Resultado esperado:
-
-- se abre `http://localhost:5173`
-- puedes navegar el hub y ver la demo web
-- esto demuestra la **capa demo web**, no el motor principal Python
 
 ### Golden path recomendado
 
@@ -98,7 +111,19 @@ python principal.py
 
 Eso demuestra el motor principal: simulación, persistencia, Modo Sombra y flujo core.
 
-### Crónica fundacional (headless reproducible)
+### Vista rápida de la demo web
+
+```powershell
+.\scripts\iniciar_fullstack.ps1
+```
+
+Resultado esperado:
+
+- se abre `http://localhost:5173`
+- puedes navegar el hub y ver la demo web
+- esto demuestra la **capa demo web**, no el motor principal Python
+
+### Crónica fundacional
 
 ```powershell
 python cronica_fundacional.py --seed 42 --ticks 200
@@ -142,12 +167,13 @@ python principal.py --web
 
 El script existe en el repo. La disponibilidad del binario final depende de ejecutarlo localmente.
 
-## Evidencias verificables
+### Auditoría Chess (agentes IA independientes)
 
-- `tipos/enums.py` enumera **13** tipos de acción
-- `pruebas/run_tests_produccion.py` ejecuta **11 suites**
-- `backend/src/realtime/websocket.js` expone `/ws` para la demo web
-- `backend/src/routes/dobacksoft.js` deja explícito que sesiones y rutas son mock
+```powershell
+.\scripts\run_chess_audit.ps1
+```
+
+Ejecuta 6 agentes Docker que auditan documentación, backend, frontend, BBDD, tests y marketing. Salida: `REPORTE_CHESS_1.md`. Ver [docs/SISTEMA_CHESS.md](docs/SISTEMA_CHESS.md).
 
 ## Qué no afirmar con este repo
 
@@ -159,22 +185,39 @@ No conviene presentar como hecho, sin más evidencia, lo siguiente:
 - producto `enterprise`
 - DobackSoft completo en este mismo repo
 - robustez total o escalado masivo
+- comprensión perfecta de cualquier repositorio
+- coordinación multiagente madura de extremo a extremo
 
 Si algo de eso se quiere defender, debe apoyarse en benchmarks, pruebas o integración real versionada.
+
+## Documentos fundacionales de esta nueva etapa
+
+- [docs/DOCUMENTO_UNICO_1_PORCIENTO.md](docs/DOCUMENTO_UNICO_1_PORCIENTO.md) — Documento único para el 1%: auditoría completa, precios (9.99 vs 99.99), comparativa agentes IA, definición del sistema
+- [docs/PITCH_1_PORCIENTO.md](docs/PITCH_1_PORCIENTO.md) — Resumen ejecutivo para pitch final
+- [docs/OWNERSHIP_ESTRATEGICO.md](docs/OWNERSHIP_ESTRATEGICO.md) — DobackSoft = producto; Artificial World = laboratorio; juego = demo
+- [docs/FRONTERA_CONTRATOS.md](docs/FRONTERA_CONTRATOS.md) — Contratos versionados (session, route, event, report)
+- [docs/NARRATIVA_MAESTRA.md](docs/NARRATIVA_MAESTRA.md)
+- [docs/ARQUITECTURA_CONCEPTUAL.md](docs/ARQUITECTURA_CONCEPTUAL.md)
+- [docs/PRINCIPIOS_EDITORIALES.md](docs/PRINCIPIOS_EDITORIALES.md)
+- [docs/ROADMAP_BASE.md](docs/ROADMAP_BASE.md)
+- [docs/DOCUMENTO_FINAL.md](docs/DOCUMENTO_FINAL.md) — **Documento definitivo**
+- [docs/ARTIFICIAL_WORD_CRONOGRAMA.md](docs/ARTIFICIAL_WORD_CRONOGRAMA.md) — Cronograma real, GitHub, motor creador de mundos
+- [docs/MODO_FUNDADOR.md](docs/MODO_FUNDADOR.md)
+- [docs/MANIFIESTO.md](docs/MANIFIESTO.md)
 
 ## Documentación por audiencia
 
 - Técnica: [docs/ESENCIAL.md](docs/ESENCIAL.md), [AGENTE_ENTRANTE.md](AGENTE_ENTRANTE.md)
 - Producto / dirección: [docs/DOCUMENTACION_COMPLETA.md](docs/DOCUMENTACION_COMPLETA.md)
-- Visión de producto: [docs/VISION_CIVILIZACIONES_VIVAS.md](docs/VISION_CIVILIZACIONES_VIVAS.md)
-- Inversor / partner: [docs/PAQUETE_RELATO/DOCUMENTO_2_BRIEF_INVERSION.md](docs/PAQUETE_RELATO/DOCUMENTO_2_BRIEF_INVERSION.md)
+- Estrategia: [docs/ESTRATEGIA_PRODUCTO.md](docs/ESTRATEGIA_PRODUCTO.md)
+- Visión previa: [docs/VISION_CIVILIZACIONES_VIVAS.md](docs/VISION_CIVILIZACIONES_VIVAS.md)
+- Relato ampliado: [docs/PAQUETE_RELATO/NARRATIVA_MAESTRA.md](docs/PAQUETE_RELATO/NARRATIVA_MAESTRA.md)
 - Exploración general: [docs/CONOCE_ARTIFICIAL_WORLD.md](docs/CONOCE_ARTIFICIAL_WORLD.md)
 - Ruta recomendada de prueba: [docs/GOLDEN_PATH.md](docs/GOLDEN_PATH.md)
 - IA local y automatización: [docs/IA_LOCAL_BASE.md](docs/IA_LOCAL_BASE.md)
+- Auditoría Chess (agentes Docker): [docs/SISTEMA_CHESS.md](docs/SISTEMA_CHESS.md)
+- Plan de acción: [docs/PLAN_ACCION.md](docs/PLAN_ACCION.md)
 
-## Documentación adicional
+## Regla editorial central
 
-- [docs/MODOS_EJECUCION.md](docs/MODOS_EJECUCION.md) — diferencia entre Python y fullstack
-- [docs/ESTRATEGIA_PRODUCTO.md](docs/ESTRATEGIA_PRODUCTO.md) — decisión de foco del repo
-- [docs/tutorial/TUTORIAL.md](docs/tutorial/TUTORIAL.md) — recorrido visual de la demo web
-- [docs/INFOGRAFIA_ARTIFICIAL_WORLD.md](docs/INFOGRAFIA_ARTIFICIAL_WORLD.md) — versión divulgativa
+Artificial World puede hablar en grande, pero no puede prometer por encima de su evidencia. La ambición es obligatoria. La confusión no.

@@ -107,8 +107,10 @@ Actualmente hay un único mundo por sesión. Las zonas y conexiones entre refugi
 
 ## Estructura de carpetas
 
+**Relación core/ vs mundo/entidades/:** El código fuente vive en `core/` (world, shelter, entity, simulation). Las carpetas `mundo/`, `entidades/` son **reexportaciones** para compatibilidad con imports existentes. Ejemplo: `from mundo.celda import Celda` resuelve a `core.world.celda`.
+
 ```
-core/           # Núcleo del dominio
+core/           # Núcleo del dominio (fuente de verdad)
   world/        # Mapa, celdas, recursos, zonas
   shelter/      # Refugio
   entity/       # Entidades y fábrica

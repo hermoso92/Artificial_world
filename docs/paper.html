@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artificial World — Paper Fundacional 2026</title>
+<meta name="description" content="Arquitectura de un Motor de Civilizaciones Emergentes con Agentes Autónomos Basados en Utilidad, Memoria Persistente y Auditoría Trazable.">
+<meta property="og:title" content="Artificial World — Paper Fundacional 2026">
+<meta property="og:description" content="Motor de simulación 2D con agentes autónomos, función de utilidad multidimensional y auditoría trazable.">
+<meta property="og:type" content="article">
+<style>
+/* ── TOKENS ───────────────────────────────────────────── */
+:root{
+  --bg:#0a0b0d; --bg2:#12141a; --bg3:#181b22;
+  --text:#e8eaed; --muted:#8b8f98;
+  --accent:#00d4ff; --accent2:rgba(0,212,255,.12);
+  --green:#00e676; --green2:rgba(0,230,118,.13);
+  --warn:#ffb74d;  --warn2:rgba(255,183,77,.13);
+  --red:#ff5252;
+  --border:rgba(255,255,255,.07);
+  --code-bg:#0d1117; --code-text:#c9d1d9;
+  --r:8px; --font:'Segoe UI',system-ui,sans-serif;
+  --serif:'Georgia','Times New Roman',serif;
+  --nav-w:260px;
+}
+[data-theme="light"]{
+  --bg:#f8fafc; --bg2:#fff; --bg3:#f1f5f9;
+  --text:#1a202c; --muted:#4a5568;
+  --accent:#0d9488; --accent2:rgba(13,148,136,.1);
+  --green:#065f46; --green2:rgba(6,95,70,.1);
+  --border:#e2e8f0;
+  --code-bg:#1e293b; --code-text:#e2e8f0;
+}
+
+/* ── RESET ────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.7;font-size:15px;min-height:100vh}
+
+/* ── LAYOUT ───────────────────────────────────────────── */
+.layout{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ──────────────────────────────────────────── */
+.sidebar{
+  width:var(--nav-w);min-width:var(--nav-w);
+  background:var(--bg2);border-right:1px solid var(--border);
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  padding:24px 0 40px;
+  display:flex;flex-direction:column;gap:0;
+  scrollbar-width:thin;
+}
+.sidebar-brand{
+  padding:0 20px 20px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:12px;
+}
+.sidebar-logo{
+  display:flex;align-items:center;gap:8px;
+  font-weight:800;font-size:.85rem;letter-spacing:-.01em;
+  color:var(--text);text-decoration:none;
+}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);flex-shrink:0}
+.sidebar-meta{font-size:.7rem;color:var(--muted);margin-top:6px;line-height:1.5}
+
+.nav-group{margin-bottom:4px}
+.nav-group-label{
+  font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);padding:8px 20px 4px;
+}
+.nav-link{
+  display:block;padding:6px 20px;font-size:.8rem;color:var(--muted);
+  text-decoration:none;border-left:2px solid transparent;
+  transition:all .15s;line-height:1.4;
+}
+.nav-link:hover{color:var(--text);background:var(--accent2)}
+.nav-link.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent2)}
+.nav-sub{padding-left:32px;font-size:.75rem}
+
+.sidebar-footer{
+  margin-top:auto;padding:16px 20px 0;
+  border-top:1px solid var(--border);
+}
+.theme-btn{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--muted);font-size:.75rem;padding:6px 12px;
+  border-radius:var(--r);cursor:pointer;transition:.15s;width:100%;
+}
+.theme-btn:hover{color:var(--text);border-color:var(--accent)}
+
+/* ── MAIN ─────────────────────────────────────────────── */
+.main{flex:1;max-width:820px;margin:0 auto;padding:48px 48px 80px}
+
+/* ── PAPER HEADER ─────────────────────────────────────── */
+.paper-header{
+  border:1px solid var(--border);border-radius:var(--r);
+  padding:32px 36px;margin-bottom:40px;
+  background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);
+  position:relative;overflow:hidden;
+}
+.paper-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 80% 40%,rgba(0,212,255,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.paper-badge{
+  display:inline-block;background:var(--accent2);border:1px solid rgba(0,212,255,.25);
+  color:var(--accent);font-size:.65rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;padding:.2rem .8rem;border-radius:100px;margin-bottom:16px;
+}
+.paper-title{
+  font-size:1.55rem;font-weight:800;line-height:1.2;letter-spacing:-.03em;
+  color:var(--text);margin-bottom:16px;
+}
+.paper-title .hi{color:var(--accent)}
+.paper-meta{
+  display:flex;flex-wrap:wrap;gap:16px;margin-bottom:20px;
+}
+.meta-item{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+.meta-item code{background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:.72rem;color:var(--accent)}
+.paper-keywords{
+  display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;
+}
+.kw{
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--muted);font-size:.68rem;padding:3px 9px;border-radius:100px;
+}
+
+/* ── ABSTRACT ─────────────────────────────────────────── */
+.abstract-box{
+  background:var(--accent2);border:1px solid rgba(0,212,255,.2);
+  border-radius:var(--r);padding:20px 24px;margin-bottom:40px;
+}
+.abstract-box h3{
+  font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:10px;
+}
+.abstract-box p{font-size:.88rem;color:var(--text);line-height:1.8;font-family:var(--serif)}
+
+/* ── SECTIONS ─────────────────────────────────────────── */
+.section{margin-bottom:56px;scroll-margin-top:24px}
+h2.sec-title{
+  font-size:1.2rem;font-weight:800;letter-spacing:-.02em;
+  color:var(--text);margin-bottom:20px;padding-bottom:10px;
+  border-bottom:2px solid var(--accent);display:flex;align-items:center;gap:10px;
+}
+h2.sec-title .sec-num{
+  font-size:.7rem;background:var(--accent);color:#000;
+  padding:2px 8px;border-radius:4px;font-weight:700;flex-shrink:0;
+}
+h3.sub-title{
+  font-size:1rem;font-weight:700;color:var(--text);
+  margin:24px 0 12px;padding-left:12px;
+  border-left:3px solid var(--accent);
+}
+h4{font-size:.9rem;font-weight:700;color:var(--muted);margin:16px 0 8px}
+
+p{margin-bottom:12px;line-height:1.8}
+p.serif{font-family:var(--serif);font-size:.92rem}
+
+/* ── TABLES ───────────────────────────────────────────── */
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--r);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th{
+  background:var(--bg3);padding:9px 14px;text-align:left;
+  font-weight:700;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--muted);border-bottom:1px solid var(--border);
+}
+td{padding:8px 14px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+
+/* ── CODE ─────────────────────────────────────────────── */
+pre{
+  background:var(--code-bg);color:var(--code-text);
+  padding:16px 20px;border-radius:var(--r);overflow-x:auto;
+  font-size:.78rem;line-height:1.65;margin:14px 0;
+  border:1px solid rgba(255,255,255,.08);
+}
+code{
+  background:var(--bg3);color:var(--accent);
+  padding:2px 6px;border-radius:4px;font-size:.8em;
+}
+pre code{background:none;color:inherit;padding:0}
+
+/* ── BLOCKQUOTE ───────────────────────────────────────── */
+blockquote{
+  border-left:3px solid var(--accent);
+  padding:12px 20px;margin:16px 0;
+  background:var(--accent2);border-radius:0 var(--r) var(--r) 0;
+  font-style:italic;color:var(--muted);
+}
+
+/* ── LISTS ────────────────────────────────────────────── */
+ul,ol{margin:8px 0 16px 24px}
+li{margin-bottom:6px;line-height:1.7}
+li strong{color:var(--text)}
+
+/* ── BADGES ───────────────────────────────────────────── */
+.badge{
+  display:inline-block;font-size:.65rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:2px 8px;border-radius:100px;
+}
+.b-real   {background:var(--green2);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.b-demo   {background:var(--accent2);color:var(--accent);border:1px solid rgba(0,212,255,.25)}
+.b-parcial{background:var(--warn2);color:var(--warn);border:1px solid rgba(255,183,77,.3)}
+.b-roadmap{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border)}
+
+/* ── CALLOUT ──────────────────────────────────────────── */
+.callout{
+  border:1px solid var(--border);border-radius:var(--r);
+  padding:16px 20px;margin:16px 0;background:var(--bg3);
+}
+.callout.warn{border-color:rgba(255,183,77,.3);background:var(--warn2)}
+.callout.info{border-color:rgba(0,212,255,.2);background:var(--accent2)}
+.callout.success{border-color:rgba(0,230,118,.25);background:var(--green2)}
+.callout-title{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.callout.warn   .callout-title{color:var(--warn)}
+.callout.info   .callout-title{color:var(--accent)}
+.callout.success .callout-title{color:var(--green)}
+
+/* ── FORMULA ──────────────────────────────────────────── */
+.formula{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px 24px;margin:16px 0;
+  text-align:center;font-family:var(--serif);font-size:1rem;
+  color:var(--text);
+}
+
+/* ── STATS INLINE ─────────────────────────────────────── */
+.stats-row{
+  display:flex;gap:0;border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;margin:16px 0;
+}
+.stat-item{
+  flex:1;padding:14px 16px;background:var(--bg2);
+  border-right:1px solid var(--border);text-align:center;
+}
+.stat-item:last-child{border-right:none}
+.stat-val{font-size:1.6rem;font-weight:800;color:var(--accent);letter-spacing:-.04em;line-height:1}
+.stat-lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
+
+/* ── REFERENCES ───────────────────────────────────────── */
+.ref-list{list-style:none;margin:0}
+.ref-list li{
+  padding:8px 0 8px 16px;border-bottom:1px solid var(--border);
+  font-size:.82rem;color:var(--muted);position:relative;
+}
+.ref-list li::before{
+  content:'';position:absolute;left:0;top:50%;
+  width:4px;height:4px;border-radius:50%;
+  background:var(--accent);transform:translateY(-50%);
+}
+.ref-list li:last-child{border-bottom:none}
+em{color:var(--text)}
+
+/* ── APPENDIX ─────────────────────────────────────────── */
+.appendix-label{
+  font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:8px;
+}
+
+/* ── FOOTER ───────────────────────────────────────────── */
+.paper-footer{
+  border-top:1px solid var(--border);padding-top:24px;margin-top:40px;
+  text-align:center;
+}
+.paper-footer p{font-size:.78rem;color:var(--muted);line-height:1.8}
+.paper-footer strong{color:var(--text)}
+
+/* ── SCROLL PROGRESS ──────────────────────────────────── */
+#progress{
+  position:fixed;top:0;left:0;height:2px;width:0%;
+  background:var(--accent);z-index:999;transition:width .1s linear;
+}
+
+/* ── MOBILE ───────────────────────────────────────────── */
+@media(max-width:900px){
+  .sidebar{display:none}
+  .main{padding:24px 20px 60px}
+  .paper-title{font-size:1.2rem}
+  .stats-row{flex-wrap:wrap}
+  .stat-item{min-width:50%}
+}
+hr{border:none;border-top:1px solid var(--border);margin:32px 0}
+strong{font-weight:700}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<div class="layout">
+
+<!-- ── SIDEBAR ── -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a class="sidebar-logo" href="#">
+      <span class="dot"></span>
+      Artificial World
+    </a>
+    <div class="sidebar-meta">
+      Paper Fundacional · 2026<br>
+      Cosigein SL · v1.0
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Inicio</div>
+    <a class="nav-link active" href="#abstract">Abstract</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Cuerpo</div>
+    <a class="nav-link" href="#s1">1. Introducción</a>
+    <a class="nav-link nav-sub" href="#s1-1">1.1 El problema</a>
+    <a class="nav-link nav-sub" href="#s1-2">1.2 Motivación</a>
+    <a class="nav-link nav-sub" href="#s1-3">1.3 Contribuciones</a>
+    <a class="nav-link" href="#s2">2. Trabajo Relacionado</a>
+    <a class="nav-link" href="#s3">3. Arquitectura</a>
+    <a class="nav-link nav-sub" href="#s3-1">3.1 Capas del sistema</a>
+    <a class="nav-link nav-sub" href="#s3-2">3.2 Ciclo de tick</a>
+    <a class="nav-link nav-sub" href="#s3-3">3.3 Función de utilidad</a>
+    <a class="nav-link nav-sub" href="#s3-4">3.4 Rasgos</a>
+    <a class="nav-link nav-sub" href="#s3-5">3.5 Memoria</a>
+    <a class="nav-link nav-sub" href="#s3-6">3.6 Modo Sombra</a>
+    <a class="nav-link nav-sub" href="#s3-7">3.7 Watchdog</a>
+    <a class="nav-link" href="#s4">4. Capa Web</a>
+    <a class="nav-link" href="#s5">5. Sistema Chess</a>
+    <a class="nav-link" href="#s6">6. Experimento Canónico</a>
+    <a class="nav-link" href="#s7">7. Comportamientos Emergentes</a>
+    <a class="nav-link" href="#s8">8. Trazabilidad Radical</a>
+    <a class="nav-link" href="#s9">9. Modelo Conceptual</a>
+    <a class="nav-link" href="#s10">10. Limitaciones</a>
+    <a class="nav-link" href="#s11">11. Discusión</a>
+    <a class="nav-link" href="#s12">12. Conclusiones</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Final</div>
+    <a class="nav-link" href="#referencias">Referencias</a>
+    <a class="nav-link" href="#apendice-a">Apéndice A</a>
+    <a class="nav-link" href="#apendice-b">Apéndice B</a>
+    <a class="nav-link" href="#apendice-c">Apéndice C</a>
+  </div>
+
+  <div class="sidebar-footer">
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">
+      <span id="themeIcon">☀️</span> Modo claro
+    </button>
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+  <!-- PAPER HEADER -->
+  <div class="paper-header">
+    <div class="paper-badge">Paper Fundacional · Vida Artificial · 2026</div>
+    <h1 class="paper-title">
+      Artificial World: Arquitectura de un Motor de <span class="hi">Civilizaciones Emergentes</span> con Agentes Autónomos Basados en Utilidad, Memoria Persistente y Auditoría Trazable
+    </h1>
+    <div class="paper-meta">
+      <span class="meta-item">👤 Cosigein SL</span>
+      <span class="meta-item">📅 2026-03-08</span>
+      <span class="meta-item">🗃️ <code>artificial-word</code></span>
+      <span class="meta-item">📄 v1.0 — Paper fundacional</span>
+    </div>
+    <div class="paper-keywords">
+      <span class="kw">vida artificial</span>
+      <span class="kw">agentes autónomos</span>
+      <span class="kw">función de utilidad</span>
+      <span class="kw">civilizaciones emergentes</span>
+      <span class="kw">simulación 2D</span>
+      <span class="kw">memoria social</span>
+      <span class="kw">modo sombra</span>
+      <span class="kw">auditoría trazable</span>
+      <span class="kw">comportamiento emergente</span>
+    </div>
+  </div>
+
+  <!-- ABSTRACT -->
+  <div class="abstract-box" id="abstract">
+    <h3>Abstract</h3>
+    <p>Presentamos <strong>Artificial World</strong>, un sistema de simulación de vida artificial 2D orientado a la generación de civilizaciones emergentes con memoria persistente, héroes fundadores, refugios como unidades de organización social, y comunidades con tensiones internas. El sistema implementa dos capas técnicas diferenciadas: un motor Python con función de utilidad multidimensional (13 tipos de acción, 9 modificadores, ruido determinista por semilla), y una capa web fullstack en Node.js/React con siete arquetipos de civilización (<em>CivilizationSeed</em>) y un sistema de refugios persistentes (<em>HeroRefuge</em>). Ambas capas son deliberadamente independientes, compartiendo un modelo conceptual común pero no una integración técnica en tiempo real — decisión arquitectónica explícita documentada y defendida. El sistema incorpora además un mecanismo de auditoría independiente con agentes dockerizados en red aislada (<em>Sistema Chess</em>), un modo de simulación especular sin efectos secundarios (<em>Modo Sombra</em>), un sistema de vigilancia activa (<em>Watchdog</em>) y una infraestructura documental que genera crónicas verificables en JSON, Markdown y PDF desde el propio código. Los resultados de la sesión canónica (semilla 42, 200 ticks, 8 agentes) revelan comportamientos emergentes no programados: cohesión grupal bajo escasez severa (62.4% de acciones <code>SEGUIR</code>), agotamiento zonal en el cuadrante oeste, y divergencia individual exitosa como estrategia no codificada. El paper argumenta que la trazabilidad radical es una propiedad de diseño de primer orden, no una característica opcional.</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-item"><div class="stat-val">13</div><div class="stat-lbl">acciones por agente</div></div>
+    <div class="stat-item"><div class="stat-val">9</div><div class="stat-lbl">modificadores de utilidad</div></div>
+    <div class="stat-item"><div class="stat-val">68+</div><div class="stat-lbl">tests pasando</div></div>
+    <div class="stat-item"><div class="stat-val">7</div><div class="stat-lbl">semillas de civilización</div></div>
+    <div class="stat-item"><div class="stat-val">200</div><div class="stat-lbl">ticks sesión canónica</div></div>
+  </div>
+
+  <hr>
+
+  <!-- §1 INTRODUCCIÓN -->
+  <section class="section" id="s1">
+    <h2 class="sec-title"><span class="sec-num">1</span> Introducción</h2>
+
+    <h3 class="sub-title" id="s1-1">1.1 El problema de la afirmación sin evidencia</h3>
+    <p class="serif">El campo de la inteligencia artificial atraviesa una paradoja: nunca ha habido más capacidad de generar texto convincente sobre sistemas, y nunca ha sido más difícil distinguir qué parte de un sistema existe realmente de qué parte existe solo como afirmación. Esta paradoja no es únicamente un problema de marketing: afecta directamente a la arquitectura de los sistemas. Un sistema diseñado para <em>parecer</em> capaz tiende a optimizar la superficie de presentación en detrimento de la profundidad verificable.</p>
+    <p class="serif">Artificial World parte de la premisa contraria: <strong>la trazabilidad radical es una propiedad de diseño de primer orden</strong>. Cada comportamiento de agente debe ser reproducible mediante semilla fija. Cada claim de capacidad debe apuntar a una línea de código. Cada crónica generada debe ser verificable contra el estado del sistema en el tick correspondiente.</p>
+
+    <h3 class="sub-title" id="s1-2">1.2 Motivación y contexto</h3>
+    <p class="serif">Los sistemas clásicos de vida artificial (Conway, 1970; Reynolds, 1987; Langton, 1989) priorizan la simplicidad de las reglas locales sobre la riqueza del estado interno de los agentes. Los sistemas más complejos (Creatures, Dwarf Fortress, RimWorld) enriquecen el estado interno pero tienden a oscurecer los mecanismos de decisión bajo capas de abstracción que dificultan la auditoría.</p>
+    <p class="serif">Artificial World busca un punto de equilibrio diferente: <strong>estado interno rico y decisión completamente transparente</strong>. La función de utilidad que gobierna cada decisión de cada agente en cada tick es pública, parametrizada y reproducible. No hay componentes estocásticos no acotados: el ruido es determinista por semilla.</p>
+    <p>Adicionalmente, el sistema propone una separación explícita entre:</p>
+    <ul>
+      <li>la <strong>verdad sistémica</strong> (lo que existe, lo que está implementado, lo que los tests verifican)</li>
+      <li>la <strong>tesis de producto</strong> (lo que el sistema se propone demostrar)</li>
+      <li>la <strong>visión futura</strong> (lo que el sistema podría llegar a ser con trabajo adicional)</li>
+    </ul>
+
+    <h3 class="sub-title" id="s1-3">1.3 Contribuciones principales</h3>
+    <ol>
+      <li><strong>Arquitectura dual de motor de simulación:</strong> separación explícita entre motor de alta fidelidad (Python/pygame) y capa de demostración web (Node.js/React), con modelo conceptual compartido y sin integración técnica forzada.</li>
+      <li><strong>Función de utilidad multidimensional con 9 modificadores:</strong> incluyendo estado fisiológico, rasgos de personalidad, memoria espacial y social, relaciones inter-agente, directivas externas y capa de autonomía de emergencia.</li>
+      <li><strong>Sistema de civilizaciones con semilla arquetipal:</strong> siete arquetipos que condicionan valores, tensiones, héroe probable y tono del mundo desde el momento fundacional.</li>
+      <li><strong>Modo Sombra:</strong> simulación especular que evalúa contrafácticos sin modificar el estado observable del mundo principal.</li>
+      <li><strong>Sistema Chess:</strong> auditoría independiente con seis agentes dockerizados en red aislada con montaje read-only.</li>
+      <li><strong>Infraestructura de crónica automática:</strong> generación de historiales verificables en JSON, Markdown y PDF desde el runtime.</li>
+      <li><strong>Modelo de trazabilidad radical</strong> como propiedad de diseño, no característica opcional.</li>
+    </ol>
+  </section>
+
+  <!-- §2 TRABAJO RELACIONADO -->
+  <section class="section" id="s2">
+    <h2 class="sec-title"><span class="sec-num">2</span> Trabajo Relacionado</h2>
+
+    <h3 class="sub-title">2.1 Sistemas de vida artificial basados en agentes</h3>
+    <p class="serif">La tradición de la vida artificial (Alife) se divide en dos familias principales. Los <strong>sistemas de reglas locales</strong> (autómatas celulares de Conway, 1970; Boids de Reynolds, 1987) logran comportamiento emergente complejo a partir de reglas simples por agente. Los <strong>sistemas de agentes con estado interno</strong> (Creatures, The Sims, Dwarf Fortress) priorizan la riqueza del estado individual sobre la simplicidad de las reglas.</p>
+    <p class="serif">Artificial World pertenece a la segunda familia, pero con una distinción importante: la <strong>decisión por utilidad es completamente transparente y reproducible</strong>. En Dwarf Fortress (Adams, 2006), el sistema de needs y thoughts es verificable a nivel de UI pero opaco a nivel de código. En Artificial World, la función de puntuación es pública, parametrizable y reproducible mediante semilla.</p>
+
+    <h3 class="sub-title">2.2 Función de utilidad en sistemas multiagente</h3>
+    <p class="serif">La teoría de la utilidad esperada (Von Neumann &amp; Morgenstern, 1944) ha sido adaptada extensamente para sistemas multiagente. La arquitectura BDI (Belief-Desire-Intention) de Rao &amp; Georgeff (1991) propone separar creencias, deseos e intenciones. Artificial World simplifica esta separación reemplazando la selección de intenciones por una <strong>función de puntuación continua</strong> que permite graduación natural entre opciones competidoras, con fallback garantizado a <code>DESCANSAR</code> cuando ninguna acción es viable.</p>
+
+    <h3 class="sub-title">2.3 Sistemas de refugio y organización social emergente</h3>
+    <p class="serif">RimWorld (Sylvester, 2013) trata la colonia como unidad de organización, pero el concepto de "colonia" no tiene estado propio más allá de la suma de sus miembros. Artificial World formaliza el <strong>refugio como entidad de primer orden</strong> con estado propio independiente de sus ocupantes: <code>nombre</code>, <code>recursos</code>, <code>seguridad</code>, <code>moral</code>, <code>amenazas</code>, <code>memoria_local</code>, <code>fase_de_crecimiento</code>.</p>
+
+    <h3 class="sub-title">2.4 Sistemas de memoria en agentes autónomos</h3>
+    <p class="serif">La memoria espacial en agentes simulados ha sido tratada principalmente como mapa de exploración. Artificial World extiende este concepto con <strong>memoria social</strong>: cada agente mantiene vectores de <code>confianza</code>, <code>hostilidad</code> y <code>miedo</code> por par de agentes, que evolucionan con cada interacción y condicionan directamente la función de utilidad en ticks posteriores.</p>
+  </section>
+
+  <!-- §3 ARQUITECTURA -->
+  <section class="section" id="s3">
+    <h2 class="sec-title"><span class="sec-num">3</span> Arquitectura del Sistema</h2>
+
+    <h3 class="sub-title" id="s3-1">3.1 Capas del sistema</h3>
+    <pre>┌─────────────────────────────────────────────────────────────┐
+│              MODELO CONCEPTUAL COMPARTIDO                   │
+│  World · CivilizationSeed · Refuge · Hero · Community       │
+│  MemoryEntry · HistoricalRecord · Territory                 │
+└──────────────────┬──────────────────────┬───────────────────┘
+                   │                      │
+┌──────────────────▼──────┐  ┌────────────▼────────────────┐
+│   MOTOR PYTHON (REAL)   │  │   CAPA WEB (DEMO FUNCIONAL) │
+│  principal.py           │  │  backend/src/ (Node/Express) │
+│  nucleo/simulacion.py   │  │  frontend/src/ (React/Vite)  │
+│  agentes/ + acciones/   │  │  HeroRefuge + 7 semillas     │
+│  sistemas/ (13 tipos)   │  │  aiCore.js (Ollama)          │
+│  mundo/ grid 60×60      │  └─────────────────────────────┘
+│  SQLite · 68+ tests     │
+└─────────────────────────┘  ┌─────────────────────────────┐
+                             │  SISTEMA CHESS (AUDITORÍA)  │
+                             │  6 agentes dockerizados     │
+                             │  red aislada · read-only    │
+                             └─────────────────────────────┘</pre>
+
+    <div class="callout info">
+      <div class="callout-title">Decisión arquitectónica</div>
+      La separación entre motor Python y capa web no es un error de diseño sino una <strong>decisión explícita documentada</strong> en <code>docs/DECISION_PUENTE_PYTHON_JS.md</code>. Cada motor está optimizado para su contexto. La narrativa "dos motores, dos propósitos" es más honesta que una integración superficial.
+    </div>
+
+    <h3 class="sub-title" id="s3-2">3.2 Motor Python: ciclo de tick</h3>
+    <p>El orquestador principal (<code>nucleo/simulacion.py</code>, ~848 líneas) coordina doce subsistemas. Por cada tick, por cada entidad:</p>
+    <pre>actualizar_estado_interno()     ← fisiología: hambre++, energía--
+percibir_entorno()              ← percepción local + amenaza_local
+actualizar_memoria()            ← registra recursos/refugios visibles
+actualizar_directivas()         ← expira directivas caducadas
+ContextoDecision(tick, mapa)    ← construye contexto de decisión
+decidir_accion() → MotorDecision ← función de utilidad → acción ganadora
+ejecutar_accion()               ← aplica efectos en el mundo</pre>
+
+    <h3 class="sub-title" id="s3-3">3.3 Función de utilidad: formulación completa</h3>
+    <div class="formula">
+      U(a, i, t) = U<sub>base</sub>(a) + Σ<sub>k=1..9</sub> δ<sub>k</sub>(a, i, t) + ε(i, t)
+    </div>
+    <p>donde ε(i,t) ∈ [−0.08, 0.08] es ruido determinista: <code>random.Random(entidad.id * 1000 + tick).uniform(-0.08, 0.08)</code></p>
+
+    <p><strong>Tabla 1 — Utilidades base por tipo de acción</strong></p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Acción</th><th>U<sub>base</sub></th><th>Condición de viabilidad</th></tr>
+        <tr><td><code>COMER</code></td><td>0.65</td><td>Comida en inventario > 0</td></tr>
+        <tr><td><code>RECOGER_COMIDA</code></td><td>0.55</td><td>Celda actual tiene recurso COMIDA</td></tr>
+        <tr><td><code>EXPLORAR</code></td><td>0.50</td><td>Energía > 0.20</td></tr>
+        <tr><td><code>HUIR</code></td><td>0.40</td><td>Riesgo percibido > 0.3</td></tr>
+        <tr><td><code>DESCANSAR</code></td><td>0.30</td><td>Fallback garantizado</td></tr>
+        <tr><td><code>MOVER</code></td><td>0.30</td><td>Posición vecina disponible</td></tr>
+        <tr><td><code>RECOGER_MATERIAL</code></td><td>0.30</td><td>Celda actual tiene recurso MATERIAL</td></tr>
+        <tr><td><code>EVITAR</code></td><td>0.25</td><td>Riesgo percibido > 0.3</td></tr>
+        <tr><td><code>IR_REFUGIO</code></td><td>0.25</td><td>Refugio adyacente + (energía &lt; 0.45 OR riesgo > 0.5)</td></tr>
+        <tr><td><code>COMPARTIR</code></td><td>0.20</td><td>Inventario ≥ 3 OR (cooperativo + inv ≥ 1 + hambre &lt; 0.5)</td></tr>
+        <tr><td><code>ROBAR</code></td><td>0.20</td><td>Oportunista/agresivo + hambre ≥ 0.75 + sin comida</td></tr>
+        <tr><td><code>SEGUIR</code></td><td>0.20</td><td>Cooperativo/neutral + entidades visibles cercanas</td></tr>
+        <tr><td><code>ATACAR</code></td><td>0.18+</td><td>Condición contextual agresiva</td></tr>
+      </table>
+    </div>
+
+    <p><strong>Tabla 2 — Los nueve modificadores de la función de utilidad</strong></p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>#</th><th>Modificador</th><th>Fuente</th><th>Efecto</th></tr>
+        <tr><td>1</td><td><code>mod_hambre</code></td><td><code>estado.hambre</code></td><td>Escala COMER/RECOGER con la hambre actual</td></tr>
+        <tr><td>2</td><td><code>mod_energia</code></td><td><code>estado.energia</code></td><td>Aumenta DESCANSAR cuando energía &lt; 0.6</td></tr>
+        <tr><td>3</td><td><code>mod_riesgo</code></td><td><code>estado.riesgo_percibido</code></td><td>Aumenta HUIR/EVITAR cuando riesgo > 0.3</td></tr>
+        <tr><td>4</td><td><code>mod_rasgo</code></td><td><code>rasgo_principal</code></td><td>Ajusta preferencias según arquetipo conductual</td></tr>
+        <tr><td>5</td><td><code>mod_anti_oscilacion</code></td><td><code>posicion_anterior</code></td><td>Penaliza −0.40 si destino MOVER = celda anterior</td></tr>
+        <tr><td>6</td><td><code>mod_memoria</code></td><td><code>memoria.recursos_recientes</code></td><td>+0.15–0.25 hacia comida visible/recordada</td></tr>
+        <tr><td>7</td><td><code>mod_relaciones</code></td><td><code>relaciones.obtener_relacion()</code></td><td>Confianza → COMPARTIR/SEGUIR; hostilidad → HUIR</td></tr>
+        <tr><td>8</td><td><code>mod_directivas</code></td><td><code>contexto.directivas_activas</code></td><td>Órdenes externas con intensidad variable</td></tr>
+        <tr><td>9</td><td><code>mod_autonomia</code></td><td>múltiple</td><td>Override de emergencia: supervivencia anula directivas</td></tr>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <div class="callout-title">Capa de autonomía — Override de emergencia</div>
+      <code>if hambre &gt; 0.85: penaliza EXPLORAR y MOVER_LIBRE</code><br>
+      <code>if energia &lt; 0.15: penaliza MOVER y ROBAR</code><br>
+      <code>if riesgo &gt; 0.80: bonifica HUIR sobre cualquier directiva activa</code><br><br>
+      Ningún agente puede ser enviado a su muerte por una directiva mal calibrada.
+    </div>
+
+    <h3 class="sub-title" id="s3-4">3.4 Rasgos conductuales</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Rasgo</th><th>Bonus principal</th><th>Penalización principal</th></tr>
+        <tr><td><code>COOPERATIVO</code></td><td>COMPARTIR +0.25, SEGUIR leve</td><td>ROBAR −0.25</td></tr>
+        <tr><td><code>NEUTRAL</code></td><td>—</td><td>—</td></tr>
+        <tr><td><code>AGRESIVO</code></td><td>ROBAR +0.30</td><td>COMPARTIR −0.20, HUIR −0.10</td></tr>
+        <tr><td><code>EXPLORADOR</code></td><td>MOVER +0.35, EXPLORAR +0.35</td><td>SEGUIR −0.05</td></tr>
+        <tr><td><code>OPORTUNISTA</code></td><td>ROBAR +0.15, RECOGER_MATERIAL +0.08</td><td>leve COMPARTIR</td></tr>
+      </table>
+    </div>
+
+    <h3 class="sub-title" id="s3-5">3.5 Memoria de agente</h3>
+    <p><strong>Memoria espacial:</strong> posiciones de recursos y refugios observados recientemente. El modificador <code>mod_memoria</code> genera bonus direccionales: si un agente recuerda una celda con comida, recibe +0.15 a +0.25 en movimiento hacia esa celda, proporcional a su hambre actual.</p>
+    <p><strong>Memoria social:</strong> para cada par (i, j), vector tridimensional (confianza<sub>ij</sub>, hostilidad<sub>ij</sub>, miedo<sub>ij</sub>) ∈ [0,1]³ que evoluciona con cada interacción:</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Evento</th><th>Efecto en relaciones</th></tr>
+        <tr><td><code>COMPARTIO</code></td><td>Donante: confianza +1.2; Receptor: confianza +1.5</td></tr>
+        <tr><td><code>ROBO</code></td><td>Víctima: hostilidad +0.4, confianza −0.3</td></tr>
+        <tr><td><code>ATAQUE_EJECUTADO</code></td><td>Objetivo: hostilidad +0.4, confianza −0.3</td></tr>
+        <tr><td><code>SIGUIO</code></td><td>Leve incremento de confianza bilateral</td></tr>
+      </table>
+    </div>
+
+    <h3 class="sub-title" id="s3-6">3.6 Modo Sombra: simulación especular</h3>
+    <p>El Modo Sombra (<code>sistemas/gestor_modo_sombra.py</code>) implementa una simulación paralela que replica el estado del mundo principal pero acepta intervenciones sin modificar el mundo observable. Permite:</p>
+    <ol>
+      <li><strong>Evaluación de contrafácticos:</strong> ¿qué habría ocurrido si el agente X tomara la decisión Y en el tick T?</li>
+      <li><strong>Control manual:</strong> el operador asume el control con WASD en tiempo real; la IA cede el turno para ese agente.</li>
+      <li><strong>Modo investigador:</strong> directivas experimentales sin contaminar la simulación principal.</li>
+    </ol>
+
+    <h3 class="sub-title" id="s3-7">3.7 Sistema Watchdog: vigilancia activa</h3>
+    <pre>{
+  "nivel": "CRITICAL",
+  "codigo": "HAMBRE_CRITICA_SIN_RESPUESTA",
+  "tick": 189,
+  "entidad_nombre": "Bruno",
+  "descripcion": "Hambre >= 0.9 durante 8 ticks consecutivos sin COMER"
+}</pre>
+  </section>
+
+  <!-- §4 CAPA WEB -->
+  <section class="section" id="s4">
+    <h2 class="sec-title"><span class="sec-num">4</span> Capa Web: Semillas, Refugios y Civilizaciones</h2>
+
+    <h3 class="sub-title">4.1 Los siete arquetipos de civilización</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>ID</th><th>Arquetipo</th><th>Valores centrales</th><th>Tensiones internas</th></tr>
+        <tr><td><code>frontier-tribe</code></td><td>Survivalist</td><td>Adaptación, cooperación, resistencia</td><td>Clima hostil, escasez, frontera inestable</td></tr>
+        <tr><td><code>technocrat-refuge</code></td><td>Planner</td><td>Orden, eficiencia, conocimiento</td><td>Rigidez, elitismo, dependencia energética</td></tr>
+        <tr><td><code>spiritual-community</code></td><td>Ritual</td><td>Fe, vínculo, memoria</td><td>Dogma, miedo al cambio, presagios</td></tr>
+        <tr><td><code>warrior-kingdom</code></td><td>Militant</td><td>Honor, fuerza, jerarquía</td><td>Expansión, rivalidad, coste humano</td></tr>
+        <tr><td><code>merchant-city</code></td><td>Mercantile</td><td>Intercambio, movilidad, acuerdos</td><td>Desigualdad, corrupción, dependencia de rutas</td></tr>
+        <tr><td><code>paranoid-colony</code></td><td>Fortress</td><td>Seguridad, vigilancia, autarquía</td><td>Sospecha, aislamiento, fractura interna</td></tr>
+        <tr><td><code>decadent-empire</code></td><td>Legacy</td><td>Linaje, poder, apariencia</td><td>Declive, intriga, sobrecoste</td></tr>
+      </table>
+    </div>
+
+    <h3 class="sub-title">4.2 Estado fundacional generado por <code>createFoundingWorldState()</code></h3>
+    <pre>{
+  name: "Refugio Fundador",
+  resources: { food: 60, shelter: 75, security: 55, morale: 58 },
+  foundingHero: { name, role: "Constructor de Mundos", archetype },
+  community: { name, culture, tensions, cohesion: 0.72 },
+  memory: [{ type: "founding", summary: "...", significance: 10 }],
+  territory: { influenceRadius: 1, routes: [] }
+}</pre>
+
+    <h3 class="sub-title">4.3 IA local: sin dependencias de pago</h3>
+    <p>El módulo <code>aiCore.js</code> utiliza Ollama. Incluye fallback determinista (sin inventar si Ollama no responde), tracing completo por operación y memoria estructurada consultada antes de llamar al LLM. El núcleo del motor de simulación no usa LLMs en ningún caso.</p>
+  </section>
+
+  <!-- §5 CHESS -->
+  <section class="section" id="s5">
+    <h2 class="sec-title"><span class="sec-num">5</span> Sistema Chess: Auditoría Independiente</h2>
+
+    <blockquote>"Los creadores no pueden auditarse a sí mismos con objetividad. La solución es un sistema separado, aislado, sin acceso de escritura, que analiza el mismo repositorio desde fuera."</blockquote>
+
+    <h3 class="sub-title">5.1 Los seis agentes auditores</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Agente</th><th>Especialidad</th><th>Dominio de detección</th></tr>
+        <tr><td><code>agent-docs</code></td><td>Documentación</td><td>Claims prohibidos, enlaces rotos, inconsistencias README</td></tr>
+        <tr><td><code>agent-backend</code></td><td>API y seguridad</td><td><code>console.log</code>, URLs hardcodeadas, <code>catch</code> vacíos</td></tr>
+        <tr><td><code>agent-frontend</code></td><td>React</td><td>Componentes >300 líneas, imports incorrectos, sin <code>alt</code></td></tr>
+        <tr><td><code>agent-bd</code></td><td>Base de datos</td><td>SQL injection patterns, <code>SELECT *</code>, sin <code>IF NOT EXISTS</code></td></tr>
+        <tr><td><code>agent-tests</code></td><td>Cobertura</td><td>Tests sin assertions, ratio cobertura &lt;30%, TODOs</td></tr>
+        <tr><td><code>agent-marketing</code></td><td>Narrativa</td><td>Claims sin evidencia, overselling, SEO/OG faltantes</td></tr>
+      </table>
+    </div>
+
+    <h3 class="sub-title">5.2 Aislamiento de red</h3>
+    <pre>prod-net:   backend-prod + frontend-prod  (puertos 3001/5173)
+tests-net:  python-tests + backend-tests  (puerto 3002)
+audit-net:  6 agentes + coordinator       (sin acceso a prod ni tests)</pre>
+    <p>Los agentes montan el repositorio en modo <strong>READ-ONLY</strong> (<code>:ro</code>). No pueden modificar nada. Cada ejecución es desde cero, sin estado entre ejecuciones.</p>
+  </section>
+
+  <!-- §6 EXPERIMENTO -->
+  <section class="section" id="s6">
+    <h2 class="sec-title"><span class="sec-num">6</span> Experimento Canónico: Sesión Fundacional</h2>
+
+    <h3 class="sub-title">6.1 Parámetros</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Parámetro</th><th>Valor</th></tr>
+        <tr><td>Semilla</td><td>42</td></tr>
+        <tr><td>Mapa</td><td>60 × 60 celdas</td></tr>
+        <tr><td>Entidades iniciales</td><td>8 (7 sociales + 1 gato)</td></tr>
+        <tr><td>Ticks ejecutados</td><td>200</td></tr>
+        <tr><td>Héroe fundador</td><td>Tryndamere</td></tr>
+        <tr><td>Refugio fundador</td><td>Refugio Fundador</td></tr>
+        <tr><td>Timestamp</td><td>2026-03-08T12:53:48</td></tr>
+      </table>
+    </div>
+
+    <h3 class="sub-title">6.2 Estado final de la población</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Nombre</th><th>Tipo</th><th>Posición</th><th>Hambre</th><th>Energía</th></tr>
+        <tr><td>Ana</td><td>social</td><td>(47, 21)</td><td>0.68</td><td>0.38</td></tr>
+        <tr><td>Bruno</td><td>social</td><td>(0, 34)</td><td style="color:var(--red);font-weight:700">1.00</td><td>0.36</td></tr>
+        <tr><td>Clara</td><td>social</td><td>(25, 5)</td><td style="color:var(--red);font-weight:700">1.00</td><td>0.26</td></tr>
+        <tr><td>David</td><td>social</td><td>(10, 22)</td><td style="color:var(--warn);font-weight:700">0.90</td><td style="color:var(--warn);font-weight:700">0.18</td></tr>
+        <tr><td>Eva</td><td>social</td><td>(13, 5)</td><td style="color:var(--red);font-weight:700">1.00</td><td>0.40</td></tr>
+        <tr><td>Félix</td><td>social</td><td>(0, 52)</td><td style="color:var(--red);font-weight:700">1.00</td><td>0.38</td></tr>
+        <tr><td>Amiguisimo</td><td>gato</td><td>(12, 42)</td><td style="color:var(--red);font-weight:700">1.00</td><td>0.30</td></tr>
+        <tr><td>Tryndamere</td><td>social</td><td>(2, 51)</td><td style="color:var(--red);font-weight:700">1.00</td><td>0.40</td></tr>
+      </table>
+    </div>
+
+    <div class="callout success">
+      <div class="callout-title">Veredicto del sistema: TENSIÓN</div>
+      Salud = 1.0 para todos los agentes. Ninguno alcanzó el estado de muerte. 65 alertas Watchdog emitidas (30 WARN + 35 CRITICAL).
+    </div>
+
+    <h3 class="sub-title">6.3 Métricas de acción</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Acción</th><th>Ejecuciones</th><th>Proporción</th></tr>
+        <tr><td><code>SEGUIR</code></td><td>998</td><td style="color:var(--accent);font-weight:700">62.4%</td></tr>
+        <tr><td><code>DESCANSAR</code></td><td>492</td><td>30.8%</td></tr>
+        <tr><td><code>RECOGER_RECURSO</code></td><td>55</td><td>3.4%</td></tr>
+        <tr><td><code>COMER</code></td><td>55</td><td>3.4%</td></tr>
+        <tr><td><strong>Total</strong></td><td><strong>1.600</strong></td><td><strong>100%</strong></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- §7 EMERGENTES -->
+  <section class="section" id="s7">
+    <h2 class="sec-title"><span class="sec-num">7</span> Análisis: Comportamientos Emergentes</h2>
+
+    <h3 class="sub-title">7.1 La trampa dinámica de la cohesión</h3>
+    <p class="serif">El resultado más significativo es la <strong>dominancia de SEGUIR (62.4%) en un contexto de escasez severa</strong>. Este comportamiento no fue codificado como respuesta directa a la escasez. Emerge de la interacción entre tres mecanismos:</p>
+    <ol>
+      <li>El modificador de relaciones sociales (confianza alta → bonus SEGUIR entre agentes con historia de cooperación)</li>
+      <li>La penalización de autonomía sobre exploración cuando <code>hambre &gt; 0.85</code></li>
+      <li>La ausencia de recursos en las celdas cercanas (COMER y RECOGER no son viables)</li>
+    </ol>
+    <p class="serif">El resultado es una <strong>trampa dinámica</strong>: los agentes cohesionados mantienen relaciones de alta confianza que refuerzan el seguimiento mutuo, pero esto reduce la exploración individual necesaria para encontrar recursos. El grupo se desplaza unido hacia zonas que ya agotó. Este resultado es análogo al fenómeno de "information cascade" (Bikhchandani et al., 1992).</p>
+
+    <h3 class="sub-title">7.2 Agotamiento zonal y emergencia negativa</h3>
+    <p class="serif">El modificador anti-oscilación (−0.40 sobre la celda anterior) fue diseñado para evitar el "ping-pong". Sin embargo, en condiciones de agotamiento zonal, dificulta la migración de retroceso. Este es un ejemplo de <strong>emergencia negativa</strong>: una regla diseñada para mejorar el comportamiento promedio crea un caso extremo patológico.</p>
+
+    <h3 class="sub-title">7.3 El caso anómalo: Ana y la divergencia individual exitosa</h3>
+    <p class="serif">Ana es la única entidad con hambre sub-crítica (H=0.68), en (47,21) — la posición más alejada del grupo. Su aislamiento no fue una estrategia codificada. Fue el resultado acumulado de exploraciones individuales que la llevaron a una zona con densidad de recursos superior. <strong>La divergencia individual de la cohesión grupal puede ser una estrategia emergentemente superior bajo presión de escasez</strong>, aunque el sistema no la codifica como tal.</p>
+
+    <h3 class="sub-title">7.4 Tabla resumen de fenómenos emergentes</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Fenómeno</th><th>Mecanismo generador</th><th>¿Programado?</th></tr>
+        <tr><td>Cohesión bajo escasez</td><td>mod_relaciones > mod_autonomia en estadios medios</td><td>No (emergente)</td></tr>
+        <tr><td>Agotamiento zonal</td><td>mod_anti_oscilacion + densidad de recursos local</td><td>Parcial (efecto lateral)</td></tr>
+        <tr><td>Divergencia individual exitosa</td><td>rasgo_explorador + exploración no competida</td><td>No (emergente)</td></tr>
+        <tr><td>Supervivencia total</td><td>mod_autonomia activa en estados críticos</td><td>Sí (diseñado)</td></tr>
+        <tr><td>Fragmentación en 3 clusters</td><td>dispersión exploratoria + gradiente de recursos</td><td>Parcial (emergente)</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- §8 TRAZABILIDAD -->
+  <section class="section" id="s8">
+    <h2 class="sec-title"><span class="sec-num">8</span> Trazabilidad Radical como Propiedad de Diseño</h2>
+
+    <h3 class="sub-title">8.1 Definición operacional</h3>
+    <pre>Tick T → Estado(agente_i, T) → Candidatos(T) → Scores(T) → Decisión(T) → Efecto(T)
+
+Claim → Evidencia(código || test || log) → Verificable_sin_acceso_al_autor</pre>
+
+    <h3 class="sub-title">8.2 La taxonomía REAL / DEMO / PARCIAL / ROADMAP</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Estado</th><th>Definición</th><th>Ejemplos en el proyecto</th></tr>
+        <tr><td><span class="badge b-real">REAL</span></td><td>Existe, testeado, reproducible</td><td>Motor Python, persistencia, Modo Sombra, 11 suites</td></tr>
+        <tr><td><span class="badge b-demo">DEMO</span></td><td>Existe, funciona, no es el motor principal</td><td>Web fullstack, DobackSoft en este repo</td></tr>
+        <tr><td><span class="badge b-parcial">PARCIAL</span></td><td>Existe con funcionalidad incompleta</td><td>HeroRefuge, CivilizationSeed web, IA local</td></tr>
+        <tr><td><span class="badge b-roadmap">ROADMAP</span></td><td>Diseñado pero no implementado</td><td>3D runtime, integración Python/JS, diplomacia</td></tr>
+      </table>
+    </div>
+
+    <blockquote>"Una respuesta sin rastro no es una base seria de decisión." — Manifiesto de Artificial World</blockquote>
+  </section>
+
+  <!-- §9 MODELO CONCEPTUAL -->
+  <section class="section" id="s9">
+    <h2 class="sec-title"><span class="sec-num">9</span> Arquitectura Conceptual: El Modelo de Civilizaciones Vivas</h2>
+
+    <h3 class="sub-title">9.1 Entidades de dominio y relaciones</h3>
+    <pre>CivilizationSeed → condiciona → World
+World → nace alrededor de → Refuge (fundador)
+Community → se organiza alrededor de → Refuge(s)
+Hero → puede fundar / liderar / fracturar → Community
+Event → genera → MemoryEntry
+MemoryEntry(s) → alimentan → HistoricalRecord
+Territory + Route → explican la lectura 2D del poder y expansión</pre>
+
+    <h3 class="sub-title">9.2 El flujo fundador mínimo</h3>
+    <pre>1. Usuario elige CivilizationSeed (1 de 7 arquetipos)
+2. Usuario nombra al héroe fundador
+3. Usuario nombra el refugio fundador
+4. Sistema crea:
+   - Hero (rol "Constructor de Mundos")
+   - Refuge (food=60, shelter=75, security=55, morale=58)
+   - Community (cultura y tensiones derivadas de la semilla)
+   - MemoryEntry ("fundación iniciada")
+   - World (contenedor global, tick=0)
+5. Simulación avanza: eventos → memoria → historia</pre>
+
+    <h3 class="sub-title">9.3 La regla 2D / 3D</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Capa</th><th>Rol</th><th>Estado actual</th></tr>
+        <tr><td><strong>2D</strong></td><td>Verdad sistémica: mapa, grid, rutas, nodos, recursos, refugios</td><td><span class="badge b-real">IMPLEMENTADA</span></td></tr>
+        <tr><td><strong>3D</strong></td><td>Encarnación futura: héroes de gran presencia, refugios encarnados</td><td><span class="badge b-roadmap">ROADMAP</span></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- §10 LIMITACIONES -->
+  <section class="section" id="s10">
+    <h2 class="sec-title"><span class="sec-num">10</span> Limitaciones y Trabajo Futuro</h2>
+
+    <h3 class="sub-title">10.1 Limitaciones actuales verificadas</h3>
+    <ul>
+      <li><strong>L1. Ausencia de integración Python/JS.</strong> Los dos motores son independientes. Limitación conocida y documentada, no error no detectado.</li>
+      <li><strong>L2. Escasez de eventos narrativos intermedios.</strong> Solo 55 eventos de intercambio en 200 ticks. COMPARTIR, ROBAR y ATACAR fueron marginales por condiciones de viabilidad más restrictivas.</li>
+      <li><strong>L3. Comunidad como contrato de datos.</strong> Las relaciones inter-agente son diádicas; no hay dinámicas grupales emergentes de normas o liderazgo.</li>
+      <li><strong>L4. Diplomacia y linajes no implementados.</strong> Civilizaciones completas con diplomacia y migraciones permanecen en roadmap.</li>
+      <li><strong>L5. Historial multi-sesión no agregado.</strong> Cada ejecución genera su propia crónica sin comparación entre sesiones.</li>
+      <li><strong>L6. Capturas visuales no integradas en crónica.</strong> Screenshots en ticks clave en desarrollo activo.</li>
+    </ul>
+
+    <h3 class="sub-title">10.2 Líneas de trabajo futuro</h3>
+    <ul>
+      <li><strong>F1. Migración adaptativa.</strong> Detectar agotamiento zonal y generar directiva grupal de migración.</li>
+      <li><strong>F2. Historia profunda.</strong> COMPARTIO, ROBO, ATACÓ alimentan directamente MemoryEntry e HistoricalRecord.</li>
+      <li><strong>F3. Comunidades con normas emergentes.</strong> Frecuencia de acciones → norma cultural → modificadores de utilidad.</li>
+      <li><strong>F4. Puente Python/JS.</strong> API REST o WebSocket para motor Python como backend de verdad sistémica.</li>
+      <li><strong>F5. Chess en CI.</strong> Auditoría automática en cada push con reporte diferencial.</li>
+      <li><strong>F6. CivilizationSeeds condicionando el runtime Python.</strong> Los arquetipos condicionan la distribución inicial de rasgos de agente.</li>
+    </ul>
+  </section>
+
+  <!-- §11 DISCUSIÓN -->
+  <section class="section" id="s11">
+    <h2 class="sec-title"><span class="sec-num">11</span> Discusión: Sistemas que se Explican Solos</h2>
+
+    <p class="serif">En el contexto actual de proliferación de sistemas de IA con capacidades difíciles de verificar externamente, la trazabilidad radical no es solo un valor ético: es una <strong>ventaja competitiva demostrable</strong>. Un sistema que puede decir "esta decisión ocurrió en el tick 189, fue tomada por el agente Tryndamere, la acción ganadora fue SEGUIR con puntuación 0.73, y los cinco modificadores que más la elevaron fueron X, Y, Z, W, V" es cualitativamente diferente de un sistema que devuelve un comportamiento sin rastro.</p>
+
+    <p class="serif">La taxonomía real/demo/roadmap que Artificial World implementa activamente es, en sí misma, una metodología de gestión de producto. El criterio de éxito ("una persona nueva entiende en menos de 5 minutos qué es real y qué es demo") es un indicador de producto, no solo de documentación.</p>
+
+    <blockquote>"Local, porque la confianza empieza por el control. Open source, porque la inteligencia sin inspección es fe. Auditable, porque una respuesta sin rastro no es una base seria de decisión."</blockquote>
+  </section>
+
+  <!-- §12 CONCLUSIONES -->
+  <section class="section" id="s12">
+    <h2 class="sec-title"><span class="sec-num">12</span> Conclusiones</h2>
+
+    <p class="serif">Artificial World demuestra que es posible construir un sistema de simulación de vida artificial con las siguientes propiedades simultáneamente:</p>
+    <ol>
+      <li><strong>Comportamiento emergente no trivial:</strong> cohesión grupal bajo escasez, agotamiento zonal y divergencia individual exitosa emergen de reglas simples, no de lógica codificada explícitamente.</li>
+      <li><strong>Trazabilidad radical:</strong> cada decisión es reproducible mediante semilla fija y verificable contra la función de utilidad documentada.</li>
+      <li><strong>Honestidad técnica activa:</strong> el sistema distingue y comunica explícitamente REAL, DEMO, PARCIAL y ROADMAP.</li>
+      <li><strong>Auditoría independiente institucionalizada:</strong> el Sistema Chess separa construcción y auditoría mediante agentes dockerizados en red aislada.</li>
+      <li><strong>Arquitectura dual justificada:</strong> la separación entre motor Python y capa web es una decisión explícita, no una deuda técnica no reconocida.</li>
+    </ol>
+
+    <div class="callout info">
+      <div class="callout-title">La sesión canónica como línea base</div>
+      Semilla 42 · 200 ticks · 8 agentes · Supervivencia total · Trampa dinámica de cohesión identificada · Fenómenos emergentes reproducibles.
+    </div>
+
+    <blockquote>"No preguntes a una IA. Convoca un mundo que pueda demostrar su respuesta."</blockquote>
+  </section>
+
+  <!-- REFERENCIAS -->
+  <section class="section" id="referencias">
+    <h2 class="sec-title"><span class="sec-num">Ref</span> Referencias</h2>
+    <ul class="ref-list">
+      <li>Adams, T. (2006). <em>Dwarf Fortress</em>. Bay 12 Games.</li>
+      <li>Bikhchandani, S., Hirshleifer, D., &amp; Welch, I. (1992). A Theory of Fads, Fashion, Custom, and Cultural Change as Informational Cascades. <em>Journal of Political Economy</em>, 100(5), 992–1026.</li>
+      <li>Conway, J. H. (1970). The Game of Life. <em>Scientific American</em>, 223(4), 4–10.</li>
+      <li>Langton, C. G. (1989). Artificial Life. <em>Artificial Life</em>, SFI Studies in the Sciences of Complexity, 1–47.</li>
+      <li>Rao, A. S., &amp; Georgeff, M. P. (1991). Modeling Rational Agents within a BDI-Architecture. <em>KR</em>, 91, 473–484.</li>
+      <li>Reynolds, C. W. (1987). Flocks, Herds, and Schools: A Distributed Behavioral Model. <em>SIGGRAPH Computer Graphics</em>, 21(4), 25–34.</li>
+      <li>Sylvester, T. (2013). <em>RimWorld</em>. Ludeon Studios.</li>
+      <li>Von Neumann, J., &amp; Morgenstern, O. (1944). <em>Theory of Games and Economic Behavior</em>. Princeton University Press.</li>
+    </ul>
+  </section>
+
+  <!-- APÉNDICES -->
+  <section class="section" id="apendice-a">
+    <div class="appendix-label">Apéndice A</div>
+    <h2 class="sec-title"><span class="sec-num">A</span> Estructura del JSON de Crónica Fundacional</h2>
+    <pre>{
+  "version": 1,
+  "timestamp": "2026-03-08T12:53:48.770554",
+  "metadata": {
+    "semilla": 42,
+    "nombre_fundador": "Tryndamere",
+    "nombre_refugio": "Refugio Fundador",
+    "semilla_civilizacion": "default",
+    "alertas_total": 65,
+    "ticks_ejecutados": 200
+  },
+  "estado_inicial": { "entidades_iniciales": 8, "mapa": "60x60" },
+  "hitos": [
+    { "tick": 0,   "tipo": "inicio",       "descripcion": "Fundación iniciada. Comunidad despierta." },
+    { "tick": 50,  "tipo": "primer_ciclo", "descripcion": "Primeras interacciones sociales." },
+    { "tick": 100, "tipo": "mitad",        "descripcion": "Hambre generalizada. Primeras alertas." },
+    { "tick": 199, "tipo": "crisis",       "descripcion": "65 alertas. 7/8 en hambre crítica." },
+    { "tick": 200, "tipo": "cierre",       "descripcion": "Supervivencia en tensión." }
+  ],
+  "metricas": { "siguio": 998, "descanso": 492, "recogio_recurso": 55, "comio": 55 },
+  "veredicto": "tension"
+}</pre>
+  </section>
+
+  <section class="section" id="apendice-b">
+    <div class="appendix-label">Apéndice B</div>
+    <h2 class="sec-title"><span class="sec-num">B</span> Reproducción de la Sesión Canónica</h2>
+    <pre># Instalar dependencias
+pip install -r requirements.txt
+
+# Sesión reproducible (headless)
+$env:SDL_VIDEODRIVER="dummy"
+$env:SDL_AUDIODRIVER="dummy"
+python cronica_fundacional.py --seed 42 --ticks 200 `
+  --founder "Tryndamere" --refuge "Refugio Fundador"
+
+# Suite completa de tests
+python pruebas/run_tests_produccion.py</pre>
+  </section>
+
+  <section class="section" id="apendice-c">
+    <div class="appendix-label">Apéndice C</div>
+    <h2 class="sec-title"><span class="sec-num">C</span> Taxonomía de Componentes — Estado Verificado</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Componente</th><th>Estado</th><th>Evidencia verificable</th></tr>
+        <tr><td>Motor Python 2D</td><td><span class="badge b-real">REAL</span></td><td><code>principal.py</code>, <code>nucleo/simulacion.py</code>, 13 acciones</td></tr>
+        <tr><td>Función de utilidad</td><td><span class="badge b-real">REAL</span></td><td><code>agentes/motor_decision.py</code> (415 líneas)</td></tr>
+        <tr><td>Memoria espacial/social</td><td><span class="badge b-real">REAL</span></td><td><code>systems/memory/</code>, <code>agentes/relaciones.py</code></td></tr>
+        <tr><td>Persistencia SQLite</td><td><span class="badge b-real">REAL</span></td><td><code>mundo_artificial.db</code>, <code>sistema_persistencia.py</code></td></tr>
+        <tr><td>Modo Sombra</td><td><span class="badge b-real">REAL</span></td><td><code>gestor_modo_sombra.py</code>, suite de tests</td></tr>
+        <tr><td>Watchdog</td><td><span class="badge b-real">REAL</span></td><td><code>SistemaWatchdog</code>, 65 alertas en sesión canónica</td></tr>
+        <tr><td>Crónica fundacional</td><td><span class="badge b-real">REAL</span></td><td>JSON + MD + PDF desde runtime</td></tr>
+        <tr><td>11 suites Python (68+ tests)</td><td><span class="badge b-real">REAL</span></td><td><code>pruebas/run_tests_produccion.py</code></td></tr>
+        <tr><td>CI GitHub Actions</td><td><span class="badge b-real">REAL</span></td><td><code>.github/workflows/ci-completo.yml</code></td></tr>
+        <tr><td>Sistema Chess</td><td><span class="badge b-real">REAL</span></td><td><code>docker/agents/</code>, <code>docker/coordinator/</code></td></tr>
+        <tr><td>Web fullstack (Node+React)</td><td><span class="badge b-demo">DEMO</span></td><td><code>backend/src/</code>, <code>frontend/src/</code></td></tr>
+        <tr><td>HeroRefuge</td><td><span class="badge b-parcial">PARCIAL</span></td><td><code>heroRefuge.js</code>, hasta 256 mundos persistentes</td></tr>
+        <tr><td>CivilizationSeed (7 arquetipos)</td><td><span class="badge b-parcial">PARCIAL</span></td><td><code>civilizationSeeds.js</code>, estado fundacional completo</td></tr>
+        <tr><td>IA local (Ollama)</td><td><span class="badge b-parcial">PARCIAL</span></td><td><code>aiCore.js</code>, fallback determinista</td></tr>
+        <tr><td>Runtime 3D</td><td><span class="badge b-roadmap">ROADMAP</span></td><td>Diseñado, no implementado</td></tr>
+        <tr><td>Integración Python/JS</td><td><span class="badge b-roadmap">ROADMAP</span></td><td>Documentado, no implementado</td></tr>
+        <tr><td>Diplomacia / linajes</td><td><span class="badge b-roadmap">ROADMAP</span></td><td>Conceptualizado, no implementado</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <div class="paper-footer">
+    <p><strong>Artificial World</strong> · Cosigein SL · 2026</p>
+    <p><em>Constrúyelo. Habítalo. Haz que crezca.</em></p>
+    <p style="margin-top:8px;font-size:.72rem">Generado desde el repositorio <code>artificial-word</code> · Motor creador de mundos — El destino.</p>
+  </div>
+
+</main>
+</div>
+
+<script>
+// ── Progress bar ──────────────────────────────────────────
+const bar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  bar.style.width = pct + '%';
+});
+
+// ── Active nav link ───────────────────────────────────────
+const sections = document.querySelectorAll('[id]');
+const links = document.querySelectorAll('.nav-link');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+      if (active) {
+        active.classList.add('active');
+        active.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  });
+}, { rootMargin: '-10% 0px -80% 0px' });
+sections.forEach(s => observer.observe(s));
+
+// ── Theme toggle ──────────────────────────────────────────
+function toggleTheme() {
+  const html = document.documentElement;
+  const isLight = html.getAttribute('data-theme') === 'light';
+  html.setAttribute('data-theme', isLight ? 'dark' : 'light');
+  document.getElementById('themeIcon').textContent = isLight ? '☀️' : '🌙';
+  document.getElementById('themeBtn').childNodes[1].textContent = isLight ? ' Modo claro' : ' Modo oscuro';
+  localStorage.setItem('aw-theme', isLight ? 'dark' : 'light');
+}
+// Restore saved theme
+const saved = localStorage.getItem('aw-theme');
+if (saved === 'light') {
+  document.documentElement.setAttribute('data-theme', 'light');
+  document.getElementById('themeIcon').textContent = '🌙';
+  document.getElementById('themeBtn').childNodes[1].textContent = ' Modo oscuro';
+}
+</script>
+</body>
+</html>
