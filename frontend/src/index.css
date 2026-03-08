@@ -1227,6 +1227,21 @@ body {
   color: var(--text-muted);
   letter-spacing: 0.04em;
 }
+.hub-checkout-success {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto 16px;
+  padding: 14px 20px;
+  background: linear-gradient(90deg, rgba(0,230,118,0.15), rgba(0,212,255,0.1));
+  border: 1px solid rgba(0,230,118,0.3);
+  border-radius: 10px;
+  color: #00e676;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .hub-personal {
   width: 100%;
   max-width: 1120px;
@@ -2931,6 +2946,24 @@ body {
   color: var(--color-success);
   font-weight: 600;
   padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.pricing-manage-btn {
+  font-size: 0.7rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--color-accent);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+.pricing-manage-btn:hover {
+  background: rgba(255,255,255,0.1);
 }
 .pricing-cta {
   padding: 10px 20px;

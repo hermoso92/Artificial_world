@@ -172,6 +172,17 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({}),
     }),
+  createCheckout: (tier) =>
+    fetchApi('/subscription/checkout', {
+      method: 'POST',
+      body: JSON.stringify({ tier }),
+    }),
+  createPortalSession: () =>
+    fetchApi('/subscription/portal', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  getStripeStatus: () => fetchApi('/subscription/stripe-status'),
 
   // DobackSoft — acceso por cupón limitado
   getDobackSoftStats: () => fetchApi('/dobacksoft/stats'),

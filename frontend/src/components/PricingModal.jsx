@@ -1,8 +1,10 @@
 /**
  * PricingModal — Elige tu plan. De explorador a constructor.
+ * Supports Stripe Checkout (when enabled) and local coupon flow.
  */
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import logger from '../utils/logger';
 
 export function PricingModal({ open, onClose, onSubscribed, currentTier }) {
   const [tiers, setTiers] = useState([]);
@@ -11,10 +13,12 @@ export function PricingModal({ open, onClose, onSubscribed, currentTier }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [stripeEnabled, setStripeEnabled] = useState(false);
 
   useEffect(() => {
     if (open) {
       api.getSubscriptionTiers().then(setTiers).catch(() => {});
+      api.getStripeStatus().then((s) => setStripeEnabled(s?.enabled ?? false)).catch(() => {});
       setCouponResult(null);
       setCoupon('');
       setError(null);
@@ -42,9 +46,33 @@ export function PricingModal({ open, onClose, onSubscribed, currentTier }) {
     setLoading(true);
     setError(null);
     try {
+      if (stripeEnabled && tierId !== 'fundador') {
+        const checkout = await api.createCheckout(tierId);
+        if (checkout?.url) {
+          window.location.href = checkout.url;
+          return;
+        }
+      }
+
       const result = await api.subscribe(tierId, coupon.trim() || undefined);
       setSuccess(result.message);
       onSubscribed?.(result);
+    } catch (err) {
+      logger.warn('PricingModal: subscribe error', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const portal = await api.createPortalSession();
+      if (portal?.url) {
+        window.location.href = portal.url;
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -116,7 +144,18 @@ export function PricingModal({ open, onClose, onSubscribed, currentTier }) {
                     </ul>
 
                     {isCurrent ? (
-                      <div className="pricing-current-label">Tu plan actual</div>
+                      <div className="pricing-current-label">
+                        Tu plan actual
+                        {stripeEnabled && tier.price > 0 && (
+                          <button
+                            className="pricing-manage-btn"
+                            onClick={handleManageSubscription}
+                            disabled={loading}
+                          >
+                            Gestionar suscripción
+                          </button>
+                        )}
+                      </div>
                     ) : tier.price === 0 ? null : (
                       <button
                         className="pricing-cta"
@@ -124,7 +163,7 @@ export function PricingModal({ open, onClose, onSubscribed, currentTier }) {
                         disabled={loading || (needsCoupon)}
                         title={needsCoupon ? 'Introduce el cupón fundador primero' : ''}
                       >
-                        {loading ? 'Procesando…' : `Ser ${tier.name}`}
+                        {loading ? 'Procesando…' : stripeEnabled && tier.id !== 'fundador' ? `Pagar con Stripe — €${tier.price}/mes` : `Ser ${tier.name}`}
                       </button>
                     )}
                   </div>

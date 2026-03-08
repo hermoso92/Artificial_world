@@ -43,7 +43,7 @@ Rama: `feature/roadmap-v2`
 - ~~⚠️ Hero y simulación desconectados~~ → ✅ Flujo unificado
 - ~~⚠️ Un solo usuario~~ → ✅ Scoping por playerId en todos los endpoints
 - ⚠️ "Unirme con código" deshabilitado
-- ⚠️ Sin pagos reales (Stripe no integrado)
+- ~~⚠️ Sin pagos reales~~ → ✅ Stripe integrado (modo test)
 
 ---
 
@@ -146,12 +146,16 @@ Sin esto, solo puede haber un jugador.
 
 ### Fase 5: Monetización y Escala (BAJA — cuando haya usuarios)
 
-#### 5.1 Integración Stripe
-- [ ] Cuenta Stripe configurada
-- [ ] Checkout session para tier Constructor (9.99€/mes)
-- [ ] Checkout session para tier Fundador (29.99€/mes + cupón)
-- [ ] Webhook para confirmar pagos
-- [ ] Portal de gestión de suscripción
+#### 5.1 Integración Stripe ✅
+- [x] Cuenta Stripe configurada (modo test)
+- [x] Servicio `stripeService.js`: productos auto-creados, checkout, portal, webhooks
+- [x] Checkout session para Constructor (4.99€/mes) y Fundador (2.99€/mes + cupón)
+- [x] Webhook para activar/cancelar suscripciones automáticamente
+- [x] Portal de gestión de suscripción (Stripe Customer Portal)
+- [x] PricingModal: botón "Pagar con Stripe" cuando Stripe está habilitado
+- [x] Hub: banner de éxito tras checkout completado
+- [x] dotenv integrado para cargar keys desde `.env`
+- [x] Raw body bypass para webhook endpoint
 
 #### 5.2 Dominio y SSL
 - [ ] Configurar DNS (registro A → IP del VPS)

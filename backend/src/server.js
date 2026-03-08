@@ -2,12 +2,15 @@
  * Artificial Worlds API + WebSocket server.
  * In production, also serves the compiled frontend from ../frontend/dist.
  */
+import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { existsSync } from 'fs';
+
+dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '../../.env') });
 import apiRoutes from './routes/api.js';
 import heroRefugeRoutes from './routes/heroRefuge.js';
 import dobacksoftRoutes from './routes/dobacksoft.js';
@@ -17,6 +20,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { playerContext } from './middleware/playerContext.js';
 import { initWebSocket, broadcastLog } from './realtime/websocket.js';
 import logger, { setLogBroadcaster } from './utils/logger.js';
+import { initStripe } from './services/stripeService.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
@@ -26,7 +30,10 @@ const app = express();
 const server = createServer(app);
 
 app.use(cors());
-app.use(express.json());
+app.use((req, res, next) => {
+  if (req.originalUrl === '/api/subscription/webhook') return next();
+  express.json()(req, res, next);
+});
 app.use(playerContext);
 
 app.use('/api', apiRoutes);
@@ -68,8 +75,9 @@ app.use(errorHandler);
 initWebSocket(server);
 setLogBroadcaster(broadcastLog);
 
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   logger.info(`Constructor de Mundos API at http://localhost:${PORT}`);
   logger.info(`  WebSocket: ws://localhost:${PORT}/ws`);
   logger.info(`  Mode: ${IS_PROD ? 'PRODUCTION' : 'development'}`);
+  await initStripe();
 });

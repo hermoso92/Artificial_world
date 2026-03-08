@@ -66,6 +66,7 @@ export function Hub({ onNavigate }) {
   const [status, setStatus] = useState(null);
   const [subscription, setSubscription] = useState(null);
   const [pricingOpen, setPricingOpen] = useState(false);
+  const [checkoutMsg, setCheckoutMsg] = useState(null);
 
   const fetchAll = () => {
     api.getHero().then(setHero).catch(() => {});
@@ -73,7 +74,15 @@ export function Hub({ onNavigate }) {
     api.getMySubscription().then(setSubscription).catch(() => {});
   };
 
-  useEffect(() => { fetchAll(); }, []);
+  useEffect(() => {
+    fetchAll();
+    const params = new URLSearchParams(window.location.hash.split('?')[1] ?? '');
+    if (params.get('checkout') === 'success') {
+      const tier = params.get('tier') ?? 'constructor';
+      setCheckoutMsg(`¡Bienvenido, ${tier === 'fundador' ? 'Fundador' : 'Constructor'}! Tu mundo no tiene límites.`);
+      window.location.hash = '';
+    }
+  }, []);
 
   const worldCount = hero?.aliveWorlds?.length ?? 0;
   const heroName = hero?.name;
@@ -88,6 +97,13 @@ export function Hub({ onNavigate }) {
         </h1>
         <p className="hub-subtitle">Refugiarte. Habitar. Expandir. Pertenecer. Gobernar.</p>
       </div>
+
+      {checkoutMsg && (
+        <div className="hub-checkout-success">
+          <span>🌍 {checkoutMsg}</span>
+          <button onClick={() => setCheckoutMsg(null)} style={{ marginLeft: 12, background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: '1rem' }}>✕</button>
+        </div>
+      )}
 
       <div className="hub-personal">
         <div className="hub-personal-greeting">
