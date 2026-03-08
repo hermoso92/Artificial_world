@@ -3,20 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Artificial World — Infografía 6 páginas</title>
+  <title>Artificial World — Infografía 9 páginas</title>
   <style>
     :root {
-      --accent: #00a8cc;
-      --accent-light: #e8f7fa;
-      --accent-dark: #007a99;
+      --accent: #0088aa;
+      --accent-light: #e0f4f8;
+      --accent-dark: #006680;
       --text: #1a1d21;
-      --text-muted: #5c6370;
+      --text-muted: #4a5568;
       --bg: #ffffff;
-      --bg-alt: #f8fafb;
+      --bg-alt: #f7fafc;
       --border: #e2e8f0;
-      --success: #00c853;
-      --radius: 12px;
-      --shadow: 0 2px 12px rgba(0,0,0,0.06);
+      --radius: 10px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
 
     @media print {
@@ -196,12 +195,41 @@
     .final-cta strong { font-size: 1.2rem; color: var(--accent-dark); }
     .final-cta em { display: block; margin-top: 8px; color: var(--text-muted); }
 
-    .cover-page { display: flex; align-items: center; justify-content: center; text-align: center; }
-    .cover-content { max-width: 480px; }
-    .cover-title { font-size: 2.5rem; font-weight: 700; color: var(--accent-dark); letter-spacing: -0.03em; margin-bottom: 12px; }
-    .cover-subtitle { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 24px; }
-    .cover-desc { font-size: 1rem; color: var(--text); margin-bottom: 48px; }
-    .cover-tagline { font-size: 1.1rem; font-style: italic; color: var(--accent); font-weight: 500; }
+    .cover-page {
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center;
+      background: linear-gradient(180deg, var(--accent-light) 0%, var(--bg) 40%);
+    }
+    .cover-content { max-width: 520px; }
+    .cover-title {
+      font-size: 2.8rem; font-weight: 800; color: var(--accent-dark);
+      letter-spacing: -0.04em; margin-bottom: 8px;
+      line-height: 1.15;
+    }
+    .cover-subtitle { font-size: 1.15rem; color: var(--text-muted); margin-bottom: 32px; font-weight: 500; }
+    .cover-desc { font-size: 1rem; color: var(--text); margin-bottom: 36px; line-height: 1.6; }
+    .cover-tagline { font-size: 1.15rem; font-style: italic; color: var(--accent); font-weight: 600; margin-bottom: 40px; }
+    .cover-index {
+      text-align: left; font-size: 0.9rem; color: var(--text-muted);
+      padding: 20px 28px; background: var(--bg); border-radius: var(--radius);
+      border: 1px solid var(--border); width: 100%; max-width: 320px;
+    }
+    .cover-index div { margin: 6px 0; }
+    .cover-index span { color: var(--accent-dark); font-weight: 600; margin-right: 8px; }
+    .screenshot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .screenshot-item { text-align: center; }
+    .screenshot-item img { width: 100%; border-radius: 8px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+    .screenshot-item figcaption { font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; font-weight: 500; }
+    .screenshot-full { margin: 12px 0; page-break-inside: avoid; }
+    .screenshot-full img { width: 100%; max-height: 240px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+    .screenshot-full figcaption { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; }
+    .step-badge { display: inline-block; background: var(--accent); color: white; font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-right: 8px; }
+    .page-footer {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      text-align: center; font-size: 0.8rem; color: var(--text-muted);
+      padding: 12px;
+    }
+    .page { position: relative; min-height: 100%; padding-bottom: 48px; }
   </style>
 </head>
 <body>
@@ -211,9 +239,19 @@
   <div class="page cover-page">
     <div class="cover-content">
       <h1 class="cover-title">Artificial World</h1>
-      <p class="cover-subtitle">Infografía en 6 páginas</p>
-      <p class="cover-desc">Para informáticos, jefes, inversores y abuelos</p>
+      <p class="cover-subtitle">Infografía en 9 páginas</p>
+      <p class="cover-desc">Para informáticos, jefes, inversores y abuelos. Cada página está pensada para que cualquiera entienda algo.</p>
       <div class="cover-tagline">Constrúyelo. Habítalo. Haz que crezca.</div>
+      <div class="cover-index">
+        <div><span>1</span> La idea en 30 segundos</div>
+        <div><span>2</span> Para tu abuelo</div>
+        <div><span>3</span> Para tu jefe e inversores</div>
+        <div><span>4</span> Para el informático</div>
+        <div><span>5</span> Cómo probarlo</div>
+        <div><span>6</span> Tutorial (parte 1)</div>
+        <div><span>7</span> Tutorial (parte 2)</div>
+        <div><span>8</span> Resumen y cierre</div>
+      </div>
     </div>
   </div>
 
@@ -275,7 +313,7 @@
     <div class="page-header">
       <div class="page-num">3</div>
       <div>
-        <div class="page-title">Para tu jefe y para inversores</div>
+        <div class="page-title">Para tu jefe e inversores</div>
         <div class="page-subtitle">Valor, mercado, oportunidad.</div>
       </div>
     </div>
@@ -399,7 +437,7 @@ python principal.py
 
     <h2>Enlaces</h2>
     <ul>
-      <li><strong>Repositorio</strong> — [tu URL de GitHub]</li>
+      <li><strong>Repositorio</strong> — GitHub (ver README del proyecto)</li>
       <li><strong>Documentación</strong> — docs/ESENCIAL.md</li>
       <li><strong>Landing</strong> — artificial-world.html</li>
     </ul>
@@ -410,6 +448,69 @@ python principal.py
   <div class="page">
     <div class="page-header">
       <div class="page-num">6</div>
+      <div>
+        <div class="page-title">Tutorial con capturas (1/2)</div>
+        <div class="page-subtitle">Guía visual paso a paso. Demo web.</div>
+      </div>
+    </div>
+
+    <h2><span class="step-badge">1</span> Landing</h2>
+    <p>Al abrir la app verás la pantalla de bienvenida. <strong>Empezar a construir</strong> (flujo guiado) o <strong>Ya tengo un mundo</strong> (ir al Hub).</p>
+    <figure class="screenshot-full">
+      <img src="tutorial/screenshots/01-landing.png" alt="Landing Artificial World" />
+      <figcaption>Pantalla de bienvenida</figcaption>
+    </figure>
+
+    <h2><span class="step-badge">2</span> Hub (centro de mando)</h2>
+    <p>Desde el Hub accedes a Tu Mundo, Arena, Emergencias y Observatorio.</p>
+    <figure class="screenshot-full">
+      <img src="tutorial/screenshots/02-hub.png" alt="Hub" />
+      <figcaption>Hub — punto de partida</figcaption>
+    </figure>
+
+    <h2><span class="step-badge">3</span> Tu Mundo (simulación)</h2>
+    <p>Crea refugios, especies y libera agentes. Observa cómo se mueven, recogen recursos y se relacionan.</p>
+    <figure class="screenshot-full">
+      <img src="tutorial/screenshots/03-simulation.png" alt="Simulación" />
+      <figcaption>Simulación principal</figcaption>
+    </figure>
+
+    <p class="tagline">Artificial World — Constrúyelo. Habítalo. Haz que crezca.</p>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div class="page-num">7</div>
+      <div>
+        <div class="page-title">Tutorial con capturas (2/2)</div>
+        <div class="page-subtitle">Mission Control y zonas del Hub.</div>
+      </div>
+    </div>
+
+    <h2><span class="step-badge">4</span> Mission Control</h2>
+    <p>Vista en vivo, actividad, auditoría y lista de agentes por refugio.</p>
+    <figure class="screenshot-full">
+      <img src="tutorial/screenshots/04-missioncontrol.png" alt="Mission Control" />
+      <figcaption>Observatorio — Mission Control</figcaption>
+    </figure>
+
+    <h2><span class="step-badge">5</span> Tarjetas del Hub</h2>
+    <p>Cada tarjeta te lleva a una zona distinta.</p>
+    <figure class="screenshot-full">
+      <img src="tutorial/screenshots/05-hub-cards.png" alt="Tarjetas del Hub" />
+      <figcaption>Zonas disponibles</figcaption>
+    </figure>
+
+    <div class="highlight" style="margin-top: 20px;">
+      <strong>Regenerar capturas:</strong> Con la app corriendo, ejecuta <code>node scripts/capture-screenshots.js</code>. Las imágenes se guardan en docs/tutorial/screenshots/.
+    </div>
+
+    <p class="tagline">Artificial World — Constrúyelo. Habítalo. Haz que crezca.</p>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div class="page-num">8</div>
       <div>
         <div class="page-title">Resumen y cierre</div>
         <div class="page-subtitle">Un mensaje que funcione para todos.</div>
@@ -427,7 +528,7 @@ python principal.py
     <table>
       <tr><th>Si eres...</th><th>Tu siguiente paso</th></tr>
       <tr><td>Abuelo / no técnico</td><td>Pide que te enseñen la demo en pantalla</td></tr>
-      <tr><td>Jefe / inversor</td><td>Revisa la página 3 (valor y mercado)</td></tr>
+      <tr><td>Jefe / inversor</td><td>Revisa la página 4 (valor y mercado)</td></tr>
       <tr><td>Informático</td><td>Clona el repo y ejecuta python principal.py</td></tr>
       <tr><td>Cualquiera</td><td>Comparte esta infografía con quien creas que le interese</td></tr>
     </table>
@@ -437,7 +538,7 @@ python principal.py
       <em>Artificial World — Simulación de vida artificial 2D con agentes autónomos</em>
     </div>
 
-    <p class="tagline">Página 6 — Artificial World</p>
+    <p class="tagline">Página 8 — Artificial World</p>
   </div>
 </body>
 </html>

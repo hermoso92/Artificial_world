@@ -101,10 +101,22 @@ export function tickRefuge(refuge, tick, addLog, onEvent) {
 
     if (agent.energy < 0.4 && !solar) {
       const nearest = findNearestSolar(refuge, agent.gridX, agent.gridY, occupied);
-      if (nearest) moveToward(agent, nearest.gridX, nearest.gridY, gridSize, occupied);
+      if (nearest) {
+        moveToward(agent, nearest.gridX, nearest.gridY, gridSize, occupied);
+        agent.state = 'seeking_energy';
+      } else {
+        wander(agent, gridSize, occupied);
+        agent.state = 'wandering';
+      }
     } else if (agent.matter < 0.4 && !mineral) {
       const nearest = findNearestMineral(refuge, agent.gridX, agent.gridY, occupied);
-      if (nearest) moveToward(agent, nearest.gridX, nearest.gridY, gridSize, occupied);
+      if (nearest) {
+        moveToward(agent, nearest.gridX, nearest.gridY, gridSize, occupied);
+        agent.state = 'seeking_matter';
+      } else {
+        wander(agent, gridSize, occupied);
+        agent.state = 'wandering';
+      }
     } else if (agent.energy < 0.6 && solar) {
       agent.state = 'gathering_energy';
     } else if (agent.matter < 0.6 && mineral) {

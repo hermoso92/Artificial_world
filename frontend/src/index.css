@@ -1997,6 +1997,234 @@ body {
   font-weight: 600;
 }
 
+/* DobackSoft tabs */
+.dobacksoft-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+.dobacksoft-tab {
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.dobacksoft-tab:hover { color: var(--text); }
+.dobacksoft-tab.active {
+  color: #fb923c;
+  border-bottom-color: #fb923c;
+}
+
+/* VisorRuta2D */
+.visor-ruta-2d {
+  background: var(--bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-top: 16px;
+}
+.visor-ruta-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.visor-ruta-header h3 { margin: 0; font-size: 1.1rem; }
+.visor-ruta-mock-badge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  background: rgba(249,115,22,0.2);
+  color: #fb923c;
+  border-radius: 4px;
+}
+.visor-ruta-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 20px;
+  min-height: 400px;
+}
+.visor-ruta-sessions h4 {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.visor-ruta-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.visor-ruta-session-item {
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  margin-bottom: 4px;
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.visor-ruta-session-item:hover {
+  background: var(--bg-dark);
+}
+.visor-ruta-session-item.active {
+  background: rgba(249,115,22,0.15);
+  border-color: rgba(249,115,22,0.4);
+}
+.visor-ruta-session-name {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.visor-ruta-session-meta {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.visor-ruta-loading {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+.visor-ruta-canvas-area {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+.visor-ruta-canvas {
+  border-radius: var(--radius-md);
+  background: #1a1a2e;
+  display: block;
+}
+.visor-ruta-legend {
+  display: flex;
+  gap: 16px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.visor-ruta-legend .legend-line {
+  display: inline-block;
+  width: 20px;
+  height: 3px;
+  background: #00d4ff;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+.visor-ruta-legend .legend-event {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: #f97316;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+.visor-ruta-play-btn {
+  padding: 10px 20px;
+  background: rgba(249,115,22,0.25);
+  border: 1px solid rgba(249,115,22,0.5);
+  color: #fb923c;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+}
+.visor-ruta-play-btn:hover { background: rgba(249,115,22,0.35); }
+.visor-ruta-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  min-height: 300px;
+}
+
+/* SubidaManualLite */
+.subida-manual-lite {
+  margin-top: 16px;
+}
+.subida-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 480px;
+}
+.subida-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.subida-field label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.subida-input {
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--bg-dark);
+  color: var(--text);
+}
+.subida-input:focus {
+  outline: none;
+  border-color: #fb923c;
+}
+.subida-file {
+  padding: 8px 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.subida-file-name {
+  font-size: 0.85rem;
+  color: var(--color-success);
+  margin-left: 8px;
+}
+.subida-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.subida-error {
+  color: var(--color-error, #ef4444);
+  font-size: 0.9rem;
+  margin: 0;
+}
+.subida-success {
+  color: var(--color-success);
+  font-size: 0.9rem;
+  margin: 0;
+}
+.subida-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.subida-btn-secondary {
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--text-muted);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: color 0.15s, border-color 0.15s;
+}
+.subida-btn-secondary:hover {
+  color: var(--text);
+  border-color: #fb923c;
+}
+
 /* =====================================================
    FIRE SIMULATOR (DobackSoft demo)
    ===================================================== */
@@ -2067,6 +2295,14 @@ body {
   margin: 0 auto 16px;
   flex-wrap: wrap;
   gap: 12px;
+}
+.firesim-route-badge {
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  background: rgba(0,212,255,0.2);
+  color: #00d4ff;
+  border-radius: var(--radius-md);
+  font-weight: 600;
 }
 .firesim-telemetry {
   display: flex;

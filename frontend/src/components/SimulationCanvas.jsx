@@ -196,16 +196,20 @@ export function SimulationCanvas({
 
     // Zones
     for (const z of zones) {
-      ctx.fillStyle = z.color + '18';
-      ctx.fillRect(z.x1 * CELL, z.y1 * CELL, (z.x2 - z.x1 + 1) * CELL, (z.y2 - z.y1 + 1) * CELL);
-      ctx.strokeStyle = z.color + '40';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(z.x1 * CELL, z.y1 * CELL, (z.x2 - z.x1 + 1) * CELL, (z.y2 - z.y1 + 1) * CELL);
-      ctx.fillStyle = z.color + '90';
-      ctx.font = '9px sans-serif';
-      ctx.textAlign = 'left';
+      const zw = (z.x2 - z.x1 + 1) * CELL;
+      const zh = (z.y2 - z.y1 + 1) * CELL;
+      const zx = z.x1 * CELL;
+      const zy = z.y1 * CELL;
+      ctx.fillStyle = z.color + '25';
+      ctx.fillRect(zx, zy, zw, zh);
+      ctx.strokeStyle = z.color + '70';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(zx + 1, zy + 1, zw - 2, zh - 2);
+      ctx.fillStyle = z.color + 'dd';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
-      ctx.fillText(z.name, z.x1 * CELL + 2, z.y1 * CELL + 2);
+      ctx.fillText(z.name, zx + zw / 2, zy + 4);
     }
 
     // Grid lines
@@ -290,6 +294,24 @@ export function SimulationCanvas({
       ctx.strokeStyle = selectedAgentId === a.id ? '#00d4ff' : 'rgba(0,0,0,0.3)';
       ctx.lineWidth = selectedAgentId === a.id ? 2 : 1;
       ctx.stroke();
+
+      const label = a.stateLabel ?? a.state ?? '';
+      if (label) {
+        ctx.font = '7px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillStyle = 'rgba(0,0,0,0.6)';
+        const tw = ctx.measureText(label).width;
+        ctx.fillRect(cx - tw / 2 - 1, cy - CELL * 0.55 - 8, tw + 2, 9);
+        ctx.fillStyle = color;
+        ctx.fillText(label, cx, cy - CELL * 0.55);
+      }
+
+      ctx.font = '6px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillStyle = '#ccc';
+      ctx.fillText(`#${a.id}`, cx, cy + CELL * 0.45);
     }
 
     // Player avatar
@@ -392,10 +414,10 @@ export function SimulationCanvas({
       </div>
 
       {isOwnedRefuge && (
-        <div className="canvas-edit-controls">
+        <div className="canvas-edit-controls" id="canvas-edit-controls">
           <button
             type="button"
-            className={`canvas-edit-btn ${editMode ? 'active' : ''}`}
+            className={`canvas-edit-btn ${editMode ? 'active' : ''} ${furniture.length === 0 ? 'canvas-edit-btn--empty-house' : ''}`}
             onClick={() => setEditMode((e) => !e)}
           >
             {editMode ? 'Cerrar editor' : 'Editar'}

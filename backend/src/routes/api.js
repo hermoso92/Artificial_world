@@ -12,19 +12,11 @@ import { ApiError } from '../middleware/errorHandler.js';
 import { isValidFurnitureType, getCatalog } from '../simulation/furnitureCatalog.js';
 import logger from '../utils/logger.js';
 import { canAddAgents } from '../subscription/store.js';
-// #region agent log
-import { appendFileSync } from 'node:fs';
-const _dbg = (msg, data) => { try { appendFileSync('debug-cc0b57.log', JSON.stringify({ sessionId: 'cc0b57', location: 'api.js', message: msg, data, timestamp: Date.now() }) + '\n'); } catch {} };
-// #endregion
-
 const router = Router();
 
 // --- Health & Status ---
 
 router.get('/health', (req, res) => {
-  // #region agent log
-  _dbg('GET /health', { hypothesisId: 'H-C' });
-  // #endregion
   res.json({ success: true, data: { status: 'ok', service: 'artificial-world-api', ws: true } });
 });
 
@@ -53,9 +45,6 @@ router.get('/status', asyncHandler((req, res) => {
 
 router.get('/world', asyncHandler((req, res) => {
   const world = getWorld();
-  // #region agent log
-  _dbg('GET /world', { activeRefugeIndex: world.activeRefugeIndex, refugeCount: world.refuges.length, activeRefugeName: world.getActiveRefuge()?.name, activeRefugeOwnerId: world.getActiveRefuge()?.ownerId, hypothesisId: 'H-A' });
-  // #endregion
   res.json({ success: true, data: world.toJSON() });
 }));
 
@@ -68,9 +57,6 @@ router.get('/agents', asyncHandler((req, res) => {
 
 router.get('/refuges', asyncHandler((req, res) => {
   const world = getWorld();
-  // #region agent log
-  _dbg('GET /refuges', { count: world.refuges.length, owners: world.refuges.map((r, i) => ({ i, name: r.name, ownerId: r.ownerId || null })).filter(x => x.ownerId), hypothesisId: 'H-A' });
-  // #endregion
   res.json({ success: true, data: world.refuges.map((r) => r.toJSON()) });
 }));
 
@@ -96,9 +82,6 @@ router.post('/blueprints', requireBody, validateBlueprint, asyncHandler((req, re
 router.post('/refuges', requireBody, asyncHandler((req, res) => {
   const world = getWorld();
   const { name, ownerId } = req.body ?? {};
-  // #region agent log
-  _dbg('POST /refuges', { name, ownerId, currentRefugeCount: world.refuges.length, hypothesisId: 'H-B' });
-  // #endregion
   const refuge = world.createRefuge({
     name: typeof name === 'string' ? name : 'Mi casa',
     ownerId: ownerId ?? null,
@@ -123,9 +106,6 @@ router.post('/refuge/select', requireBody, asyncHandler((req, res) => {
   const world = getWorld();
   const { index } = req.body ?? {};
   const idx = Number(index);
-  // #region agent log
-  _dbg('POST /refuge/select', { requestedIndex: idx, refugeCount: world.refuges.length, targetName: world.refuges[idx]?.name, targetOwnerId: world.refuges[idx]?.ownerId, hypothesisId: 'H-B' });
-  // #endregion
   if (isNaN(idx) || idx < 0 || idx >= world.refuges.length) {
     throw new ApiError('VALIDATION_ERROR', 'Índice de refugio inválido', 422);
   }

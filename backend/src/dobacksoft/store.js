@@ -26,11 +26,15 @@ export function getStats() {
   };
 }
 
+const DEMO_COUPON = 'DEMO';
+
 export function validateCoupon(code) {
   const trimmed = (code || '').trim().toUpperCase();
   const stats = getStats();
+  const isDemo = trimmed === DEMO_COUPON;
+  const isFundador = trimmed === COUPON_CODE;
 
-  if (trimmed === COUPON_CODE && stats.slotsRemaining > 0) {
+  if ((isDemo || (isFundador && stats.slotsRemaining > 0))) {
     return {
       valid: true,
       price: PRICE_EARLY,
@@ -41,7 +45,7 @@ export function validateCoupon(code) {
     };
   }
 
-  if (trimmed === COUPON_CODE && stats.slotsRemaining <= 0) {
+  if (isFundador && stats.slotsRemaining <= 0) {
     return {
       valid: false,
       price: PRICE_REGULAR,
@@ -58,6 +62,10 @@ export function validateCoupon(code) {
     slotsRemaining: stats.slotsRemaining,
     message: 'Cupón no válido. Precio estándar: €29/mes.',
   };
+}
+
+export function resetCitizens() {
+  citizensCount = 0;
 }
 
 export function registerCitizen() {

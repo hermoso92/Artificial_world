@@ -44,9 +44,18 @@ export function MCActivityFeed() {
       try {
         const msg = JSON.parse(e.data);
         if (msg.type === 'simulation') {
+          const agents = msg.refuge?.agents ?? [];
+          const stateCounts = {};
+          for (const a of agents) {
+            const lbl = a.stateLabel ?? a.state ?? 'idle';
+            stateCounts[lbl] = (stateCounts[lbl] ?? 0) + 1;
+          }
+          const summary = Object.entries(stateCounts)
+            .map(([k, v]) => `${v} ${k}`)
+            .join(' · ');
           const entry = {
             tick: msg.tick ?? 0,
-            message: `Tick ${msg.tick ?? 0}: ${msg.agentCount ?? 0} agentes`,
+            message: `${msg.agentCount ?? agents.length} habitantes — ${summary || 'sin actividad'}`,
             type: 'simulation',
             source: 'ws',
           };
