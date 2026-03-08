@@ -57,7 +57,7 @@ docker-compose -f docker-compose.ci.yml run --rm tests
 
 - **`.github/workflows/pipeline.yml`** – **Pipeline principal**: Test → Deploy → Upload
   - En **PR**: ejecuta tests y sube artefactos
-  - En **push a main** (tras merge): tests → deploy a GitHub Pages → upload
+  - En **push a main** (tras merge): tests → deploy a GitHub Pages + deploy a VPS → upload
 - **`.github/workflows/tests.yml`** – Tests básicos (legacy)
 - **`.github/workflows/ci-completo.yml`** – Pipeline completo (matrix, Docker, Redis):
   - `tests-nativo`: Python 3.11 y 3.12, matrix
@@ -81,6 +81,12 @@ Con esto, el test `browser_e2e` se ejecuta en CI. Si Playwright no está instala
 - **pull_request** a `main`
 - **schedule**: cada 6 horas (`0 */6 * * *`)
 - **workflow_dispatch**: ejecución manual
+
+### Si los jobs Deploy no se ejecutan
+
+- **Deploy (Pages) y Deploy VPS solo corren si los tests pasan.** Si el job `Tests` falla, los deploys se omiten.
+- **GitHub Pages:** Settings → Pages → Source: **GitHub Actions**. Si no está activo, añade el secret `PAGES_TOKEN` (PAT con scope `repo`).
+- **Deploy VPS:** Añade los secrets `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY` en Settings → Secrets and variables → Actions. Ver [docs/DEPLOY_VPS_APLICACION.md](DEPLOY_VPS_APLICACION.md#10-deploy-automático-con-github-actions).
 
 ### Artifacts
 

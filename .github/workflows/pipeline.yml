@@ -2,9 +2,14 @@
 #
 # Flujo:
 #   PR abierto/actualizado → Test → Upload artefactos
-#   Merge a main (push)    → Test → Deploy GitHub Pages → Upload
+#   Merge a main (push)    → Test → Deploy Pages + Deploy VPS → Upload
 #
-# Activar Pages: Repo Settings > Pages > Source: GitHub Actions
+# Secrets requeridos:
+#   - PAGES_TOKEN: PAT para GitHub Pages (opcional si Pages ya está activo)
+#   - SSH_HOST: IP o dominio del VPS
+#   - SSH_USER: usuario SSH (ej. root)
+#   - SSH_PRIVATE_KEY: clave privada SSH (contenido completo)
+#   - REMOTE_PATH: (opcional) ruta en VPS, default /opt/artificial-world
 
 name: Pipeline (Test + Deploy + Upload)
 
@@ -96,6 +101,49 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # ─── 2b. DEPLOY VPS (solo en main, tras tests OK) ─────────────────────
+  # Requiere secrets: SSH_HOST, SSH_USER, SSH_PRIVATE_KEY
+  # Opcional: REMOTE_PATH (default /opt/artificial-world)
+  deploy-vps:
+    name: Deploy VPS
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar path remoto
+        env:
+          RP: ${{ secrets.REMOTE_PATH }}
+        run: echo "REMOTE_PATH=${RP:-/opt/artificial-world}" >> $GITHUB_ENV
+
+      - name: Configurar SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Rsync al VPS
+        run: |
+          rsync -avz --delete \
+            --exclude '.git' --exclude '__pycache__' --exclude '*.pyc' \
+            --exclude '*.db' --exclude '*.log' --exclude 'node_modules' \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${REMOTE_PATH}/"
+
+      - name: Build y levantar en VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: REMOTE_PATH
+          script: |
+            cd ${REMOTE_PATH:-/opt/artificial-world}
+            docker compose -f docker-compose.vps.yml build --no-cache
+            docker compose -f docker-compose.vps.yml up -d
 
   # ─── 3. UPLOAD FINAL (consolidar artefactos) ───────────────────────────
   upload-summary:

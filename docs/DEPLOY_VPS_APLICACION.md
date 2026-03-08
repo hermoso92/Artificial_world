@@ -161,6 +161,43 @@ volumes:
 
 ---
 
+## 10. Deploy automático con GitHub Actions
+
+Cada push a `main` despliega automáticamente al VPS si configuras los secrets.
+
+### Secrets requeridos (Settings → Secrets and variables → Actions)
+
+| Secret | Descripción |
+|--------|-------------|
+| `SSH_HOST` | IP o dominio del VPS (ej. `123.45.67.89` o `vps.tudominio.com`) |
+| `SSH_USER` | Usuario SSH (ej. `root`) |
+| `SSH_PRIVATE_KEY` | Contenido completo de la clave privada SSH (incluyendo `-----BEGIN ... -----`) |
+| `REMOTE_PATH` | (Opcional) Ruta en el VPS. Por defecto: `/opt/artificial-world` |
+
+### Cómo obtener la clave privada
+
+```bash
+# Si ya tienes una clave
+cat ~/.ssh/id_rsa
+# Copia todo el contenido (incluyendo BEGIN y END) y pégalo en SSH_PRIVATE_KEY
+```
+
+### Requisitos previos en el VPS
+
+1. Docker y Docker Compose instalados (ver sección 1)
+2. Puerto 22 (SSH) y 6080 abiertos
+3. La clave pública correspondiente a `SSH_PRIVATE_KEY` debe estar en `~/.ssh/authorized_keys` del usuario
+
+### Flujo del deploy
+
+1. **Tests** pasan en GitHub Actions
+2. **Rsync** copia el proyecto al VPS
+3. **Docker compose** construye y levanta en el VPS
+
+Si falta algún secret, el job `Deploy VPS` fallará. Añade los secrets y vuelve a ejecutar el workflow.
+
+---
+
 ## Resumen
 
 - **Aplicación:** Juego completo Pygame (no la landing HTML)
