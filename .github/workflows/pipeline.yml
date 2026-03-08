@@ -20,9 +20,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# No cancelar runs en progreso: los deploys deben completar aunque haya nuevos push
 concurrency:
   group: pipeline-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   # ─── 1. TESTING ─────────────────────────────────────────────────────
@@ -91,8 +92,8 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
         with:
-          enablement: true
-          token: ${{ secrets.PAGES_TOKEN }}
+          # false = Pages ya activo en Settings; true = habilitar vía API (requiere PAGES_TOKEN)
+          enablement: false
 
       - name: Upload artifact (Pages)
         uses: actions/upload-pages-artifact@v3
@@ -113,6 +114,14 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
+
+      - name: Verificar secrets VPS
+        run: |
+          if [ -z "${{ secrets.SSH_HOST }}" ] || [ -z "${{ secrets.SSH_USER }}" ] || [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
+            echo "::error::Faltan secrets: configura SSH_HOST, SSH_USER y SSH_PRIVATE_KEY en Settings > Secrets"
+            exit 1
+          fi
+          echo "Secrets VPS OK"
 
       - name: Configurar path remoto
         env:
