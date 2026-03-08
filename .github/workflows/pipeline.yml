@@ -71,9 +71,11 @@ jobs:
             pruebas/reporte_produccion.log
           if-no-files-found: ignore
 
-  # ─── 2. DEPLOY (solo en main, siempre) ─────────────────────────────────
+  # ─── 2. DEPLOY PAGES ───────────────────────────────────────────────────
+  # Requiere: Settings > Pages > Source = GitHub Actions
+  # Secret: PAGES_TOKEN (PAT con scope repo)
   deploy:
-    name: Deploy
+    name: Deploy Pages
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
@@ -101,9 +103,10 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  # ─── 2b. DEPLOY VPS (solo en main, siempre) ────────────────────────────
-  # Requiere secrets: SSH_HOST, SSH_USER, SSH_PRIVATE_KEY
-  # Opcional: REMOTE_PATH (default /opt/artificial-world)
+  # ─── 2b. DEPLOY VPS ────────────────────────────────────────────────────
+  # Secrets: SSH_HOST, SSH_USER, SSH_PRIVATE_KEY
+  # Opcional: REMOTE_PATH (default /opt/constructor-de-mundos)
+  # Usa docker-compose.prod.yml = fullstack Node+React (puerto 3001)
   deploy-vps:
     name: Deploy VPS
     runs-on: ubuntu-latest
@@ -114,7 +117,7 @@ jobs:
       - name: Configurar path remoto
         env:
           RP: ${{ secrets.REMOTE_PATH }}
-        run: echo "REMOTE_PATH=${RP:-/opt/artificial-world}" >> $GITHUB_ENV
+        run: echo "REMOTE_PATH=${RP:-/opt/constructor-de-mundos}" >> $GITHUB_ENV
 
       - name: Configurar SSH
         run: |
@@ -128,6 +131,7 @@ jobs:
           rsync -avz --delete \
             --exclude '.git' --exclude '__pycache__' --exclude '*.pyc' \
             --exclude '*.db' --exclude '*.log' --exclude 'node_modules' \
+            --exclude '.env' \
             -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
             ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${REMOTE_PATH}/"
 
@@ -139,9 +143,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: REMOTE_PATH
           script: |
-            cd ${REMOTE_PATH:-/opt/artificial-world}
-            docker compose -f docker-compose.vps.yml build --no-cache
-            docker compose -f docker-compose.vps.yml up -d
+            cd ${REMOTE_PATH:-/opt/constructor-de-mundos}
+            docker compose -f docker-compose.prod.yml up -d --build
 
   # ─── 3. UPLOAD FINAL (consolidar artefactos) ───────────────────────────
   upload-summary:
