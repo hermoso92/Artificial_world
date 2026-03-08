@@ -1,5 +1,5 @@
 /**
- * MinigamesLobby — entry screen for the minigames pillar.
+ * Arena — Desafía a tus habitantes.
  */
 import { useState } from 'react';
 import { TicTacToe } from './TicTacToe';
@@ -10,8 +10,8 @@ const GAMES = [
     id: 'tictactoe',
     icon: '✕○',
     title: '3 en Raya',
-    desc: 'El clásico. Juega contra un amigo o desafía a la IA utility-based.',
-    modes: 'PvP · PvAI',
+    desc: 'El clásico. Juega contra un amigo o desafía a los habitantes de tu mundo.',
+    modes: 'Contra amigo · Contra tu IA',
     available: true,
     color: '#7c3aed',
   },
@@ -19,8 +19,8 @@ const GAMES = [
     id: 'checkers',
     icon: '🔴',
     title: 'Damas',
-    desc: 'Evaluación de tablero, capturas múltiples, IA con profundidad adaptativa.',
-    modes: 'PvP · PvAI',
+    desc: 'Estrategia pura. Tu rival piensa, evalúa y se adapta a tu estilo.',
+    modes: 'Contra amigo · Contra tu IA',
     available: true,
     color: '#dc2626',
   },
@@ -28,8 +28,8 @@ const GAMES = [
     id: 'chess',
     icon: '♟️',
     title: 'Ajedrez',
-    desc: 'Máxima complejidad. Motor de decisión adaptado del núcleo de Artificial World.',
-    modes: 'PvP · PvAI',
+    desc: 'La prueba definitiva. Rivales que aprenden del mismo mundo que construyes.',
+    modes: 'Contra amigo · Contra tu IA',
     available: false,
     color: '#ca8a04',
   },
@@ -49,12 +49,12 @@ export function MinigamesLobby({ onBack }) {
     <div className="minigames">
       <div className="minigames-header">
         <button className="back-btn" onClick={onBack}>← Hub</button>
-        <h2 className="minigames-title">🎮 Minijuegos</h2>
+        <h2 className="minigames-title">⚔️ Arena</h2>
       </div>
 
       <p className="minigames-desc">
-        Juegos clásicos con IAs que piensan. Las IAs usan el mismo motor utility-based
-        que los agentes de la simulación — no son bots tontos.
+        Juegos clásicos contra rivales que piensan de verdad. Los habitantes de tu mundo
+        recuerdan cómo juegas y se adaptan.
       </p>
 
       <div className="minigames-grid">

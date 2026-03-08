@@ -6,7 +6,13 @@
 const MAX_CITIZENS = 1000;
 const PRICE_EARLY = 9.99;
 const PRICE_REGULAR = 29;
-const COUPON_CODE = 'FUNDADOR1000';
+const COUPON_CODE = process.env.DOBACKSOFT_COUPON_CODE || 'FUNDADOR1000';
+
+/** Genera código de acceso único para el juego (formato DOBACK-XXXX). */
+function generateAccessCode() {
+  const segment = () => Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `DOBACK-${segment()}-${segment()}`;
+}
 
 let citizensCount = 0;
 
@@ -31,6 +37,7 @@ export function validateCoupon(code) {
       isEarlyAdopter: true,
       slotsRemaining: stats.slotsRemaining,
       message: `Cupón válido. Tu precio: €${PRICE_EARLY}/mes (en lugar de €${PRICE_REGULAR}).`,
+      accessCode: generateAccessCode(),
     };
   }
 

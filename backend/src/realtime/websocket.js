@@ -5,6 +5,7 @@
 import { WebSocketServer } from 'ws';
 import { getWorld } from '../simulation/worldManager.js';
 import { recordBroadcast } from '../services/diagnostics.js';
+import logger from '../utils/logger.js';
 
 let wss = null;
 
@@ -34,7 +35,7 @@ export function initWebSocket(server) {
         agentCount,
       }));
       recordBroadcast(world.tick, agentCount);
-    } catch (_) { /* ignore */ }
+    } catch (err) { logger.warn('[ws] Error enviando estado inicial:', err.message); }
   });
 
   const interval = setInterval(() => {

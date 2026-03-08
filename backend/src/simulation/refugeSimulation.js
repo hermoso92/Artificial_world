@@ -22,6 +22,13 @@ function clamp(v, min, max) {
 export function tickRefuge(refuge, tick, addLog, onEvent) {
   const gridSize = refuge.gridSize;
   const agents = refuge.agents.filter((a) => !a.dead);
+
+  if (refuge.getPlayerStats() && tick % 5 === 0) {
+    refuge.decayStat('energy', 1);
+    refuge.decayStat('hunger', 2);
+    refuge.decayStat('mood', 1);
+  }
+
   if (agents.length === 0) return;
   const emit = (type, payload) => onEvent?.(tick, type, payload);
 

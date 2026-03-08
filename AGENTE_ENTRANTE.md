@@ -33,7 +33,7 @@ artificial word/
 ├── verificar_estado.py
 ├── test_directivas.py
 │
-├── acciones/                 ← 12 acciones independientes
+├── acciones/                 ← 13 acciones independientes
 │   ├── accion_base.py        ← clase abstracta base
 │   ├── accion_mover.py
 │   ├── accion_explorar.py
@@ -44,9 +44,10 @@ artificial word/
 │   ├── accion_recoger_material.py
 │   ├── accion_huir.py
 │   ├── accion_evitar.py
-│   ├── accion_compartir.py   ← esqueleto (ejecutar devuelve NO_APLICA)
-│   ├── accion_robar.py       ← es_viable() OK; ejecutar() esqueleto
-│   └── accion_seguir.py      ← esqueleto (ejecutar devuelve NO_APLICA)
+│   ├── accion_compartir.py   ← transferencia real de recursos + relaciones
+│   ├── accion_robar.py       ← robo con riesgo social + relaciones
+│   ├── accion_seguir.py      ← seguimiento con actualización de posición
+│   └── accion_atacar.py      ← combate con daño y modificadores sociales
 │
 ├── agentes/
 │   ├── estado_interno.py     ← hambre, energía, salud, inventario, accion_actual
@@ -101,7 +102,7 @@ artificial word/
 │   └── superposiciones.py
 │
 ├── tipos/
-│   ├── enums.py              ← TipoEntidad, TipoRecurso, TipoAccion (12), TipoDirectiva (12), etc.
+│   ├── enums.py              ← TipoEntidad, TipoRecurso, TipoAccion (13), TipoDirectiva (12), etc.
 │   └── modelos.py            ← Posicion, DirectivaExterna, PercepcionLocal, AccionPuntuada, etc.
 │
 ├── utilidades/
@@ -473,19 +474,19 @@ print('Alertas:', sim.sistema_watchdog.problemas_detectados_total)
 5. Máximo 3 intentos por error antes de pedir ayuda al usuario
 
 ### Reglas técnicas
-- **NUNCA hardcodear URLs** — usar `frontend/src/config/api.ts`
+- **NUNCA hardcodear URLs** — usar `frontend/src/config/api.js`
 - **NUNCA usar `console.log` / `print`** — usar `logger` de `utils/logger`
 - **NUNCA iniciar el servidor** — el usuario usa `iniciar.ps1`
 - **Siempre TypeScript estricto** (en partes TS del proyecto)
 - **Componentes < 300 líneas**
 
 ### Puertos fijos
-- Backend: **9998**
-- Frontend: **5174**
+- Backend: **3001**
+- Frontend: **5173**
 
 ### Inicio del sistema
 ```powershell
-.\iniciar.ps1
+.\scripts\iniciar_fullstack.ps1
 ```
 
 ### Comandos de shell (Windows PowerShell)
@@ -514,6 +515,7 @@ print('Alertas:', sim.sistema_watchdog.problemas_detectados_total)
 | `AccionRobar` | ✅ | ✅ | Completa |
 | `AccionCompartir` | ✅ | ✅ | Completa |
 | `AccionSeguir` | ✅ | ✅ | Completa |
+| `AccionAtacar` | ✅ | ✅ | Completa |
 
 ---
 

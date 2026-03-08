@@ -248,6 +248,40 @@ class Simulacion:
                 self.estado_panel.mensaje_feedback_tick = 40
             return
 
+        # E = comer (consume comida del inventario)
+        if key == pygame.K_e:
+            entidad_sombra = self._obtener_entidad_control_total()
+            if entidad_sombra:
+                en_sombra = self.estado_panel.modo_sombra and self.estado_panel.sombra_esperando_input
+                en_ctrl_pausado = self.estado_panel.pausado and entidad_sombra.control_total
+                if en_sombra or en_ctrl_pausado:
+                    inv = entidad_sombra.estado_interno.inventario
+                    from tipos.enums import TipoRecurso
+                    if inv.tiene(TipoRecurso.COMIDA, 1):
+                        entidad_sombra.sombra_accion_pendiente = "comer"
+                        if en_sombra:
+                            self.estado_panel.sombra_esperando_input = False
+                        self.estado_panel.mensaje_feedback = f"[CTRL] {entidad_sombra.nombre} come"
+                        self.estado_panel.mensaje_feedback_tick = 40
+                    else:
+                        self.estado_panel.mensaje_feedback = f"[CTRL] {entidad_sombra.nombre} no tiene comida (recoge con R)"
+                        self.estado_panel.mensaje_feedback_tick = 60
+            return
+
+        # R = recoger recurso de la celda actual
+        if key == pygame.K_r:
+            entidad_sombra = self._obtener_entidad_control_total()
+            if entidad_sombra:
+                en_sombra = self.estado_panel.modo_sombra and self.estado_panel.sombra_esperando_input
+                en_ctrl_pausado = self.estado_panel.pausado and entidad_sombra.control_total
+                if en_sombra or en_ctrl_pausado:
+                    entidad_sombra.sombra_accion_pendiente = "recoger"
+                    if en_sombra:
+                        self.estado_panel.sombra_esperando_input = False
+                    self.estado_panel.mensaje_feedback = f"[CTRL] {entidad_sombra.nombre} recoge"
+                    self.estado_panel.mensaje_feedback_tick = 40
+            return
+
         if key == pygame.K_p:
             self.estado_panel.pausado = not self.estado_panel.pausado
         elif key == pygame.K_n:
@@ -449,7 +483,21 @@ class Simulacion:
             self.estado_panel.coord_input_activo = True
             self.estado_panel.coord_input_texto = ""
         elif tipo == "deseleccionar":
+            prev_id = self.estado_panel.entidad_seleccionada_id
+            prev_ent = next((e for e in self.entidades if e.id_entidad == prev_id), None) if prev_id else None
+            if prev_ent and getattr(prev_ent, "control_total", False):
+                if self.gestor_modo_sombra:
+                    self.gestor_modo_sombra.desactivar_modo_sombra(prev_ent, self.gestor_ticks.tick_actual)
+                prev_ent.control_total = False
+                prev_ent.control_total_pendiente = None
+                prev_ent.sombra_accion_pendiente = None
+                from tipos.enums import ModoControl
+                prev_ent.modo_control = ModoControl.AUTONOMO
+                self.estado_panel.modo_sombra = False
+                self.estado_panel.sombra_esperando_input = False
             self.estado_panel.entidad_seleccionada_id = None
+            self.estado_panel.mensaje_feedback = "Selecciona otro agente"
+            self.estado_panel.mensaje_feedback_tick = 60
         elif tipo == "seleccionar":
             self.estado_panel.entidad_seleccionada_id = accion.get("id_entidad")
         elif tipo == "orden":
@@ -693,12 +741,39 @@ class Simulacion:
                 entidad_sombra = self._obtener_entidad_control_total()
 
                 if entidad_sombra and self.estado_panel.modo_sombra:
-                    sombra_tiene_accion = (
+                    # Hay comando del gestor (IR_A_REFUGIO, etc.) → avanzar automáticamente
+                    tiene_cmd_gestor = (
+                        self.gestor_modo_sombra is not None
+                        and self.gestor_modo_sombra.obtener_comando_activo(entidad_sombra.id_entidad) is not None
+                    )
+                    # Input manual del usuario (WASD, esperar, comer, recoger)
+                    tiene_input_manual = (
                         entidad_sombra.control_total_pendiente is not None
                         or entidad_sombra.sombra_accion_pendiente is not None
                     )
-                    if sombra_tiene_accion:
+
+                    if tiene_cmd_gestor and not tiene_input_manual:
+                        # Comando automático del gestor: avanzar sin esperar input
                         self._ejecutar_tick_completo()
+                        pos = entidad_sombra.posicion
+                        motivo = (
+                            entidad_sombra.historial_decisiones[-1]["motivo"]
+                            if entidad_sombra.historial_decisiones else "?"
+                        )
+                        self.estado_panel.mensaje_feedback = (
+                            f"[SOMBRA t{self.gestor_ticks.tick_actual}] "
+                            f"{entidad_sombra.nombre} ({pos.x},{pos.y}) {motivo}"
+                        )
+                        self.estado_panel.mensaje_feedback_tick = 60
+                        # Verificar si el comando terminó
+                        cmd_ahora = self.gestor_modo_sombra.obtener_comando_activo(entidad_sombra.id_entidad)
+                        if not cmd_ahora or cmd_ahora.esta_terminado():
+                            self.estado_panel.sombra_esperando_input = True
+                    elif tiene_input_manual:
+                        # Input manual del usuario (WASD, esperar, comer, recoger)
+                        self._ejecutar_tick_completo()
+                        if getattr(entidad_sombra, "_ctrl_post_move_flags", False):
+                            self._ejecutar_tick_completo()
                         pos = entidad_sombra.posicion
                         motivo = (
                             entidad_sombra.historial_decisiones[-1]["motivo"]
@@ -712,6 +787,7 @@ class Simulacion:
                         self._escribir_debug_amiguisimo(entidad_sombra)
                         self.estado_panel.sombra_esperando_input = True
                     else:
+                        # Sin acción pendiente: esperar input del usuario
                         if not self.estado_panel.sombra_esperando_input:
                             self.estado_panel.sombra_esperando_input = True
 
@@ -728,8 +804,10 @@ class Simulacion:
                     self.estado_panel.mensaje_feedback_tick = 45
 
                 elif entidad_sombra and not self.estado_panel.modo_sombra:
-                    if entidad_sombra.control_total_pendiente is not None:
+                    if entidad_sombra.control_total_pendiente is not None or entidad_sombra.sombra_accion_pendiente is not None:
                         self._ejecutar_tick_completo()
+                        if getattr(entidad_sombra, "_ctrl_post_move_flags", False):
+                            self._ejecutar_tick_completo()
                         pos = entidad_sombra.posicion
                         self.estado_panel.mensaje_feedback = (
                             f"[CTRL] {entidad_sombra.nombre} ({pos.x},{pos.y})"

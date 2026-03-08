@@ -105,21 +105,57 @@ class EntidadBase:
                 self._registrar_en_historial(puntuada, tick)
                 return puntuada
 
+            if self.sombra_accion_pendiente == "comer":
+                self.sombra_accion_pendiente = None
+                from acciones.accion_comer import AccionComer
+                accion = AccionComer(self.id_entidad)
+                if accion.es_viable(self, contexto_decision):
+                    puntuada = AccionPuntuada(
+                        accion=accion, puntuacion_base=9.0,
+                        modificadores={"sombra": 9.0}, puntuacion_final=9.0,
+                        motivo_principal="SOMBRA_COMER",
+                    )
+                    self._registrar_en_historial(puntuada, tick)
+                    return puntuada
+
+            if self.sombra_accion_pendiente == "recoger":
+                self.sombra_accion_pendiente = None
+                accion = self._ctrl_accion_recoger(contexto_decision)
+                if accion:
+                    self._registrar_en_historial(accion, tick)
+                    return accion
+
             if self.control_total_pendiente is not None:
                 dest = self.control_total_pendiente
                 self.control_total_pendiente = None
                 self.sombra_accion_pendiente = None
                 from acciones.accion_mover import AccionMover
-                accion = AccionMover(self.id_entidad, dest.x, dest.y)
+                mapa = contexto_decision.mapa if contexto_decision else None
+                celda_dest = mapa.obtener_celda(dest) if mapa else None
+                if celda_dest and celda_dest.tiene_refugio():
+                    from acciones.accion_ir_refugio import AccionIrRefugio
+                    accion = AccionIrRefugio(self.id_entidad, dest.x, dest.y)
+                    motivo = "SOMBRA_IR_REFUGIO"
+                else:
+                    accion = AccionMover(self.id_entidad, dest.x, dest.y)
+                    motivo = "SOMBRA_MOVER"
                 puntuada = AccionPuntuada(
                     accion=accion,
                     puntuacion_base=9.0,
                     modificadores={"sombra": 9.0},
                     puntuacion_final=9.0,
-                    motivo_principal="SOMBRA_MOVER",
+                    motivo_principal=motivo,
                 )
                 self._registrar_en_historial(puntuada, tick)
+                self._ctrl_post_move_flags = True
                 return puntuada
+
+            if getattr(self, "_ctrl_post_move_flags", False):
+                self._ctrl_post_move_flags = False
+                auto = self._ctrl_accion_auto_en_celda(contexto_decision)
+                if auto:
+                    self._registrar_en_historial(auto, tick)
+                    return auto
 
             return None
 
@@ -127,6 +163,34 @@ class EntidadBase:
         if resultado:
             self._registrar_en_historial(resultado, tick)
         return resultado
+
+    def _ctrl_accion_recoger(self, contexto) -> AccionPuntuada | None:
+        """Intenta recoger el recurso de la celda actual (control total)."""
+        if not contexto or not contexto.mapa:
+            return None
+        celda = contexto.mapa.obtener_celda(self.posicion)
+        if not celda or not celda.tiene_recurso() or not celda.recurso:
+            return None
+        from tipos.enums import TipoRecurso
+        if celda.recurso.tipo == TipoRecurso.COMIDA:
+            from acciones.accion_recoger_comida import AccionRecogerComida
+            accion = AccionRecogerComida(self.id_entidad)
+            motivo = "SOMBRA_RECOGER_COMIDA"
+        else:
+            from acciones.accion_recoger_material import AccionRecogerMaterial
+            accion = AccionRecogerMaterial(self.id_entidad)
+            motivo = "SOMBRA_RECOGER_MATERIAL"
+        if accion.es_viable(self, contexto):
+            return AccionPuntuada(
+                accion=accion, puntuacion_base=9.0,
+                modificadores={"sombra": 9.0}, puntuacion_final=9.0,
+                motivo_principal=motivo,
+            )
+        return None
+
+    def _ctrl_accion_auto_en_celda(self, contexto) -> AccionPuntuada | None:
+        """Tras moverse en control total, recoge automáticamente si hay recurso."""
+        return self._ctrl_accion_recoger(contexto)
 
     def _registrar_en_historial(self, accion_puntuada: AccionPuntuada, tick: int) -> None:
         """Registra una decisión en el historial (máx. 8 entradas)."""

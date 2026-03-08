@@ -33,12 +33,13 @@ class Renderizador:
     def _log(self, msg: str) -> None:
         try:
             import os
+            import logging
             from datetime import datetime
             ruta = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "app_diagnostico.log")
             with open(ruta, "a", encoding="utf-8") as f:
                 f.write(f"[{datetime.now().isoformat()}] {msg}\n")
-        except Exception:
-            pass
+        except Exception as e:
+            logging.getLogger(__name__).debug("_log falló: %s", e)
 
     def __init__(self, configuracion=None):
         self.configuracion = configuracion
@@ -202,21 +203,24 @@ class Renderizador:
         entidades: list,
         entidad_seleccionada_id: int | None = None,
     ) -> None:
-        """Dibuja las entidades con nombre, refugio (si está en uno) y acción."""
+        """Dibuja las entidades con nombre, acción y pensamiento (motivo)."""
         if not entidades:
             return
         tam = self.configuracion.tamano_celda
         radio = max(4, tam // 3)
         try:
-            fuente_nombre = pygame.font.SysFont("segoe ui", 11, bold=True)
-            fuente_accion = pygame.font.SysFont("segoe ui", 9)
+            fuente_nombre = pygame.font.SysFont("segoe ui", 12, bold=True)
+            fuente_accion = pygame.font.SysFont("segoe ui", 10)
+            fuente_pens = pygame.font.SysFont("segoe ui", 9)
         except Exception:
             try:
-                fuente_nombre = pygame.font.SysFont("arial", 11, bold=True)
-                fuente_accion = pygame.font.SysFont("arial", 9)
+                fuente_nombre = pygame.font.SysFont("arial", 12, bold=True)
+                fuente_accion = pygame.font.SysFont("arial", 10)
+                fuente_pens = pygame.font.SysFont("arial", 9)
             except Exception:
-                fuente_nombre = pygame.font.Font(None, 16)
-                fuente_accion = pygame.font.Font(None, 14)
+                fuente_nombre = pygame.font.Font(None, 18)
+                fuente_accion = pygame.font.Font(None, 16)
+                fuente_pens = pygame.font.Font(None, 14)
 
         for entidad in entidades:
             px = entidad.posicion.x * tam + tam // 2
@@ -224,6 +228,7 @@ class Renderizador:
             color = entidad.color
             seleccionada = entidad.id_entidad == entidad_seleccionada_id
             en_ctrl = getattr(entidad, "control_total", False)
+            mostrar_detalle = seleccionada or en_ctrl
 
             # Anillo exterior
             if en_ctrl:
@@ -246,23 +251,48 @@ class Renderizador:
             if mapa:
                 celda = mapa.obtener_celda(entidad.posicion)
                 if celda and celda.tiene_refugio() and celda.refugio:
-                    en_refugio = f" [Refugio #{celda.refugio.id_refugio}]"
+                    en_refugio = f" [Ref#{celda.refugio.id_refugio}]"
             color_nombre = COLOR_CTRL_TOTAL if en_ctrl else COLOR_TEXTO
             prefijo = "[TÚ] " if en_ctrl else ""
-            texto_nom = fuente_nombre.render(f"{prefijo}{nombre}{en_refugio}", True, color_nombre)
-            rect_nom = texto_nom.get_rect(center=(px, py - radio - 10))
-            sombra = pygame.Surface((rect_nom.w + 4, rect_nom.h + 4))
-            sombra.fill((0, 0, 0))
-            sombra.set_alpha(140)
-            self.pantalla.blit(sombra, (rect_nom.x - 2, rect_nom.y - 2))
+            texto_nom_str = f"{prefijo}{nombre}{en_refugio}"
+            if not mostrar_detalle and len(texto_nom_str) > 10:
+                texto_nom_str = texto_nom_str[:10] + "…"
+            texto_nom = fuente_nombre.render(texto_nom_str, True, color_nombre)
+            rect_nom = texto_nom.get_rect(center=(px, py - radio - 12))
+            # Fondo semitransparente para legibilidad
+            pad = 3
+            bg_rect = pygame.Rect(rect_nom.x - pad, rect_nom.y - 1, rect_nom.w + pad * 2, rect_nom.h + 2)
+            pygame.draw.rect(self.pantalla, (15, 18, 22), bg_rect)
+            pygame.draw.rect(self.pantalla, (45, 52, 60), bg_rect, 1)
             self.pantalla.blit(texto_nom, rect_nom)
 
             acc = entidad.estado_interno.accion_actual
             acc_str = ("CTRL" if en_ctrl else acc.value) if (en_ctrl or acc) else "-"
             color_acc = COLOR_CTRL_TOTAL if en_ctrl else COLOR_TEXTO_SEC
             texto_acc = fuente_accion.render(acc_str, True, color_acc)
-            rect_acc = texto_acc.get_rect(center=(px, py + radio + 8))
+            rect_acc = texto_acc.get_rect(center=(px, py + radio + 10))
+            bg_acc = pygame.Rect(rect_acc.x - 2, rect_acc.y - 1, rect_acc.w + 4, rect_acc.h + 2)
+            pygame.draw.rect(self.pantalla, (15, 18, 22), bg_acc)
+            pygame.draw.rect(self.pantalla, (45, 52, 60), bg_acc, 1)
             self.pantalla.blit(texto_acc, rect_acc)
+
+            # Pensamiento (motivo): solo para seleccionado o en control
+            if mostrar_detalle:
+                historial = getattr(entidad, "historial_decisiones", [])
+                motivo = ""
+                if historial:
+                    ult = historial[-1]
+                    motivo = ult.get("motivo", "")[:35]
+                    if len(ult.get("motivo", "")) > 35:
+                        motivo += "…"
+                if motivo:
+                    texto_pens = fuente_pens.render(f"«{motivo}»", True, (160, 180, 200))
+                    rect_pens = texto_pens.get_rect(center=(px, py + radio + 24))
+                    if 0 <= rect_pens.top < self.alto_mapa - 5:
+                        bg_pens = pygame.Rect(rect_pens.x - 2, rect_pens.y - 1, rect_pens.w + 4, rect_pens.h + 2)
+                        pygame.draw.rect(self.pantalla, (20, 25, 28), bg_pens)
+                        pygame.draw.rect(self.pantalla, (55, 65, 75), bg_pens, 1)
+                        self.pantalla.blit(texto_pens, rect_pens)
 
     def dibujar_barra_inferior(self, estado_ui: dict) -> None:
         """Barra inferior con tick, velocidad, modo, feedback y alertas watchdog."""

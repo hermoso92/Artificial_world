@@ -1,26 +1,37 @@
 /**
- * Hub — main entry screen connecting the 3 pillars of Artificial World.
+ * Hub — Constructor de Mundos.
+ * No persigas la IA. Construye un mundo que la necesite.
  */
+import { useState, useEffect } from 'react';
+import { api } from '../services/api';
+import { PricingModal } from './PricingModal';
+
+const TIER_LABELS = {
+  free: 'Explorador',
+  constructor: 'Constructor',
+  fundador: 'Fundador',
+};
 
 const PILLARS = [
   {
     id: 'simulation',
-    icon: '🧬',
-    title: 'Simulación',
-    subtitle: 'Artificial Worlds',
-    description: 'Diseña especies, libera agentes y observa cómo evolucionan en entornos hostiles. Motor utility-based con memoria y relaciones sociales.',
-    features: ['Agentes autónomos', 'Genética de especies', 'Hero Refuge · 13 modos', 'Auditoría hash chain'],
+    icon: '🌍',
+    title: 'Tu Mundo',
+    subtitle: 'Crea. Habita. Expande.',
+    description: 'Construye un refugio, dale vida con habitantes que piensan y sienten, y observa cómo crece hasta convertirse en algo que no esperabas.',
+    features: ['Crea tu refugio', 'Habitantes con memoria', 'De refugio a aldea a ciudad', 'Tu mundo, tus reglas'],
     color: '#00d4ff',
     bg: '#001a20',
     available: true,
+    badge: 'Demo web',
   },
   {
     id: 'minigames',
-    icon: '🎮',
-    title: 'Minijuegos',
-    subtitle: 'Social Games',
-    description: 'Juegos clásicos contra otros jugadores o contra IAs que usan el mismo motor de decisión de la simulación.',
-    features: ['3 en raya · PvP y PvAI', 'Damas (próximamente)', 'Ajedrez (próximamente)', 'IA utility-based'],
+    icon: '⚔️',
+    title: 'Arena',
+    subtitle: 'Desafía a tus habitantes',
+    description: 'Reta a otros jugadores o a los habitantes de tu mundo. Ellos aprenden, recuerdan y se adaptan a tu forma de jugar.',
+    features: ['3 en raya contra tu IA', 'Damas (próximamente)', 'Ajedrez (próximamente)', 'Rivales que evolucionan'],
     color: '#7c3aed',
     bg: '#0d0520',
     available: true,
@@ -28,22 +39,22 @@ const PILLARS = [
   {
     id: 'dobacksoft',
     icon: '🚒',
-    title: 'DobackSoft',
-    subtitle: 'Fire Simulator',
-    description: 'Conduce un camión de bomberos por paisajes 2D realistas hasta la emergencia. Niveles, tráfico, semáforos y condiciones climáticas.',
-    features: ['Simulador 2D', 'Vehículo controlable', 'Múltiples escenarios', 'Objetos y obstáculos'],
+    title: 'Emergencias',
+    subtitle: 'Protege tu comunidad',
+    description: 'Conduce hasta la emergencia. Tu comunidad depende de ti. Cada decisión importa, cada segundo cuenta.',
+    features: ['Misiones de rescate', 'Tu vehículo, tu ruta', 'Escenarios reales', 'Protege lo que construiste'],
     color: '#f97316',
     bg: '#1c0800',
     available: true,
-    badge: '9,99€ cupón',
+    badge: 'Acceso anticipado',
   },
   {
     id: 'missioncontrol',
-    icon: '📡',
-    title: 'Mission Control',
-    subtitle: 'Dashboard',
-    description: 'Panel de control en tiempo real: agentes, actividad, métricas del sistema y auditoría. Inspirado en TenacitOS.',
-    features: ['KPIs en vivo', 'Tabla de agentes', 'Feed de actividad', 'Gráficas y auditoría'],
+    icon: '🛰️',
+    title: 'Observatorio',
+    subtitle: 'Mira tu mundo desde arriba',
+    description: 'Observa en tiempo real cómo viven tus habitantes. Quién prospera, quién lucha, qué pasa cuando no miras.',
+    features: ['Vista en vivo', 'Quién hace qué', 'Eventos del mundo', 'Historia de tu civilización'],
     color: '#00e676',
     bg: '#001a0d',
     available: true,
@@ -51,14 +62,73 @@ const PILLARS = [
 ];
 
 export function Hub({ onNavigate }) {
+  const [hero, setHero] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [subscription, setSubscription] = useState(null);
+  const [pricingOpen, setPricingOpen] = useState(false);
+
+  const fetchAll = () => {
+    api.getHero().then(setHero).catch(() => {});
+    api.getStatus().then(setStatus).catch(() => {});
+    api.getMySubscription().then(setSubscription).catch(() => {});
+  };
+
+  useEffect(() => { fetchAll(); }, []);
+
+  const worldCount = hero?.aliveWorlds?.length ?? 0;
+  const heroName = hero?.name;
+  const modeName = hero?.modes?.find((m) => m.id === hero?.activeMode)?.label ?? hero?.activeMode;
+
   return (
     <div className="hub">
       <div className="hub-hero">
+        <p className="hub-manifesto">No persigas la IA. Construye un mundo que la necesite.</p>
         <h1 className="hub-title">
-          <span className="hub-title-accent">Artificial</span> World
+          <span className="hub-title-accent">Constructor</span> de Mundos
         </h1>
-        <p className="hub-subtitle">Un ecosistema de experiencias conectadas</p>
+        <p className="hub-subtitle">Refugiarte. Habitar. Expandir. Pertenecer. Gobernar.</p>
       </div>
+
+      {heroName && (
+        <div className="hub-personal">
+          <div className="hub-personal-greeting">
+            Bienvenido, <strong>{heroName}</strong>
+          </div>
+          <div className="hub-personal-stats">
+            <span className="hub-stat">
+              🌍 {worldCount} {worldCount === 1 ? 'mundo' : 'mundos'}
+            </span>
+            {modeName && (
+              <span className="hub-stat">
+                🔭 Escala: {modeName}
+              </span>
+            )}
+            {status && (
+              <span className="hub-stat">
+                👥 {status.agentCount ?? 0} habitantes
+              </span>
+            )}
+          </div>
+          <div className="hub-personal-actions">
+            <button
+              className="hub-personal-cta"
+              onClick={() => onNavigate('simulation')}
+            >
+              Entrar en tu mundo →
+            </button>
+            {subscription && (
+              <button
+                className="hub-plan-btn"
+                onClick={() => setPricingOpen(true)}
+              >
+                {subscription.tier === 'free'
+                  ? '⭐ Mejorar plan'
+                  : `✓ ${TIER_LABELS[subscription.tier] ?? subscription.tier}`}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="hub-grid">
         {PILLARS.map((pillar) => (
@@ -91,8 +161,15 @@ export function Hub({ onNavigate }) {
       </div>
 
       <footer className="hub-footer">
-        <span>Artificial World · Simulación · Juegos · Simuladores</span>
+        <span>Constructor de Mundos · Crea tu refugio · Hazlo crecer · Invita a tu gente</span>
       </footer>
+
+      <PricingModal
+        open={pricingOpen}
+        onClose={() => setPricingOpen(false)}
+        currentTier={subscription?.tier ?? 'free'}
+        onSubscribed={() => { setPricingOpen(false); fetchAll(); }}
+      />
     </div>
   );
 }

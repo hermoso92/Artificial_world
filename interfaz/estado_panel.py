@@ -21,6 +21,7 @@ class PestanaPanel(Enum):
     CONTROL = "control"
     ORDENES = "ordenes"
     SOMBRA  = "sombra"
+    CONTROL_TOTAL = "control_total"  # Modo que permite gestionar a CUALQUIER agente
     ENTIDADES = "entidades"
     EVENTOS = "eventos"
     WATCHDOG = "watchdog"

@@ -153,10 +153,11 @@ volumes:
 
 | Problema | Solución |
 |----------|----------|
-| Pantalla negra al conectar | Espera 5–10 s tras iniciar el contenedor; el juego tarda en arrancar |
-| "Connection refused" | Comprueba que el puerto 6080 está abierto en el firewall |
-| Juego muy lento | Aumenta RAM del VPS o reduce `fps_objetivo` en `configuracion.py` |
-| Error al construir | Verifica que `novnc` y `websockify` están en los repos de tu distro |
+| Pantalla negra al conectar | Espera 10–15 s tras `docker compose up`. El juego tarda en arrancar. Si sigue negro: `docker compose logs` para ver errores de Python. |
+| Pantalla negra persistente | Reconstruye la imagen: `docker compose build --no-cache` y vuelve a levantar. Revisa `docker compose logs artificial-world` por excepciones. |
+| "Connection refused" | Comprueba que el puerto 6080 está abierto en el firewall del VPS. |
+| Juego muy lento | Aumenta RAM del VPS o reduce `fps_objetivo` en `configuracion.py`. |
+| Error al construir | Verifica que `novnc`, `websockify` y `fonts-liberation` están en los repos de tu distro. |
 
 ---
 

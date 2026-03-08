@@ -19,6 +19,16 @@ pip install -r requirements.txt
 python principal.py
 ```
 
+## Modo Fullstack (Web)
+
+Backend (Node.js/Express) + Frontend (React/Vite):
+
+```powershell
+.\scripts\iniciar_fullstack.ps1
+```
+
+Abre automaticamente `http://localhost:5173`. Backend en puerto 3001, frontend en 5173. Ver [docs/MODOS_EJECUCION.md](docs/MODOS_EJECUCION.md).
+
 ## Demo web / Landing
 
 ```powershell
@@ -127,6 +137,11 @@ Ver `AGENTS.md` en la raiz del proyecto. Revisa: no `console.log`, no URLs hardc
 
 ## Documentacion
 
+- [docs/INFOGRAFIA_ARTIFICIAL_WORLD.md](docs/INFOGRAFIA_ARTIFICIAL_WORLD.md) — **Infografía 6 páginas** — para informáticos, jefes, inversores y abuelos
+- [docs/CONOCE_ARTIFICIAL_WORLD.md](docs/CONOCE_ARTIFICIAL_WORLD.md) — Para el mundo — conócelo, pruébalo, adóptalo (2 páginas)
+- [docs/ESENCIAL.md](docs/ESENCIAL.md) — **Guía técnica en 2 páginas** — para desarrolladores
+- [docs/PROYECTO_GUIA.md](docs/PROYECTO_GUIA.md) — Guía completa (arquitectura, stack, ejecución)
+- [docs/ESTRATEGIA_PRODUCTO.md](docs/ESTRATEGIA_PRODUCTO.md) — Estrategia: Python motor, Web demo
 - [AGENTE_ENTRANTE.md](AGENTE_ENTRANTE.md) — Documentacion tecnica completa
 - [PRODUCCION_PLAN.md](PRODUCCION_PLAN.md) — Plan de produccion y checklist
 - [CAMINO_B_LISTO.md](CAMINO_B_LISTO.md) — Camino B (B2B): landing, emails, despliegue

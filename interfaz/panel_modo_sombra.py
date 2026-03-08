@@ -105,6 +105,8 @@ class PanelModoSombra:
         # Rects de botones registrados en cada draw (para hit-test)
         self._rects_directivas: dict[str, pygame.Rect] = {}
         self._rects_comandos:   dict[str, pygame.Rect] = {}
+        self._rects_entidades: list[tuple[int, pygame.Rect]] = []
+        self._rect_deseleccionar: pygame.Rect | None = None
         self._rect_control_total: pygame.Rect | None = None
         self._rect_modo_combate:  pygame.Rect | None = None
         self._rect_desactivar:    pygame.Rect | None = None
@@ -133,6 +135,8 @@ class PanelModoSombra:
         """Dibuja el panel completo."""
         self._rects_directivas.clear()
         self._rects_comandos.clear()
+        self._rects_entidades.clear()
+        self._rect_deseleccionar = None
         self._rect_control_total = None
         self._rect_desactivar = None
 
@@ -158,12 +162,13 @@ class PanelModoSombra:
         ent = next((e for e in entidades if e.id_entidad == id_sel), None) if id_sel else None
 
         if ent is None:
-            # Sin entidad seleccionada
+            # Sin entidad seleccionada — mostrar lista de agentes
             txt2 = f_norm.render("Selecciona una entidad:", True, COLOR_TEXTO_SEC)
             pantalla.blit(txt2, (self.x0 + self.MARGEN, y))
             y += 18
             for e in entidades:
                 r = pygame.Rect(self.x0 + self.MARGEN, y, self.ancho - 2*self.MARGEN, 26)
+                self._rects_entidades.append((e.id_entidad, r))
                 pygame.draw.rect(pantalla, (50, 80, 120), r)
                 pygame.draw.rect(pantalla, (80, 120, 160), r, 1)
                 nombre = getattr(e, "nombre", f"E{e.id_entidad}")
@@ -171,6 +176,16 @@ class PanelModoSombra:
                 pantalla.blit(t, (self.x0 + self.MARGEN + 4, y + 4))
                 y += 30
             return
+
+        # Boton para cambiar de agente (deseleccionar actual)
+        r_desel = pygame.Rect(self.x0 + self.MARGEN, y, self.ancho - 2*self.MARGEN, 20)
+        self._rect_deseleccionar = r_desel
+        pygame.draw.rect(pantalla, (60, 50, 70), r_desel)
+        pygame.draw.rect(pantalla, (120, 100, 140), r_desel, 1)
+        nombre_ent = getattr(ent, "nombre", f"E{ent.id_entidad}")
+        t_desel = f_norm.render(f"◄ Cambiar agente (ahora: {nombre_ent})", True, (200, 180, 220))
+        pantalla.blit(t_desel, (self.x0 + self.MARGEN + 4, y + 3))
+        y += 24
 
         # ── BLOQUE 1: OBSERVAR ──────────────────────────────────────────
         y = self._dibujar_bloque_observar(pantalla, f_bold, f_norm, f_sm, y, ent, tick_actual, gestor_sombra)
@@ -473,15 +488,15 @@ class PanelModoSombra:
 
         id_sel = self.estado.entidad_seleccionada_id
         if id_sel is None:
-            # Seleccionar entidad
-            for e in entidades:
-                r_guess = pygame.Rect(
-                    self.x0 + self.MARGEN,
-                    0, self.ancho - 2*self.MARGEN, self.alto
-                )
-                if r_guess.collidepoint(x, y):
-                    return {"tipo": "seleccionar", "id_entidad": e.id_entidad}
+            # Seleccionar entidad — usar rects trackeados del ultimo draw
+            for eid, rect in self._rects_entidades:
+                if rect.collidepoint(x, y):
+                    return {"tipo": "seleccionar", "id_entidad": eid}
             return None
+
+        # Boton "Cambiar agente" (deseleccionar)
+        if self._rect_deseleccionar and self._rect_deseleccionar.collidepoint(x, y):
+            return {"tipo": "deseleccionar"}
 
         # Toggle POSEIDO
         if self._rect_control_total and self._rect_control_total.collidepoint(x, y):

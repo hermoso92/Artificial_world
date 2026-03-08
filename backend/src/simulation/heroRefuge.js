@@ -9,19 +9,19 @@ import { randomUUID } from 'crypto';
 import { generateAnswer, generateToolResultAnswer } from '../services/llmService.mjs';
 
 const HERO_MODES = [
-  { id: 'personal',    label: 'Personal',    icon: '👤', scale: 1,   description: 'Espacio íntimo del héroe, pensamientos y objetivos propios' },
-  { id: 'empresa',     label: 'Empresa',     icon: '🏢', scale: 2,   description: 'Organización, equipo y recursos productivos' },
-  { id: 'comunidad',   label: 'Comunidad',   icon: '🏘️', scale: 3,   description: 'Red social local, vecinos, aliados' },
-  { id: 'hogar',       label: 'Hogar',       icon: '🏠', scale: 4,   description: 'Base segura, familia, recursos vitales' },
-  { id: 'cuarto',      label: 'Cuarto',      icon: '🛏️', scale: 5,   description: 'El núcleo más íntimo: descanso, ideación' },
-  { id: 'refugio',     label: 'Refugio',     icon: '🛡️', scale: 6,   description: 'Refugio artificial persistente en el mundo simulado' },
-  { id: 'ecosistema',  label: 'Ecosistema',  icon: '🌿', scale: 7,   description: 'Biomas, cadenas alimentarias, equilibrio vital' },
-  { id: 'planeta',     label: 'Planeta',     icon: '🌍', scale: 8,   description: 'Mundo completo con clima, biomas y civilizaciones' },
-  { id: 'mundo',       label: 'Mundo',       icon: '🌐', scale: 9,   description: 'Mundo artificial con historia y persistencia propia' },
-  { id: 'galaxia',     label: 'Galaxia',     icon: '🌌', scale: 10,  description: 'Sistema de mundos interconectados' },
-  { id: 'persistencia',label: 'Persistencia',icon: '♾️', scale: 11,  description: 'Motor de memoria a largo plazo, legado del héroe' },
-  { id: 'ia',          label: 'IA',          icon: '🤖', scale: 12,  description: 'Agente autónomo con inteligencia adaptativa' },
-  { id: 'nexo',        label: 'Nexo',        icon: '✨', scale: 13,  description: 'El todo: donde convergen todos los modos' },
+  { id: 'personal',    label: 'Yo',          icon: '🪞', scale: 1,   description: 'Tu espacio interior. Desde aquí nace todo.' },
+  { id: 'empresa',     label: 'Taller',      icon: '🔨', scale: 2,   description: 'Organiza tu equipo y tus recursos.' },
+  { id: 'comunidad',   label: 'Aldea',       icon: '🏘️', scale: 3,   description: 'Invita a tu gente. Construye lazos.' },
+  { id: 'hogar',       label: 'Hogar',       icon: '🏠', scale: 4,   description: 'Tu base segura. Donde vuelves siempre.' },
+  { id: 'cuarto',      label: 'Rincón',      icon: '🕯️', scale: 5,   description: 'Tu espacio más íntimo. Descansa e idea.' },
+  { id: 'refugio',     label: 'Refugio',     icon: '🛡️', scale: 6,   description: 'Tu primer lugar en el mundo. Hazlo tuyo.' },
+  { id: 'ecosistema',  label: 'Naturaleza',  icon: '🌿', scale: 7,   description: 'Biomas, cadenas de vida, equilibrio.' },
+  { id: 'planeta',     label: 'Planeta',     icon: '🌍', scale: 8,   description: 'Un mundo completo con clima y civilizaciones.' },
+  { id: 'mundo',       label: 'Mundo',       icon: '🌐', scale: 9,   description: 'Tu mundo. Con historia propia y memoria.' },
+  { id: 'galaxia',     label: 'Galaxia',     icon: '🌌', scale: 10,  description: 'Mundos conectados entre sí.' },
+  { id: 'persistencia',label: 'Legado',      icon: '📜', scale: 11,  description: 'Lo que queda cuando te vas. Tu huella.' },
+  { id: 'ia',          label: 'Compañero',   icon: '🤝', scale: 12,  description: 'Tu IA. Aprende contigo, crece contigo.' },
+  { id: 'nexo',        label: 'Todo',        icon: '✨', scale: 13,  description: 'Donde converge cada pieza de tu mundo.' },
 ];
 
 class PersonalAgent {
@@ -29,7 +29,7 @@ class PersonalAgent {
     this.id = `agent-${randomUUID()}`;
     this.heroId = heroId;
     this.heroName = heroName;
-    this.name = `Companion of ${heroName}`;
+    this.name = `Compañero de ${heroName}`;
     this.activeMode = 'personal';
     this.memory = [];
     this.maxMemory = 100;

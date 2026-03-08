@@ -20,6 +20,7 @@ verificacion_completa.json
 mundo_artificial.db
 audit_competencia.db
 audit_simulacion.db
+subscriptions.db
 *.db-shm
 *.db-wal
 debug_*.json

@@ -202,7 +202,8 @@ class SistemaReporte:
             with open(ruta_abs, "w", encoding="utf-8") as f:
                 json.dump(reporte, f, indent=2, ensure_ascii=False)
             ok = True
-        except Exception:
+        except Exception as e:
+            logging.getLogger(__name__).error("Error exportando reporte: %s", e)
             ok = False
         sc = getattr(sim, "sistema_competencia", None)
         if sc and sc.activo:
@@ -236,5 +237,6 @@ class SistemaReporte:
             with open(ruta_abs, "w", encoding="utf-8") as f:
                 json.dump(reporte, f, indent=2, ensure_ascii=False)
             return True
-        except Exception:
+        except Exception as e:
+            logging.getLogger(__name__).error("Error generando reporte mínimo: %s", e)
             return False

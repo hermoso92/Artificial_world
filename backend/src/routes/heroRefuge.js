@@ -7,6 +7,7 @@ import { asyncHandler } from '../middleware/asyncHandler.js';
 import { requireBody } from '../middleware/validate.js';
 import { ApiError } from '../middleware/errorHandler.js';
 import { HeroRefuge } from '../simulation/heroRefuge.js';
+import { canCreateWorld } from '../subscription/store.js';
 
 const router = Router();
 
@@ -58,12 +59,21 @@ router.get('/worlds', asyncHandler((req, res) => {
   res.json({ success: true, data: hero.getAliveWorlds().map((w) => w.toJSON()) });
 }));
 
-// POST /api/hero/worlds — create a new artificial world
+// POST /api/hero/worlds — create a new artificial world (subscription limits apply)
 router.post('/worlds', requireBody, asyncHandler((req, res) => {
   const hero = getOrCreateHero();
-  const { name, type, biomes, scale } = req.body ?? {};
+  const { name, type, biomes, scale, playerId } = req.body ?? {};
+
+  if (playerId) {
+    const currentCount = hero.getAliveWorlds().length;
+    const check = canCreateWorld(playerId, currentCount);
+    if (!check.allowed) {
+      throw new ApiError('LIMIT_EXCEEDED', check.reason, 429);
+    }
+  }
+
   const world = hero.createWorld({ name, type, biomes, scale });
-  if (!world) throw new ApiError('LIMIT_EXCEEDED', 'Maximum number of worlds reached', 429);
+  if (!world) throw new ApiError('LIMIT_EXCEEDED', 'No se pueden crear más mundos.', 429);
   res.status(201).json({ success: true, data: world.toJSON() });
 }));
 

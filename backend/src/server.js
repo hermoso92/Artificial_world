@@ -11,16 +11,10 @@ import { existsSync } from 'fs';
 import apiRoutes from './routes/api.js';
 import heroRefugeRoutes from './routes/heroRefuge.js';
 import dobacksoftRoutes from './routes/dobacksoft.js';
+import subscriptionRoutes from './routes/subscription.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { initWebSocket } from './realtime/websocket.js';
 import logger from './utils/logger.js';
-
-process.on('uncaughtException', (err) => {
-  logger.error('Uncaught exception:', err.message, err.stack);
-});
-process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled rejection:', reason);
-});
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
@@ -35,13 +29,28 @@ app.use(express.json());
 app.use('/api', apiRoutes);
 app.use('/api/hero', heroRefugeRoutes);
 app.use('/api/dobacksoft', dobacksoftRoutes);
+app.use('/api/subscription', subscriptionRoutes);
+
+// 404 para rutas API no registradas
+app.use('/api', (req, res) => {
+  res.status(404).json({
+    success: false,
+    error: {
+      message: `Ruta API no encontrada: ${req.method} ${req.originalUrl}`,
+      code: 'NOT_FOUND',
+      statusCode: 404,
+    },
+  });
+});
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'artificial-world-api', ws: true, env: process.env.NODE_ENV ?? 'development' });
+  res.json({ status: 'ok', service: 'constructor-de-mundos', ws: true, env: process.env.NODE_ENV ?? 'development' });
 });
 
 // Serve compiled frontend in production
-const distPath = join(__dirname, '../../frontend/dist');
+const distPath = IS_PROD
+  ? join(__dirname, '../frontend/dist')
+  : join(__dirname, '../../frontend/dist');
 if (IS_PROD && existsSync(distPath)) {
   app.use(express.static(distPath));
   app.get('*', (req, res) => {
@@ -55,7 +64,7 @@ app.use(errorHandler);
 initWebSocket(server);
 
 server.listen(PORT, () => {
-  logger.info(`Artificial Worlds API at http://localhost:${PORT}`);
+  logger.info(`Constructor de Mundos API at http://localhost:${PORT}`);
   logger.info(`  WebSocket: ws://localhost:${PORT}/ws`);
   logger.info(`  Mode: ${IS_PROD ? 'PRODUCTION' : 'development'}`);
 });

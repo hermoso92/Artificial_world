@@ -43,22 +43,47 @@ Write-Host "Se abriran 2 ventanas (backend y frontend). Espera 5 segundos..."
 Write-Host ""
 
 Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$backend'; node src/server.js" -WindowStyle Normal
-Start-Sleep -Seconds 3
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$frontend'; npm run dev" -WindowStyle Normal
-Start-Sleep -Seconds 5
-$url = $null
-foreach ($port in 5173, 5174) {
+
+# Esperar a que el backend responda antes de lanzar el frontend
+$backendReady = $false
+for ($i = 0; $i -lt 15; $i++) {
+    Start-Sleep -Seconds 1
     try {
-        $r = Invoke-WebRequest -Uri "http://localhost:$port" -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop
-        if ($r.StatusCode -eq 200) { $url = "http://localhost:$port"; break }
-    } catch {
-        # Frontend puede tardar en arrancar
+        $r = Invoke-WebRequest -Uri "http://localhost:3001/api/health" -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop
+        if ($r.StatusCode -eq 200) {
+            $backendReady = $true
+            Write-Host "  Backend listo" -ForegroundColor Green
+            break
+        }
+    } catch {}
+    Write-Host "  Esperando backend... ($($i+1)s)" -ForegroundColor Gray
+}
+if (-not $backendReady) {
+    Write-Host "  AVISO: Backend no respondio en 15s, continuando..." -ForegroundColor Yellow
+}
+
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$frontend'; npm run dev" -WindowStyle Normal
+
+# Esperar a que el frontend responda
+$url = $null
+for ($i = 0; $i -lt 15; $i++) {
+    Start-Sleep -Seconds 1
+    foreach ($port in 5173, 5174) {
+        try {
+            $r = Invoke-WebRequest -Uri "http://localhost:$port" -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop
+            if ($r.StatusCode -eq 200) { $url = "http://localhost:$port"; break }
+        } catch {}
     }
+    if ($url) { break }
+    Write-Host "  Esperando frontend... ($($i+1)s)" -ForegroundColor Gray
 }
 if ($url) {
+    Write-Host "  Frontend listo" -ForegroundColor Green
+    Write-Host ""
     Write-Host "Abriendo navegador en $url"
     Start-Process $url
 } else {
+    Write-Host ""
     Write-Host "Esperando frontend... Abre manualmente: http://localhost:5173"
     Start-Process "http://localhost:5173"
 }

@@ -1,6 +1,5 @@
 /**
- * Mission Control — TenacitOS-inspired dashboard for Artificial World.
- * Tab layout: Overview | Agents | Activity | System | Audit
+ * Observatorio — Mira tu mundo desde arriba.
  */
 import { useState } from 'react';
 import { useRealtimeSimulation } from '../../hooks/useRealtimeSimulation';
@@ -13,21 +12,21 @@ import { MCAuditLog } from './MCAuditLog.jsx';
 import './mc.css';
 
 const TABS = [
-  { id: 'overview', label: 'Resumen' },
-  { id: 'agents', label: 'Agentes' },
-  { id: 'activity', label: 'Actividad' },
-  { id: 'system', label: 'Sistema' },
-  { id: 'audit', label: 'Auditoría' },
+  { id: 'overview', label: 'Vista general' },
+  { id: 'agents', label: 'Habitantes' },
+  { id: 'activity', label: 'Qué pasa' },
+  { id: 'system', label: 'Salud' },
+  { id: 'audit', label: 'Crónica' },
 ];
 
-export function MissionControl({ onBack }) {
+export function MissionControl({ onBack, onNavigate }) {
   const [activeTab, setActiveTab] = useState('overview');
   const { connected } = useRealtimeSimulation();
 
   const renderContent = () => {
     switch (activeTab) {
       case 'overview':
-        return <MCOverview />;
+        return <MCOverview onEnterSimulation={() => onNavigate?.('simulation')} />;
       case 'agents':
         return <MCAgentDashboard />;
       case 'activity':
@@ -51,8 +50,8 @@ export function MissionControl({ onBack }) {
             </button>
           )}
           <div>
-            <h1 className="mc-title">Mission Control</h1>
-            <div className="mc-subtitle">Artificial World · Dashboard</div>
+            <h1 className="mc-title">Observatorio</h1>
+            <div className="mc-subtitle">Constructor de Mundos · Vista en vivo</div>
           </div>
         </div>
         <nav className="mc-tabs">

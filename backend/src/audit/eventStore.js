@@ -7,6 +7,7 @@ import crypto from 'crypto';
 import { randomUUID } from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import logger from '../utils/logger.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_DB_PATH = process.env.NODE_ENV === 'test'
@@ -93,7 +94,7 @@ export function registrar(tick, type, payload = {}, opts = {}) {
       prev_hash: prevHashForRecord,
     };
   } catch (err) {
-    console.error('[eventStore] Error registrando evento:', err.message);
+    logger.error('[eventStore] Error registrando evento:', err.message);
     return null;
   }
 }
@@ -141,7 +142,7 @@ export function obtener(opts = {}) {
       signals: r.signals ? JSON.parse(r.signals) : null,
     }));
   } catch (err) {
-    console.error('[eventStore] Error obteniendo eventos:', err.message);
+    logger.error('[eventStore] Error obteniendo eventos:', err.message);
     return [];
   }
 }
@@ -166,7 +167,7 @@ export function verificarIntegridad() {
     }
     return corruptos;
   } catch (err) {
-    console.error('[eventStore] Error verificando integridad:', err.message);
+    logger.error('[eventStore] Error verificando integridad:', err.message);
     return [];
   }
 }
@@ -179,7 +180,8 @@ export function contar() {
     const d = getDb();
     const rows = d.prepare('SELECT COUNT(*) as n FROM eventos_simulacion').get();
     return rows?.n ?? 0;
-  } catch {
+  } catch (err) {
+    logger.error('[eventStore] Error contando eventos:', err?.message);
     return 0;
   }
 }

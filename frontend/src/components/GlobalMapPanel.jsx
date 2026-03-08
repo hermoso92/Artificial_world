@@ -33,9 +33,9 @@ export function GlobalMapPanel({ world, activeRefugeIndex, onSelectRefuge }) {
         </>
       )}
       <div className="refuge-grid-preview">
-        <div className="refuge-grid-label">Refuge Plots (16×16)</div>
+        <div className="refuge-grid-label">Refuge Plots ({refugeCount} total)</div>
         <div className="refuge-grid">
-          {Array.from({ length: 64 }, (_, i) => (
+          {Array.from({ length: Math.min(64, refugeCount) }, (_, i) => (
             <button
               key={i}
               type="button"

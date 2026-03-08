@@ -1,8 +1,9 @@
 /**
  * DobackSoft — acceso por cupón limitado.
  * Primeros 1000 ciudadanos: €9,99/mes. Regular: €29/mes.
+ * El código de acceso es para el simulador DobackSoft (bomberos), no para Damas (gratis).
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { api } from '../services/api.js';
 import logger from '../utils/logger.js';
 
@@ -21,6 +22,7 @@ export function DobackSoft({ onBack }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [registered, setRegistered] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   useEffect(() => {
     api.getDobackSoftStats()
@@ -30,6 +32,10 @@ export function DobackSoft({ onBack }) {
         setStats({ citizensCount: 0, maxCitizens: 1000, slotsRemaining: 1000, priceEarly: 9.99, priceRegular: 29 });
       });
   }, [registered]);
+
+  useEffect(() => {
+    if (couponResult?.valid) setVideoError(false);
+  }, [couponResult?.valid]);
 
   const handleValidateCoupon = async () => {
     setError(null);
@@ -63,16 +69,22 @@ export function DobackSoft({ onBack }) {
     }
   };
 
+  const handleCopyCode = useCallback(() => {
+    if (couponResult?.accessCode) {
+      navigator.clipboard.writeText(couponResult.accessCode);
+    }
+  }, [couponResult?.accessCode]);
+
   return (
     <div className="dobacksoft">
       <div className="dobacksoft-header">
-        <button className="back-btn" onClick={onBack}>← Hub</button>
+        <button className="back-btn" onClick={onBack}>← Constructor de Mundos</button>
       </div>
 
       <div className="dobacksoft-hero">
         <div className="dobacksoft-icon">🚒</div>
         <h1 className="dobacksoft-title">DobackSoft</h1>
-        <p className="dobacksoft-tagline">Fire Simulator · Acceso por cupón</p>
+        <p className="dobacksoft-tagline">Protege tu comunidad · Acceso anticipado</p>
         <span className="dobacksoft-badge">Primeros 1000 ciudadanos</span>
       </div>
 
@@ -118,18 +130,68 @@ export function DobackSoft({ onBack }) {
           <div className={`dobacksoft-coupon-result ${couponResult.valid ? 'valid' : 'invalid'}`}>
             <p>{couponResult.message}</p>
             {couponResult.valid && (
-              <button
-                className="dobacksoft-register-btn"
-                onClick={handleRegister}
-                disabled={loading}
-              >
-                Reservar por €{couponResult.price}/mes
-              </button>
+              <>
+                {couponResult.accessCode && (
+                  <div className="dobacksoft-access-code">
+                    <span className="dobacksoft-access-label">Código de acceso a DobackSoft (Fire Simulator):</span>
+                    <div className="dobacksoft-access-row">
+                      <code className="dobacksoft-access-value">{couponResult.accessCode}</code>
+                      <button
+                        type="button"
+                        className="dobacksoft-copy-btn"
+                        onClick={handleCopyCode}
+                        title="Copiar código"
+                      >
+                        Copiar
+                      </button>
+                    </div>
+                  </div>
+                )}
+                <button
+                  className="dobacksoft-register-btn"
+                  onClick={handleRegister}
+                  disabled={loading}
+                >
+                  Reservar por €{couponResult.price}/mes
+                </button>
+              </>
             )}
           </div>
         )}
         {error && <p className="dobacksoft-error">{error}</p>}
       </div>
+
+      {couponResult?.valid && (
+        <div className="dobacksoft-promo-content">
+          <section className="dobacksoft-video-section">
+            <h3 className="dobacksoft-section-title">Trailer</h3>
+            <div className="dobacksoft-video-wrapper">
+              {videoError ? (
+                <div className="dobacksoft-video-fallback">
+                  <span>Trailer próximamente.</span>
+                  <small>Ejecuta <code>python scripts/crear_video_dobacksoft.py</code> para generarlo.</small>
+                </div>
+              ) : (
+                <video
+                  className="dobacksoft-video"
+                  controls
+                  preload="metadata"
+                  onError={() => setVideoError(true)}
+                >
+                  <source src="/api/dobacksoft/trailer" type="video/mp4" />
+                </video>
+              )}
+            </div>
+          </section>
+          <section className="dobacksoft-game-section">
+            <h3 className="dobacksoft-section-title">Tu código de acceso</h3>
+            <p className="dobacksoft-game-desc">
+              Conserva este código para acceder al simulador DobackSoft (camión de bomberos) cuando esté disponible.
+              Las Damas y otros minijuegos son gratis desde el Hub.
+            </p>
+          </section>
+        </div>
+      )}
 
       <div className="dobacksoft-features">
         {FEATURES.map((f) => (

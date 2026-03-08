@@ -27,10 +27,29 @@ export class World {
 
   _initRefuges() {
     for (let i = 0; i < Math.min(16, WORLD_PLOTS); i++) {
-      const refuge = new Refuge(i, null);
+      const refuge = new Refuge(i, null, `Refugio ${i + 1}`);
       refuge.initNodes();
       this.refuges.push(refuge);
     }
+  }
+
+  addRefugeNode(refugeIndex, type, gridX, gridY, opts = {}) {
+    const refuge = this.refuges[refugeIndex];
+    if (!refuge || !refuge.ownerId) return null;
+    if (type === 'solar') return refuge.addSolarNode(gridX, gridY, opts.radius ?? 2) ? { type: 'solar', gridX, gridY } : null;
+    if (type === 'mineral') return refuge.addMineralNode(gridX, gridY, opts.capacity ?? 50) ? { type: 'mineral', gridX, gridY } : null;
+    return null;
+  }
+
+  /** Crea un refugio personal 32×32 para un jugador (su casa). */
+  createRefuge({ name = 'Mi casa', ownerId = null } = {}) {
+    if (this.refuges.length >= WORLD_PLOTS) return null;
+    const plotIndex = this.refuges.length;
+    const refuge = new Refuge(plotIndex, ownerId, name);
+    refuge.initNodes();
+    this.refuges.push(refuge);
+    this.addLog(`Refugio "${refuge.name}" creado (32×32)`, 'system');
+    return refuge;
   }
 
   _initBlueprints() {

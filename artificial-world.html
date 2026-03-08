@@ -220,7 +220,7 @@
         <aside class="demo-sidebar">
           <div class="panel-tabs">
             <div class="panel-tab active" data-tab="control">Control</div>
-            <div class="panel-tab" data-tab="sombra">Sombra</div>
+            <div class="panel-tab" data-tab="sombra">Control Total</div>
             <div class="panel-tab" data-tab="entidades">Entidades</div>
             <div class="panel-tab" data-tab="eventos">Eventos</div>
             <div class="panel-tab" data-tab="archivo">Archivo</div>
@@ -234,9 +234,9 @@
               <button id="btnReset" class="panel-btn">Reiniciar</button>
             </div>
             <div id="panelSombra" class="panel-pane" style="display:none">
-              <h3>Modo Sombra</h3>
-              <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.5rem">Controla Amiguisimo por turnos. Flechas/WASD mover. Espacio esperar (avanza el resto).</p>
-              <button id="btnActivarSombra" class="panel-btn">Activar (Amiguisimo)</button>
+              <h3>Control Total</h3>
+              <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.5rem">Gestiona a CUALQUIER agente. Selecciona uno en la pestaña Entidades y activa. Flechas/WASD mover. Espacio esperar.</p>
+              <button id="btnActivarSombra" class="panel-btn">Activar Control Total</button>
               <button id="btnMoverPos" class="panel-btn">Mover a posición</button>
               <button id="btnIrRefugio" class="panel-btn">Ir al refugio</button>
               <button id="btnRecoger" class="panel-btn">Recoger objetivo</button>
@@ -437,7 +437,7 @@
       let hoveredAgent = null;
       let mouseX = 0, mouseY = 0;
       let modoSombra = false;
-      let entidadSombraId = 7;
+      let entidadSombraId = 7;  // Por defecto; en Control Total se usa entidadSeleccionadaId
       let esperandoClickMover = false;
       let entidadSeleccionadaId = null;
       const velocidades = [0.25, 0.5, 1, 2, 4];
@@ -855,6 +855,8 @@
           ctx.globalAlpha = 1;
         }
 
+        ctx.font = '11px "Segoe UI", sans-serif';
+        ctx.textAlign = 'center';
         for (const agent of agents) {
           const isHovered = hoveredAgent === agent;
           const isSombra = modoSombra && agent.id === entidadSombraId;
@@ -865,6 +867,14 @@
           ctx.strokeStyle = isSombra ? '#ffb74d' : (isHovered ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.25)');
           ctx.lineWidth = (isSombra || isHovered) ? 2 : 1;
           ctx.stroke();
+          // Nombre
+          ctx.fillStyle = isSombra ? '#ffb74d' : '#e8eaed';
+          ctx.fillText((isSombra ? '[TÚ] ' : '') + agent.nombre, agent.x, agent.y - CONFIG.agentRadius - 6);
+          // Acción
+          ctx.font = '9px "Segoe UI", sans-serif';
+          ctx.fillStyle = 'rgba(255,255,255,0.7)';
+          ctx.fillText(agent.accion || '-', agent.x, agent.y + CONFIG.agentRadius + 10);
+          ctx.font = '11px "Segoe UI", sans-serif';
         }
       }
 
@@ -1012,7 +1022,8 @@
         running = false;
         document.getElementById('btnPlay').textContent = 'Iniciar';
         document.getElementById('sombraStatus').style.display = modoSombra ? 'flex' : 'none';
-        this.textContent = modoSombra ? 'Desactivar Sombra' : 'Activar (Amiguisimo)';
+        if (modoSombra && entidadSeleccionadaId) entidadSombraId = entidadSeleccionadaId;
+        this.textContent = modoSombra ? 'Desactivar Control Total' : 'Activar Control Total';
         this.classList.toggle('sombra-activa', modoSombra);
       });
       document.getElementById('btnMoverPos').addEventListener('click', function() {

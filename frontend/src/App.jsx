@@ -1,16 +1,22 @@
 import { useState, useEffect } from 'react';
+import { Landing } from './components/Landing';
 import { Hub } from './components/Hub';
 import { SimulationView } from './components/SimulationView';
 import { MinigamesLobby } from './components/MinigamesLobby';
 import { DobackSoft } from './components/DobackSoft';
 import { MissionControl } from './components/MissionControl';
 
-// Valid routes: 'hub' | 'simulation' | 'minigames' | 'dobacksoft' | 'missioncontrol'
-const VALID_ROUTES = ['hub', 'simulation', 'minigames', 'dobacksoft', 'missioncontrol'];
+const ONBOARDED_KEY = 'aw_onboarded';
+const VALID_ROUTES = ['landing', 'hub', 'simulation', 'minigames', 'dobacksoft', 'missioncontrol'];
+
+function hasOnboarded() {
+  return typeof window !== 'undefined' && localStorage.getItem(ONBOARDED_KEY) === '1';
+}
 
 function getInitialRoute() {
   const hash = window.location.hash.replace('#', '');
-  return VALID_ROUTES.includes(hash) ? hash : 'hub';
+  if (VALID_ROUTES.includes(hash)) return hash;
+  return hasOnboarded() ? 'hub' : 'landing';
 }
 
 export default function App() {
@@ -28,10 +34,16 @@ export default function App() {
     window.location.hash = target === 'hub' ? '' : target;
   };
 
-  if (route === 'simulation') return <SimulationView onBack={() => navigate('hub')} />;
-  if (route === 'minigames')  return <MinigamesLobby onBack={() => navigate('hub')} />;
-  if (route === 'dobacksoft') return <DobackSoft onBack={() => navigate('hub')} />;
-  if (route === 'missioncontrol') return <MissionControl onBack={() => navigate('hub')} />;
+  const handleOnboardingComplete = () => {
+    localStorage.setItem(ONBOARDED_KEY, '1');
+    navigate('hub');
+  };
+
+  if (route === 'landing')        return <Landing onEnter={handleOnboardingComplete} />;
+  if (route === 'simulation')     return <SimulationView onBack={() => navigate('hub')} onNavigate={navigate} />;
+  if (route === 'minigames')      return <MinigamesLobby onBack={() => navigate('hub')} />;
+  if (route === 'dobacksoft')     return <DobackSoft onBack={() => navigate('hub')} />;
+  if (route === 'missioncontrol') return <MissionControl onBack={() => navigate('hub')} onNavigate={navigate} />;
 
   return <Hub onNavigate={navigate} />;
 }

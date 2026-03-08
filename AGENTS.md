@@ -21,8 +21,7 @@ REJECT si:
 ## JavaScript / TypeScript (frontend y backend)
 
 REJECT si:
-- URLs hardcodeadas como `http://localhost:9998` o similares → usar `config/api.ts` o variables de entorno
-- Requests a la API sin incluir `organizationId` en headers o body
+- URLs hardcodeadas como `http://localhost:3001` o similares → usar `config/api.js` o variables de entorno
 - Se importa `* as React` → usar imports nombrados `{ useState, useEffect }`
 - Componentes React superan 300 líneas
 - Se usan colores hexadecimales hardcodeados en className → usar clases Tailwind
@@ -63,8 +62,8 @@ REJECT si:
 
 REJECT si:
 - Se crean módulos o rutas fuera del menú oficial del proyecto
-- Se cambian los puertos 9998 (backend) o 5174 (frontend)
-- Se propone un script de inicio distinto a `iniciar.ps1`
+- Se cambian los puertos 3001 (backend) o 5173 (frontend)
+- Se propone un script de inicio distinto a `scripts\iniciar_fullstack.ps1`
 
 ---
 
@@ -93,3 +92,6 @@ SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_interacciones_so
 ### Inicio
 - Python: `python principal.py`
 - Fullstack: `.\scripts\iniciar_fullstack.ps1` (backend 3001, frontend 5173)
+
+### Documentación
+- `docs/MODOS_EJECUCION.md` — Diferencias entre Python (pygame) y Fullstack (web)
