@@ -7,11 +7,12 @@ import { MinigamesLobby } from './components/MinigamesLobby';
 import { DobackSoft } from './components/DobackSoft';
 import { FireSimulator } from './components/FireSimulator';
 import { MissionControl } from './components/MissionControl';
+import { MysticQuestView } from './components/MysticQuestView';
 import { AdminPanel } from './components/AdminPanel';
 import { Docs } from './components/Docs';
 
 const ONBOARDED_KEY = 'aw_onboarded';
-const VALID_ROUTES = ['home', 'landing', 'hub', 'simulation', 'minigames', 'dobacksoft', 'firesimulator', 'missioncontrol', 'admin', 'docs'];
+const VALID_ROUTES = ['home', 'landing', 'hub', 'simulation', 'minigames', 'dobacksoft', 'firesimulator', 'missioncontrol', 'mysticquest', 'admin', 'docs'];
 
 function hasOnboarded() {
   return typeof window !== 'undefined' && localStorage.getItem(ONBOARDED_KEY) === '1';
@@ -67,6 +68,7 @@ export default function App() {
   if (route === 'dobacksoft')     return <DobackSoft onBack={() => navigate('hub')} onNavigate={navigate} />;
   if (route === 'firesimulator')  return <FireSimulator onBack={() => navigate('dobacksoft')} />;
   if (route === 'missioncontrol') return <MissionControl onBack={() => navigate('hub')} onNavigate={navigate} />;
+  if (route === 'mysticquest') return <MysticQuestView onBack={() => navigate('hub')} onNavigate={navigate} />;
   if (route === 'admin') return <AdminPanel onBack={() => navigate('hub')} />;
   if (route === 'docs') return <Docs onBack={() => navigate('hub')} />;
 

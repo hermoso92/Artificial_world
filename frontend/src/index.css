@@ -1269,6 +1269,20 @@ body {
   background: linear-gradient(135deg, var(--color-card) 0%, rgba(0,212,255,0.04) 100%);
   border: 1px solid rgba(0,212,255,0.12);
   border-radius: 14px;
+  position: relative;
+}
+.hub-personal[style*="--seed-accent"] {
+  border-color: rgba(167, 139, 250, 0.25);
+  border-color: color-mix(in srgb, var(--seed-accent) 40%, transparent);
+}
+.hub-seed-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
   padding: 24px 28px;
   margin-bottom: 40px;
   display: flex;
@@ -1571,6 +1585,134 @@ body {
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--game-color, var(--color-primary));
+}
+
+/* =========================================================
+   MYSTIC QUEST
+   ========================================================= */
+.mysticquest {
+  min-height: 100vh;
+  padding: 40px 24px;
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--mystic-bg, #0f0a1a);
+}
+.mysticquest-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.mysticquest-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--mystic-accent, #a78bfa);
+}
+.mysticquest-hero {
+  margin-bottom: 32px;
+}
+.mysticquest-tagline {
+  font-size: 1rem;
+  color: var(--mystic-amber, #f59e0b);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.mysticquest-desc {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.mysticquest-content {
+  margin-bottom: 32px;
+}
+.mysticquest-section {
+  background: rgba(167, 139, 250, 0.06);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+.mysticquest-section-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--mystic-accent);
+  margin-bottom: 12px;
+}
+.mysticquest-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+.mysticquest-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.mysticquest-cta {
+  align-self: flex-start;
+  background: var(--mystic-accent);
+  color: #0f0a1a;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.mysticquest-cta:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+.mysticquest-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.mysticquest-footer {
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.mysticquest-badge {
+  background: rgba(167, 139, 250, 0.2);
+  color: var(--mystic-accent);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.mysticquest-footer > span:last-child {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.mysticquest-quests { margin-bottom: 28px; }
+.mysticquest-quest-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+.mysticquest-quest-card {
+  background: rgba(167, 139, 250, 0.04);
+  border: 1px solid rgba(167, 139, 250, 0.15);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+}
+.mysticquest-quest-icon { font-size: 1.4rem; display: block; margin-bottom: 8px; }
+.mysticquest-quest-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--mystic-accent);
+  margin-bottom: 6px;
+}
+.mysticquest-quest-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.45;
 }
 
 /* =========================================================

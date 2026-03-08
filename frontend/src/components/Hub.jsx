@@ -14,6 +14,19 @@ const TIER_LABELS = {
   fundador: 'Fundador',
 };
 
+/** Acento visual por semilla de civilización (visualTone2d/3d). */
+const SEED_ACCENT = {
+  'spiritual-community': { color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.12)' },
+  'frontier-tribe': { color: '#22c55e', bg: 'rgba(34, 197, 94, 0.12)' },
+  'technocrat-refuge': { color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.12)' },
+  'warrior-kingdom': { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.12)' },
+  'merchant-city': { color: '#eab308', bg: 'rgba(234, 179, 8, 0.12)' },
+  'paranoid-colony': { color: '#64748b', bg: 'rgba(100, 116, 139, 0.12)' },
+  'decadent-empire': { color: '#a855f7', bg: 'rgba(168, 85, 247, 0.12)' },
+  'tryndamere-champion': { color: '#f97316', bg: 'rgba(249, 115, 22, 0.12)' },
+  'synthesis-ai': { color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.12)' },
+};
+
 export function Hub({ onNavigate }) {
   const { t } = useTranslation();
   const [hero, setHero] = useState(null);
@@ -89,6 +102,23 @@ export function Hub({ onNavigate }) {
       bg: '#001a0d',
       available: true,
     },
+    {
+      id: 'mysticquest',
+      icon: '🔮',
+      title: t('hub.pillars.mysticquest_title'),
+      subtitle: t('hub.pillars.mysticquest_subtitle'),
+      description: t('hub.pillars.mysticquest_desc'),
+      features: [
+        t('hub.pillars.mysticquest_f1'),
+        t('hub.pillars.mysticquest_f2'),
+        t('hub.pillars.mysticquest_f3'),
+        t('hub.pillars.mysticquest_f4'),
+      ],
+      color: '#a78bfa',
+      bg: '#0f0a1a',
+      available: true,
+      badge: t('hub.pillars.mysticquest_badge'),
+    },
   ];
 
   const fetchAll = () => {
@@ -110,6 +140,9 @@ export function Hub({ onNavigate }) {
   const worldCount = hero?.aliveWorlds?.length ?? 0;
   const heroName = hero?.name;
   const modeName = hero?.modes?.find((m) => m.id === hero?.activeMode)?.label ?? hero?.activeMode;
+  const activeWorld = hero?.aliveWorlds?.[0];
+  const seedId = activeWorld?.civilizationSeed?.id;
+  const seedAccent = seedId ? SEED_ACCENT[seedId] : null;
 
   return (
     <div className="hub" style={{ position: 'relative' }}>
@@ -130,7 +163,15 @@ export function Hub({ onNavigate }) {
         </div>
       )}
 
-      <div className="hub-personal">
+      <div
+        className="hub-personal"
+        style={seedAccent ? { '--seed-accent': seedAccent.color, '--seed-bg': seedAccent.bg } : undefined}
+      >
+        {seedAccent && activeWorld?.civilizationSeed?.label && (
+          <span className="hub-seed-badge" style={{ background: seedAccent.bg, color: seedAccent.color }}>
+            {activeWorld.civilizationSeed.label}
+          </span>
+        )}
         <div className="hub-personal-greeting">
           {heroName ? (
             <>{t('hub.welcome_prefix', 'Bienvenido, ')} <strong>{heroName}</strong></>

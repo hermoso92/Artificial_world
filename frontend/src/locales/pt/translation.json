@@ -87,8 +87,36 @@
       "missioncontrol_f1": "Vista em direto",
       "missioncontrol_f2": "Quem faz o quê",
       "missioncontrol_f3": "Eventos do mundo",
-      "missioncontrol_f4": "História da tua civilização"
+      "missioncontrol_f4": "História da tua civilização",
+      "mysticquest_title": "Mystic Quest",
+      "mysticquest_subtitle": "Série de visões",
+      "mysticquest_desc": "Cria um santuário com a semente espiritual. Ritual, memória e presságios. O teu guia visionário espera.",
+      "mysticquest_f1": "Semente Comunidade espiritual",
+      "mysticquest_f2": "Quests emergentes",
+      "mysticquest_f3": "Velas, pedra e símbolos",
+      "mysticquest_f4": "História nascida do ritual",
+      "mysticquest_badge": "Série"
     }
+  },
+  "mysticquest": {
+    "back": "← Hub",
+    "badge": "Série",
+    "tagline": "Série de visões",
+    "desc": "Cria um santuário com a semente espiritual. Velas, pedra e símbolos. O teu guia visionário espera.",
+    "how_title": "Como começar",
+    "step1": "Escolhe a semente Comunidade espiritual ao criar o teu mundo",
+    "step2": "Constrói o teu santuário e observa como emerge a história",
+    "step3": "Os presságios e rituais darão forma às tuas quests",
+    "enter_world": "Entrar no teu mundo →",
+    "hint": "Se ainda não tens mundo, cria um com a semente espiritual no onboarding.",
+    "footer": "Comunidade espiritual · Guia visionário · Memória e ritual",
+    "quests_title": "Quests da série",
+    "quest1_title": "Encontra o símbolo",
+    "quest1_desc": "O santuário guarda um símbolo oculto. Explora, constrói e deixa a memória do mundo guiar-te.",
+    "quest2_title": "Protege o santuário",
+    "quest2_desc": "O teu refúgio é o centro ritual. Mantém os teus habitantes vivos, alimentados e em paz. A coesão é a chave.",
+    "quest3_title": "A crónica do ritual",
+    "quest3_desc": "Observa como a história emerge dos eventos. Cada tick é uma linha na crónica da tua civilização."
   },
   "dobacksoft": {
     "tagline": "Protege a tua comunidade · Acesso antecipado",

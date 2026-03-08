@@ -87,8 +87,36 @@
       "missioncontrol_f1": "Vista en vivo",
       "missioncontrol_f2": "Quién hace qué",
       "missioncontrol_f3": "Eventos del mundo",
-      "missioncontrol_f4": "Historia de tu civilización"
+      "missioncontrol_f4": "Historia de tu civilización",
+      "mysticquest_title": "Mystic Quest",
+      "mysticquest_subtitle": "Serie de visiones",
+      "mysticquest_desc": "Crea un santuario con la semilla espiritual. Ritual, memoria y presagios. Tu guía visionario te espera.",
+      "mysticquest_f1": "Semilla Comunidad espiritual",
+      "mysticquest_f2": "Quests emergentes",
+      "mysticquest_f3": "Velas, piedra y símbolos",
+      "mysticquest_f4": "Historia que nace del ritual",
+      "mysticquest_badge": "Serie"
     }
+  },
+  "mysticquest": {
+    "back": "← Hub",
+    "badge": "Serie",
+    "tagline": "Serie de visiones",
+    "desc": "Crea un santuario con la semilla Comunidad espiritual. Velas, piedra y símbolos. Tu guía visionario te espera.",
+    "how_title": "Cómo empezar",
+    "step1": "Elige la semilla Comunidad espiritual al crear tu mundo",
+    "step2": "Construye tu santuario y observa cómo emerge la historia",
+    "step3": "Los presagios y rituales darán forma a tus quests",
+    "enter_world": "Entrar en tu mundo →",
+    "hint": "Si aún no tienes mundo, crea uno con la semilla espiritual desde el onboarding.",
+    "footer": "Comunidad espiritual · Guía visionario · Memoria y ritual",
+    "quests_title": "Quests de la serie",
+    "quest1_title": "Encuentra el símbolo",
+    "quest1_desc": "El santuario guarda un símbolo oculto. Explora, construye y deja que la memoria del mundo te guíe.",
+    "quest2_title": "Protege el santuario",
+    "quest2_desc": "Tu refugio es el centro ritual. Mantén a tus habitantes vivos, alimentados y en paz. La cohesión es la clave.",
+    "quest3_title": "La crónica del ritual",
+    "quest3_desc": "Observa cómo la historia emerge de los eventos. Cada tick es una línea en la crónica de tu civilización."
   },
   "dobacksoft": {
     "tagline": "Protege tu comunidad · Acceso anticipado",

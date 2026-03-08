@@ -40,11 +40,11 @@ export function RefugeManagementPanel({ world, onRelease, refuges = [], playerId
           </div>
           <div className="stat-row">
             <span className="stat-label">Plot:</span>
-            <span className="stat-value">{refuge.plotIndex + 1}</span>
+            <span className="stat-value">{(refuge.plotIndex ?? 0) + 1}</span>
           </div>
           <div className="stat-row">
             <span className="stat-label">Population:</span>
-            <span className="stat-value">{refuge.agentCount ?? 0} / {refuge.maxAgents ?? 50}</span>
+            <span className="stat-value">{Number(refuge.agentCount) || 0} / {Number(refuge.maxAgents) || 50}</span>
           </div>
           <div className="stat-row">
             <span className="stat-label">Solar Nodes:</span>

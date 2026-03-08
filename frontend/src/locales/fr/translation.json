@@ -87,8 +87,36 @@
       "missioncontrol_f1": "Vue en direct",
       "missioncontrol_f2": "Qui fait quoi",
       "missioncontrol_f3": "Événements du monde",
-      "missioncontrol_f4": "Histoire de ta civilisation"
+      "missioncontrol_f4": "Histoire de ta civilisation",
+      "mysticquest_title": "Mystic Quest",
+      "mysticquest_subtitle": "Série de visions",
+      "mysticquest_desc": "Crée un sanctuaire avec la graine spirituelle. Rituel, mémoire et présages. Ton guide visionnaire t'attend.",
+      "mysticquest_f1": "Graine Communauté spirituelle",
+      "mysticquest_f2": "Quêtes émergentes",
+      "mysticquest_f3": "Bougies, pierre et symboles",
+      "mysticquest_f4": "Histoire née du rituel",
+      "mysticquest_badge": "Série"
     }
+  },
+  "mysticquest": {
+    "back": "← Hub",
+    "badge": "Série",
+    "tagline": "Série de visions",
+    "desc": "Crée un sanctuaire avec la graine spirituelle. Bougies, pierre et symboles. Ton guide visionnaire t'attend.",
+    "how_title": "Comment commencer",
+    "step1": "Choisis la graine Communauté spirituelle en créant ton monde",
+    "step2": "Construis ton sanctuaire et observe comment l'histoire émerge",
+    "step3": "Les présages et rituels façonneront tes quêtes",
+    "enter_world": "Entrer dans ton monde →",
+    "hint": "Si tu n'as pas encore de monde, crée-en un avec la graine spirituelle lors de l'onboarding.",
+    "footer": "Communauté spirituelle · Guide visionnaire · Mémoire et rituel",
+    "quests_title": "Quêtes de la série",
+    "quest1_title": "Trouve le symbole",
+    "quest1_desc": "Le sanctuaire garde un symbole caché. Explore, construis et laisse la mémoire du monde te guider.",
+    "quest2_title": "Protège le sanctuaire",
+    "quest2_desc": "Ton refuge est le centre rituel. Garde tes habitants vivants, nourris et en paix. La cohésion est la clé.",
+    "quest3_title": "La chronique du rituel",
+    "quest3_desc": "Observe comment l'histoire émerge des événements. Chaque tick est une ligne dans la chronique de ta civilisation."
   },
   "dobacksoft": {
     "tagline": "Protège ta communauté · Accès anticipé",

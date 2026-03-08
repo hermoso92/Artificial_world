@@ -87,8 +87,36 @@
       "missioncontrol_f1": "Live-Ansicht",
       "missioncontrol_f2": "Wer macht was",
       "missioncontrol_f3": "Weltereignisse",
-      "missioncontrol_f4": "Geschichte deiner Zivilisation"
+      "missioncontrol_f4": "Geschichte deiner Zivilisation",
+      "mysticquest_title": "Mystic Quest",
+      "mysticquest_subtitle": "Visionen-Serie",
+      "mysticquest_desc": "Erschaffe ein Heiligtum mit der spirituellen Saat. Ritual, Erinnerung und Omen. Dein visionärer Führer wartet.",
+      "mysticquest_f1": "Spirituelle Gemeinschafts-Saat",
+      "mysticquest_f2": "Emergente Quests",
+      "mysticquest_f3": "Kerzen, Stein und Symbole",
+      "mysticquest_f4": "Geschichte aus dem Ritual geboren",
+      "mysticquest_badge": "Serie"
     }
+  },
+  "mysticquest": {
+    "back": "← Hub",
+    "badge": "Serie",
+    "tagline": "Visionen-Serie",
+    "desc": "Erschaffe ein Heiligtum mit der spirituellen Saat. Kerzen, Stein und Symbole. Dein visionärer Führer wartet.",
+    "how_title": "So startest du",
+    "step1": "Wähle die spirituelle Gemeinschafts-Saat beim Erstellen deiner Welt",
+    "step2": "Baue dein Heiligtum und beobachte, wie die Geschichte entsteht",
+    "step3": "Omen und Rituale werden deine Quests formen",
+    "enter_world": "In deine Welt eintreten →",
+    "hint": "Wenn du noch keine Welt hast, erstelle eine mit der spirituellen Saat im Onboarding.",
+    "footer": "Spirituelle Gemeinschaft · Visionärer Führer · Erinnerung und Ritual",
+    "quests_title": "Serien-Quests",
+    "quest1_title": "Finde das Symbol",
+    "quest1_desc": "Das Heiligtum birgt ein verstecktes Symbol. Erkunde, baue und lass die Erinnerung der Welt dich führen.",
+    "quest2_title": "Schütze das Heiligtum",
+    "quest2_desc": "Dein Refugium ist das Ritualzentrum. Halte deine Bewohner am Leben, satt und in Frieden. Zusammenhalt ist der Schlüssel.",
+    "quest3_title": "Die Chronik des Rituals",
+    "quest3_desc": "Beobachte, wie die Geschichte aus den Ereignissen entsteht. Jeder Tick ist eine Zeile in der Chronik deiner Zivilisation."
   },
   "dobacksoft": {
     "tagline": "Schütze deine Gemeinschaft · Frühzugang",

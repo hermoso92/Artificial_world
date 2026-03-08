@@ -87,8 +87,36 @@
       "missioncontrol_f1": "Live view",
       "missioncontrol_f2": "Who does what",
       "missioncontrol_f3": "World events",
-      "missioncontrol_f4": "History of your civilization"
+      "missioncontrol_f4": "History of your civilization",
+      "mysticquest_title": "Mystic Quest",
+      "mysticquest_subtitle": "Vision series",
+      "mysticquest_desc": "Create a sanctuary with the spiritual seed. Ritual, memory and omens. Your visionary guide awaits.",
+      "mysticquest_f1": "Spiritual community seed",
+      "mysticquest_f2": "Emergent quests",
+      "mysticquest_f3": "Candles, stone and symbols",
+      "mysticquest_f4": "History born from ritual",
+      "mysticquest_badge": "Series"
     }
+  },
+  "mysticquest": {
+    "back": "← Hub",
+    "badge": "Series",
+    "tagline": "Vision series",
+    "desc": "Create a sanctuary with the Spiritual community seed. Candles, stone and symbols. Your visionary guide awaits.",
+    "how_title": "How to start",
+    "step1": "Choose the Spiritual community seed when creating your world",
+    "step2": "Build your sanctuary and watch history emerge",
+    "step3": "Omens and rituals will shape your quests",
+    "enter_world": "Enter your world →",
+    "hint": "If you don't have a world yet, create one with the spiritual seed from onboarding.",
+    "footer": "Spiritual community · Visionary guide · Memory and ritual",
+    "quests_title": "Series quests",
+    "quest1_title": "Find the symbol",
+    "quest1_desc": "The sanctuary holds a hidden symbol. Explore, build and let the world's memory guide you.",
+    "quest2_title": "Protect the sanctuary",
+    "quest2_desc": "Your refuge is the ritual centre. Keep your inhabitants alive, fed and at peace. Cohesion is the key.",
+    "quest3_title": "The ritual chronicle",
+    "quest3_desc": "Watch how history emerges from events. Each tick is a line in your civilization's chronicle."
   },
   "dobacksoft": {
     "tagline": "Protect your community · Early access",
