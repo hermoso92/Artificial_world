@@ -1,0 +1,39 @@
+{
+  "name": "alfred-dev",
+  "description": "Plugin de ingeniería de software completa: 8 agentes de núcleo y 7 opcionales con personalidad propia, memoria persistente por proyecto, quality gates y flujos automatizados desde la idea hasta producción.",
+  "version": "0.3.4",
+  "author": {
+    "name": "00b"
+  },
+  "homepage": "https://686f6c61.github.io/alfred-dev/",
+  "repository": "https://github.com/686f6c61/alfred-dev",
+  "license": "MIT",
+  "keywords": ["sdlc", "agents", "security", "tdd", "devops", "qa", "product", "spanish", "seo", "ux", "data"],
+  "commands": [
+    "./commands/alfred.md",
+    "./commands/audit.md",
+    "./commands/config.md",
+    "./commands/feature.md",
+    "./commands/fix.md",
+    "./commands/gui.md",
+    "./commands/help.md",
+    "./commands/ship.md",
+    "./commands/spike.md",
+    "./commands/status.md",
+    "./commands/update.md"
+  ],
+  "agents": [
+    "./agents/optional/data-engineer.md",
+    "./agents/optional/ux-reviewer.md",
+    "./agents/optional/performance-engineer.md",
+    "./agents/optional/github-manager.md",
+    "./agents/optional/seo-specialist.md",
+    "./agents/optional/copywriter.md",
+    "./agents/optional/librarian.md"
+  ],
+  "skills": [
+    "./skills/incident-response.md",
+    "./skills/release-planning.md",
+    "./skills/dependency-strategy.md"
+  ]
+}

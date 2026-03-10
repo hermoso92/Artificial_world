@@ -4,10 +4,12 @@
  */
 import { WebSocketServer } from 'ws';
 import { getWorld } from '../simulation/worldManager.js';
+import { getMissionControlSnapshot } from '../services/missionControl/aggregator.js';
 import { recordBroadcast } from '../services/diagnostics.js';
 import logger from '../utils/logger.js';
 
 let wss = null;
+let heartbeatInterval = null;
 
 export function initWebSocket(server) {
   wss = new WebSocketServer({ server, path: '/ws' });
@@ -36,9 +38,18 @@ export function initWebSocket(server) {
       }));
       recordBroadcast(world.tick, agentCount);
     } catch (err) { logger.warn('[ws] Error enviando estado inicial:', err.message); }
+
+    try {
+      ws.send(JSON.stringify({
+        type: 'mission-control:snapshot',
+        data: getMissionControlSnapshot({ eventLimit: 60 }),
+      }));
+    } catch (err) {
+      logger.warn('[ws] Error enviando snapshot mission-control:', err.message);
+    }
   });
 
-  const interval = setInterval(() => {
+  heartbeatInterval = setInterval(() => {
     wss?.clients.forEach((ws) => {
       if (!ws.isAlive) return ws.terminate();
       ws.isAlive = false;
@@ -46,8 +57,24 @@ export function initWebSocket(server) {
     });
   }, 30000);
 
-  wss.on('close', () => clearInterval(interval));
+  wss.on('close', () => {
+    if (heartbeatInterval) {
+      clearInterval(heartbeatInterval);
+      heartbeatInterval = null;
+    }
+  });
   return wss;
+}
+
+export function closeWebSocket() {
+  if (heartbeatInterval) {
+    clearInterval(heartbeatInterval);
+    heartbeatInterval = null;
+  }
+  if (wss) {
+    wss.close();
+    wss = null;
+  }
 }
 
 export function broadcastSimulationState(payload) {
@@ -75,6 +102,14 @@ export function broadcastLog(level, message, source) {
     source: source ?? 'server',
     timestamp: new Date().toISOString(),
   });
+  wss.clients.forEach((ws) => {
+    if (ws.readyState === 1) ws.send(msg);
+  });
+}
+
+export function broadcastMissionControlMessage(message) {
+  if (!wss) return;
+  const msg = JSON.stringify(message);
   wss.clients.forEach((ws) => {
     if (ws.readyState === 1) ws.send(msg);
   });

@@ -1,0 +1,110 @@
+# 📐 REGLAS CURSOR DOBACKSOFT (StabilSafe V3)
+
+> **Contexto completo:** [AGENTS.md](AGENTS.md) (multi-tenant, auth, DoD, rutas por ámbito). Skill: [.cursor/skills/dobacksoft-stabilsafe/](.cursor/skills/dobacksoft-stabilsafe/).
+
+## 🎭 COMPORTAMIENTO OBLIGATORIO
+
+**Actúa como programador en pareja especializado en DobackSoft.**
+
+### **Reglas de Comunicación:**
+- ✅ **Siempre explicar ANTES de hacer cambios** - "Voy a modificar X porque Y"
+- ✅ **Pedir confirmación explícita** antes de ejecutar comandos
+- ✅ **Reportar progreso** durante procesos largos
+- ✅ **Explicar errores** con contexto y solución propuesta
+
+### **Reglas de Inicio del Sistema:**
+- ❌ **NUNCA iniciar backend/frontend** (ya corren en 2º plano)
+- ✅ **Usar SIEMPRE `iniciar.ps1`** para inicio completo del sistema
+- ✅ **Backend SIEMPRE en puerto 9998** - no cambiar nunca
+- ✅ **Frontend SIEMPRE en puerto 5174** - no cambiar nunca
+
+### **Reglas de Código:**
+- ✅ **Un archivo por turno** - nunca múltiples archivos simultáneamente
+- ✅ **Un diff agrupado** - todas las modificaciones en un bloque
+- ✅ **Formato obligatorio:**
+  ```typescript
+  // ... existing code ...
+  // cambio aquí
+  // ... existing code ...
+  ```
+- ✅ **Antes de editar → leer contexto cercano** (imports, funciones relacionadas)
+
+### **Reglas Técnicas:**
+- ✅ **NUNCA hardcodear URLs** - usar `frontend/src/config/api.ts`
+- ✅ **NUNCA usar console.log** - usar `logger` de `utils/logger`
+- ✅ **Siempre incluir filtro `organizationId`** en requests
+- ✅ **Siempre usar TypeScript estricto** - no `any` sin justificación
+
+### **Reglas de Comandos:**
+- ✅ **Siempre proponer y pedir confirmación** antes de ejecutar comandos
+- ✅ **Añadir `| cat` en comandos de salida** (git log, head, less)
+- ✅ **Procesos largos → ejecutar en segundo plano**
+
+### **Reglas de Windows:**
+- ✅ **Scripts PowerShell como `iniciar.ps1`** - no bash ni otros
+- ✅ **Usar rutas Windows** (`\` no `/`)
+- ✅ **Comandos compatibles con PowerShell**
+
+### **Reglas de Documentación y Scripts:**
+- ✅ **NUNCA crear archivos .md en la raíz** - usar carpetas de `docs/`
+- ✅ **Documentación MODULAR en `docs/`** con estructura:
+  - `docs/00-INICIO/` - Guías de inicio y configuración
+  - `docs/00-GENERAL/` - Arquitectura y convenciones generales
+  - `docs/MODULOS/[modulo]/` - **Documentación por módulo funcional**
+    - `dashboard/` - Panel de control
+    - `estabilidad/` - Análisis de estabilidad
+    - `telemetria/` - Datos CAN + GPS
+    - `ia/` - Inteligencia artificial
+    - `geofences/` - Geocercas
+    - `operaciones/` - Eventos, alertas, mantenimiento
+    - `reportes/` - Generación de reportes
+    - `administracion/` - Gestión del sistema
+    - `upload/` - Sistema de subida
+    - `autenticacion/` - Seguridad y auth
+    - `vehiculos/` - Gestión de flota
+    - `base-conocimiento/` - Docs internas
+  - `docs/BACKEND/` - Documentación técnica backend
+  - `docs/FRONTEND/` - Documentación técnica frontend
+  - `docs/INFRAESTRUCTURA/` - Docker, CI/CD, deploy
+  - `docs/API/` - Documentación completa de APIs
+  - `docs/DESARROLLO/` - Guías de desarrollo
+  - `docs/CALIDAD/` - Auditorías y checklists
+  - `docs/HISTORICO/` - Versiones anteriores
+- ✅ **Scripts SIEMPRE en `scripts/`** con categorías:
+  - `scripts/analisis/` - Scripts de análisis de datos
+  - `scripts/testing/` - Scripts de testing
+  - `scripts/setup/` - Scripts de inicialización
+  - `scripts/utils/` - Scripts de utilidad
+  - `scripts/historico/` - Scripts obsoletos
+- ✅ **Archivos temporales en `temp/`** - logs, json, backups
+- ✅ **Archivos SQL en `database/`** - scripts y migraciones
+- ✅ **Solo README.md en la raíz** - único .md permitido
+- ✅ **Raíz limpia** - solo archivos esenciales (20 máximo)
+- ✅ **Cada módulo tiene su carpeta** en `docs/MODULOS/`
+
+## 🚨 REGLAS CRÍTICAS (NO VIOLAR NUNCA)
+
+1. **NUNCA iniciar backend/frontend** - usar `iniciar.ps1`
+2. **NUNCA hardcodear URLs** - usar `config/api.ts`
+3. **NUNCA usar console.log** - usar `logger`
+4. **NUNCA cambiar puertos** - 9998 backend, 5174 frontend
+5. **NUNCA crear módulos fuera del menú oficial**
+6. **NUNCA exponer datos entre organizaciones**
+7. **NUNCA crear archivos .md en la raíz** - usar `docs/`
+8. **NUNCA dejar scripts temporales en la raíz** - usar `scripts/`
+
+## 📋 MÉTODO DE INICIO ÚNICO
+
+### **Script Oficial: `iniciar.ps1`**
+- ✅ **Script único y oficial** para iniciar todo el sistema
+- ✅ **Libera puertos automáticamente** (9998, 5174)
+- ✅ **Verifica archivos necesarios** antes de iniciar
+- ✅ **Inicia backend y frontend** en ventanas separadas
+- ✅ **Verifica que ambos servicios funcionen** antes de continuar
+- ✅ **Abre navegador automáticamente**
+- ✅ **Muestra credenciales de login**
+
+---
+
+**ESTAS REGLAS SON OBLIGATORIAS Y NO NEGOCIABLES**
+**CUALQUIER VIOLACIÓN REQUIERE CORRECCIÓN INMEDIATA**

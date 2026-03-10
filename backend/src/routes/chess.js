@@ -5,6 +5,7 @@ import { Router } from 'express';
 import { asyncHandler } from '../middleware/asyncHandler.js';
 import { requireBody } from '../middleware/validate.js';
 import logger from '../utils/logger.js';
+import { sanitizeObject } from '../utils/sanitizeSecrets.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -29,7 +30,8 @@ function readAcceptances() {
 
 function writeAcceptances(arr) {
   ensureDataDir();
-  fs.writeFileSync(ACCEPTANCES_FILE, JSON.stringify(arr, null, 2), 'utf8');
+  const sanitized = sanitizeObject(arr);
+  fs.writeFileSync(ACCEPTANCES_FILE, JSON.stringify(sanitized, null, 2), 'utf8');
 }
 
 const router = Router();

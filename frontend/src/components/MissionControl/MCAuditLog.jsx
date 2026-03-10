@@ -46,7 +46,8 @@ export function MCAuditLog() {
     if (!p || typeof p !== 'object') return '-';
     try {
       return JSON.stringify(p);
-    } catch {
+    } catch (err) {
+      logger.debug('[MCAuditLog] bad payload', p);
       return '-';
     }
   };

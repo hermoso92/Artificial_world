@@ -33,6 +33,12 @@ def ejecutar_tick(sim) -> None:
             sim.gestor_ticks.tick_actual, sim.entidades
         )
     sim.actualizar_mundo()
+    if sim.sistema_zonas:
+        sim.sistema_zonas.tick(
+            sim.entidades,
+            sim.bus_eventos,
+            sim.gestor_ticks.tick_actual,
+        )
     sim.despachar_eventos()
     sim._escribir_debug_si_activo()
     if sim.sistema_persistencia:

@@ -1,0 +1,53 @@
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		
+		<!-- PWA Meta Tags -->
+		<meta name="theme-color" content="#0a0b0d">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		<meta name="apple-mobile-web-app-title" content="Artificial World">
+		<link rel="apple-touch-icon" href="/icons/icon-192x192.svg">
+		<link rel="manifest" href="/manifest.webmanifest">
+		
+		<meta name="description" content="Simulación 2D de agentes autónomos con refugios, héroes y memoria. Crea mundos digitales, observa comportamientos, audita decisiones. Motor determinista. Open source." />
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="Artificial World" />
+		<meta property="og:description" content="Constructor de mundos digitales con agentes autónomos. Simulación 2D determinista." />
+		<meta property="og:image" content="https://artificialworld.es/og-image.svg" />
+		<meta property="og:url" content="https://artificialworld.es" />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:title" content="Artificial World" />
+		<meta property="twitter:description" content="Simulación 2D de agentes autónomos con refugios y memoria" />
+		<meta property="twitter:image" content="https://artificialworld.es/og-image.svg" />
+
+		<title>Artificial World — Constructor de Mundos</title>
+
+		<!-- Structured Data -->
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "WebApplication",
+			"name": "Artificial World",
+			"description": "Simulación 2D de agentes autónomos con refugios, héroes y memoria. Motor determinista. Open source.",
+			"applicationCategory": "Simulation",
+			"operatingSystem": "Web"
+		}
+		</script>
+	</head>
+	<body class="bg-[#0a0b0d] text-[#e8eaed] antialiased selection:bg-[#d4a574]/30 selection:text-[#d4a574]">
+		<a href="#main-content" class="skip-link">
+			Saltar al contenido
+		</a>
+		<div id="root"></div>
+		<script type="module" src="/src/main.jsx"></script>
+	</body>
+</html>

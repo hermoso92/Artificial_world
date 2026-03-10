@@ -1,0 +1,493 @@
+---
+import Slide from './Slide.astro';
+---
+
+<!-- SLIDE 11 -->
+<Slide id="moe-ninos" number={11} title="¿Cómo funciona MoE?">
+  <div class="analogy">
+    <p class="analogy-label"><i data-lucide="route"></i> Analogía</p>
+    <p>Imagina un <strong>hospital con médicos especialistas</strong>. Cuando llegas con dolor de muelas, no te atienden todos los médicos: te mandan al dentista. El recepcionista (router) decide a qué especialista mandarte según tu problema.</p>
+  </div>
+  <h3><i data-lucide="users"></i> Así funciona MoE</h3>
+  <ul>
+    <li><i data-lucide="route"></i> El modelo tiene muchos "expertos" (redes neuronales especializadas)</li>
+    <li><i data-lucide="eye"></i> Cuando llega un token, el router lo mira y decide: "esto lo sabe el experto 3 y el experto 7"</li>
+    <li><i data-lucide="zap"></i> Solo esos 2 expertos trabajan, los otros 6 descansan</li>
+    <li><i data-lucide="layers"></i> Las respuestas de los 2 expertos se combinan para dar el resultado final</li>
+  </ul>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="zap"></i> ¿Por qué es brillante?</p>
+    <p>Puedes tener un modelo con 100.000 millones de parámetros, pero en cada pregunta solo usas 20.000 millones &rarr; rápido y barato. Mixtral: 8 expertos, activa 2 por token. Resultado: rendimiento de un modelo 4x mayor con el coste de uno pequeño.</p>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://www.louisbouchard.ai/moe/" target="_blank">Louis Bouchard - MoE Explained Simply (explicación visual)</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 12 -->
+<Slide id="llm" number={12} title="¿Qué es un modelo LLM?">
+  <p><i data-lucide="brain"></i> <strong>Large Language Model</strong>: un modelo de lenguaje a gran escala. Entrenado con cantidades masivas de texto (internet, libros, código...) para predecir el siguiente token dada una secuencia.</p>
+  <div class="icon-grid">
+    <div class="icon-card">
+      <i data-lucide="file-text"></i>
+      <div class="icon-card-content">
+        <strong>Generación de texto</strong>
+        <p>Redacción, resumen, traducción, reformulación de contenido</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="brain"></i>
+      <div class="icon-card-content">
+        <strong>Razonamiento</strong>
+        <p>Lógica, matemáticas, análisis, resolución de problemas complejos</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="code"></i>
+      <div class="icon-card-content">
+        <strong>Código</strong>
+        <p>Generación, depuración, refactorización en múltiples lenguajes</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="globe"></i>
+      <div class="icon-card-content">
+        <strong>Multilingüe</strong>
+        <p>Comprensión y generación en decenas de idiomas simultáneamente</p>
+      </div>
+    </div>
+  </div>
+  <h3><i data-lucide="database"></i> Modelos principales (marzo 2026)</h3>
+  <table>
+    <thead>
+      <tr><th>Modelo</th><th>Empresa</th><th>Context window</th><th>Tipo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Claude Opus 4.6</strong></td><td>Anthropic</td><td>200k tokens</td><td>Propietario</td></tr>
+      <tr><td><strong>Claude Sonnet 4.6</strong></td><td>Anthropic</td><td>200k tokens</td><td>Propietario</td></tr>
+      <tr><td><strong>GPT-5.2</strong></td><td>OpenAI</td><td>128k tokens</td><td>Propietario</td></tr>
+      <tr><td><strong>Gemini 3</strong></td><td>Google</td><td>1M+ tokens</td><td>Propietario</td></tr>
+      <tr><td><strong>Llama 3</strong></td><td>Meta</td><td>128k tokens</td><td>Open source</td></tr>
+      <tr><td><strong>Mistral / Mixtral</strong></td><td>Mistral AI</td><td>32-128k tokens</td><td>Open source</td></tr>
+      <tr><td><strong>Qwen</strong></td><td>Alibaba</td><td>128k tokens</td><td>Open source</td></tr>
+    </tbody>
+  </table>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="layers"></i> Idea clave</p>
+    <p>El modelo no "sabe" cosas: calcula probabilidades sobre patrones aprendidos. La escala importa: capacidades emergentes aparecen con más parámetros. Pero más grande no siempre es mejor para tu caso de uso.</p>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://en.wikipedia.org/wiki/Large_language_model" target="_blank">Wikipedia - Large Language Model</a>
+    <a href="https://arxiv.org/abs/2303.18223" target="_blank">A Survey of Large Language Models (paper)</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 13 -->
+<Slide id="parametros" number={13} title="Parámetros de configuración de un modelo">
+  <h3><i data-lucide="sliders-horizontal"></i> Parámetros principales</h3>
+  <table>
+    <thead>
+      <tr><th>Parámetro</th><th>Rango</th><th>Qué controla</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong><code>temperature</code></strong></td><td>0.0 - 2.0</td><td>Aleatoriedad de la salida. 0 = casi determinista, 0.7 = equilibrio, 1.5+ = creativo</td></tr>
+      <tr><td><strong><code>top_p</code></strong></td><td>0.0 - 1.0</td><td>Nucleus sampling. Solo considera tokens cuya probabilidad acumulada sume hasta p</td></tr>
+      <tr><td><strong><code>top_k</code></strong></td><td>1 - N</td><td>Solo considera los k tokens más probables</td></tr>
+      <tr><td><strong><code>max_tokens</code></strong></td><td>1 - límite</td><td>Límite de tokens en la respuesta (no confundir con context window)</td></tr>
+      <tr><td><strong><code>stop</code></strong></td><td>strings</td><td>Secuencias que cortan la generación</td></tr>
+      <tr><td><strong><code>system</code></strong></td><td>texto</td><td>Instrucciones que definen el comportamiento base del modelo</td></tr>
+      <tr><td><strong><code>frequency_penalty</code></strong></td><td>-2.0 - 2.0</td><td>Penaliza la repetición de tokens</td></tr>
+    </tbody>
+  </table>
+  <h3><i data-lucide="code"></i> Ejemplo práctico: llamada a la API</h3>
+  <div class="code-block">
+    <span class="keyword">import</span> Anthropic <span class="keyword">from</span> <span class="string">"@anthropic-ai/sdk"</span>;<br/><br/>
+    <span class="keyword">const</span> client = <span class="keyword">new</span> Anthropic();<br/>
+    <span class="keyword">const</span> response = <span class="keyword">await</span> client.messages.create(&#123;<br/>
+    &nbsp;&nbsp;model: <span class="string">"claude-sonnet-4-6"</span>,<br/>
+    &nbsp;&nbsp;max_tokens: <span class="string">1024</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Limite de respuesta</span><br/>
+    &nbsp;&nbsp;temperature: <span class="string">0.3</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Bajo = preciso</span><br/>
+    &nbsp;&nbsp;system: <span class="string">"Eres un experto en Python."</span>,<br/>
+    &nbsp;&nbsp;messages: [&#123;<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;role: <span class="string">"user"</span>,<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;content: <span class="string">"Explica list comprehensions"</span><br/>
+    &nbsp;&nbsp;&#125;]<br/>
+    &#125;);
+  </div>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="settings"></i> ¿Cuándo usar qué?</p>
+    <p><strong>temperature 0-0.3:</strong> código, datos, respuestas factuales. <strong>temperature 0.5-0.7:</strong> redacción equilibrada. <strong>temperature 0.8+:</strong> escritura creativa, brainstorming. Regla general: ajusta <code>temperature</code> O <code>top_p</code>, no ambos a la vez.</p>
+  </div>
+  <div class="analogy">
+    <p class="analogy-label">Analogia</p>
+    <p><code>temperature</code> es "cuanto riesgo toma al elegir la siguiente palabra". Un valor bajo es conservador (elige lo seguro), un valor alto es atrevido (puede sorprender o desvariar).</p>
+  </div>
+  <h3><i data-lucide="target"></i> ¿Que hace top_p (nucleus sampling)?</h3>
+  <p>Imagina que el modelo ha calculado las probabilidades de los siguientes tokens posibles:</p>
+  <table>
+    <thead>
+      <tr><th>Token</th><th>Probabilidad</th><th>Prob. acumulada</th><th>¿Entra con top_p=0.9?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>"hola"</strong></td><td>0.40</td><td>0.40</td><td>Si</td></tr>
+      <tr><td><strong>"buenos"</strong></td><td>0.30</td><td>0.70</td><td>Si</td></tr>
+      <tr><td><strong>"saludos"</strong></td><td>0.15</td><td>0.85</td><td>Si</td></tr>
+      <tr><td><strong>"hey"</strong></td><td>0.08</td><td>0.93</td><td>Si (supera 0.9 aqui)</td></tr>
+      <tr><td><strong>"estimado"</strong></td><td>0.04</td><td>0.97</td><td>No (ya se paso de 0.9)</td></tr>
+      <tr><td><strong>"querido"</strong></td><td>0.03</td><td>1.00</td><td>No</td></tr>
+    </tbody>
+  </table>
+  <p>Con <code>top_p=0.9</code> solo se consideran los tokens cuya probabilidad acumulada no supere el 90%. Se descartan los menos probables ("estimado", "querido") y se elige entre los restantes. Cuanto menor el valor, mas conservador: <code>top_p=0.1</code> solo elige entre el top 10% de probabilidad.</p>
+  <h3><i data-lucide="layers"></i> ¿Que hace top_k?</h3>
+  <p>Mas simple: solo mira los <strong>k tokens mas probables</strong>, independientemente de cuanta probabilidad acumulen.</p>
+  <ul>
+    <li><code>top_k=1</code>: siempre elige el token mas probable (greedy, casi determinista)</li>
+    <li><code>top_k=10</code>: elige entre los 10 mas probables</li>
+    <li><code>top_k=50</code>: bastante diverso, 50 candidatos</li>
+    <li><code>top_k=0</code> o sin limite: considera todos los tokens del vocabulario</li>
+  </ul>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="lightbulb"></i> Diferencia clave entre top_p y top_k</p>
+    <p><code>top_k</code> siempre mira un numero fijo de candidatos. <code>top_p</code> es adaptativo: si un token tiene el 95% de probabilidad, con <code>top_p=0.9</code> solo ese entra (1 candidato). Si las probabilidades estan repartidas, pueden entrar muchos. Por eso <code>top_p</code> suele dar mejores resultados: se adapta a cada prediccion.</p>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank">Anthropic - Prompt Engineering</a>
+    <a href="https://platform.openai.com/docs/api-reference/chat/create" target="_blank">OpenAI - API Reference (Chat)</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 14 -->
+<Slide id="prompt-engineering" number={14} title="Prompt engineering: cómo hablarle bien al modelo">
+  <p><i data-lucide="message-square"></i> No es "preguntarle cosas": es <strong>diseñar la entrada</strong> para obtener la salida que necesitas. La calidad del prompt determina la calidad de la respuesta.</p>
+  <h3><i data-lucide="wand-sparkles"></i> Técnicas principales</h3>
+  <table>
+    <thead>
+      <tr><th>Técnica</th><th>Qué es</th><th>Ejemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Zero-shot</strong></td><td>Pregunta directa sin ejemplos</td><td>"Traduce esto al inglés"</td></tr>
+      <tr><td><strong>Few-shot</strong></td><td>Incluir 2-3 ejemplos del formato esperado</td><td>{"'Entrada: X → Salida: Y. Ahora: Z →'"}</td></tr>
+      <tr><td><strong>Chain-of-thought</strong></td><td>"Piensa paso a paso"</td><td>Mejora razonamiento matemático y lógico</td></tr>
+      <tr><td><strong>System prompt</strong></td><td>Define rol, restricciones, formato</td><td>"Eres un experto en seguridad. Responde en JSON"</td></tr>
+      <tr><td><strong>Structured output</strong></td><td>Pedir formato específico</td><td>{"'Devuelve un JSON con los campos: nombre, tipo'"}</td></tr>
+      <tr><td><strong>Prompt negativo</strong></td><td>Decir lo que NO debe hacer</td><td>"No inventes datos. No uses markdown"</td></tr>
+    </tbody>
+  </table>
+  <h3><i data-lucide="target"></i> Antes vs después: el impacto de un buen prompt</h3>
+  <div class="two-cols">
+    <div>
+      <div class="code-block">
+        <span class="comment">// Prompt malo</span><br>
+        <span class="string">"Hazme una función de validación"</span><br><br>
+        <span class="comment">// Resultado: genérico, sin contexto,</span><br>
+        <span class="comment">// no sabes qué valida ni en qué lenguaje</span>
+      </div>
+    </div>
+    <div>
+      <div class="code-block">
+        <span class="comment">// Prompt bueno</span><br>
+        <span class="string">"Escribe una función en TypeScript que</span><br>
+        <span class="string">valide un email. Debe devolver un</span><br>
+        <span class="string">objeto &#123; valid: boolean, error?: string &#125;</span><br>
+        <span class="string">y cubrir: formato, dominio y longitud."</span>
+      </div>
+    </div>
+  </div>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="target"></i> Regla de oro</p>
+    <p>Cuanto más contexto y restricciones claras, mejor resultado. Un buen prompt convierte un modelo mediocre en útil; un mal prompt desperdicia un modelo excelente.</p>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank">Anthropic - Prompt Engineering Guide</a>
+    <a href="https://www.promptingguide.ai/" target="_blank">Prompt Engineering Guide (comunidad)</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 15 -->
+<Slide id="frontier" number={15} title="¿Cómo se crea un modelo frontier?">
+  <ol class="steps">
+    <li><i data-lucide="database"></i> <strong>Pre-entrenamiento:</strong> billones de tokens, semanas de entrenamiento en miles de GPUs. El modelo aprende patrones del lenguaje prediciendo la siguiente palabra en textos masivos (internet, libros, código). Esta fase consume el 90%+ del presupuesto de compute.</li>
+    <li><i data-lucide="graduation-cap"></i> <strong>Fine-tuning supervisado (SFT):</strong> ejemplos curados de conversaciones de calidad. Humanos escriben respuestas ideales y el modelo aprende a imitarlas. Típicamente 10.000-100.000 ejemplos de alta calidad.</li>
+    <li><i data-lucide="users"></i> <strong>RLHF / RLAIF:</strong> RLHF = Reinforcement Learning from Human Feedback (aprendizaje por refuerzo con feedback humano). RLAIF = lo mismo pero con feedback de otro modelo de IA en vez de humanos. Se comparan respuestas y el modelo aprende cuál es "mejor". Esto es lo que hace que el modelo sea útil y seguro. Técnicas recientes: DPO (Direct Preference Optimization) y GRPO (Group Relative Policy Optimization) simplifican el proceso eliminando la necesidad de un reward model separado.</li>
+    <li><i data-lucide="check-circle"></i> <strong>Evaluación:</strong> benchmarks estandarizados (MMLU, HumanEval, GPQA, SWE-bench...) para medir capacidades y comparar con la competencia. Red-teaming para seguridad.</li>
+  </ol>
+  <div class="two-cols">
+    <div class="callout">
+      <p class="callout-title"><i data-lucide="coins"></i> Coste</p>
+      <p>Decenas a cientos de millones de dólares por modelo frontier. Solo unas pocas empresas en el mundo pueden permitírselo. GPT-4 se estimó en 100M+; los modelos de 2026 superan esa cifra.</p>
+    </div>
+    <div class="callout">
+      <p class="callout-title"><i data-lucide="rocket"></i> Moats (ventajas competitivas)</p>
+      <p>Datos, compute (GPUs), talento investigador, infraestructura de entrenamiento. Es una carrera de capital. Los clusters de entrenamiento ya superan las 100.000 GPUs.</p>
+    </div>
+  </div>
+  <div class="flow">
+    <span class="flow-step">Datos (trillones tokens)</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step">Pre-train (semanas)</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step">SFT (días)</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step">RLHF (días)</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step">Eval + deploy</span>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://arxiv.org/abs/2203.02155" target="_blank">Paper RLHF - InstructGPT (OpenAI, 2022)</a>
+    <a href="https://arxiv.org/abs/2307.09288" target="_blank">Llama 2 Paper - Detalla todo el proceso (Meta, 2023)</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 16 -->
+<Slide id="huggingface-lmstudio" number={16} title="Hugging Face + LM Studio: modelos en local">
+  <div class="two-cols">
+    <div>
+      <h3><i data-lucide="globe"></i> Hugging Face</h3>
+      <p>El <strong>"GitHub de los modelos de IA"</strong>. Miles de modelos abiertos listos para descargar: Llama 3, Mistral, Qwen, Phi, Gemma...</p>
+      <ul>
+        <li><i data-lucide="file-text"></i> <strong>Model cards:</strong> arquitectura, licencia, benchmarks, tamaño, quantizaciones</li>
+        <li><i data-lucide="search"></i> <strong>Filtros útiles:</strong> por tarea, licencia, tamaño, trending</li>
+        <li><i data-lucide="package"></i> <strong>Formatos:</strong> safetensors (nativo), GGUF (quantizado para CPU/GPU consumer)</li>
+        <li><i data-lucide="database"></i> También: datasets y Spaces (demos interactivas)</li>
+      </ul>
+    </div>
+    <div>
+      <h3><i data-lucide="monitor"></i> LM Studio</h3>
+      <p><strong>Ejecutar modelos en tu máquina</strong> sin escribir código. Interfaz gráfica para descargar, probar y servir modelos.</p>
+      <ul>
+        <li><i data-lucide="download"></i> Descarga modelos directamente desde Hugging Face</li>
+        <li><i data-lucide="lock"></i> Chat local, sin enviar datos a ningún servidor</li>
+        <li><i data-lucide="code"></i> Expone una <strong>API compatible con OpenAI</strong> (localhost:1234)</li>
+        <li><i data-lucide="sliders-horizontal"></i> Quantizaciones GGUF: Q4, Q5, Q8... equilibrio RAM vs calidad</li>
+      </ul>
+    </div>
+  </div>
+  <div class="flow">
+    <span class="flow-step"><i data-lucide="search"></i> Buscar en HF</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step"><i data-lucide="download"></i> Descargar GGUF</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step"><i data-lucide="play"></i> Probar en LM Studio</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step"><i data-lucide="globe"></i> Exponer API local</span>
+  </div>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="package"></i> Formatos de quantización GGUF</p>
+    <p><strong>Q4_K_M:</strong> ~4 bits por peso. Buena calidad, poca RAM (~4 GB para 7B). Ideal para empezar. <strong>Q5_K_M:</strong> ~5 bits. Mejor calidad, algo más de RAM. <strong>Q8_0:</strong> ~8 bits. Casi igual que el original pero cabe en consumer GPUs. Regla: empieza por Q4, sube si tu hardware lo permite.</p>
+  </div>
+  <p>Ideal para: prototipos, datos sensibles, trabajar sin conexión, evaluar modelos antes de pagar API.</p>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://huggingface.co/models" target="_blank">Hugging Face Models</a>
+    <a href="https://lmstudio.ai/" target="_blank">LM Studio</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 17 -->
+<Slide id="rag" number={17} title="RAG (Retrieval Augmented Generation)">
+  <p><i data-lucide="search"></i> <strong>Problema:</strong> el modelo no sabe de tus datos internos (documentación, BD, wikis). Fue entrenado con datos públicos hasta cierta fecha.</p>
+  <p><i data-lucide="lightbulb"></i> <strong>Solución:</strong> en vez de reentrenar el modelo, le pasas contexto relevante en cada consulta.</p>
+  <div class="flow">
+    <span class="flow-step">Pregunta del usuario</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step">Buscar docs relevantes</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step">Inyectar en el prompt</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step">LLM responde con esos datos</span>
+  </div>
+  <h3><i data-lucide="layers"></i> Componentes clave</h3>
+  <div class="icon-grid">
+    <div class="icon-card">
+      <i data-lucide="file-text"></i>
+      <div class="icon-card-content">
+        <strong>Documentos fuente</strong>
+        <p>PDFs, wikis, código, bases de datos, cualquier texto que quieras consultar</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="scissors"></i>
+      <div class="icon-card-content">
+        <strong>Chunking</strong>
+        <p>Dividir documentos en fragmentos de 500-1000 tokens con solapamiento</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="scatter-chart"></i>
+      <div class="icon-card-content">
+        <strong>Embeddings</strong>
+        <p>Convertir cada fragmento en un vector numérico que captura su significado</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="database"></i>
+      <div class="icon-card-content">
+        <strong>Vector DB</strong>
+        <p>Almacena vectores y permite buscar los más similares a la consulta</p>
+      </div>
+    </div>
+  </div>
+  <h3><i data-lucide="code"></i> Flujo RAG en código (simplificado)</h3>
+  <div class="code-block">
+    <span class="comment">// 1. Indexar documentos (se hace una vez)</span><br/>
+    <span class="keyword">const</span> chunks = splitIntoChunks(document, <span class="string">512</span>);<br/>
+    <span class="keyword">const</span> vectors = <span class="keyword">await</span> embed(chunks);<br/>
+    <span class="keyword">await</span> vectorDB.upsert(vectors);<br/><br/>
+    <span class="comment">// 2. Consultar (cada peticion del usuario)</span><br/>
+    <span class="keyword">const</span> queryVec = <span class="keyword">await</span> embed(userQuestion);<br/>
+    <span class="keyword">const</span> relevant = <span class="keyword">await</span> vectorDB.search(queryVec, &#123; topK: 5 &#125;);<br/><br/>
+    <span class="comment">// 3. Generar respuesta con contexto</span><br/>
+    <span class="keyword">const</span> response = <span class="keyword">await</span> llm.generate(&#123;<br/>
+    &nbsp;&nbsp;system: <span class="string">"Responde usando SOLO el contexto dado."</span>,<br/>
+    &nbsp;&nbsp;context: relevant.map(r =&gt; r.text).join(<span class="string">"\n"</span>),<br/>
+    &nbsp;&nbsp;question: userQuestion<br/>
+    &#125;);
+  </div>
+  <h3><i data-lucide="scale"></i> RAG vs fine-tuning</h3>
+  <ul>
+    <li><i data-lucide="search"></i> <strong>RAG:</strong> para datos propios que cambian frecuentemente. Sin coste de reentrenamiento. Fuentes citables.</li>
+    <li><i data-lucide="cog"></i> <strong>Fine-tuning:</strong> para cambiar el estilo o comportamiento del modelo. Los datos se "hornean" en los pesos.</li>
+  </ul>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://arxiv.org/abs/2005.11401" target="_blank">Paper original RAG (Lewis et al., 2020)</a>
+    <a href="https://www.pinecone.io/learn/retrieval-augmented-generation/" target="_blank">Pinecone - RAG Guide</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 18 -->
+<Slide id="vectordb" number={18} title="Bases de datos vectoriales: ¿qué son y en qué se diferencian?">
+  <p><i data-lucide="database"></i> Bases de datos optimizadas para almacenar y buscar <strong>vectores (embeddings)</strong> por similitud. En vez de buscar por coincidencia exacta (<code>WHERE nombre = 'X'</code>), buscan por distancia entre vectores: "¿qué vectores se parecen más a este?"</p>
+  <h3><i data-lucide="compass"></i> SQL vs NoSQL vs Vectorial</h3>
+  <table>
+    <thead>
+      <tr><th>Tipo</th><th>Busca por</th><th>Ejemplo de consulta</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>SQL</strong></td><td>Valores exactos, filtros, relaciones</td><td><code>SELECT * WHERE precio &gt; 100</code></td></tr>
+      <tr><td><strong>NoSQL</strong></td><td>Documentos, claves, campos flexibles</td><td><code>db.find(&#123; status: "active" &#125;)</code></td></tr>
+      <tr><td><strong>Vectorial</strong></td><td>Similitud semántica</td><td>"gato doméstico" encuentra "felino de compañía"</td></tr>
+    </tbody>
+  </table>
+  <h3><i data-lucide="search"></i> Proveedores principales (marzo 2026)</h3>
+  <table>
+    <thead>
+      <tr><th>Proveedor</th><th>Tipo</th><th>Ideal para</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Pinecone</strong></td><td>Gestionado (serverless)</td><td>Producción sin operaciones. Escala a billones de vectores</td></tr>
+      <tr><td><strong>Qdrant</strong></td><td>Open source (Rust)</td><td>Alto rendimiento, filtrado avanzado por metadatos</td></tr>
+      <tr><td><strong>Weaviate</strong></td><td>Open source</td><td>Búsqueda híbrida (vectorial + keyword), multimodal</td></tr>
+      <tr><td><strong>Chroma</strong></td><td>Open source</td><td>Prototipos y desarrollo rápido. Ligero</td></tr>
+      <tr><td><strong>pgvector</strong></td><td>Extensión PostgreSQL</td><td>Si ya usas Postgres. Límite ~10-100M vectores</td></tr>
+      <tr><td><strong>Milvus</strong></td><td>Open source</td><td>Billones de vectores. GPU-accelerated</td></tr>
+    </tbody>
+  </table>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="compass"></i> ¿Cómo elegir?</p>
+    <p><strong>Prototipo rápido:</strong> Chroma (embebido, sin servidor). <strong>Ya usas Postgres:</strong> pgvector. <strong>Producción sin preocuparte de infra:</strong> Pinecone. <strong>Necesitas control total + rendimiento:</strong> Qdrant o Milvus. <strong>Búsqueda híbrida:</strong> Weaviate.</p>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://www.pinecone.io/learn/vector-database/" target="_blank">Pinecone - What is a Vector Database?</a>
+    <a href="https://www.firecrawl.dev/blog/best-vector-databases" target="_blank">Best Vector Databases in 2026 (comparativa)</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 19 -->
+<Slide id="agentes" number={19} title="¿Qué es un agente?">
+  <p><i data-lucide="bot"></i> Un LLM con capacidad de <strong>actuar</strong>: no solo responde, <strong>ejecuta</strong>. Tiene acceso a herramientas (tools) y puede completar tareas complejas de forma autónoma.</p>
+  <div class="flow">
+    <span class="flow-step"><i data-lucide="eye"></i> Percibir</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step"><i data-lucide="brain"></i> Razonar</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step"><i data-lucide="terminal"></i> Actuar</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step"><i data-lucide="search"></i> Observar</span>
+    <span class="flow-arrow">&circlearrowright;</span>
+  </div>
+  <h3><i data-lucide="wrench"></i> ¿Qué puede hacer un agente?</h3>
+  <div class="icon-grid">
+    <div class="icon-card">
+      <i data-lucide="search"></i>
+      <div class="icon-card-content">
+        <strong>Buscar información</strong>
+        <p>Ficheros, bases de datos, internet, APIs externas</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="file-text"></i>
+      <div class="icon-card-content">
+        <strong>Leer y escribir</strong>
+        <p>Crear, editar y analizar archivos de tu proyecto</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="terminal"></i>
+      <div class="icon-card-content">
+        <strong>Ejecutar comandos</strong>
+        <p>Tests, builds, deploys, instalaciones, scripts</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="repeat"></i>
+      <div class="icon-card-content">
+        <strong>Autocorregirse</strong>
+        <p>Si algo falla, analiza el error y reintenta con otra estrategia</p>
+      </div>
+    </div>
+  </div>
+  <h3><i data-lucide="eye"></i> Ejemplo paso a paso: "Añade tests al módulo de auth"</h3>
+  <ol class="steps">
+    <li><strong>Lee</strong> el código del módulo de auth para entender la estructura</li>
+    <li><strong>Identifica</strong> funciones sin cobertura de tests</li>
+    <li><strong>Escribe</strong> los tests en un archivo nuevo o existente</li>
+    <li><strong>Ejecuta</strong> <code>npm test</code> para verificar que pasan</li>
+    <li><strong>Corrige</strong> errores si algún test falla y vuelve a ejecutar</li>
+  </ol>
+  <h3><i data-lucide="bot"></i> Diferencia clave con un chatbot</h3>
+  <p>Un chatbot responde preguntas. Un agente <strong>completa tareas</strong>. El chatbot te dice cómo hacerlo; el agente lo hace por ti (con tu supervisión).</p>
+  <p><strong>Ejemplos:</strong> Claude Code, Devin, Cursor Agent, Aider</p>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf" target="_blank">OpenAI - A Practical Guide to Building Agents (PDF, 34 páginas)</a>
+    <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank">Anthropic - Building Effective Agents</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 20 -->
+<Slide id="contexto-memoria" number={20} title="Contexto y memoria en agentes: por qué importa empezar limpio">
+  <p><i data-lucide="brain"></i> El <strong>context window</strong> es la memoria de trabajo del agente: lo que "ve" en cada momento. Cuanto más larga la conversación, más tokens consume &rarr; más caro, más lento y peor rendimiento.</p>
+  <h3><i data-lucide="zap"></i> ¿Por qué usar contextos nuevos para tareas nuevas?</h3>
+  <ul>
+    <li><i data-lucide="shield"></i> <strong>Evitas contaminación:</strong> instrucciones o errores de una tarea anterior no afectan a la siguiente</li>
+    <li><i data-lucide="zap"></i> <strong>Mejor rendimiento:</strong> el modelo razona mejor con contexto limpio y enfocado</li>
+    <li><i data-lucide="coins"></i> <strong>Menor coste:</strong> no pagas tokens de historia irrelevante</li>
+  </ul>
+  <h3><i data-lucide="hard-drive"></i> Tipos de memoria en agentes</h3>
+  <table>
+    <thead>
+      <tr><th></th><th>Tipo</th><th>Duración</th><th>Ejemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><i data-lucide="clock"></i></td><td><strong>Corto plazo</strong></td><td>La conversación actual</td><td>El context window del LLM</td></tr>
+      <tr><td><i data-lucide="hard-drive"></i></td><td><strong>Largo plazo</strong></td><td>Persistida entre sesiones</td><td>Ficheros, BD, embeddings, CLAUDE.md</td></tr>
+      <tr><td><i data-lucide="brain"></i></td><td><strong>Episódica</strong></td><td>Recuerdos de conversaciones</td><td>Qué decisiones se tomaron y por qué</td></tr>
+    </tbody>
+  </table>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="lightbulb"></i> Estrategia práctica</p>
+    <p>Una tarea = un contexto nuevo, con solo las instrucciones y datos que necesita. Los frameworks ya lo gestionan: CrewAI tiene memoria corta/larga/entidad, Claude Code compacta automáticamente.</p>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank">Anthropic - Building Effective Agents</a>
+    <a href="https://docs.crewai.com/concepts/memory" target="_blank">CrewAI - Memory Concepts</a>
+  </div>
+</Slide>

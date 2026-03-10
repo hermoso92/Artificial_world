@@ -1,13 +1,13 @@
 ﻿{
-    "selectedPath":  null,
+    "selectedPath":  "python",
     "checks":  {
                    "python":  {
                                   "version":  "Python 3.13.3",
                                   "available":  true
                               },
                    "ollama":  {
-                                  "version":  null,
-                                  "available":  false
+                                  "version":  "ollama version is 0.17.7",
+                                  "available":  true
                               },
                    "files":  {
                                  "aiRoute":  true,
@@ -29,7 +29,7 @@
                                  "backend3001Listening":  true
                              }
                },
-    "generatedAt":  "2026-03-08T10:30:01.7908098+01:00",
+    "generatedAt":  "2026-03-08T18:49:32.8166349+01:00",
     "artifacts":  {
                       "nextSteps":  "bootstrap_next_steps.md",
                       "bootstrapReport":  "bootstrap_report.json"

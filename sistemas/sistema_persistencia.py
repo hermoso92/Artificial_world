@@ -280,3 +280,8 @@ class SistemaPersistencia:
         sim.mapa = mapa
         sim.entidades = entidades_nuevas
         sim.gestor_ticks.tick_actual = datos.get("tick_actual", 0)
+        if sim.sistema_zonas and sim.configuracion:
+            from mundo.generador_mundo import GeneradorMundo
+            gen = GeneradorMundo(sim.configuracion)
+            for zona in gen.crear_zonas(mapa):
+                sim.sistema_zonas.registrar_zona(zona)

@@ -1,0 +1,32 @@
+---
+interface Props {
+  id: string;
+  number?: number;
+  title?: string;
+  cover?: boolean;
+}
+
+const { id, number, title, cover = false } = Astro.props;
+---
+
+<section
+  class={`slide ${cover ? 'slide-cover' : ''}`}
+  id={id}
+  data-slide-number={number}
+>
+  <div class="slide-inner">
+    {title && !cover && (
+      <h2>
+        {number !== undefined && <span class="slide-number">{String(number).padStart(2, '0')}</span>}
+        {title}
+      </h2>
+    )}
+    <slot />
+  </div>
+  <div class="slide-author">
+    <a href="https://github.com/686f6c61" target="_blank" rel="noopener noreferrer">
+      <i data-lucide="github"></i>
+      <span>686f6c61</span>
+    </a>
+  </div>
+</section>

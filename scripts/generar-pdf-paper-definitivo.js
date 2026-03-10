@@ -124,7 +124,7 @@ const figurasHtml = `
 
   <h2>H.1 Capa Web — Flujo Fundador</h2>
 
-  ${fig(imgs.landing, 1, 'Pantalla de selección de semilla de civilización. Las 7 semillas arquetipal (Tribu de frontera, Refugio tecnócrata, Comunidad espiritual, Reino guerrero, Ciudad comerciante, Colonia paranoica, Imperio decadente) con sus descripciones de valores. <em>Tribu de frontera</em> aparece seleccionada (borde cian). Aplicación web corriendo en React+Vite.')}
+  ${fig(imgs.landing, 1, 'Pantalla de selección de semilla de civilización. Las 9 semillas arquetipal (Tribu de frontera, Refugio tecnócrata, Comunidad espiritual, Reino guerrero, Ciudad comerciante, Colonia paranoica, Imperio decadente, Tryndamere, Síntesis) con sus descripciones de valores. <em>Tribu de frontera</em> aparece seleccionada (borde cian). Aplicación web corriendo en React+Vite.')}
 
   ${fig(imgs.hub, 2, 'Hub principal: "Constructor de Mundos". Cuatro módulos visibles: Tu Mundo (simulación), Arena (juegos), Emergencias (DobackSoft/FireSimulator), Observatorio (Mission Control). Indicadores de estado del héroe (0 mundos, Escala: Refugio, 0 habitantes). El tagline "No persigas la IA. Construye un mundo que la necesite." visible en la barra superior.')}
 

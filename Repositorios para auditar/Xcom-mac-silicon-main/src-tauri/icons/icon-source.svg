@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="152" y1="128" x2="872" y2="896" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#20242C"/>
+      <stop offset="0.42" stop-color="#0F1218"/>
+      <stop offset="1" stop-color="#050608"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="512" y1="112" x2="512" y2="356" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white" stop-opacity="0.11"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="tileShadow" x="76" y="88" width="872" height="872" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="22" stdDeviation="28" flood-color="#000000" flood-opacity="0.24"/>
+    </filter>
+    <filter id="xShadow" x="238" y="238" width="548" height="548" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.24"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#tileShadow)">
+    <rect x="104" y="104" width="816" height="816" rx="196" fill="url(#bg)"/>
+    <rect x="104.5" y="104.5" width="815" height="815" rx="195.5" stroke="white" stroke-opacity="0.08"/>
+    <path d="M170 162C328 145 484 136 636 136C754 136 835 149 874 164C890 211 901 249 907 286C842 272 759 265 659 265C501 265 348 283 199 320L170 162Z" fill="url(#sheen)"/>
+  </g>
+
+  <g filter="url(#xShadow)">
+    <g transform="matrix(18.9 0 0 18.9 31 35)">
+      <path d="M29.978 37L23.438 27.708L15.5 37H13L22.308 26.103L13.086 13H21.023L26.66 21.009L33.5 13H36L27.789 22.613L37.914 37H29.978Z" fill="white"/>
+      <polygon points="16.914,15 31.022,35 34.086,35 19.978,15" fill="white"/>
+    </g>
+  </g>
+</svg>

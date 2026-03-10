@@ -75,6 +75,53 @@ Documentación asociada:
 - [docs/IMPLEMENTACION_AI_CORE_LOCAL.md](docs/IMPLEMENTACION_AI_CORE_LOCAL.md)
 - [docs/IA_LOCAL_BASE.md](docs/IA_LOCAL_BASE.md)
 
+## Mission Control para OpenClaw
+
+La capa web incluye ahora un `MISSION CONTROL` operativo pensado para coordinar agentes con visibilidad central, board kanban, feed en vivo, approvals humanas y soporte multi-gateway local-first.
+
+Qué es hoy:
+
+- vive dentro de la app React existente en la ruta `#missioncontrol`
+- usa backend Express existente con un dominio aislado en `/api/mission-control`, `/api/approvals`, `/api/boards` y `/api/gateways`
+- persiste en `mission-control.db` con modelo propio para `gateways`, `agents`, `tasks`, `runs`, `approvals`, `events`, `boards` y `board_groups`
+- arranca en modo híbrido: runtime seed local persistente ahora, adapter preparado para conectar gateways OpenClaw reales después
+- reutiliza el WebSocket existente como transporte, pero emite mensajes propios `mission-control:snapshot` y `mission-control:event`
+- incluye adapter OpenClaw real opcional por WebSocket: handshake `connect`, `status`, `heartbeat_trigger`, normalización de `response`, `tool_call`, `tool_result`, `heartbeat_status`, `error` y `exec.approval.requested`
+
+Qué puedes probar ahora:
+
+- dashboard operativo con KPIs, gateways y errores recientes
+- rail persistente de agentes con heartbeat y tarea actual
+- board kanban con estados `Backlog`, `In Progress`, `Review`, `Done` y `Blocked`
+- feed de eventos en vivo con pausa de autoscroll
+- approval center con aprobar/rechazar y trazabilidad persistente
+- inspector lateral con detalle de tarea, run, approval o evento
+
+Arranque recomendado:
+
+```powershell
+.\scripts\iniciar_fullstack.ps1
+```
+
+Luego abre:
+
+- `http://localhost:5173/#missioncontrol`
+
+Alternativa con Docker:
+
+```powershell
+docker compose up
+```
+
+Variables útiles:
+
+- `MISSION_CONTROL_RUNTIME_MODE=seed` para usar el runtime local
+- `MISSION_CONTROL_RUNTIME_MODE=disabled` para dejar libre la futura conexión a gateway real
+- `MISSION_CONTROL_TICK_MS=4000` para ajustar el ritmo del stream local
+- `OPENCLAW_GATEWAY_URLS=ws://localhost:18789` para conectar uno o más gateways OpenClaw reales
+- `OPENCLAW_GATEWAY_TOKEN=` si el gateway requiere auth
+- `OPENCLAW_GATEWAY_SCOPES=operator.read,operator.approvals` para el rol operador del adapter
+
 ## Realidad, demo y visión
 
 ### Real hoy

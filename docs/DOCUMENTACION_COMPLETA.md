@@ -127,7 +127,7 @@ Ese flujo existe hoy de forma **parcial pero real** en la landing y en `HeroRefu
 | Motor Python | Real | `principal.py`, `nucleo/simulacion.py`, persistencia, tests | `python principal.py` | Núcleo más sólido del repo |
 | Persistencia del mundo | Real | `sistemas/sistema_persistencia.py` | `mundo_artificial.db` | Asociada al motor Python |
 | Modo Sombra | Real | `sistemas/gestor_modo_sombra.py`, tests | UI pygame | Parte del producto real |
-| Runner de producción | Real | `pruebas/run_tests_produccion.py` | CLI | Ejecuta 10 suites |
+| Runner de producción | Real | `pruebas/run_tests_produccion.py` | CLI | Ejecuta 11 suites |
 | Web fullstack | Demo funcional | `scripts/iniciar_fullstack.ps1`, `backend/src/realtime/websocket.js` | `http://localhost:5173` | Motor JS propio |
 | WebSocket web | Demo funcional | `/ws` en `backend/src/realtime/websocket.js` | Backend web | Estado de la demo web |
 | DobackSoft en este repo | Demo vertical | `frontend/src/components/DobackSoft.jsx` | Hub web | No equivale al producto completo |
@@ -144,12 +144,13 @@ Ese flujo existe hoy de forma **parcial pero real** en la landing y en `HeroRefu
 
 ### Runner principal
 
-`pruebas/run_tests_produccion.py` ejecuta **10 suites**:
+`pruebas/run_tests_produccion.py` ejecuta **11 suites**:
 
 | Suite | Parte validada | Ámbito |
 |-------|----------------|--------|
 | `test_estructural` | imports, config, módulos | Python real |
 | `test_core` | motor, directivas, watchdog | Python real |
+| `test_cronica_fundacional` | crónica headless, artefactos | Python real |
 | `test_modo_sombra_completo` | control manual y cola | Python real |
 | `test_perseguir_hasta_matar` | persecución/combate | Python real |
 | `test_interacciones_sociales` | relaciones e interacción | Python real |
@@ -168,7 +169,7 @@ Hay tests adicionales fuera del runner principal, por ejemplo:
 - `pruebas/test_modo_sombra.py`
 - `pruebas/test_integral_control_total.py`
 
-Estas existen en el repo, pero el bloque más defendible para auditoría sigue siendo el runner principal de 10 suites.
+Estas existen en el repo, pero el bloque más defendible para auditoría sigue siendo el runner principal de 11 suites.
 
 ### CI verificable
 

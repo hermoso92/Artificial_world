@@ -80,13 +80,10 @@ function DocLink({ file, label }) {
   );
 }
 
-export function Docs({ onBack }) {
+export function Docs() {
   return (
     <div className="docs-page">
       <header className="docs-header">
-        <button type="button" className="docs-back" onClick={onBack} aria-label="Volver">
-          ← Volver
-        </button>
         <h1 className="docs-title">📚 Documentación</h1>
         <p className="docs-subtitle">PDFs, guías y referencias del proyecto Artificial World</p>
       </header>

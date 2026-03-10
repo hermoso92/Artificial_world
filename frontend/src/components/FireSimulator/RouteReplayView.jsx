@@ -38,6 +38,16 @@ export function RouteReplayView({ routeData, onBack, canvasW, canvasH }) {
   })();
 
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = canvasW * dpr;
+    canvas.height = canvasH * dpr;
+    const ctx = canvas.getContext('2d');
+    if (ctx) ctx.scale(dpr, dpr);
+  }, [canvasW, canvasH]);
+
+  useEffect(() => {
     let raf;
     const loop = () => {
       const elapsed = (Date.now() - startTimeRef.current) / 1000;
@@ -66,11 +76,7 @@ export function RouteReplayView({ routeData, onBack, canvasW, canvasH }) {
       }
       const ctx = canvas.getContext('2d');
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = canvasW * dpr;
-      canvas.height = canvasH * dpr;
-      canvas.style.width = `${canvasW}px`;
-      canvas.style.height = `${canvasH}px`;
-      ctx.scale(dpr, dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       ctx.fillStyle = '#1a1a2e';
       ctx.fillRect(0, 0, canvasW, canvasH);
@@ -126,7 +132,7 @@ export function RouteReplayView({ routeData, onBack, canvasW, canvasH }) {
   }, [routeData, points, totalDuration, canvasW, canvasH]);
 
   return (
-    <div className="firesim">
+    <div className="firesim firesim--playing">
       <div className="firesim-header">
         <button className="back-btn" onClick={onBack}>← Volver a rutas</button>
         <span className="firesim-route-badge">Modo ruta real</span>

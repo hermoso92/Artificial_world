@@ -60,7 +60,6 @@ export function AdminPanel({ onBack }) {
   if (error && !overview) {
     return (
       <div className="admin-panel">
-        <button className="back-btn" onClick={onBack}>{t('common.back')}</button>
         <div className="admin-error">
           <h2>{t('admin.access_denied')}</h2>
           <p>{error}</p>
@@ -75,7 +74,6 @@ export function AdminPanel({ onBack }) {
   return (
     <div className="admin-panel">
       <div className="admin-header">
-        <button className="back-btn" onClick={onBack}>{t('common.back')}</button>
         <h1 className="admin-title">{t('admin.title')}</h1>
         <span className="admin-badge">{t('admin.badge')}</span>
       </div>

@@ -1,12 +1,24 @@
 /**
- * LandingPublic — página de presentación pública de Artificial World.
- * Se muestra antes del onboarding, estilo producto indie / estrategia.
+ * LandingPublic — puerta de entrada pública de Artificial World.
+ * Explica el sistema, muestra el mapa del ecosistema y conecta con el hub.
  */
 import { useState } from 'react';
 
 // Credenciales de demo — acceso rápido sin onboarding
 const DEMO_USER = 'demo';
 const DEMO_PASS = 'artificial2024';
+
+/** Mapa del ecosistema: superficies con clasificación honesta REAL/DEMO/PARCIAL/ROADMAP */
+const ECOSYSTEM_SURFACES = [
+  { id: 'simulation', name: 'Simulación principal / Constructor', status: 'REAL', desc: 'Motor 2D determinista, agentes autónomos, 13 acciones, 9 semillas, persistencia.' },
+  { id: 'herorefuge', name: 'Hero Refuge', status: 'PARCIAL', desc: 'Refugios jugables dentro del simulador. Mundos ligeros, companion IA opcional.' },
+  { id: 'arena', name: 'Arena de minijuegos', status: 'DEMO', desc: '3 en Raya y Damas jugables. Ajedrez en roadmap.' },
+  { id: 'dobacksoft', name: 'DobackSoft', status: 'DEMO', desc: 'Vertical demo integrada. Conectada con FireSimulator. No suite enterprise completa.' },
+  { id: 'firesimulator', name: 'FireSimulator', status: 'DEMO', desc: 'Superficie temática de propagación y entrenamiento 2D.' },
+  { id: 'missioncontrol', name: 'Mission Control', status: 'PARCIAL', desc: 'Centro operativo para agentes, tareas y gateways. Boards, approvals, feed en tiempo real.' },
+  { id: 'mysticquest', name: 'Mystic Quest', status: 'PARCIAL', desc: 'Serie de visiones. Capa narrativa ligada a semilla espiritual.' },
+  { id: 'runtime3d', name: 'Runtime 3D', status: 'ROADMAP', desc: 'Encarnación visual futura. La verdad sistémica vive en 2D.' },
+];
 
 const FEATURES = [
   {
@@ -190,8 +202,8 @@ export function LandingPublic({ onStartOnboarding, onEnterDirect }) {
             <span className="lp-hero-accent">Haz que crezca.</span>
           </h1>
           <p className="lp-hero-desc">
-            Una base para crear civilizaciones vivas con memoria, héroes, refugios y comunidades.
-            Cada entidad decide sola. Cada evento queda en la crónica.
+            Un ecosistema operativo único: entrada pública → Hub (núcleo) → sistemas conectados.
+            Civilizaciones vivas con memoria, héroes, refugios y comunidades. Cada entidad decide sola. Cada evento queda en la crónica.
           </p>
           <div className="lp-hero-actions">
             <button className="lp-btn-cta" onClick={onStartOnboarding}>
@@ -213,7 +225,7 @@ export function LandingPublic({ onStartOnboarding, onEnterDirect }) {
             </div>
             <div className="lp-stat-sep" />
             <div className="lp-stat">
-              <span className="lp-stat-value">6</span>
+              <span className="lp-stat-value">9</span>
               <span className="lp-stat-label">semillas de civilización</span>
             </div>
             <div className="lp-stat-sep" />
@@ -285,53 +297,32 @@ export function LandingPublic({ onStartOnboarding, onEnterDirect }) {
         </div>
       </section>
 
-      {/* State of the art */}
+      {/* Mapa del ecosistema */}
       <section className="lp-section lp-section-alt">
         <div className="lp-section-header">
-          <span className="lp-section-tag">Qué existe hoy</span>
-          <h2 className="lp-section-title">Real. Demo. Roadmap.</h2>
-          <p className="lp-section-subtitle">Sin sobreprometer. Sin magia invisible.</p>
+          <span className="lp-section-tag">Ecosistema</span>
+          <h2 className="lp-section-title">Un solo universo. Una sola navegación.</h2>
+          <p className="lp-section-subtitle">El Hub es el mapa. Desde ahí todo está conectado. Sin sobreprometer.</p>
         </div>
         <div className="lp-table-wrap">
           <table className="lp-table">
             <thead>
               <tr>
-                <th>Componente</th>
+                <th>Superficie</th>
                 <th>Estado</th>
                 <th>Descripción</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Motor Python</td>
-                <td><span className="lp-badge lp-badge-real">Real</span></td>
-                <td>principal.py, 13 acciones, persistencia SQLite, Modo Sombra</td>
-              </tr>
-              <tr>
-                <td>Persistencia</td>
-                <td><span className="lp-badge lp-badge-real">Real</span></td>
-                <td>mundo_artificial.db, guardar/cargar en cualquier tick</td>
-              </tr>
-              <tr>
-                <td>Web fullstack</td>
-                <td><span className="lp-badge lp-badge-demo">Demo</span></td>
-                <td>Backend Node + React. Hub con HeroRefuge, DobackSoft, FireSimulator</td>
-              </tr>
-              <tr>
-                <td>HeroRefuge</td>
-                <td><span className="lp-badge lp-badge-parcial">Parcial</span></td>
-                <td>Refugios jugables, semillas, mundos ligeros, companion IA opcional</td>
-              </tr>
-              <tr>
-                <td>Crónica fundacional</td>
-                <td><span className="lp-badge lp-badge-real">Real</span></td>
-                <td>python cronica_fundacional.py → JSON + Markdown con eventos históricos</td>
-              </tr>
-              <tr>
-                <td>Runtime 3D</td>
-                <td><span className="lp-badge lp-badge-roadmap">Roadmap</span></td>
-                <td>Encarnación visual futura. La verdad sistémica vive en 2D.</td>
-              </tr>
+              {ECOSYSTEM_SURFACES.map((s) => (
+                <tr key={s.id}>
+                  <td>{s.name}</td>
+                  <td>
+                    <span className={`lp-badge lp-badge-${s.status.toLowerCase()}`}>{s.status}</span>
+                  </td>
+                  <td>{s.desc}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -342,16 +333,38 @@ export function LandingPublic({ onStartOnboarding, onEnterDirect }) {
         <div className="lp-cta-glow" aria-hidden="true" />
         <div className="lp-cta-content">
           <h2 className="lp-cta-title">
-            Tu civilización espera.<br />
-            <span className="lp-hero-accent">Empieza con un refugio.</span>
+            Entra al Hub.<br />
+            <span className="lp-hero-accent">El corazón del ecosistema.</span>
           </h2>
           <p className="lp-cta-desc">
-            Elige una semilla. Nombra a tu héroe. Observa cómo los agentes escriben la historia solos.
+            Una puerta. Un Hub. Un universo operativo. Desde el Hub accedes a Tu Mundo, Arena, Mission Control, Lab y más. Todo bajo una sola identidad.
           </p>
-          <button className="lp-btn-cta lp-btn-cta-lg" onClick={onStartOnboarding}>
-            <span>Crear mi civilización</span>
+          <button className="lp-btn-cta lp-btn-cta-lg" onClick={onEnterDirect}>
+            <span>Entrar al Hub</span>
             <span className="lp-btn-arrow">→</span>
           </button>
+          <button className="lp-btn-secondary lp-btn-cta-lg" onClick={onStartOnboarding} style={{ marginTop: '0.75rem' }}>
+            Crear civilización (onboarding)
+          </button>
+        </div>
+      </section>
+
+      {/* Verificación: docs, paper, repo */}
+      <section className="lp-section">
+        <div className="lp-section-header">
+          <span className="lp-section-tag">Verificación</span>
+          <h2 className="lp-section-title">Recursos verificables</h2>
+        </div>
+        <div className="lp-verify-links">
+          <button className="lp-verify-btn" onClick={() => window.location.hash = 'docs'}>
+            Docs
+          </button>
+          <button className="lp-verify-btn" onClick={onEnterDirect}>
+            Hub (núcleo)
+          </button>
+          <a className="lp-verify-btn lp-verify-btn-link" href="https://github.com/hermoso92/Artificial_world" target="_blank" rel="noopener noreferrer">
+            Repositorio
+          </a>
         </div>
       </section>
 
@@ -362,7 +375,7 @@ export function LandingPublic({ onStartOnboarding, onEnterDirect }) {
           <span>Artificial World</span>
         </div>
         <div className="lp-footer-links">
-          <button className="lp-footer-link" onClick={onEnterDirect}>Ya tengo mundo</button>
+          <button className="lp-footer-link" onClick={onEnterDirect}>Entrar al Hub</button>
         </div>
         <p className="lp-footer-copy">
           Motor Python + React · Agentes autónomos por utilidad · Sin LLMs

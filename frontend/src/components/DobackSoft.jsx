@@ -100,10 +100,6 @@ export function DobackSoft({ onBack, onNavigate }) {
 
   return (
     <div className="dobacksoft">
-      <div className="dobacksoft-header">
-        <button className="back-btn" onClick={onBack}>{t('common.back')}</button>
-      </div>
-
       <div className="dobacksoft-hero">
         <div className="dobacksoft-icon">🚒</div>
         <h1 className="dobacksoft-title">DobackSoft</h1>

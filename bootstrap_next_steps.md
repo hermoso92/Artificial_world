@@ -1,6 +1,6 @@
 ﻿# Bootstrap Next Steps
 
-Fecha: 2026-03-08T10:30:01.7908098+01:00
+Fecha: 2026-03-08T18:49:32.8166349+01:00
 
 Camino recomendado: "python"
 
@@ -8,7 +8,7 @@ Camino recomendado: "python"
 - Python disponible: True
 - Node disponible: True
 - npm disponible: True
-- Ollama disponible: False
+- Ollama disponible: True
 - Backend escuchando en 3001: True
 - Frontend escuchando en 5173: False
 

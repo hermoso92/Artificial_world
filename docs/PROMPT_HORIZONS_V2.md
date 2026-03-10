@@ -39,7 +39,7 @@ Párrafo: "Motor de civilizaciones con agentes autónomos. Plataforma B2B de est
 
 Dos botones: `[Explorar el ecosistema ↓]` y `[Ver en GitHub →]`
 
-Métricas inline (5 items): `68+ tests` · `13 acciones/agente` · `7 semillas de civilización` · `200 ticks sesión canónica` · `0 € por decisión`
+Métricas inline (5 items): `68+ tests` · `13 acciones/agente` · `9 semillas de civilización` · `200 ticks sesión canónica` · `0 € por decisión`
 
 ---
 
@@ -99,7 +99,7 @@ U(a, i, t) = U_base(a) + Σ δk(a, i, t) + ε(i, t)
 ```
 
 6 features en grid (3 cols desktop, 1 col móvil):
-- 7 Semillas de Civilización: tribu fronteriza, colonia tecnócrata, comunidad espiritual, reino guerrero, ciudad comerciante, colonia paranoica, imperio decadente
+- 9 Semillas de Civilización: tribu fronteriza, tecnócrata, espiritual, guerrero, comerciante, paranoica, decadente, tryndamere, síntesis
 - Refugios con Memoria: unidad base con recursos, moral, seguridad, memoria local
 - 13 Acciones Autónomas: COMER, EXPLORAR, HUIR, ROBAR, COMPARTIR, ATACAR, MOVER, DESCANSAR, SEGUIR, EVITAR, IR_REFUGIO, RECOGER_COMIDA, RECOGER_MATERIAL
 - Función de Utilidad: 9 modificadores — hambre, energía, riesgo, rasgo, anti-oscilación, memoria, relaciones, directivas, autonomía
@@ -205,7 +205,7 @@ Stack en 3 grupos:
 Logros en números grandes (6 items):
 - 68+ tests pasando (Python + Node), CI en cada push
 - 13 acciones de agente con función de utilidad multidimensional
-- 7 semillas de civilización con valores, tensiones y arquetipos únicos
+- 9 semillas de civilización con valores, tensiones y arquetipos únicos
 - 200 ticks de sesión fundacional reproducible con crónica automática
 - 3 capas en DobackSoft: panel operativo, training platform, simulación jugable
 - 1 comando para iniciar todo el sistema: `iniciar.ps1`

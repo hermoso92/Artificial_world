@@ -38,6 +38,7 @@ Write-Host ""
 Write-Host "Iniciando Artificial World full-stack..." -ForegroundColor Cyan
 Write-Host "  Backend:  http://localhost:3001"
 Write-Host "  Frontend: http://localhost:5173"
+Write-Host "  Mission Control: http://localhost:5173/#missioncontrol"
 Write-Host ""
 Write-Host "Se abriran 2 ventanas (backend y frontend). Espera 5 segundos..."
 Write-Host ""
@@ -89,4 +90,5 @@ if ($url) {
 }
 Write-Host ""
 Write-Host "Si no se abrio, copia: http://localhost:5173"
+Write-Host "Ruta directa Mission Control: http://localhost:5173/#missioncontrol"
 Read-Host "Pulsa Enter para cerrar"

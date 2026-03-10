@@ -18,7 +18,7 @@ Constructor de sistemas de software con IA como copiloto. Una sola persona que h
 
 - **Artificial World** — Motor de simulación 2D con agentes autónomos (Python, 13 acciones, memoria, persistencia SQLite). 68+ tests, CI/CD, Modo Sombra jugable desde web.
 - **DobackSoft StabilSafe V3** — Plataforma B2B multi-tenant para estabilidad y telemetría vehicular CAN/GPS (React, Node.js, Leaflet, TomTom).
-- **HeroRefuge** — 7 semillas de civilización, flujo fundador web, compañero IA con Ollama.
+- **HeroRefuge** — 9 semillas de civilización, flujo fundador web, compañero IA con Ollama.
 - **FireSimulator** — Simulador de emergencias vehiculares con storytelling y entrenamiento.
 - Sistema de auditoría documental con agentes (Cursor, Claude, GPT). Generación automática de crónicas en LaTeX.
 
@@ -47,7 +47,7 @@ Constructor de sistemas de software con IA como copiloto. Una sola persona que h
 
 - 68+ tests pasando (Python + Node), CI en cada push
 - 13 acciones de agente implementadas (mover, comer, compartir, robar, huir, atacar, explorar...)
-- 7 semillas de civilización con arquetipos únicos
+- 9 semillas de civilización con arquetipos únicos
 - 3 capas de documentación: ejecutiva, técnica, narrativa
 - 0€ por decisión de agente — sin APIs de pago en el núcleo
 

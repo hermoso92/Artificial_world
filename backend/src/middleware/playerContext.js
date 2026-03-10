@@ -7,11 +7,7 @@ import { ensurePlayer } from '../db/database.js';
 import logger from '../utils/logger.js';
 
 export function playerContext(req, _res, next) {
-  req.playerId =
-    req.headers['x-player-id']
-    ?? req.body?.playerId
-    ?? req.query?.playerId
-    ?? null;
+  req.playerId = req.headers['x-player-id'] ?? null;
 
   if (req.playerId) {
     try {

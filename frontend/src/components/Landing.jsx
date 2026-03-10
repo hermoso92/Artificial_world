@@ -153,6 +153,9 @@ export function Landing({ onEnter }) {
           <button className="landing-cta landing-cta-glow" onClick={onEnter}>
             {t('landing.enter_world')}
           </button>
+          <p className="landing-step-desc" style={{ marginTop: '1rem', fontSize: '0.9rem', opacity: 0.85 }}>
+            {t('landing.enter_world_hint', 'Desde el Hub accedes a Tu Mundo, Arena, Mission Control y más.')}
+          </p>
         </div>
       )}
 

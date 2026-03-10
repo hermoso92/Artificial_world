@@ -31,6 +31,8 @@ class Simulacion:
         self.estado_panel = EstadoPanel()
         self.sistema_reporte = None
         self.sistema_competencia = None
+        self.sistema_zonas = None
+        self.sistema_memoria_decisiones = None
         self.guardado_ok_tick = 0
         self.cargado_ok_tick = 0
 
@@ -40,6 +42,8 @@ class Simulacion:
         from .bus_eventos import BusEventos
         from sistemas.sistema_logs import SistemaLogs
         from sistemas.sistema_metricas import SistemaMetricas
+        from sistemas.sistema_zonas import SistemaZonas
+        from sistemas.sistema_memoria_decisiones import SistemaMemoriaDecisiones
         from sistemas.sistema_regeneracion import SistemaRegeneracion
         from sistemas.sistema_persistencia import SistemaPersistencia
         from sistemas.gestor_modo_sombra import GestorModoSombra
@@ -53,6 +57,8 @@ class Simulacion:
         self.bus_eventos = BusEventos()
         self.sistema_logs = SistemaLogs()
         self.sistema_metricas = SistemaMetricas()
+        self.sistema_zonas = SistemaZonas()
+        self.sistema_memoria_decisiones = SistemaMemoriaDecisiones()
         self.sistema_regeneracion = SistemaRegeneracion()
         from sistemas.sistema_watchdog import SistemaWatchdog
         from sistemas.sistema_logging_reporte import SistemaReporte
@@ -87,6 +93,8 @@ class Simulacion:
         gen.distribuir_comida(self.mapa)
         gen.distribuir_material(self.mapa)
         gen.distribuir_refugios(self.mapa)
+        for zona in gen.crear_zonas(self.mapa):
+            self.sistema_zonas.registrar_zona(zona)
 
     def crear_entidades_iniciales(self) -> None:
         """Crea las entidades iniciales."""
@@ -578,6 +586,16 @@ class Simulacion:
                     energia=entidad.estado_interno.energia,
                     hambre=entidad.estado_interno.hambre,
                     num_directivas=num_dir,
+                )
+            if self.sistema_memoria_decisiones:
+                self.sistema_memoria_decisiones.registrar(
+                    {
+                        "accion": accion_puntuada.accion.tipo_accion.value,
+                        "score": accion_puntuada.puntuacion_final,
+                        "motivo": accion_puntuada.motivo_principal,
+                    },
+                    entidad,
+                    tick,
                 )
             contexto_sim = ContextoSimulacion(
                 tick_actual=tick,

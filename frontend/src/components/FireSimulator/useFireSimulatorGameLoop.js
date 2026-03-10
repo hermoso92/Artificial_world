@@ -46,6 +46,16 @@ export function useFireSimulatorGameLoop(level, setWon, setFailed, onBack) {
   const currentLevel = LEVELS.find((l) => l.id === level) ?? LEVELS[0];
 
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = MAP_W * dpr;
+    canvas.height = MAP_H * dpr;
+    const ctx = canvas.getContext('2d');
+    if (ctx) ctx.scale(dpr, dpr);
+  }, [level]);
+
+  useEffect(() => {
     const handleKeyDown = (e) => {
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(e.code)) {
         e.preventDefault();
@@ -199,11 +209,7 @@ export function useFireSimulatorGameLoop(level, setWon, setFailed, onBack) {
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = MAP_W * dpr;
-      canvas.height = MAP_H * dpr;
-      canvas.style.width = `${MAP_W}px`;
-      canvas.style.height = `${MAP_H}px`;
-      ctx.scale(dpr, dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       const grid = gridRef.current;
       const cols = grid[0]?.length ?? 0;

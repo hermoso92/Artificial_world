@@ -80,6 +80,6 @@ describe('SimulationView', () => {
       fetchData: vi.fn(),
     });
     render(<SimulationView onBack={() => {}} onNavigate={() => {}} />);
-    expect(screen.getByRole('button', { name: /Hub/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Tu Mundo/i })).toBeInTheDocument();
   });
 });

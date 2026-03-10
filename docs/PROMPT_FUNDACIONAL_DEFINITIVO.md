@@ -53,7 +53,7 @@ solos.             ← [cian, glow]
 - `[Ver en GitHub →]`
 
 **Fila de métricas (5 items inline):**
-`68+ tests` · `13 acciones/agente` · `7 semillas de civilización` · `200 ticks sesión canónica` · `0 € por decisión de agente`
+`68+ tests` · `13 acciones/agente` · `9 semillas de civilización` · `200 ticks sesión canónica` · `0 € por decisión de agente`
 
 ---
 
@@ -104,7 +104,7 @@ Donde δk son los 9 modificadores: mod_hambre, mod_energia, mod_riesgo, mod_rasg
 
 | Icono | Feature | Detalle |
 |-------|---------|---------|
-| 🏛️ | 7 Semillas de Civilización | tribu fronteriza, colonia tecnócrata, comunidad espiritual, reino guerrero, ciudad comerciante, colonia paranoica, imperio decadente |
+| 🏛️ | 9 Semillas de Civilización | tribu fronteriza, tecnócrata, espiritual, guerrero, comerciante, paranoica, decadente, tryndamere, síntesis |
 | 🛡️ | Refugios con Memoria | unidad base con recursos, moral, seguridad y memoria local |
 | ⚔️ | 13 Acciones Autónomas | COMER, EXPLORAR, HUIR, ROBAR, COMPARTIR, ATACAR, MOVER, DESCANSAR, SEGUIR, EVITAR, IR_REFUGIO, RECOGER_COMIDA, RECOGER_MATERIAL |
 | 🔬 | Función de Utilidad | U(a,i,t) = U_base + Σ modificadores + ε determinista |

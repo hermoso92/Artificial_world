@@ -21,9 +21,6 @@ export function MysticQuestView({ onBack, onNavigate }) {
       }}
     >
       <div className="mysticquest-header">
-        <button type="button" className="back-btn" onClick={onBack}>
-          {t('mysticquest.back', '← Hub')}
-        </button>
         <h2 className="mysticquest-title">🔮 Mystic Quest</h2>
       </div>
 

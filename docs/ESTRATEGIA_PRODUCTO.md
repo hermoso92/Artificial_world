@@ -29,7 +29,7 @@ Es la parte más consistente entre código, persistencia y pruebas:
 - 13 tipos de acción en `tipos/enums.py`
 - persistencia SQLite en `sistemas/sistema_persistencia.py`
 - Modo Sombra en `sistemas/gestor_modo_sombra.py`
-- runner de producción con 10 suites en `pruebas/run_tests_produccion.py`
+- runner de producción con 11 suites en `pruebas/run_tests_produccion.py`
 - entrada principal clara en `principal.py`
 
 ### Web fullstack

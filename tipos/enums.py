@@ -89,6 +89,9 @@ class TipoEvento(Enum):
     DIRECTIVA_SOMBRA_ACEPTADA  = "directiva_sombra_aceptada"
     DIRECTIVA_SOMBRA_RECHAZADA = "directiva_sombra_rechazada"
     ATAQUE_EJECUTADO           = "ataque_ejecutado"
+    # Eventos de zonas (entrada/salida)
+    ENTRO_ZONA = "entro_zona"
+    SALIO_ZONA = "salio_zona"
 
 
 class EstadoDirectiva(Enum):

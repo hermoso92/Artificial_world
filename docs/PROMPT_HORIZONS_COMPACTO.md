@@ -19,10 +19,10 @@ Crea un portfolio personal oscuro y espectacular para Cosigein SL, constructor d
 Logo punto cian pulsante + "Cosigein SL" + links: Artificial World, DobackSoft, Paper, CV, Demos, Contacto + botón "Ver en GitHub"
 
 **2. HERO full-screen**
-Título gigante: "Construyo sistemas / que se explican / solos." (última palabra en cian con glow) + métricas inline: 68+ tests · 13 acciones/agente · 7 semillas de civilización · 200 ticks · 0 € por decisión
+Título gigante: "Construyo sistemas / que se explican / solos." (última palabra en cian con glow) + métricas inline: 68+ tests · 13 acciones/agente · 9 semillas de civilización · 200 ticks · 0 € por decisión
 
 **3. ARTIFICIAL WORLD**
-Motor Python de civilizaciones con agentes autónomos. Sin LLMs. Función de utilidad U(a,i,t). 7 semillas (tribu fronteriza, colonia tecnócrata, reino guerrero...). Sesión canónica reproducible. Botón "Ver paper"
+Motor Python de civilizaciones con agentes autónomos. Sin LLMs. Función de utilidad U(a,i,t). 9 semillas (tribu fronteriza, tecnócrata, reino guerrero...). Sesión canónica reproducible. Botón "Ver paper"
 
 **4. DOBACKSOFT**
 Plataforma B2B de telemetría vehicular CAN/GPS. Multi-tenant. Módulos: Estabilidad, Telemetría, IA Copiloto, FireSimulator. Botón "Ver DobackSoft" (nueva pestaña)

@@ -48,7 +48,6 @@ export function MinigamesLobby({ onBack }) {
   return (
     <div className="minigames">
       <div className="minigames-header">
-        <button className="back-btn" onClick={onBack}>← Hub</button>
         <h2 className="minigames-title">⚔️ Arena</h2>
       </div>
 

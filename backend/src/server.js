@@ -26,11 +26,19 @@ import dobacksoftRoutes from './routes/dobacksoft.js';
 import subscriptionRoutes from './routes/subscription.js';
 import adminRoutes from './routes/admin.js';
 import chessRoutes from './routes/chess.js';
+import missionControlRoutes from './routes/missionControl.js';
+import approvalsRoutes from './routes/approvals.js';
+import boardsRoutes from './routes/boards.js';
+import gatewaysRoutes from './routes/gateways.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { playerContext } from './middleware/playerContext.js';
-import { initWebSocket, broadcastLog } from './realtime/websocket.js';
 import logger, { setLogBroadcaster } from './utils/logger.js';
 import { initStripe } from './services/stripeService.js';
+import { getDb } from './db/database.js';
+import { initOpenClawConnectors, cleanupOpenClawConnectors } from './services/missionControl/connectors.js';
+import { initMissionControlRuntime, stopMissionControlRuntime, isRuntimeStarted } from './services/missionControl/runtime.js';
+import { pauseSimulation } from './simulation/engine.js';
+import { initWebSocket, broadcastLog, broadcastMissionControlMessage, closeWebSocket } from './realtime/websocket.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
@@ -38,6 +46,11 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 
 const app = express();
 const server = createServer(app);
+
+// CORS: denegar por defecto en producción si ALLOWED_ORIGINS no está definida
+if (IS_PROD && !process.env.ALLOWED_ORIGINS) {
+  throw new Error('ALLOWED_ORIGINS must be set in production');
+}
 
 const corsOrigins = process.env.ALLOWED_ORIGINS?.split(',').map((o) => o.trim()).filter(Boolean);
 app.use(cors(corsOrigins?.length ? { origin: corsOrigins } : {}));
@@ -54,6 +67,10 @@ app.use('/api/dobacksoft', dobacksoftRoutes);
 app.use('/api/subscription', subscriptionRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/chess', chessRoutes);
+app.use('/api/mission-control', missionControlRoutes);
+app.use('/api/approvals', approvalsRoutes);
+app.use('/api/boards', boardsRoutes);
+app.use('/api/gateways', gatewaysRoutes);
 
 // 404 para rutas API no registradas
 app.use('/api', (req, res) => {
@@ -68,7 +85,22 @@ app.use('/api', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'constructor-de-mundos', ws: true, env: process.env.NODE_ENV ?? 'development' });
+  let dbOk = false;
+  try {
+    const db = getDb();
+    dbOk = db.prepare('SELECT 1').get()?.['1'] === 1;
+  } catch {
+    dbOk = false;
+  }
+  const status = dbOk ? 'ok' : 'degraded';
+  res.status(dbOk ? 200 : 503).json({
+    status,
+    service: 'constructor-de-mundos',
+    db: dbOk ? 'ok' : 'error',
+    runtime: isRuntimeStarted(),
+    ws: true,
+    env: process.env.NODE_ENV ?? 'development',
+  });
 });
 
 // Serve docs (PDF, HTML, MD) from project root
@@ -94,10 +126,28 @@ app.use(errorHandler);
 
 initWebSocket(server);
 setLogBroadcaster(broadcastLog);
+initMissionControlRuntime({ publish: broadcastMissionControlMessage });
+initOpenClawConnectors({ publish: broadcastMissionControlMessage });
 
-server.listen(PORT, async () => {
+async function shutdown(signal) {
+  logger.info(`[server] ${signal} received — shutting down`);
+  stopMissionControlRuntime();
+  pauseSimulation();
+  cleanupOpenClawConnectors();
+  closeWebSocket();
+  server.close(() => {
+    logger.info('[server] HTTP server closed');
+    process.exit(0);
+  });
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
+
+await initStripe();
+server.listen(PORT, () => {
   logger.info(`Constructor de Mundos API at http://localhost:${PORT}`);
   logger.info(`  WebSocket: ws://localhost:${PORT}/ws`);
+  logger.info(`  Mission Control API: http://localhost:${PORT}/api/mission-control`);
   logger.info(`  Mode: ${IS_PROD ? 'PRODUCTION' : 'development'}`);
-  await initStripe();
 });

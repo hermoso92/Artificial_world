@@ -217,7 +217,7 @@ export function SimulationView({ onBack, onNavigate }) {
 
   return (
     <div className="simulation-view">
-      <SimulationViewHeader hero={hero} connected={connected} onBack={onBack} onNavigate={onNavigate} />
+      <SimulationViewHeader hero={hero} connected={connected} onNavigate={onNavigate} />
 
       <DetectionBanner wsConnected={connected} onRefresh={fetchData} />
 

@@ -1,12 +1,11 @@
 /**
  * Header for SimulationView.
+ * Global nav (back to Hub) lives in AppShell; this header shows world context only.
  */
-export function SimulationViewHeader({ hero, connected, onBack, onNavigate }) {
+export function SimulationViewHeader({ hero, connected, onNavigate }) {
   return (
-    <header className="header">
-      <div className="header-left">
-        <button className="back-btn" onClick={onBack}>← Hub</button>
-      </div>
+    <header className="header simulation-context-header">
+      <div className="header-left" />
       <div className="header-center">
         <h1>{hero?.name ? `${hero.name} — Tu Mundo` : 'Tu Mundo'}</h1>
         <p className="subtitle">

@@ -254,4 +254,58 @@ export const api = {
       headers: { 'X-Admin-Player-Id': getPlayerId() },
     });
   },
+
+  // Mission Control
+  getMissionControlSnapshot: (opts = {}) => {
+    const params = new URLSearchParams(opts).toString();
+    return fetchApi(`/mission-control/snapshot${params ? `?${params}` : ''}`);
+  },
+  getMissionControlOverview: (opts = {}) => {
+    const params = new URLSearchParams(opts).toString();
+    return fetchApi(`/mission-control/overview${params ? `?${params}` : ''}`);
+  },
+  getMissionControlMetrics: () => fetchApi('/mission-control/metrics'),
+  getMissionControlAgents: (opts = {}) => {
+    const params = new URLSearchParams(opts).toString();
+    return fetchApi(`/mission-control/agents${params ? `?${params}` : ''}`);
+  },
+  getMissionControlTasks: (opts = {}) => {
+    const params = new URLSearchParams(opts).toString();
+    return fetchApi(`/mission-control/tasks${params ? `?${params}` : ''}`);
+  },
+  getMissionControlTaskDetail: (taskId) => fetchApi(`/mission-control/tasks/${taskId}`),
+  pauseMissionControlTask: (taskId) => fetchApi(`/mission-control/tasks/${taskId}/pause`, { method: 'POST', body: JSON.stringify({}) }),
+  resumeMissionControlTask: (taskId) => fetchApi(`/mission-control/tasks/${taskId}/resume`, { method: 'POST', body: JSON.stringify({}) }),
+  getMissionControlRuns: (opts = {}) => {
+    const params = new URLSearchParams(opts).toString();
+    return fetchApi(`/mission-control/runs${params ? `?${params}` : ''}`);
+  },
+  getMissionControlRunDetail: (runId) => fetchApi(`/mission-control/runs/${runId}`),
+  getMissionControlEvents: (opts = {}) => {
+    const params = new URLSearchParams(opts).toString();
+    return fetchApi(`/mission-control/events${params ? `?${params}` : ''}`);
+  },
+  getMissionControlBoards: (opts = {}) => {
+    const params = new URLSearchParams(opts).toString();
+    return fetchApi(`/boards${params ? `?${params}` : ''}`);
+  },
+  moveMissionControlTask: (taskId, status, beforeTaskId = null) =>
+    fetchApi(`/boards/tasks/${taskId}/move`, {
+      method: 'POST',
+      body: JSON.stringify({ status, beforeTaskId }),
+    }),
+  getMissionControlApprovals: () => fetchApi('/approvals'),
+  getMissionControlApproval: (approvalId) => fetchApi(`/approvals/${approvalId}`),
+  approveMissionControlRequest: (approvalId, note) =>
+    fetchApi(`/approvals/${approvalId}/approve`, {
+      method: 'POST',
+      body: JSON.stringify({ actor: getPlayerId(), note: note ?? '' }),
+    }),
+  rejectMissionControlRequest: (approvalId, note) =>
+    fetchApi(`/approvals/${approvalId}/reject`, {
+      method: 'POST',
+      body: JSON.stringify({ actor: getPlayerId(), note: note ?? '' }),
+    }),
+  getMissionControlGateways: () => fetchApi('/gateways'),
+  getMissionControlGatewayContract: () => fetchApi('/gateways/contract'),
 };

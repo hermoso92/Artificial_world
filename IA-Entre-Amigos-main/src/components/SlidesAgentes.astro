@@ -1,0 +1,568 @@
+---
+import Slide from './Slide.astro';
+---
+
+<!-- SLIDE 21 -->
+<Slide id="multi-modelo" number={21} title="Multi-modelo: usar varios modelos y stack de orquestación">
+  <p>No todos los modelos son iguales ni cuestan lo mismo. La clave es usar el <strong>modelo adecuado para cada tarea</strong>.</p>
+  <h3><i data-lucide="route"></i> Patrón de routing</h3>
+  <div class="flow">
+    <span class="flow-step">Petición</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step">Router (clasifica)</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-step">Modelo adecuado</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Tarea</th><th>Modelo recomendado</th><th>Coste relativo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Resumir, clasificar, extraer datos</td><td>Haiku / GPT-4o Mini / modelo local</td><td>Bajo</td></tr>
+      <tr><td>Código complejo, razonamiento</td><td>Opus / GPT-5.2 / Sonnet</td><td>Alto</td></tr>
+      <tr><td>Validación, formato</td><td>Sonnet / Haiku</td><td>Medio-bajo</td></tr>
+    </tbody>
+  </table>
+  <h3><i data-lucide="layers"></i> Stack típico de orquestación</h3>
+  <ul>
+    <li><i data-lucide="network"></i> <strong>Orquestador:</strong> coordina el flujo (LangGraph, Mastra, Google ADK, tu propio código)</li>
+    <li><i data-lucide="brain"></i> <strong>Agente planificador:</strong> modelo potente que descompone la tarea (Opus, GPT-5.2)</li>
+    <li><i data-lucide="cpu"></i> <strong>Agentes ejecutores:</strong> modelos más baratos que ejecutan subtareas (Sonnet, Haiku, modelos locales)</li>
+    <li><i data-lucide="check-circle"></i> <strong>Agente validador:</strong> revisa la salida antes de entregarla</li>
+  </ul>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-routing" target="_blank">Anthropic - Prompt Routing</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 22 -->
+<Slide id="patrones-orquestacion" number={22} title="Patrones de orquestación en OpenAI y Claude">
+  <div class="two-cols">
+    <div>
+      <h3><i data-lucide="bot"></i> OpenAI Agents SDK</h3>
+      <ul>
+        <li><i data-lucide="target"></i> <strong>Manager (centralizado):</strong> un agente "manager" coordina todo, delega vía tool calls a agentes especializados</li>
+        <li><i data-lucide="move"></i> <strong>Handoffs (descentralizado):</strong> los agentes se pasan el control entre sí. Cada agente sabe a quién derivar</li>
+        <li>Primitivas: <code>Agent</code>, <code>Runner</code>, <code>Handoff</code>, <code>Guardrail</code></li>
+      </ul>
+    </div>
+    <div>
+      <h3><i data-lucide="sparkles"></i> Claude Agent SDK</h3>
+      <ul>
+        <li><i data-lucide="blocks"></i> <strong>Subagentes:</strong> se definen con su propio system prompt, herramientas restringidas y opcionalmente un modelo diferente</li>
+        <li><i data-lucide="users"></i> <strong>Agent Teams</strong> (experimental): múltiples instancias en paralelo, un team lead coordina</li>
+        <li>Compactación automática del contexto y re-lectura de reglas</li>
+      </ul>
+    </div>
+  </div>
+  <h3><i data-lucide="globe"></i> Google ADK</h3>
+  <ul>
+    <li><i data-lucide="repeat"></i> <strong>Workflow agents:</strong> Sequential, Parallel, Loop para pipelines predecibles</li>
+    <li><i data-lucide="route"></i> <strong>LLM-driven routing:</strong> el modelo decide dinámicamente a qué agente derivar</li>
+    <li><i data-lucide="plug"></i> Soporte nativo para MCP tools y streaming de audio/vídeo</li>
+  </ul>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="lightbulb"></i> Convergencia</p>
+    <p>Todos convergen en el mismo patrón: agentes especializados + coordinador + herramientas + guardrails. La diferencia está en el nivel de abstracción y el ecosistema.</p>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://openai.github.io/openai-agents-python/multi_agent/" target="_blank">OpenAI Agents SDK - Multi Agent</a>
+    <a href="https://code.claude.com/docs/en/agent-teams" target="_blank">Claude Code - Agent Teams</a>
+    <a href="https://google.github.io/adk-docs/agents/" target="_blank">Google ADK - Agents</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 23 -->
+<Slide id="orquestacion" number={23} title="Sistemas de orquestación de agentes">
+  <p>Coordinan <strong>múltiples agentes</strong> para resolver problemas complejos. Un agente solo no puede con todo: necesitas especialización, división de tareas y coordinación.</p>
+  <h3><i data-lucide="network"></i> Patrones principales</h3>
+  <div class="icon-grid">
+    <div class="icon-card">
+      <i data-lucide="move"></i>
+      <div class="icon-card-content">
+        <strong>Secuencial</strong>
+        <p>A termina, pasa resultado a B, B termina, pasa a C</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="zap"></i>
+      <div class="icon-card-content">
+        <strong>Paralelo</strong>
+        <p>A, B y C trabajan simultáneamente, se combinan resultados</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="layers"></i>
+      <div class="icon-card-content">
+        <strong>Jerárquico</strong>
+        <p>Un agente "director" delega subtareas a agentes especializados</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="repeat"></i>
+      <div class="icon-card-content">
+        <strong>Handoffs</strong>
+        <p>Los agentes se pasan el control entre sí según el contexto</p>
+      </div>
+    </div>
+  </div>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="cog"></i> Rol del orquestador</p>
+    <p>Gestiona: flujo de información entre agentes, errores y reintentos, dependencias entre tareas.</p>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://cookbook.openai.com/examples/orchestrating_agents" target="_blank">OpenAI Cookbook - Orchestrating Agents</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 24 -->
+<Slide id="orquestadores-adks" number={24} title="¿Cuáles hay? (orquestadores y ADKs)">
+  <div class="compare-card">
+    <p class="compare-card-title"><i data-lucide="link"></i> LangChain + LangGraph <span class="tag">v1.0</span> <span class="tag">Python</span> <span class="tag">JS</span></p>
+    <p class="compare-card-desc">El veterano. LangChain para construir agentes, LangGraph para orquestarlos con grafos de estado. Persistencia durable, human-in-the-loop.</p>
+  </div>
+  <div class="compare-card">
+    <p class="compare-card-title"><i data-lucide="users"></i> CrewAI <span class="tag">Python</span> <span class="tag">A2A</span></p>
+    <p class="compare-card-desc">Agentes con roles, objetivos y backstory. Memoria corta/larga/entidad nativa. Soporte Agent-to-Agent. Muy adoptado en flujos de negocio.</p>
+  </div>
+  <div class="compare-card">
+    <p class="compare-card-title"><i data-lucide="blocks"></i> Microsoft Agent Framework <span class="tag">Python</span> <span class="tag">.NET</span></p>
+    <p class="compare-card-desc">Antes AutoGen + Semantic Kernel, ahora unificados. Event-driven, async, middleware empresarial, telemetría.</p>
+  </div>
+  <div class="compare-card">
+    <p class="compare-card-title"><i data-lucide="sparkles"></i> Claude Agent SDK <span class="tag">TypeScript</span> <span class="tag">Python</span></p>
+    <p class="compare-card-desc">El motor detrás de Claude Code, expuesto como librería. Subagentes, Agent Teams, compactación automática.</p>
+  </div>
+  <div class="compare-card">
+    <p class="compare-card-title"><i data-lucide="bot"></i> OpenAI Agents SDK <span class="tag">Python</span></p>
+    <p class="compare-card-desc">Manager pattern + Handoffs, guardrails, trazabilidad nativa.</p>
+  </div>
+  <div class="compare-card">
+    <p class="compare-card-title"><i data-lucide="globe"></i> Google ADK <span class="tag">Python</span> <span class="tag">TypeScript</span></p>
+    <p class="compare-card-desc">Sequential/Parallel/Loop workflows, LLM-routing, soporte MCP, multi-modelo vía LiteLLM.</p>
+  </div>
+  <div class="compare-card">
+    <p class="compare-card-title"><i data-lucide="code"></i> Mastra <span class="tag">TypeScript</span></p>
+    <p class="compare-card-desc">TypeScript-first, supervisor pattern, RAG integrado. Usado por PayPal, Adobe, Replit.</p>
+  </div>
+  <div class="compare-card">
+    <p class="compare-card-title"><i data-lucide="sliders-horizontal"></i> n8n / Make <span class="tag">Low-code</span></p>
+    <p class="compare-card-desc">Orquestación visual para equipos no-dev. Drag-and-drop de flujos con agentes.</p>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://www.langchain.com/langgraph" target="_blank">LangGraph</a>
+    <a href="https://crewai.com/" target="_blank">CrewAI</a>
+    <a href="https://mastra.ai/" target="_blank">Mastra</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 25 -->
+<Slide id="claude-code-estructura" number={25} title="Estructura de un agente sobre Claude Code">
+  <div class="icon-grid">
+    <div class="icon-card">
+      <i data-lucide="file-text"></i>
+      <div class="icon-card-content">
+        <strong>CLAUDE.md / Rules</strong>
+        <p>Instrucciones persistentes que definen comportamiento, estilo y restricciones</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="zap"></i>
+      <div class="icon-card-content">
+        <strong>Skills</strong>
+        <p>Capacidades invocables: acciones especializadas (/commit, /review-pr)</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="settings"></i>
+      <div class="icon-card-content">
+        <strong>Hooks</strong>
+        <p>Scripts en eventos: PreToolUse, PostToolUse, validaciones automáticas</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="plug"></i>
+      <div class="icon-card-content">
+        <strong>MCP Servers</strong>
+        <p>Servidores de herramientas: conectar BD, APIs, navegador, Slack, GitHub...</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="wrench"></i>
+      <div class="icon-card-content">
+        <strong>Tools nativos</strong>
+        <p>Herramientas built-in: Read, Write, Edit, Bash, Grep, Glob, Agent</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="bot"></i>
+      <div class="icon-card-content">
+        <strong>Subagentes</strong>
+        <p>Agentes especializados que se lanzan para tareas concretas con su propio contexto</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="package"></i>
+      <div class="icon-card-content">
+        <strong>Plugins</strong>
+        <p>Paquetes que agrupan skills, hooks, agentes y MCPs distribuibles</p>
+      </div>
+    </div>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank">Anthropic - Claude Code Docs</a>
+    <a href="https://modelcontextprotocol.io/" target="_blank">Model Context Protocol</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 26 -->
+<Slide id="mcp" number={26} title="MCP (Model Context Protocol): el estándar que conecta modelos con el mundo">
+  <p><i data-lucide="plug"></i> Un protocolo abierto (creado por Anthropic, adoptado por la industria) que estandariza cómo un modelo se conecta con <strong>herramientas externas</strong>.</p>
+  <div class="analogy">
+    <p class="analogy-label"><i data-lucide="lightbulb"></i> Analogía</p>
+    <p>MCP es como <strong>USB para la IA</strong>. Antes de USB, cada periférico tenía su propio conector. MCP hace lo mismo: un estándar, cualquier herramienta, cualquier modelo.</p>
+  </div>
+  <h3><i data-lucide="cog"></i> ¿Cómo funciona?</h3>
+  <ul>
+    <li><i data-lucide="hard-drive"></i> Un <strong>MCP Server</strong> expone herramientas (leer BD, buscar en web, navegar, enviar mensajes...) siguiendo el protocolo</li>
+    <li><i data-lucide="search"></i> El agente/modelo <strong>descubre</strong> qué herramientas tiene disponibles y las llama cuando las necesita</li>
+    <li><i data-lucide="code"></i> Protocolo JSON-RPC sobre stdio o HTTP con SSE</li>
+  </ul>
+  <h3><i data-lucide="globe"></i> ¿Quién lo soporta? (marzo 2026)</h3>
+  <p>Claude Code, Claude Desktop, Cursor, Windsurf, VS Code (GitHub Copilot), OpenAI (anunciado), Google ADK (nativo). Cientos de servidores disponibles: PostgreSQL, GitHub, Slack, Playwright, Pinecone, filesystem...</p>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="rocket"></i> ¿Por qué importa para un ingeniero?</p>
+    <p>Escribes la integración una vez como MCP Server, y cualquier agente compatible lo usa. Los agentes pasan de "chatear" a "actuar" en sistemas reales.</p>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://modelcontextprotocol.io/" target="_blank">Model Context Protocol - Especificación oficial</a>
+    <a href="https://spec.modelcontextprotocol.io/" target="_blank">MCP Spec (técnica)</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 27 -->
+<Slide id="ide-terminal" number={27} title="IDE web vs terminal: ¿dónde usar la IA?">
+  <div class="two-cols">
+    <div>
+      <h3><i data-lucide="monitor"></i> IDEs web (chat)</h3>
+      <p>ChatGPT, Claude.ai, Gemini, Playground de OpenAI, Console de Anthropic</p>
+      <div class="icon-grid">
+        <div class="icon-card">
+          <i data-lucide="message-square"></i>
+          <div class="icon-card-content">
+            <strong>Conversación libre</strong>
+            <p>Explorar ideas, prototipar prompts</p>
+          </div>
+        </div>
+        <div class="icon-card">
+          <i data-lucide="sliders-horizontal"></i>
+          <div class="icon-card-content">
+            <strong>Ajustar parámetros</strong>
+            <p>Temperatura, tokens, modelos</p>
+          </div>
+        </div>
+      </div>
+      <p>Limitación: copiar/pegar código manualmente, sin acceso a tu proyecto</p>
+    </div>
+    <div>
+      <h3><i data-lucide="terminal"></i> Agentes en terminal</h3>
+      <p>Claude Code, OpenCode, Aider</p>
+      <div class="icon-grid">
+        <div class="icon-card">
+          <i data-lucide="file-text"></i>
+          <div class="icon-card-content">
+            <strong>Acceso directo</strong>
+            <p>Leen, editan y crean archivos reales</p>
+          </div>
+        </div>
+        <div class="icon-card">
+          <i data-lucide="play"></i>
+          <div class="icon-card-content">
+            <strong>Ejecutar</strong>
+            <p>Comandos, tests, builds en tu proyecto</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h3><i data-lucide="scale"></i> ¿Cuándo usar cuál?</h3>
+  <table>
+    <thead>
+      <tr><th>Tarea</th><th>Mejor opción</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Explorar, aprender, preguntar</td><td><i data-lucide="monitor"></i> IDE web</td></tr>
+      <tr><td>Prototipar prompts</td><td><i data-lucide="monitor"></i> IDE web (Playground/Workbench)</td></tr>
+      <tr><td>Desarrollo real, multi-fichero</td><td><i data-lucide="terminal"></i> Terminal (Claude Code, Aider)</td></tr>
+      <tr><td>Refactoring, automatización</td><td><i data-lucide="terminal"></i> Terminal</td></tr>
+    </tbody>
+  </table>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://code.claude.com/" target="_blank">Claude Code</a>
+    <a href="https://github.com/opencode-ai/opencode" target="_blank">OpenCode</a>
+    <a href="https://aider.chat/" target="_blank">Aider</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 28 -->
+<Slide id="agente-vs-prompt" number={28} title="¿Cuándo usar un agente y no un prompt?">
+  <div class="two-cols">
+    <div>
+      <h3><i data-lucide="message-square"></i> Usa un prompt cuando</h3>
+      <ul>
+        <li>La tarea es única y simple</li>
+        <li>No tiene efectos secundarios</li>
+        <li>No necesita acceder a ficheros o APIs</li>
+        <li>Una respuesta de texto basta</li>
+      </ul>
+    </div>
+    <div>
+      <h3><i data-lucide="bot"></i> Usa un agente cuando</h3>
+      <ul>
+        <li>Necesitas múltiples pasos coordinados</li>
+        <li>Hay que interactuar con sistemas externos</li>
+        <li>La tarea requiere iteración y autocorrección</li>
+        <li>El flujo tiene decisiones condicionales</li>
+        <li>Quieres automatizar un proceso repetitivo</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="lightbulb"></i> Regla rápida</p>
+    <p>Si necesitas copiar/pegar el resultado del chat para hacer algo con él, probablemente necesitas un agente.</p>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf" target="_blank">OpenAI - A Practical Guide to Building Agents</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 29 -->
+<Slide id="seguridad" number={29} title="Seguridad y riesgos">
+  <div class="icon-grid">
+    <div class="icon-card">
+      <i data-lucide="shield-alert"></i>
+      <div class="icon-card-content">
+        <strong>Prompt injection</strong>
+        <p>Un usuario malicioso inyecta instrucciones para alterar el comportamiento del modelo. Directa ("Ignora instrucciones") o indirecta (datos externos con instrucciones ocultas).</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="eye"></i>
+      <div class="icon-card-content">
+        <strong>Data leakage (fuga de datos)</strong>
+        <p>El modelo puede filtrar datos del system prompt, del contexto RAG o de conversaciones anteriores si no se controla. Un usuario puede pedir "repite tus instrucciones" y el modelo revelar reglas internas, claves API o lógica de negocio inyectada en el prompt. También puede exponer datos de otros usuarios si el contexto se comparte entre sesiones.</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="alert-triangle"></i>
+      <div class="icon-card-content">
+        <strong>Alucinaciones</strong>
+        <p>Genera información falsa con total confianza: funciones que no existen, librerías inventadas, queries SQL con columnas inexistentes, comandos de sistema destructivos. El modelo no "sabe" que no sabe: no tiene mecanismo interno para distinguir hechos de invenciones. Cuanto más específica es la pregunta, más probable es la alucinación.</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="brain"></i>
+      <div class="icon-card-content">
+        <strong>Dependencia excesiva</strong>
+        <p>Aceptar la salida del modelo sin revisarla. Bugs sutiles (off-by-one, race conditions), código inseguro (SQL injection, XSS), decisiones de arquitectura incorrectas. El modelo genera código que "parece correcto" y pasa tests superficiales, pero falla en producción. El riesgo crece cuando el desarrollador no domina la tecnología que el modelo está generando.</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="lock"></i>
+      <div class="icon-card-content">
+        <strong>Datos sensibles</strong>
+        <p>Cuidado con lo que envías a APIs externas: código propietario, datos de clientes, secretos.</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="copyright"></i>
+      <div class="icon-card-content">
+        <strong>Propiedad intelectual</strong>
+        <p>El código generado puede reproducir fragmentos de código con licencia. Sin trazabilidad clara del origen, tu empresa puede tener problemas legales.</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="package-x"></i>
+      <div class="icon-card-content">
+        <strong>Supply chain poisoning</strong>
+        <p>El modelo puede sugerir dependencias inexistentes o maliciosas (ataques de "package hallucination"). Un atacante registra el paquete inventado y el desarrollador lo instala.</p>
+      </div>
+    </div>
+    <div class="icon-card">
+      <i data-lucide="repeat"></i>
+      <div class="icon-card-content">
+        <strong>Loops y coste descontrolado</strong>
+        <p>Un agente autónomo mal configurado puede entrar en bucle, ejecutar acciones destructivas o consumir miles de euros en tokens sin supervisión.</p>
+      </div>
+    </div>
+  </div>
+  <h3><i data-lucide="shield"></i> Mitigaciones</h3>
+  <ul>
+    <li><i data-lucide="check-circle"></i> Validación de salida y guardrails</li>
+    <li><i data-lucide="lock"></i> Sandboxing y permisos mínimos</li>
+    <li><i data-lucide="users"></i> Revisión humana (human-in-the-loop)</li>
+    <li><i data-lucide="hard-drive"></i> Modelos locales para datos sensibles</li>
+    <li><i data-lucide="eye"></i> Nunca confiar ciegamente en la salida</li>
+  </ul>
+  <h3><i data-lucide="building"></i> Gobernanza empresarial</h3>
+  <p>Las empresas necesitan una <strong>política de uso de IA</strong> clara antes de que los equipos adopten herramientas por su cuenta:</p>
+  <ul>
+    <li><i data-lucide="file-text"></i> <strong>Política de uso aceptable:</strong> qué herramientas están aprobadas, qué datos se pueden enviar, qué modelos usar para cada tipo de tarea</li>
+    <li><i data-lucide="shield-check"></i> <strong>Clasificación de datos:</strong> definir qué es público, interno y confidencial. Los datos confidenciales nunca salen a APIs externas</li>
+    <li><i data-lucide="scroll-text"></i> <strong>Auditoría y trazabilidad:</strong> logs de qué prompts se envían, qué código se genera, quién lo revisa. Fundamental para cumplimiento normativo (GDPR, AI Act de la UE)</li>
+    <li><i data-lucide="graduation-cap"></i> <strong>Formación obligatoria:</strong> el equipo debe entender los riesgos antes de usar las herramientas. No basta con dar acceso</li>
+    <li><i data-lucide="coins"></i> <strong>Presupuesto y límites:</strong> establecer spending limits por equipo/proyecto, alertas de consumo, revisión mensual de costes</li>
+  </ul>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" target="_blank">OWASP Top 10 for LLM Applications</a>
+    <a href="https://simonwillison.net/2022/Sep/12/prompt-injection/" target="_blank">Simon Willison - Prompt Injection Explained</a>
+    <a href="https://artificialintelligenceact.eu/" target="_blank">EU AI Act - Regulación europea</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 30 -->
+<Slide id="costes" number={30} title="Tokens y coste: ¿cuánto cuesta usar IA?">
+  <p><i data-lucide="coins"></i> Se paga por <strong>tokens de entrada + tokens de salida</strong>. La salida suele ser más cara (el modelo trabaja más generando que leyendo).</p>
+  <h3><i data-lucide="trending-up"></i> Precios por millón de tokens (marzo 2026)</h3>
+  <table>
+    <thead>
+      <tr><th>Modelo</th><th>Entrada</th><th>Salida</th><th>Nivel</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Claude Opus 4.6</strong></td><td>~4,60 &euro;</td><td>~23 &euro;</td><td>Premium</td></tr>
+      <tr><td><strong>Claude Sonnet 4.6</strong></td><td>~2,75 &euro;</td><td>~13,80 &euro;</td><td>Estándar</td></tr>
+      <tr><td><strong>Claude Haiku 4.5</strong></td><td>~0,92 &euro;</td><td>~4,60 &euro;</td><td>Económico</td></tr>
+      <tr><td><strong>GPT-5.2</strong></td><td>~1,60 &euro;</td><td>~12,90 &euro;</td><td>Premium</td></tr>
+      <tr><td><strong>GLM 5</strong> (Zhipu AI)</td><td>~0,70 &euro;</td><td>~2,80 &euro;</td><td>Económico</td></tr>
+      <tr><td><strong>Qwen 3.5</strong> (Alibaba)</td><td>~0,55 &euro;</td><td>~2,20 &euro;</td><td>Económico</td></tr>
+    </tbody>
+  </table>
+  <h3><i data-lucide="sliders-horizontal"></i> Estrategias para optimizar coste</h3>
+  <ul>
+    <li><i data-lucide="scale"></i> Usar el modelo más barato que resuelva la tarea (no todo necesita Opus)</li>
+    <li><i data-lucide="database"></i> Caching de prompts (Anthropic y OpenAI lo soportan nativamente)</li>
+    <li><i data-lucide="scissors"></i> Acortar system prompts y contexto innecesario</li>
+    <li><i data-lucide="hard-drive"></i> Modelos locales para desarrollo y pruebas</li>
+  </ul>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="coins"></i> Rango de coste</p>
+    <p>Un proyecto real puede costar desde <strong>céntimos hasta miles de euros/mes</strong> según volumen. La clave es medir y ajustar.</p>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://platform.claude.com/docs/en/about-claude/pricing" target="_blank">Claude API Pricing</a>
+    <a href="https://openai.com/api/pricing/" target="_blank">OpenAI API Pricing</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 31 -->
+<Slide id="cambio-paradigma" number={31} title="El cambio de paradigma en el trabajo del ingeniero">
+  <div class="two-cols">
+    <div>
+      <h3><i data-lucide="trending-up"></i> Lo que cambia</h3>
+      <ul>
+        <li>De "escribir código" a <strong>especificar intención</strong></li>
+        <li>De "dominar la sintaxis" a <strong>dominar el contexto</strong></li>
+        <li>De "programador individual" a <strong>director de agentes</strong></li>
+        <li>De "memorizar APIs" a <strong>diseñar prompts y flujos</strong></li>
+        <li>De "hacer el trabajo" a <strong>verificar el trabajo</strong></li>
+      </ul>
+    </div>
+    <div>
+      <h3><i data-lucide="shield"></i> Lo que NO cambia</h3>
+      <ul>
+        <li>Pensar en arquitectura y trade-offs</li>
+        <li>Entender qué hace el código</li>
+        <li>Seguridad, rendimiento, buenas prácticas</li>
+        <li>La responsabilidad: si el agente genera un bug, el responsable eres tú</li>
+        <li>Resolver problemas ambiguos que requieren criterio humano</li>
+      </ul>
+    </div>
+  </div>
+  <h3><i data-lucide="rocket"></i> Exponential Programming (Evaristo Nogales)</h3>
+  <p>No es solo "programar más rápido". Es un cambio de modelo mental. Evaristo Nogales acuña el término <strong>Exponential Programming</strong> para describir cómo la IA transforma la relación entre el ingeniero y el código:</p>
+  <ul>
+    <li><i data-lucide="trending-up"></i> <strong>Productividad no lineal:</strong> un ingeniero con agentes no es 2x más rápido, puede ser 10x o 50x en ciertas tareas. El cuello de botella deja de ser escribir código y pasa a ser pensar qué construir</li>
+    <li><i data-lucide="layers"></i> <strong>Abstracción sobre abstracción:</strong> antes abstraíamos con funciones, clases y frameworks. Ahora abstraemos con prompts, agentes y flujos. El nivel de abstracción sube un orden de magnitud</li>
+    <li><i data-lucide="users"></i> <strong>Equipos más pequeños, más impacto:</strong> lo que antes requería un equipo de 10 personas durante meses, un ingeniero con agentes bien orquestados puede hacerlo en días. Cambia la economía de los proyectos</li>
+    <li><i data-lucide="brain"></i> <strong>El ingeniero como director:</strong> tu trabajo no es escribir cada línea, es definir la visión, establecer las restricciones, revisar el resultado y tomar decisiones que la IA no puede tomar por ti</li>
+  </ul>
+  <h3><i data-lucide="brain"></i> Nuevas habilidades del ingeniero IA-aumentado</h3>
+  <ul>
+    <li><i data-lucide="code"></i> Prompt engineering y diseño de system prompts</li>
+    <li><i data-lucide="check-circle"></i> Evaluación de salidas de modelos (evals)</li>
+    <li><i data-lucide="network"></i> Orquestación de agentes y diseño de flujos multi-paso</li>
+    <li><i data-lucide="layers"></i> Gestión de contexto: qué información dar al modelo y cuándo</li>
+    <li><i data-lucide="eye"></i> Pensamiento crítico: detectar alucinaciones, sesgos y errores sutiles</li>
+  </ul>
+  <div class="callout">
+    <p class="callout-title"><i data-lucide="alert-triangle"></i> El riesgo real</p>
+    <p>No es que la IA te sustituya. Es que un ingeniero que usa IA sustituya a uno que no la usa.</p>
+  </div>
+  <div class="refs">
+    <p class="refs-title">Para profundizar</p>
+    <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank">Anthropic - Building Effective Agents</a>
+    <a href="https://addyosmani.com/blog/ai-assisted-development/" target="_blank">Addy Osmani - AI-Assisted Development</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 32 -->
+<Slide id="recursos" number={32} title="Recursos y siguiente paso">
+  <div class="two-cols">
+    <div>
+      <h3><i data-lucide="book-open"></i> Cursos y guías</h3>
+      <ul>
+        <li><i data-lucide="link"></i> <a href="https://www.promptingguide.ai/" target="_blank">Prompt Engineering Guide</a></li>
+        <li><i data-lucide="link"></i> <a href="https://stanford-cs324.github.io/winter2022/" target="_blank">Stanford CS324 - LLMs</a></li>
+        <li><i data-lucide="link"></i> <a href="https://github.com/anthropics/courses" target="_blank">Anthropic Courses (GitHub)</a></li>
+        <li><i data-lucide="link"></i> <a href="https://www.deeplearning.ai/courses/" target="_blank">DeepLearning.AI (Andrew Ng)</a></li>
+      </ul>
+      <h3><i data-lucide="file-text"></i> Papers fundamentales</h3>
+      <ul>
+        <li><i data-lucide="link"></i> <a href="https://arxiv.org/abs/1706.03762" target="_blank">Attention Is All You Need (2017)</a></li>
+        <li><i data-lucide="link"></i> <a href="https://arxiv.org/abs/2005.11401" target="_blank">RAG (2020)</a></li>
+        <li><i data-lucide="link"></i> <a href="https://arxiv.org/abs/2203.02155" target="_blank">RLHF - InstructGPT (2022)</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3><i data-lucide="wrench"></i> Herramientas para probar hoy</h3>
+      <ul>
+        <li><i data-lucide="terminal"></i> <a href="https://code.claude.com/" target="_blank">Claude Code</a></li>
+        <li><i data-lucide="download"></i> <a href="https://lmstudio.ai/" target="_blank">LM Studio (modelos locales)</a></li>
+        <li><i data-lucide="search"></i> <a href="https://huggingface.co/models" target="_blank">Hugging Face (explorar modelos)</a></li>
+        <li><i data-lucide="play"></i> <a href="https://platform.openai.com/tokenizer" target="_blank">Tokenizer interactivo (OpenAI)</a></li>
+      </ul>
+      <h3><i data-lucide="eye"></i> Visualizaciones interactivas</h3>
+      <ul>
+        <li><i data-lucide="play"></i> <a href="https://poloclub.github.io/transformer-explainer/" target="_blank">Transformer Explainer</a></li>
+        <li><i data-lucide="play"></i> <a href="https://jalammar.github.io/illustrated-transformer/" target="_blank">The Illustrated Transformer</a></li>
+        <li><i data-lucide="play"></i> <a href="https://poloclub.github.io/cnn-explainer/" target="_blank">CNN Explainer</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="refs">
+    <p class="refs-title">MCP</p>
+    <a href="https://modelcontextprotocol.io/" target="_blank">Especificación oficial</a>
+    <a href="https://github.com/modelcontextprotocol/servers" target="_blank">Servidores disponibles</a>
+  </div>
+</Slide>
+
+<!-- SLIDE 33 -->
+<Slide id="demo" number={33} title="Demo (por definir)">
+  <div class="callout" style="text-align: center; padding: 4rem 0;">
+    <p class="callout-title"><i data-lucide="rocket"></i> Demo en vivo</p>
+    <p style="font-size: 1.5rem; font-weight: 300;">Esta sección se definirá al final del workshop.</p>
+    <p class="code-block" style="margin-top: 1rem;">
+      <span class="comment">// TODO: añadir demo práctica</span>
+    </p>
+  </div>
+</Slide>

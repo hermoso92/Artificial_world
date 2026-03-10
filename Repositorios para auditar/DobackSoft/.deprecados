@@ -1,0 +1,173 @@
+# 🗑️ ARCHIVOS OBSOLETOS - NO USAR
+
+Este archivo lista componentes deprecados del sistema DobackSoft.
+**NO eliminar archivos, solo evitar su uso en código nuevo.**
+
+---
+
+## 📋 SCHEMAS PRISMA OBSOLETOS
+
+```
+❌ backend/prisma/schema_clean.prisma
+❌ backend/prisma/schemaa.prisma
+❌ backend/schema_backup_20250531_142312.prisma
+❌ src/scripts/prisma/schema.prisma
+
+✅ USAR ÚNICO: prisma/schema.prisma
+```
+
+---
+
+## 📋 SERVICIOS/SCRIPTS CAN (NO HAY DATOS)
+
+```
+❌ backend/src/services/CANDecoderService.ts
+❌ backend/src/scripts/check-can-data.ts
+❌ backend/schemas/can_data.py
+❌ backend/models/session/can_data.py
+❌ backend/execute_decoder.py
+❌ backend/auto_decode_can_cmadrid.py
+❌ backend/INSTRUCCIONES_DECODIFICADOR.md
+❌ backend/data/DECODIFICADOR CAN/ (carpeta completa)
+❌ backend/scripts/decode_*.py
+❌ backend/scripts/run_decoder_correct.py
+```
+
+**Motivo:** El sistema NO tiene datos CAN, solo estabilidad/GPS/rotativo.
+
+---
+
+## 📋 SERVICIOS PROCESADORES DUPLICADOS
+
+```
+❌ backend/src/services/SmartDataProcessor.ts
+❌ backend/src/services/OptimalDataProcessor.ts
+❌ backend/src/services/IndependentDataProcessor.ts
+❌ backend/src/services/BulkProcessingService.ts
+❌ backend/src/services/AutoSessionProcessor.ts
+
+✅ USAR: backend/src/services/upload/UnifiedFileProcessorV2.ts
+```
+
+---
+
+## 📋 CALCULADORES KPI DUPLICADOS
+
+```
+❌ backend/src/services/keyCalculator.ts
+❌ backend/src/services/keyCalculatorBackup.ts
+❌ backend/src/services/keyCalculatorFixed.ts
+❌ backend/src/services/kpiCalculator.ts
+
+✅ USAR: backend/src/services/KPICalculationService.ts
+```
+
+---
+
+## 📋 RUTAS DUPLICADAS
+
+```
+❌ backend/src/routes/kpis-temp.ts
+❌ backend/src/routes/kpiRoutes.ts
+❌ backend/src/routes/kpiCalculation.ts
+
+✅ USAR: backend/src/routes/kpis.ts
+```
+
+```
+❌ backend/src/routes/geofencesAPI.ts
+❌ backend/src/routes/geofence-alerts.ts
+
+✅ USAR: backend/src/routes/geofences.ts
+```
+
+```
+❌ backend/src/routes/hotspots.ts
+❌ backend/src/routes/stabilityFilters.ts
+
+✅ INTEGRADAS EN: backend/src/routes/speedAnalysis.ts, stabilityEvents.ts
+```
+
+---
+
+## 📋 COMPONENTES FRONTEND LEGACY
+
+```
+❌ frontend/src/components/GPSMap_backup.tsx
+❌ frontend/src/pages/Dashboardantiguo.tsx
+❌ frontend/src/pages/NewExecutiveKPIDashboardantiguo.tsx
+❌ frontend/src/hooks/useStabilityData_backup.ts
+❌ frontend/src/hooks/useSimulatedStabilityEvents_backup.ts
+❌ frontend/src/pages/auth/Login_backup.tsx
+
+✅ USAR: Versiones SIN "_backup" o "antiguo"
+```
+
+```
+❌ frontend/src/components/backup sesiones/
+❌ layout-analysis-backup/
+
+✅ USAR: Versiones en rutas principales
+```
+
+---
+
+## 📋 DOCUMENTACIÓN LEGACY EN RAÍZ
+
+```
+❌ _CORRECCION_POST_PROCESSOR_COMPLETADA.md
+❌ _EVENTOS_EN_REPORTE_IMPLEMENTADO.md
+❌ _IMPLEMENTACION_POST_PROCESSOR_LISTA.md
+❌ _LEEME_CORRELACION_SESIONES_CORREGIDA.md
+❌ _SOLUCION_DEFINITIVA_TIPOS_TABLAS.md
+❌ _SOLUCION_FINAL_EVENTOS_Y_SEGMENTOS.md
+❌ ANALISIS_EXHAUSTIVO_COMPLETO/
+
+✅ Nueva documentación en: docs/
+```
+
+---
+
+## 📋 SCRIPTS TEMPORALES RAÍZ
+
+```
+❌ temp-check-events.js
+❌ verificar-contraseñas.js
+❌ organizar-archivos.ps1
+```
+
+---
+
+## 📋 MODELOS PRISMA OBSOLETOS
+
+```typescript
+// ❌ NO USAR:
+CanMeasurement          // NO hay datos CAN
+debug_overspeed         // Tabla debug ignorada
+
+// ❌ NO USAR ENUM:
+ProcessingFileType.CAN  // NO existe en sistema
+```
+
+---
+
+## 🔍 BÚSQUEDA RÁPIDA
+
+```bash
+# Ver todos los archivos obsoletos:
+cat .deprecados
+
+# Buscar imports de archivos obsoletos:
+grep -r "CANDecoderService" backend/src/
+grep -r "SmartDataProcessor" backend/src/
+grep -r "OptimalDataProcessor" backend/src/
+grep -r "CanMeasurement" backend/src/
+grep -r "_backup" frontend/src/
+grep -r "antiguo" frontend/src/
+```
+
+---
+
+**Última actualización:** 2025-10-22  
+**Política:** Deprecar, NO eliminar (mantener para rollback/compatibilidad)
+

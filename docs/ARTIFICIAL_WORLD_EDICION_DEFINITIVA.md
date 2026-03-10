@@ -59,7 +59,7 @@ El sistema tiene tres capas independientes que comparten un modelo conceptual pe
     ┌──────────────▼──────┐   ┌─────▼────────────────┐
     │  MOTOR PYTHON       │   │  CAPA WEB (DEMO)      │
     │  Real. 68+ tests.   │   │  Node + React.        │
-    │  principal.py       │   │  HeroRefuge, 7 seeds  │
+    │  principal.py       │   │  HeroRefuge, 9 seeds  │
     │  13 acciones        │   │  IA local (Ollama)    │
     │  SQLite persistente │   │                       │
     └─────────────────────┘   └───────────────────────┘

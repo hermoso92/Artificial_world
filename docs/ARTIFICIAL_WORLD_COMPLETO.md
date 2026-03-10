@@ -55,7 +55,7 @@ Como un acuario digital: pones criaturas, les das reglas, y ellas deciden qué h
 | Motor Python 2D | Real | `principal.py`, 13 acciones, persistencia SQLite |
 | Modo Sombra | Real | `gestor_modo_sombra.py`, tests |
 | Web fullstack | Demo | Backend 3001, Frontend 5173 |
-| HeroRefuge | Parcial | 7 semillas, mundos ligeros, companion IA |
+| HeroRefuge | Parcial | 9 semillas, mundos ligeros, companion IA |
 | Panel Administrador | Real | `AdminPanel.jsx`, ruta `#admin` |
 | DobackSoft | Demo | UI en hub, FireSimulator |
 | IA local | Parcial | `aiCore.js`, Ollama, `/api/ai/*` |

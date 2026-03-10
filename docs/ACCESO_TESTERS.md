@@ -110,7 +110,7 @@ El reporte queda en `docker/chess-output/REPORTE_CHESS_1.md`.
 | Motor Python 2D | ✅ Real — 13 acciones, persistencia SQLite |
 | Modo Sombra | ✅ Real — simulación sin renderizado |
 | Web fullstack | 🟡 Demo funcional |
-| HeroRefuge | 🟡 Parcial — 7 semillas, flujo fundador |
+| HeroRefuge | 🟡 Parcial — 9 semillas, flujo fundador |
 | IA local | 🟡 Parcial — Ollama conectado |
 | 3D runtime | 📋 Roadmap |
 

@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "playwright-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "playwright-mcp"
+      ],
+      "env": {
+        "DEBUG": "mcp:*,pw:api",
+        "PWDEBUG": "0",
+        "PLAYWRIGHT_BROWSERS_PATH": "temp\\playwright"
+      }
+    }
+  }
+}

@@ -12,7 +12,7 @@
 | Motor Python 2D | ✅ Real | `principal.py`, 13 acciones, SQLite |
 | Modo Sombra | ✅ Real | `gestor_modo_sombra.py`, tests |
 | Web fullstack | ✅ Funcional | Backend 3001, Frontend 5173 |
-| HeroRefuge | ✅ Real | 7 semillas, flujo fundador, SQLite |
+| HeroRefuge | ✅ Real | 9 semillas, flujo fundador, SQLite |
 | DobackSoft demo | ✅ Real | Cupón, Fire Simulator, VisorRuta2D |
 | IA local (Ollama) | ✅ Parcial | `aiCore.js`, `/api/ai/*` |
 | Minijuegos | ✅ Real | TicTacToe, Damas |

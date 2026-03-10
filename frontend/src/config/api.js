@@ -8,6 +8,7 @@ const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT ?? '3001';
 const BACKEND_HOST = import.meta.env.VITE_BACKEND_HOST ?? window.location.hostname;
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? `/api`;
+export const MISSION_CONTROL_API_BASE = `${API_BASE_URL}/mission-control`;
 
 export const WS_URL = (() => {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -16,3 +17,8 @@ export const WS_URL = (() => {
   const host = isDev ? `${BACKEND_HOST}:${BACKEND_PORT}` : window.location.host;
   return `${protocol}//${host}/ws`;
 })();
+
+export const MISSION_CONTROL_WS_MESSAGE_TYPES = {
+  SNAPSHOT: 'mission-control:snapshot',
+  EVENT: 'mission-control:event',
+};

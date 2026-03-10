@@ -4,6 +4,7 @@
  */
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { WS_URL } from '../../config/api';
+import logger from '../../utils/logger.js';
 
 const MAX_LOGS = 500;
 
@@ -64,7 +65,9 @@ export function MCLiveLog() {
             const next = [...prev, data];
             return next.length > MAX_LOGS ? next.slice(-MAX_LOGS) : next;
           });
-        } catch { /* ignore non-json */ }
+        } catch (err) {
+          logger.debug('[MCLiveLog] non-json WS message', err.message);
+        }
       };
     }
 

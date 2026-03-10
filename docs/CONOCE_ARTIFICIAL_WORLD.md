@@ -53,7 +53,7 @@ Los personajes de muchos juegos no recuerdan. No evolucionan. No reaccionan a lo
 | | LLM-based | Artificial World |
 |---|-----------|------------------|
 | Coste | $ por token | Cero |
-| Latencia | 100–500 ms | < 1 ms |
+| Latencia | 100–500 ms | Determinista (sin coste por token) |
 | Determinismo | No | Sí |
 | Memoria persistente | Limitada | Sí |
 | Control del diseñador | Bajo | Total |

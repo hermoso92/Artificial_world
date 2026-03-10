@@ -392,7 +392,7 @@ const figurasHtml = `
   <p>Las capturas H.1–H.4 fueron tomadas directamente de las aplicaciones en funcionamiento el 2026-03-08. Constituyen evidencia visual verificable del sistema descrito en este paper. Stack: React 18 + Vite + Node.js + WebSocket + SQLite.</p>
 
   <h2>H.1 Capa Web — Flujo Fundador</h2>
-  ${fig(imgs.landing, 1, 'Selector de semilla de civilización. Las 7 semillas arquetipal con sus valores. <em>Tribu de frontera</em> seleccionada (borde cian). Aplicación React+Vite corriendo en puerto 5173.')}
+  ${fig(imgs.landing, 1, 'Selector de semilla de civilización. Las 9 semillas arquetipal con sus valores. <em>Tribu de frontera</em> seleccionada (borde cian). Aplicación React+Vite corriendo en puerto 5173.')}
   ${fig(imgs.hub, 2, 'Hub "Constructor de Mundos". Cuatro módulos: Tu Mundo, Arena, Emergencias, Observatorio. KPIs de héroe en header. Tagline: "No persigas la IA. Construye un mundo que la necesite."')}
   ${fig(imgs.simulation, 3, 'Vista de simulación — tick 476, status Running. Panel izquierdo: controles, mapa global (AW-256, grid 32×32, 18 refugios activos). Centro: mapa del refugio 4 habitaciones con nodos. Derecha: compañero IA con métricas de personalidad (loyalty 100, curiosity 91, adaptability 86, creativity 68).')}
   ${fig(imgs.sim2, 4, 'Simulación tick 906, paused. Mapa 32×32 con héroe en Entrada. Log de eventos en panel derecho. Barras: Energía 95, Hambre 90, Ánimo 95.')}

@@ -8,6 +8,7 @@ from tipos.modelos import Posicion
 from core.shelter.refugio import Refugio
 from .mapa import Mapa
 from .recurso import Recurso
+from .zona import Zona
 
 
 class GeneradorMundo:
@@ -75,5 +76,24 @@ class GeneradorMundo:
             intentos += 1
 
     def crear_zonas(self, mapa: Mapa) -> list:
-        """Crea zonas opcionales en el mapa. Por ahora vacío."""
-        return []
+        """Crea 2-3 zonas de ejemplo basadas en areas del mapa."""
+        zonas = []
+        ancho, alto = mapa.ancho, mapa.alto
+        if ancho < 4 or alto < 4:
+            return zonas
+        # Zona noroeste (esquina superior izquierda)
+        w1 = max(1, ancho // 3)
+        h1 = max(1, alto // 3)
+        pos_noroeste = [Posicion(x, y) for x in range(w1) for y in range(h1)]
+        zonas.append(Zona(id_zona=1, nombre="Noroeste", posiciones=pos_noroeste))
+        # Zona centro
+        cx1, cx2 = ancho // 4, 3 * ancho // 4
+        cy1, cy2 = alto // 4, 3 * alto // 4
+        pos_centro = [Posicion(x, y) for x in range(cx1, cx2) for y in range(cy1, cy2)]
+        zonas.append(Zona(id_zona=2, nombre="Centro", posiciones=pos_centro))
+        # Zona sureste (esquina inferior derecha)
+        x0, y0 = max(0, ancho - w1), max(0, alto - h1)
+        pos_sureste = [Posicion(x, y) for x in range(x0, ancho) for y in range(y0, alto)]
+        if pos_sureste and (x0 > w1 or y0 > h1):
+            zonas.append(Zona(id_zona=3, nombre="Sureste", posiciones=pos_sureste))
+        return zonas

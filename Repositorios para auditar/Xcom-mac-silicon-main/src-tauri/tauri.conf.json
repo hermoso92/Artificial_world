@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "X",
+  "version": "0.6.0",
+  "identifier": "com.twitter.xmac",
+  "build": {
+    "frontendDist": "../src"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "Otro cliente no oficial de X",
+        "url": "https://x.com",
+        "visible": true,
+        "width": 1280,
+        "height": 900,
+        "minWidth": 800,
+        "minHeight": 600,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; frame-src https://x.com https://twitter.com; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src https://x.com https://twitter.com https://api.github.com; img-src 'self' https: data:; media-src https:"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/16x16.png",
+      "icons/32x32.png",
+      "icons/64x64.png",
+      "icons/128x128.png",
+      "icons/256x256.png",
+      "icons/512x512.png",
+      "icons/icon.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "category": "public.app-category.social-networking",
+    "shortDescription": "Otro cliente no oficial de X para macOS",
+    "longDescription": "Otro cliente no oficial de X (Twitter) para macOS, construido con Tauri. Utiliza el llavero de macOS para almacenamiento seguro de credenciales con soporte multicuenta.",
+    "copyright": "Copyright © 2025 686f6c61"
+  }
+}

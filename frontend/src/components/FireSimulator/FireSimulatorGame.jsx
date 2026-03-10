@@ -16,7 +16,7 @@ export function FireSimulatorGame({
   const { canvasRef, telemetry, currentLevel } = useFireSimulatorGameLoop(level, setWon, setFailed);
 
   return (
-    <div className="firesim">
+    <div className="firesim firesim--playing">
       <div className="firesim-header">
         <button className="back-btn" onClick={onBack}>← DobackSoft</button>
         <button className="firesim-level-btn" onClick={() => setLevelSelect(true)} title="Cambiar nivel">

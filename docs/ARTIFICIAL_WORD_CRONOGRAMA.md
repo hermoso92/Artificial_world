@@ -27,7 +27,7 @@
 | Persistencia SQLite | ✅ Real | `mundo_artificial.db`, `sistema_persistencia.py` | Base |
 | Web fullstack | ✅ Demo | Backend 3001, Frontend 5173 | Base |
 | HeroRefuge | ✅ Parcial | Semillas, mundos ligeros, companion IA | Base |
-| CivilizationSeed | ✅ Parcial | 7 semillas en `civilizationSeeds.js` | Base |
+| CivilizationSeed | ✅ Parcial | 9 semillas en `civilizationSeeds.js` | Base |
 | Panel Administrador | ✅ Real | `AdminPanel.jsx`, ruta `#admin` | Base |
 | DobackSoft demo | ✅ Demo | `DobackSoft.jsx`, FireSimulator | Base |
 | IA local base | ✅ Parcial | `aiCore.js`, `/api/ai/*`, Ollama | Base |
@@ -123,7 +123,7 @@ push main
 
 | Componente | Descripción |
 |------------|-------------|
-| `civilizationSeeds.js` | 7 semillas (tribu, tecnócrata, espiritual, guerrero, comerciante, paranoica, decadente) |
+| `civilizationSeeds.js` | 9 semillas (tribu, tecnócrata, espiritual, guerrero, comerciante, paranoica, decadente, tryndamere, síntesis) |
 | `heroRefuge.js` | HeroRefuge, mundos ligeros, companion |
 | `createFoundingWorldState` | Crea mundo inicial con semilla |
 

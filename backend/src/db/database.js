@@ -21,15 +21,9 @@ const DB_PATH = IS_PROD
   ? path.join(__dirname, '../../data/constructor.db')
   : path.join(__dirname, '../../../constructor.db');
 
-let _db = null;
+import { ensureColumn } from './schemaUtils.js';
 
-function ensureColumn(db, tableName, columnName, definition) {
-  const columns = db.prepare(`PRAGMA table_info(${tableName})`).all();
-  const exists = columns.some((column) => column.name === columnName);
-  if (!exists) {
-    db.exec(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${definition}`);
-  }
-}
+let _db = null;
 
 export function getDb() {
   if (_db) return _db;

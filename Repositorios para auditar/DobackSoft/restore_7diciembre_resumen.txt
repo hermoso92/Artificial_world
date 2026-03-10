@@ -1,0 +1,41 @@
+========================================
+  RESUMEN RESTORE 7diciembre.sql
+========================================
+Fecha: 2026-02-02
+
+QUÉ SE HIZO
+-----------
+- Restore de C:\Users\Cosigein SL\Desktop\7diciembre.sql en la BD Docker.
+- Toda la salida se guardó en: restore_7diciembre_log.txt
+
+RESULTADO
+---------
+- El paso de esquema (pre-data) no creó tablas.
+- El paso de datos intentó INSERT pero las tablas no existen.
+- Errores repetidos: "relation public.AdvancedVehicleKPI does not exist", 
+  "relation public.GeofenceEvent does not exist", etc.
+
+CAUSA PROBABLE
+--------------
+El archivo 7diciembre.sql parece ser un backup SOLO DE DATOS (pg_dump -Fc --data-only).
+Ese tipo de dump no incluye CREATE TABLE; solo INSERT. Por eso pg_restore no puede 
+crear las tablas antes de insertar.
+
+QUÉ HACER
+---------
+1) Crear un backup COMPLETO (esquema + datos) desde tu PostgreSQL local:
+   pg_dump -h localhost -p 5432 -U postgres -d dobacksoft -Fc --no-owner --no-privileges -f 7diciembre_completo.dump
+   (NO uses --data-only)
+
+2) Restaurar ese .dump en Docker:
+   .\scripts\backup\restore-backup-en-docker.ps1 "ruta\a\7diciembre_completo.dump"
+   *>&1 | Out-File -FilePath "restore_log.txt" -Encoding utf8
+
+3) Si solo tienes el backup de datos (7diciembre.sql), primero hay que tener 
+   el esquema en Docker (por ejemplo con Prisma migrate o con otro backup 
+   que sí tenga esquema) y luego restaurar solo datos con:
+   pg_restore -U postgres -d dobacksoft --section=data archivo.dump
+
+========================================
+Log completo: restore_7diciembre_log.txt
+========================================

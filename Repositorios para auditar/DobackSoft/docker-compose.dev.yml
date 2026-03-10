@@ -1,0 +1,47 @@
+# DobackSoft - DEV
+# Solo Redis y Valhalla (map-matching). BBDD en local.
+# Backend y frontend se ejecutan en Windows (iniciar.ps1)
+#
+# Uso (PowerShell, desde raíz):
+#   docker compose -f docker-compose.dev.yml up -d              # solo Redis
+#   docker compose -f docker-compose.dev.yml --profile valhalla up -d   # Redis + Valhalla
+
+name: dobacksoft-dev
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: dobacksoft-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - dobacksoft_redis_dev:/data
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    restart: unless-stopped
+
+  valhalla:
+    image: ghcr.io/nilsnolde/docker-valhalla/valhalla:latest
+    container_name: dobacksoft-valhalla-dev
+    profiles:
+      - valhalla
+    ports:
+      - "8002:8002"
+    volumes:
+      - valhalla_data_dev:/custom_files
+    mem_limit: 4g
+    mem_reservation: 2g
+    environment:
+      tile_urls: https://download.geofabrik.de/europe/spain/madrid-latest.osm.pbf
+      serve_tiles: "True"
+      build_elevation: "False"
+      build_admins: "False"
+      build_time_zones: "False"
+      use_tiles_ignore_pbf: "False"
+      build_tar: "True"
+      force_rebuild: "False"
+      server_threads: "2"
+    restart: unless-stopped
+
+volumes:
+  dobacksoft_redis_dev:
+  valhalla_data_dev:

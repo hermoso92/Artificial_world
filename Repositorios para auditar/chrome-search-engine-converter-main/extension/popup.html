@@ -1,0 +1,138 @@
+<!--
+  ============================================================================
+  Search Engine Converter v2.1.0 - Popup Interface
+  ============================================================================
+
+  @file        popup.html
+  @description Interfaz principal del popup. Esqueleto HTML minimo;
+               los botones de motores, checkboxes de visibilidad, opciones
+               de selects y lista de orden se generan dinamicamente desde
+               engines.js en popup.js.
+
+  @author      @686f6c61
+  @repository  https://github.com/686f6c61/chrome-search-engine-converter
+  @license     MIT License
+  @version     2.1.0
+  @date        2025-01-18
+
+  ============================================================================
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Engine Converter</title>
+  <link rel="stylesheet" href="css/fontawesome.min.css">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <!-- Header with logo -->
+  <div class="header">
+    <div class="logo">
+      <i class="fas fa-exchange-alt" aria-hidden="true"></i>
+      Search Engine Converter
+    </div>
+  </div>
+
+  <!-- Status indicator -->
+  <div class="status-container">
+    <p id="status" role="status" aria-live="polite"><i class="fas fa-info-circle" aria-hidden="true"></i> Selecciona un motor de búsqueda</p>
+  </div>
+
+  <!-- Quick search box -->
+  <div class="quick-search-container">
+    <div class="search-input-wrapper">
+      <i class="fas fa-search search-icon" aria-hidden="true"></i>
+      <input type="text" id="quickSearchInput" placeholder="Búsqueda rápida en cualquier motor..." />
+      <button id="clearSearchButton" class="clear-button" aria-label="Limpiar búsqueda" style="display: none;">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+    <select id="quickSearchEngine" class="quick-engine-select">
+      <!-- Opciones generadas dinamicamente desde engines.js -->
+    </select>
+  </div>
+
+  <!-- Mode toggle buttons -->
+  <div class="mode-toggle">
+    <button id="convertModeButton" class="mode-button active">
+      <i class="fas fa-exchange-alt" aria-hidden="true"></i> Convertir
+    </button>
+    <button id="searchModeButton" class="mode-button">
+      <i class="fas fa-search" aria-hidden="true"></i> Buscar
+    </button>
+  </div>
+
+  <!-- Search engine button grid (generated dynamically from engines.js) -->
+  <div class="search-buttons"></div>
+
+  <!-- Configuration toggle button -->
+  <div class="config-toggle">
+    <button id="configToggleButton" class="config-button" aria-expanded="false" aria-controls="configPanel">
+      <i class="fas fa-cog" aria-hidden="true"></i> Configuración
+    </button>
+  </div>
+
+  <!-- Configuration panel (initially hidden) -->
+  <div id="configPanel" class="config-panel">
+    <!-- Domain configuration section -->
+    <h3>Configuración de dominios</h3>
+    <div class="config-item">
+      <label for="amazonDomain">Dominio de Amazon:</label>
+      <select id="amazonDomain">
+        <option value="es">España (.es)</option>
+        <option value="com">USA (.com)</option>
+        <option value="co.uk">Reino Unido (.co.uk)</option>
+        <option value="de">Alemania (.de)</option>
+        <option value="fr">Francia (.fr)</option>
+        <option value="it">Italia (.it)</option>
+      </select>
+    </div>
+    <div class="config-item">
+      <label for="youtubeDomain">Dominio de YouTube:</label>
+      <select id="youtubeDomain">
+        <option value="com">Global (.com)</option>
+        <option value="es">España (.es)</option>
+      </select>
+    </div>
+
+    <!-- Engine visibility configuration section -->
+    <h3>Motores de búsqueda</h3>
+    <div class="config-item">
+      <label for="defaultSearchEngine">Motor predeterminado para acción rápida del menú contextual:</label>
+      <select id="defaultSearchEngine" style="margin-bottom: 12px;">
+        <!-- Opciones generadas dinamicamente desde engines.js -->
+      </select>
+      <p class="config-description">Motores visibles en el popup:</p>
+      <div id="visibilityCheckboxes" class="visibility-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+        <!-- Checkboxes generados dinamicamente desde engines.js -->
+      </div>
+    </div>
+
+    <!-- Button order customization section -->
+    <h3>Orden de botones</h3>
+    <div class="config-item">
+      <p class="config-description">Arrastra para cambiar el orden de los botones:</p>
+      <ul id="buttonOrderList" class="button-order-list">
+        <!-- Items generados dinamicamente desde engines.js -->
+      </ul>
+    </div>
+
+    <!-- Save configuration button -->
+    <div class="config-actions">
+      <button id="saveConfigButton" class="config-save-button">Guardar</button>
+    </div>
+  </div>
+
+  <!-- Footer with version and repository link -->
+  <div class="footer">
+    <p>v2.1.0 | <a href="https://github.com/686f6c61/chrome-search-engine-converter" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+  </div>
+
+  <!-- Scripts: engines.js debe cargarse primero (registro de motores) -->
+  <script src="engines.js"></script>
+  <script src="Sortable.min.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
