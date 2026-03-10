@@ -70,6 +70,17 @@ function buildPillar(t, id, overrides = {}) {
       available: true,
       badge: t('hub.pillars.mysticquest_badge'),
     },
+    controltower: {
+      icon: '🔭',
+      title: 'AW Control Tower',
+      subtitle: 'Auditoría técnica de repositorios',
+      description: 'Ingiere un repositorio real, ejecuta especialistas de análisis y genera un dossier técnico-ejecutivo accionable.',
+      features: ['Detección de stack automática', 'Análisis por 6 especialistas', 'Dossier técnico-ejecutivo', 'Riesgos priorizados'],
+      color: '#06b6d4',
+      bg: '#001a20',
+      available: true,
+      badge: 'MVP',
+    },
     dobacksoft: {
       icon: '🚒',
       title: t('hub.pillars.dobacksoft_title'),
@@ -116,7 +127,7 @@ export function Hub({ onNavigate }) {
   const seedAccent = seedId ? SEED_ACCENT[seedId] : null;
 
   const corePillars = [buildPillar(t, 'simulation')].filter(Boolean);
-  const controlPillars = [buildPillar(t, 'missioncontrol')].filter(Boolean);
+  const controlPillars = [buildPillar(t, 'missioncontrol'), buildPillar(t, 'controltower')].filter(Boolean);
   const experiencesPillars = [buildPillar(t, 'minigames'), buildPillar(t, 'mysticquest')].filter(Boolean);
   const labPillars = [buildPillar(t, 'dobacksoft')].filter(Boolean);
 
