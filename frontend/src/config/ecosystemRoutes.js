@@ -34,6 +34,7 @@ export const ROUTE_TO_DOMAIN = {
   admin: { domain: DOMAINS.LAB, section: HUB_SECTIONS.LAB },
   dobacksoft: { domain: DOMAINS.LAB, section: HUB_SECTIONS.LAB, labelKey: 'hub.pillars.dobacksoft_title' },
   firesimulator: { domain: DOMAINS.LAB, section: HUB_SECTIONS.LAB }, // Special: back to dobacksoft
+  controltower: { domain: DOMAINS.CONTROL, section: HUB_SECTIONS.CONTROL },
 };
 
 /** Routes that should be wrapped by AppShell (internal ecosystem) */
@@ -46,6 +47,7 @@ export const SHELL_ROUTES = [
   'docs',
   'admin',
   'dobacksoft',
+  'controltower',
 ];
 
 /** Routes that stay outside AppShell (entry points, special flows) */

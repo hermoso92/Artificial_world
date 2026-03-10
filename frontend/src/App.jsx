@@ -13,6 +13,7 @@ import { AppShell } from './components/layout/AppShell';
 import { VALID_ROUTES } from './config/ecosystemRoutes';
 
 const MissionControl = lazy(() => import('./components/MissionControl').then((module) => ({ default: module.MissionControl })));
+const ControlTower = lazy(() => import('./components/ControlTower/ControlTowerPanel').then((module) => ({ default: module.ControlTowerPanel })));
 
 const ONBOARDED_KEY = 'aw_onboarded';
 
@@ -79,6 +80,13 @@ export default function App() {
       );
     }
     if (route === 'mysticquest') return <MysticQuestView onBack={() => navigate('hub')} onNavigate={navigate} />;
+    if (route === 'controltower') {
+      return (
+        <Suspense fallback={<div className="loading-text">Cargando Control Tower...</div>}>
+          <ControlTower onBack={() => navigate('hub')} onNavigate={navigate} />
+        </Suspense>
+      );
+    }
     if (route === 'admin') return <AdminPanel onBack={() => navigate('hub')} />;
     if (route === 'docs') return <Docs onBack={() => navigate('hub')} />;
     return <Hub onNavigate={navigate} />;

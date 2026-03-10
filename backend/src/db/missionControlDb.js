@@ -178,6 +178,44 @@ export function getMissionControlDb() {
     CREATE INDEX IF NOT EXISTS idx_mc_events_created_at ON events(created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_mc_events_name ON events(event_name);
     CREATE INDEX IF NOT EXISTS idx_mc_quality_gates_task ON quality_gates(task_id);
+
+    CREATE TABLE IF NOT EXISTS ct_missions (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      repo_url TEXT NOT NULL,
+      docs_path TEXT,
+      status TEXT NOT NULL DEFAULT 'created',
+      error_message TEXT,
+      ingestion_data TEXT NOT NULL DEFAULT '{}',
+      recon_data TEXT NOT NULL DEFAULT '{}',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS ct_specialist_results (
+      id TEXT PRIMARY KEY,
+      mission_id TEXT NOT NULL,
+      specialist TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      result TEXT NOT NULL DEFAULT '{}',
+      duration_ms INTEGER,
+      error_message TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (mission_id) REFERENCES ct_missions(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS ct_dossiers (
+      id TEXT PRIMARY KEY,
+      mission_id TEXT NOT NULL UNIQUE,
+      content TEXT NOT NULL DEFAULT '{}',
+      markdown TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (mission_id) REFERENCES ct_missions(id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_ct_missions_status ON ct_missions(status);
+    CREATE INDEX IF NOT EXISTS idx_ct_specialists_mission ON ct_specialist_results(mission_id);
   `);
 
   ensureColumn(dbInstance, 'tasks', 'work_type', "TEXT NOT NULL DEFAULT 'analysis'");

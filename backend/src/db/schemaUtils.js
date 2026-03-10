@@ -16,6 +16,9 @@ const ALLOWED_TABLES = new Set([
   'runs',
   'approvals',
   'events',
+  'ct_missions',
+  'ct_specialist_results',
+  'ct_dossiers',
 ]);
 
 function ensureColumn(db, tableName, columnName, definition) {
