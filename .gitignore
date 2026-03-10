@@ -32,6 +32,7 @@ audit_competencia.db
 audit_simulacion.db
 subscriptions.db
 constructor.db
+mission-control.db
 *.db-shm
 *.db-wal
 debug_*.json
