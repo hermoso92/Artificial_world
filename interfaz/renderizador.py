@@ -177,6 +177,38 @@ class Renderizador:
                 pygame.draw.rect(self.pantalla, self.color_refugio, rect)
                 pygame.draw.rect(self.pantalla, (80, 120, 180), rect, 2)
 
+    _ACCION_LEGIBLE = {
+        "explorar": "Explorando",
+        "mover": "Moviendose",
+        "comer": "Comiendo",
+        "descansar": "Descansando",
+        "ir_refugio": "Yendo a refugio",
+        "recoger_comida": "Recogiendo comida",
+        "recoger_material": "Recogiendo material",
+        "huir": "Huyendo!",
+        "evitar": "Evitando",
+        "compartir": "Compartiendo",
+        "robar": "Robando!",
+        "seguir": "Siguiendo",
+        "atacar": "Atacando!",
+    }
+
+    _ACCION_COLOR = {
+        "explorar": (150, 200, 255),
+        "mover": (180, 180, 180),
+        "comer": (120, 220, 80),
+        "descansar": (180, 160, 255),
+        "ir_refugio": (100, 180, 220),
+        "recoger_comida": (140, 220, 100),
+        "recoger_material": (200, 160, 100),
+        "huir": (255, 100, 100),
+        "evitar": (255, 160, 80),
+        "compartir": (100, 255, 180),
+        "robar": (255, 80, 80),
+        "seguir": (180, 220, 255),
+        "atacar": (255, 60, 60),
+    }
+
     def dibujar_entidades(self, entidades: list, entidad_seleccionada_id: int | None = None) -> None:
         """Dibuja las entidades con nombres y acción."""
         if not entidades:
@@ -184,56 +216,64 @@ class Renderizador:
         tam = self.configuracion.tamano_celda
         radio = max(3, tam // 3)
         try:
-            fuente_nombre = pygame.font.SysFont("arial", 10)
-            fuente_accion = pygame.font.SysFont("arial", 8)
+            fuente_nombre = pygame.font.SysFont("arial", 11, bold=True)
+            fuente_accion = pygame.font.SysFont("arial", 9)
         except Exception:
-            fuente_nombre = pygame.font.Font(None, 14)
-            fuente_accion = pygame.font.Font(None, 12)
+            fuente_nombre = pygame.font.Font(None, 15)
+            fuente_accion = pygame.font.Font(None, 13)
 
         for entidad in entidades:
             px = entidad.posicion.x * tam + tam // 2
-            py = entidad.posicion.y * tam + tam // 2
+            py_pos = entidad.posicion.y * tam + tam // 2
             color = entidad.color
             seleccionada = entidad.id_entidad == entidad_seleccionada_id
             en_ctrl = getattr(entidad, "control_total", False)
 
-            # Anillo exterior: naranja pulsante si control total, amarillo si seleccionada
             if en_ctrl:
-                pygame.draw.circle(self.pantalla, (255, 140, 0), (px, py), radio + 5, 3)
-                pygame.draw.circle(self.pantalla, (255, 220, 50), (px, py), radio + 8, 1)
+                pygame.draw.circle(self.pantalla, (255, 140, 0), (px, py_pos), radio + 5, 3)
+                pygame.draw.circle(self.pantalla, (255, 220, 50), (px, py_pos), radio + 8, 1)
             elif seleccionada:
-                pygame.draw.circle(self.pantalla, (255, 255, 100), (px, py), radio + 3, 2)
+                pygame.draw.circle(self.pantalla, (255, 255, 100), (px, py_pos), radio + 3, 2)
 
-            pygame.draw.circle(self.pantalla, color, (px, py), radio)
-            pygame.draw.circle(self.pantalla, (255, 255, 255), (px, py), radio, 1)
+            pygame.draw.circle(self.pantalla, color, (px, py_pos), radio)
+            pygame.draw.circle(self.pantalla, (255, 255, 255), (px, py_pos), radio, 1)
             if entidad.tipo_entidad == TipoEntidad.GATO:
-                pygame.draw.circle(self.pantalla, (255, 255, 255), (px, py), radio - 2, 1)
+                pygame.draw.circle(self.pantalla, (255, 255, 255), (px, py_pos), radio - 2, 1)
 
             nombre = getattr(entidad, "nombre", f"E{entidad.id_entidad}")
-            # En control total, mostrar el nombre en naranja con prefijo [TÚ]
             color_nombre = (255, 180, 50) if en_ctrl else (255, 255, 255)
             prefijo = "[TU] " if en_ctrl else ""
             texto_nom = fuente_nombre.render(f"{prefijo}{nombre}", True, color_nombre)
-            rect_nom = texto_nom.get_rect(center=(px, py - radio - 8))
-            sombra = pygame.Surface((rect_nom.w + 2, rect_nom.h + 2))
+            rect_nom = texto_nom.get_rect(center=(px, py_pos - radio - 10))
+            sombra = pygame.Surface((rect_nom.w + 4, rect_nom.h + 2))
             sombra.fill((0, 0, 0))
-            sombra.set_alpha(180)
-            self.pantalla.blit(sombra, (rect_nom.x - 1, rect_nom.y - 1))
+            sombra.set_alpha(200)
+            self.pantalla.blit(sombra, (rect_nom.x - 2, rect_nom.y - 1))
             self.pantalla.blit(texto_nom, rect_nom)
 
             acc = entidad.estado_interno.accion_actual
-            acc_str = ("CTRL" if en_ctrl else acc.value) if (en_ctrl or acc) else "-"
-            color_acc = (255, 140, 0) if en_ctrl else self.color_texto_sec
+            if en_ctrl:
+                acc_str = "Tu control"
+                color_acc = (255, 140, 0)
+            elif acc:
+                acc_str = self._ACCION_LEGIBLE.get(acc.value, acc.value)
+                color_acc = self._ACCION_COLOR.get(acc.value, self.color_texto_sec)
+            else:
+                acc_str = "Pensando..."
+                color_acc = self.color_texto_sec
             texto_acc = fuente_accion.render(acc_str, True, color_acc)
-            rect_acc = texto_acc.get_rect(center=(px, py + radio + 6))
+            rect_acc = texto_acc.get_rect(center=(px, py_pos + radio + 8))
+            sombra_acc = pygame.Surface((rect_acc.w + 4, rect_acc.h + 2))
+            sombra_acc.fill((0, 0, 0))
+            sombra_acc.set_alpha(160)
+            self.pantalla.blit(sombra_acc, (rect_acc.x - 2, rect_acc.y - 1))
             self.pantalla.blit(texto_acc, rect_acc)
 
     def dibujar_barra_inferior(self, estado_ui: dict) -> None:
-        """Barra inferior con tick, velocidad, modo, feedback y alertas watchdog."""
+        """Barra inferior con estado claro de la simulacion."""
         tick = estado_ui.get("tick_actual", 0)
         pausado = estado_ui.get("pausado", False)
         velocidad = estado_ui.get("velocidad", 1.0)
-        modo = estado_ui.get("modo_visualizacion", ModoVisualizacion.NORMAL)
         feedback = estado_ui.get("mensaje_feedback", "")
         modo_sombra = estado_ui.get("modo_sombra", False)
         sombra_esperando = estado_ui.get("sombra_esperando_input", False)
@@ -248,50 +288,140 @@ class Renderizador:
         y_bar = self.alto_mapa + 3
 
         if modo_sombra:
-            # Fondo especial para modo sombra
             color_barra = (60, 30, 10) if sombra_esperando else (30, 50, 20)
             pygame.draw.rect(self.pantalla, color_barra,
                              (0, y_bar, self.ancho_mapa, self.alto_total - y_bar))
             if sombra_esperando:
                 txt_sombra = fuente_b.render(
-                    f"[MODO SOMBRA] Tick {tick} - TU TURNO: WASD=mover  ESPACIO=esperar  P=pausar",
+                    f"TU TURNO — Flechas=mover  Espacio=esperar  (ciclo {tick})",
                     True, (255, 200, 80)
                 )
             else:
                 txt_sombra = fuente_b.render(
-                    f"[MODO SOMBRA] Tick {tick} - Ejecutando turno...",
+                    f"Ejecutando turno... (ciclo {tick})",
                     True, (150, 200, 150)
                 )
             self.pantalla.blit(txt_sombra, (10, y_bar + 4))
         else:
-            estado_str = "PAUSADO" if pausado else "Ejecutando"
-            texto = fuente.render(
-                f"Tick: {tick}  |  {estado_str}  |  {velocidad}x  |  {modo.value}",
-                True, self.color_texto,
-            )
+            _VEL_NOMBRES = {0.1: "Muy lenta", 0.25: "Lenta", 0.5: "Media", 1.0: "Normal", 2.0: "Rapida", 4.0: "Muy rapida"}
+            vel_nombre = _VEL_NOMBRES.get(velocidad, f"{velocidad}x")
+            if pausado:
+                estado_str = "EN PAUSA"
+                color_estado = (255, 200, 80)
+            else:
+                estado_str = "Simulacion en marcha"
+                color_estado = (120, 220, 120)
+            texto = fuente_b.render(estado_str, True, color_estado)
             self.pantalla.blit(texto, (10, y_bar + 5))
+            info = fuente.render(
+                f"Ciclo {tick}  |  Velocidad: {vel_nombre}",
+                True, self.color_texto_sec,
+            )
+            self.pantalla.blit(info, (texto.get_width() + 20, y_bar + 5))
 
         if feedback:
             color_fb = (255, 200, 80) if "SOMBRA" in feedback else (
                 (100, 200, 100) if ("OK" in feedback or "Auto" in feedback) else (200, 150, 100)
             )
             txt_fb = fuente.render(feedback[:80], True, color_fb)
-            # Si modo sombra ya ocupa la barra, poner feedback debajo
-            y_fb = y_bar + 18 if modo_sombra else y_bar + 5
-            x_fb = 10 if modo_sombra else (
-                fuente.render(
-                    f"Tick: {tick}  |  {'PAUSADO' if pausado else 'Ejecutando'}  |  {velocidad}x  |  {modo.value}",
-                    True, self.color_texto
-                ).get_width() + 15
-            )
-            if y_fb + 14 < self.alto_total:
-                self.pantalla.blit(txt_fb, (x_fb, y_fb))
+            x_fb = self.ancho_mapa // 2 - txt_fb.get_width() // 2
+            if not modo_sombra:
+                self.pantalla.blit(txt_fb, (max(x_fb, 10), y_bar + 5))
 
         if watchdog_total > 0:
-            txt_wd = fuente_b.render(f"WATCHDOG: {watchdog_total} alertas", True, (255, 100, 80))
+            txt_wd = fuente.render(f"{watchdog_total} alertas detectadas", True, (255, 130, 100))
             x_wd = self.ancho_mapa - txt_wd.get_width() - 15
             if x_wd > 10:
                 self.pantalla.blit(txt_wd, (x_wd, y_bar + 5))
+
+    def dibujar_bienvenida(self) -> None:
+        """Pantalla de bienvenida que explica la simulacion."""
+        if not self.inicializado or self.pantalla is None:
+            return
+        try:
+            fuente_grande = pygame.font.SysFont("arial", 28, bold=True)
+            fuente_media = pygame.font.SysFont("arial", 16)
+            fuente_normal = pygame.font.SysFont("arial", 13)
+            fuente_peq = pygame.font.SysFont("arial", 11)
+        except Exception:
+            fuente_grande = pygame.font.Font(None, 36)
+            fuente_media = pygame.font.Font(None, 22)
+            fuente_normal = pygame.font.Font(None, 18)
+            fuente_peq = pygame.font.Font(None, 15)
+
+        overlay = pygame.Surface((self.ancho_total, self.alto_total))
+        overlay.fill((20, 25, 35))
+        overlay.set_alpha(240)
+        self.pantalla.blit(overlay, (0, 0))
+
+        cx = self.ancho_total // 2
+        y = 40
+
+        titulo = fuente_grande.render("MUNDO ARTIFICIAL", True, (100, 200, 255))
+        self.pantalla.blit(titulo, (cx - titulo.get_width() // 2, y))
+        y += 40
+
+        sub = fuente_media.render("Simulacion de vida artificial con agentes autonomos", True, (180, 200, 220))
+        self.pantalla.blit(sub, (cx - sub.get_width() // 2, y))
+        y += 40
+
+        lineas = [
+            ("QUE ESTAS VIENDO:", (255, 220, 100), fuente_media),
+            ("", None, None),
+            ("Un mundo 2D donde 7 criaturas viven de forma autonoma.", (220, 220, 220), fuente_normal),
+            ("Cada una tiene nombre, personalidad y necesidades.", (220, 220, 220), fuente_normal),
+            ("Exploran, comen, descansan, huyen e interactuan entre si.", (220, 220, 220), fuente_normal),
+            ("", None, None),
+            ("LOS HABITANTES:", (255, 220, 100), fuente_media),
+            ("", None, None),
+            ("Ana (cooperativa)  Bruno (neutral)  Clara (agresiva)", (180, 220, 255), fuente_normal),
+            ("David (explorador)  Eva (oportunista)  Felix (cooperativo)", (180, 220, 255), fuente_normal),
+            ("Amiguisimo (el gato curioso — puedes controlarlo!)", (255, 200, 100), fuente_normal),
+            ("", None, None),
+            ("EN EL MAPA:", (255, 220, 100), fuente_media),
+            ("", None, None),
+        ]
+        for texto, color, fuente_l in lineas:
+            if texto == "":
+                y += 8
+                continue
+            txt = fuente_l.render(texto, True, color)
+            self.pantalla.blit(txt, (cx - txt.get_width() // 2, y))
+            y += 20
+
+        leyenda_items = [
+            ((120, 200, 80), "Circulos verdes = Comida"),
+            ((180, 140, 90), "Circulos marrones = Material"),
+            ((100, 150, 200), "Cuadrados azules = Refugios"),
+            ((255, 255, 255), "Puntos con nombre = Criaturas"),
+        ]
+        for color, desc in leyenda_items:
+            pygame.draw.circle(self.pantalla, color, (cx - 140, y + 7), 5)
+            txt = fuente_normal.render(desc, True, (200, 200, 200))
+            self.pantalla.blit(txt, (cx - 125, y))
+            y += 20
+
+        y += 15
+        controles = fuente_media.render("CONTROLES BASICOS:", True, (255, 220, 100))
+        self.pantalla.blit(controles, (cx - controles.get_width() // 2, y))
+        y += 28
+
+        teclas = [
+            "[P] Pausar / reanudar la simulacion",
+            "[V] Cambiar velocidad (lenta, media, rapida...)",
+            "[N] Avanzar un solo paso (en pausa)",
+            "Click en una criatura para seleccionarla",
+        ]
+        for t in teclas:
+            txt = fuente_normal.render(t, True, (180, 200, 220))
+            self.pantalla.blit(txt, (cx - txt.get_width() // 2, y))
+            y += 20
+
+        y += 20
+        continuar = fuente_grande.render("Pulsa cualquier tecla para empezar", True, (100, 255, 150))
+        self.pantalla.blit(continuar, (cx - continuar.get_width() // 2, y))
+
+        pygame.display.flip()
 
     def obtener_panel(self) -> PanelControl | None:
         """Devuelve el panel de control para procesar clicks."""

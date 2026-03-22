@@ -32,9 +32,10 @@ class EstadoPanel:
     """Estado completo del panel de control."""
 
     # Simulación
-    pausado: bool = False
-    velocidad: float = 1.0
-    velocidades_disponibles: tuple = (0.05, 0.1, 0.25, 0.5, 1.0, 2.0, 4.0)
+    pausado: bool = True
+    velocidad: float = 0.25
+    velocidades_disponibles: tuple = (0.1, 0.25, 0.5, 1.0, 2.0, 4.0)
+    mostrar_bienvenida: bool = True
     paso_manual: bool = False   # True cuando se avanzó un tick manualmente (tecla N)
 
     # Visualización
