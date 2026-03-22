@@ -747,6 +747,20 @@ class Simulacion:
         ejecutando = True
         acum_velocidad = 0.0
 
+        if self.estado_panel.mostrar_bienvenida:
+            self.renderizar()
+            self.renderizador.dibujar_bienvenida()
+            esperando_bienvenida = True
+            while esperando_bienvenida:
+                for evento in pygame.event.get():
+                    if evento.type == pygame.QUIT:
+                        ejecutando = False
+                        esperando_bienvenida = False
+                    elif evento.type == pygame.KEYDOWN or evento.type == pygame.MOUSEBUTTONDOWN:
+                        esperando_bienvenida = False
+                reloj.tick(30)
+            self.estado_panel.mostrar_bienvenida = False
+
         while ejecutando:
             try:
                 ejecutando = self.procesar_entrada()

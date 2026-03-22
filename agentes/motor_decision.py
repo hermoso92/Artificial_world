@@ -298,16 +298,16 @@ class MotorDecision:
                 if accion.tipo_accion in (TipoAccion.HUIR, TipoAccion.EVITAR):
                     mod += 0.35 * hostilidad
                 elif accion.tipo_accion == TipoAccion.COMPARTIR:
-                    mod -= 0.40 * hostilidad  # no comparto con quien me tiene hostilidad
+                    mod -= 0.40 * hostilidad
                 elif accion.tipo_accion == TipoAccion.ROBAR:
-                    mod += 0.15 * hostilidad  # oportunistas explotan la hostilidad
+                    mod += 0.15 * hostilidad
 
             # Miedo alto → huir / ir al refugio
             if miedo >= 0.3:
                 if accion.tipo_accion in (TipoAccion.HUIR, TipoAccion.IR_REFUGIO):
                     mod += 0.25 * miedo
                 elif accion.tipo_accion == TipoAccion.MOVER:
-                    mod -= 0.10 * miedo  # el miedo frena el movimiento libre
+                    mod -= 0.10 * miedo
 
         return mod
 

@@ -89,9 +89,22 @@ SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_modo_sombra_comp
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python pruebas/test_interacciones_sociales.py
 ```
 
+### Lint
+
+No linting tools (flake8, pylint, mypy, ruff) are configured in this project. The CI pipeline (`pipeline.yml`) only runs tests. Use `python -m py_compile <file>` for basic syntax verification.
+
 ### Inicio
 - Python: `python principal.py`
 - Fullstack: `.\scripts\iniciar_fullstack.ps1` (backend 3001, frontend 5173)
+- In Cloud VMs, use `DISPLAY=:1` (TigerVNC display) to run the app visually in the Desktop pane. Clean start: delete `mundo_artificial.db` before running if entities behave unexpectedly.
+
+### entidades_visibles format
+
+`PercepcionLocal.entidades_visibles` contains tuples `(Posicion, list[int])` from `mapa.obtener_entidades_en_radio()`. Code that iterates over this field must unpack tuples to extract entity IDs, then resolve actual entity objects from `contexto.entidades`. Some tests pass entity objects directly — any new code must handle both formats. See Bugs 5-7 in `AGENTE_ENTRANTE.md` for details.
 
 ### Documentación
 - `docs/MODOS_EJECUCION.md` — Diferencias entre Python (pygame) y Fullstack (web)
+
+### Dependencies
+
+Only pip dependency: `pygame>=2.5.0` (from `requirements.txt`). System dependencies: `libsdl2-2.0-0`, `libsdl2-image-2.0-0`, `libsdl2-mixer-2.0-0`, `libsdl2-ttf-2.0-0`.

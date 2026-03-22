@@ -273,12 +273,12 @@ def test_historial_decisiones_se_acumula():
 
 
 def test_velocidades_lentas_disponibles():
-    """Las velocidades lentas 0.05x y 0.1x están disponibles."""
+    """Las velocidades lentas 0.1x y 0.25x están disponibles."""
     from interfaz.estado_panel import EstadoPanel
 
     ep = EstadoPanel()
-    assert 0.05 in ep.velocidades_disponibles, "0.05x debe estar disponible"
     assert 0.1 in ep.velocidades_disponibles, "0.1x debe estar disponible"
+    assert 0.25 in ep.velocidades_disponibles, "0.25x debe estar disponible"
 
 
 def test_paso_manual_tick():

@@ -400,9 +400,11 @@ Verifica: (1) alerta TRAMPA_POSICION con entidad fija, (2) escritura en log, (3)
 cd "c:\Users\Cosigein SL\Desktop\artificial word"
 python pruebas/test_core.py
 python pruebas/test_modo_sombra.py
+python pruebas/test_modo_sombra_completo.py
 python pruebas/test_bug_robar.py
 python pruebas/test_watchdog_fixes.py
 python pruebas/test_watchdog_integracion.py
+python pruebas/test_interacciones_sociales.py
 python pruebas/test_arranque_limpio.py
 python pruebas/test_modo_sombra_completo.py
 python pruebas/test_interacciones_sociales.py
@@ -414,9 +416,10 @@ python pruebas/test_interacciones_sociales.py
 | `test_core.py` | 22/22 | ✅ PASAN |
 | `test_modo_sombra.py` | 7/7 | ✅ PASAN |
 | `test_modo_sombra_completo.py` | 22/22 | ✅ PASAN |
-| `test_bug_robar.py` | 3/3 | ✅ PASAN |
+| `test_bug_robar.py` | 4/4 | ✅ PASAN |
 | `test_watchdog_fixes.py` | 4/4 | ✅ PASAN |
 | `test_watchdog_integracion.py` | 3/3 | ✅ PASAN |
+| `test_interacciones_sociales.py` | 13/13 | ✅ PASAN |
 | `test_arranque_limpio.py` | 1/1 | ✅ PASA |
 | `test_interacciones_sociales.py` | 13/13 | ✅ PASAN |
 
@@ -580,6 +583,23 @@ nucleo/simulacion.py (orquestador)
 - **Causa:** `es_viable()` devolvía `True` aunque no hubiera entidades cercanas con comida.
 - **Fix:** `es_viable()` ahora verifica que haya al menos una entidad cercana con `inventario.comida > 0`.
 - **Test:** `test_bug_robar.py` — 3/3 pasan.
+
+### Bug 5: `PanelModoSombra.__init__()` recibe argumento extra
+- **Causa:** `interfaz/panel_control.py` línea 60 pasaba 5 argumentos (`x0, ancho, alto, self.estado, self.configuracion`) a `PanelModoSombra.__init__()`, que solo aceptaba 4 (`x0, ancho, alto, estado`). Esto causaba `TypeError` al arrancar la app y en cualquier test que inicializara `Simulacion.inicializar()`.
+- **Fix:** Añadido parámetro opcional `configuracion=None` a `PanelModoSombra.__init__()` en `interfaz/panel_modo_sombra.py`.
+- **Verificación:** `python principal.py` arranca sin error. 22/22 tests en `test_core.py` pasan (antes 15/22).
+
+### Bug 6: `aplicar_modificadores_por_relaciones` crashea con tuplas
+- **Causa:** `motor_decision.py` iteraba sobre `entidades_visibles` y accedía a `otra.id_entidad`, pero `entidades_visibles` contiene tuplas `(Posicion, list[int])` devueltas por `mapa.obtener_entidades_en_radio()`, no objetos entidad.
+- **Fix:** Modificado `aplicar_modificadores_por_relaciones` para extraer IDs de las tuplas y buscar la relación por ID. Compatible con ambos formatos (tuplas del mapa y objetos entidad de los tests).
+- **Verificación:** App corre 4800+ ticks sin crash. Tests de relaciones e interacciones sociales pasan.
+
+### Bug 7: `_obtener_cercanas` en compartir/robar/seguir crashea con tuplas
+- **Causa:** Mismo patrón que Bug 6. Los métodos `_obtener_cercanas()` en `accion_compartir.py`, `accion_robar.py` y `accion_seguir.py` asumían que `entidades_visibles` contenía objetos entidad con `.id_entidad`, `.estado_interno`, etc. En la simulación real contiene tuplas `(Posicion, list[int])`.
+- **Fix:** Reescrito `_obtener_cercanas()` en las 3 acciones para:
+  1. Si los items tienen `.id_entidad` (objetos entidad): devolverlos directamente (compatibilidad con tests).
+  2. Si son tuplas: extraer los IDs, descartar la propia entidad, y resolver objetos reales desde `contexto.entidades`.
+- **Verificación:** `test_bug_robar.py` 4/4 pasan. `test_interacciones_sociales.py` 13/13 pasan. App estable 4800+ ticks.
 
 ---
 

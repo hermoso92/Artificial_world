@@ -267,8 +267,29 @@ class Renderizador:
             self.pantalla.blit(texto_nom, rect_nom)
 
             acc = entidad.estado_interno.accion_actual
-            acc_str = ("CTRL" if en_ctrl else acc.value) if (en_ctrl or acc) else "-"
-            color_acc = COLOR_CTRL_TOTAL if en_ctrl else COLOR_TEXTO_SEC
+            _ACCION_LEGIBLE = {
+                "explorar": "Explorando", "mover": "Moviendose", "comer": "Comiendo",
+                "descansar": "Descansando", "ir_refugio": "Yendo a refugio",
+                "recoger_comida": "Recogiendo comida", "recoger_material": "Recogiendo material",
+                "huir": "Huyendo!", "evitar": "Evitando", "compartir": "Compartiendo",
+                "robar": "Robando!", "seguir": "Siguiendo", "atacar": "Atacando!",
+            }
+            _ACCION_COLOR = {
+                "explorar": (150, 200, 255), "mover": (180, 180, 180), "comer": (120, 220, 80),
+                "descansar": (180, 160, 255), "ir_refugio": (100, 180, 220),
+                "recoger_comida": (140, 220, 100), "recoger_material": (200, 160, 100),
+                "huir": (255, 100, 100), "evitar": (255, 160, 80), "compartir": (100, 255, 180),
+                "robar": (255, 80, 80), "seguir": (180, 220, 255), "atacar": (255, 60, 60),
+            }
+            if en_ctrl:
+                acc_str = "Tu control"
+                color_acc = COLOR_CTRL_TOTAL
+            elif acc:
+                acc_str = _ACCION_LEGIBLE.get(acc.value, acc.value)
+                color_acc = _ACCION_COLOR.get(acc.value, COLOR_TEXTO_SEC)
+            else:
+                acc_str = "Pensando..."
+                color_acc = COLOR_TEXTO_SEC
             texto_acc = fuente_accion.render(acc_str, True, color_acc)
             rect_acc = texto_acc.get_rect(center=(px, py + radio + 10))
             bg_acc = pygame.Rect(rect_acc.x - 2, rect_acc.y - 1, rect_acc.w + 4, rect_acc.h + 2)
@@ -324,21 +345,29 @@ class Renderizador:
 
         if modo_sombra:
             txt_sombra = fuente_b.render(
-                f"[MODO SOMBRA] Tick {tick} — TU TURNO: WASD=mover  ESPACIO=esperar  P=pausar"
-                if sombra_esperando else f"[MODO SOMBRA] Tick {tick} — Ejecutando turno...",
+                f"TU TURNO — Flechas=mover  Espacio=esperar  (ciclo {tick})"
+                if sombra_esperando else f"Ejecutando turno... (ciclo {tick})",
                 True, (255, 200, 100) if sombra_esperando else (150, 210, 160),
             )
             self.pantalla.blit(txt_sombra, (12, y_bar))
 
         texto = None
         if not modo_sombra:
-            estado_str = "pausado" if pausado else "ejecutando"
-            hints = "  P=pausa  Selecciona+flechas=mover  N=paso  Click mapa=destino"
+            _VEL_NOMBRES = {0.1: "Muy lenta", 0.25: "Lenta", 0.5: "Media", 1.0: "Normal", 2.0: "Rapida", 4.0: "Muy rapida"}
+            vel_nombre = _VEL_NOMBRES.get(velocidad, f"{velocidad}x")
+            if pausado:
+                estado_str = "EN PAUSA"
+                color_estado = (255, 200, 80)
+            else:
+                estado_str = "Simulacion en marcha"
+                color_estado = (120, 220, 120)
+            txt_estado = fuente_b.render(estado_str, True, color_estado)
+            self.pantalla.blit(txt_estado, (12, y_bar))
             texto = fuente.render(
-                f"Tick: {tick}  ·  {estado_str}  ·  {velocidad}x  ·  {modo.value}  ·  {hints}",
+                f"Ciclo {tick}  |  Velocidad: {vel_nombre}",
                 True, COLOR_TEXTO_SEC,
             )
-            self.pantalla.blit(texto, (12, y_bar))
+            self.pantalla.blit(texto, (txt_estado.get_width() + 20, y_bar))
 
         if feedback:
             color_fb = (255, 200, 100) if "SOMBRA" in feedback else (
@@ -355,6 +384,93 @@ class Renderizador:
             x_wd = self.ancho_mapa - txt_wd.get_width() - 16
             if x_wd > 12:
                 self.pantalla.blit(txt_wd, (x_wd, y_bar))
+
+    def dibujar_bienvenida(self) -> None:
+        """Pantalla de bienvenida que explica la simulacion."""
+        if not self.inicializado or self.pantalla is None:
+            return
+        try:
+            fuente_grande = pygame.font.SysFont("arial", 28, bold=True)
+            fuente_media = pygame.font.SysFont("arial", 16)
+            fuente_normal = pygame.font.SysFont("arial", 13)
+        except Exception:
+            fuente_grande = pygame.font.Font(None, 36)
+            fuente_media = pygame.font.Font(None, 22)
+            fuente_normal = pygame.font.Font(None, 18)
+
+        overlay = pygame.Surface((self.ancho_total, self.alto_total))
+        overlay.fill((20, 25, 35))
+        overlay.set_alpha(240)
+        self.pantalla.blit(overlay, (0, 0))
+
+        cx = self.ancho_total // 2
+        y = 40
+
+        titulo = fuente_grande.render("MUNDO ARTIFICIAL", True, (100, 200, 255))
+        self.pantalla.blit(titulo, (cx - titulo.get_width() // 2, y))
+        y += 40
+
+        sub = fuente_media.render("Simulacion de vida artificial con agentes autonomos", True, (180, 200, 220))
+        self.pantalla.blit(sub, (cx - sub.get_width() // 2, y))
+        y += 40
+
+        lineas = [
+            ("QUE ESTAS VIENDO:", (255, 220, 100), fuente_media),
+            ("", None, None),
+            ("Un mundo 2D donde 7 criaturas viven de forma autonoma.", (220, 220, 220), fuente_normal),
+            ("Cada una tiene nombre, personalidad y necesidades.", (220, 220, 220), fuente_normal),
+            ("Exploran, comen, descansan, huyen e interactuan entre si.", (220, 220, 220), fuente_normal),
+            ("", None, None),
+            ("LOS HABITANTES:", (255, 220, 100), fuente_media),
+            ("", None, None),
+            ("Ana (cooperativa)  Bruno (neutral)  Clara (agresiva)", (180, 220, 255), fuente_normal),
+            ("David (explorador)  Eva (oportunista)  Felix (cooperativo)", (180, 220, 255), fuente_normal),
+            ("Amiguisimo (el gato curioso — puedes controlarlo!)", (255, 200, 100), fuente_normal),
+            ("", None, None),
+            ("EN EL MAPA:", (255, 220, 100), fuente_media),
+            ("", None, None),
+        ]
+        for texto, color, fuente_l in lineas:
+            if texto == "":
+                y += 8
+                continue
+            txt = fuente_l.render(texto, True, color)
+            self.pantalla.blit(txt, (cx - txt.get_width() // 2, y))
+            y += 20
+
+        leyenda_items = [
+            ((120, 200, 80), "Circulos verdes = Comida"),
+            ((180, 140, 90), "Circulos marrones = Material"),
+            ((100, 150, 200), "Cuadrados azules = Refugios"),
+            ((255, 255, 255), "Puntos con nombre = Criaturas"),
+        ]
+        for color, desc in leyenda_items:
+            pygame.draw.circle(self.pantalla, color, (cx - 140, y + 7), 5)
+            txt = fuente_normal.render(desc, True, (200, 200, 200))
+            self.pantalla.blit(txt, (cx - 125, y))
+            y += 20
+
+        y += 15
+        controles = fuente_media.render("CONTROLES BASICOS:", True, (255, 220, 100))
+        self.pantalla.blit(controles, (cx - controles.get_width() // 2, y))
+        y += 28
+
+        teclas = [
+            "[P] Pausar / reanudar la simulacion",
+            "[V] Cambiar velocidad (lenta, media, rapida...)",
+            "[N] Avanzar un solo paso (en pausa)",
+            "Click en una criatura para seleccionarla",
+        ]
+        for t in teclas:
+            txt = fuente_normal.render(t, True, (180, 200, 220))
+            self.pantalla.blit(txt, (cx - txt.get_width() // 2, y))
+            y += 20
+
+        y += 20
+        continuar = fuente_grande.render("Pulsa cualquier tecla para empezar", True, (100, 255, 150))
+        self.pantalla.blit(continuar, (cx - continuar.get_width() // 2, y))
+
+        pygame.display.flip()
 
     def obtener_panel(self) -> PanelControl | None:
         """Devuelve el panel de control para procesar clicks."""

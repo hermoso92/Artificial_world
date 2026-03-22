@@ -380,7 +380,19 @@ class PanelControl:
             else:
                 color = self.color_pestana_activa if activa else self.color_pestana_inactiva
             pygame.draw.rect(pantalla, color, (rx, 0, pestana_w, self.ALTURA_PESTANA))
-            lbl = "CTRL" if p == PestanaPanel.CONTROL_TOTAL else (p.value[:4].upper() if p.value else "")
+            _ETIQUETAS_PESTANA = {
+                "control": "Control",
+                "ordenes": "Ordenes",
+                "sombra": "Sombra",
+                "entidades": "Entes",
+                "eventos": "Eventos",
+                "watchdog": "Alertas",
+                "archivo": "Archivo",
+            }
+            if p == PestanaPanel.CONTROL_TOTAL:
+                lbl = "CTRL"
+            else:
+                lbl = _ETIQUETAS_PESTANA.get(p.value, p.value[:4].upper())
             txt = fuente.render(lbl, True, self.color_texto)
             pantalla.blit(txt, (rx + pestana_w // 2 - txt.get_width() // 2, 7))
             if i > 0:
@@ -407,33 +419,79 @@ class PanelControl:
             self._dibujar_archivo(pantalla, fuente, fuente_tit, y, guardado_ok, cargado_ok)
 
     def _dibujar_control(self, pantalla, fuente, fuente_tit, y, tick_actual) -> None:
-        tit = fuente_tit.render("CONTROL", True, self.color_texto)
+        tit = fuente_tit.render("PANEL DE CONTROL", True, self.color_texto)
         pantalla.blit(tit, (self.x0 + self.MARGEN, y))
         y += 24
 
-        texto_pausa = "Reanudar [P]" if self.estado.pausado else "Pausar [P]"
+        texto_pausa = "Reanudar simulacion" if self.estado.pausado else "Pausar simulacion"
         color_pausa = (70, 130, 90) if self.estado.pausado else self.color_boton
         self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, texto_pausa, fuente, color_pausa)
         y += self.ALTURA_BOTON + self.ESPACIO
 
-        self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, "Tick manual [N]", fuente, (55, 75, 110))
+        self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, "Avanzar 1 paso", fuente, (55, 75, 110))
         y += self.ALTURA_BOTON + self.ESPACIO
 
-        vel_str = f"{self.estado.velocidad}x"
-        self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, f"Velocidad: {vel_str} [V]", fuente)
+        _VEL_NOMBRES = {0.1: "Muy lenta", 0.25: "Lenta", 0.5: "Media", 1.0: "Normal", 2.0: "Rapida", 4.0: "Muy rapida"}
+        vel_nombre = _VEL_NOMBRES.get(self.estado.velocidad, f"{self.estado.velocidad}x")
+        self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, f"Velocidad: {vel_nombre}", fuente)
         y += self.ALTURA_BOTON + self.ESPACIO
 
-        modo_str = self.estado.modo_visualizacion.value.replace("_", " ")
-        self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, f"Modo: {modo_str[:12]} [M]", fuente)
-        y += self.ALTURA_BOTON + self.ESPACIO
+        _MODO_NOMBRES = {"normal": "Normal", "calor_energia": "Energia", "calor_hambre": "Hambre", "recursos": "Recursos", "refugios": "Refugios"}
+        modo_str = _MODO_NOMBRES.get(self.estado.modo_visualizacion.value, self.estado.modo_visualizacion.value)
+        self._dibujar_boton_ancho(pantalla, self.x0 + self.MARGEN, y, f"Vista: {modo_str}", fuente)
+        y += self.ALTURA_BOTON + self.ESPACIO + 8
 
-        txt_tick = fuente.render(f"Tick: {tick_actual}", True, self.color_texto_sec)
+        txt_tick = fuente.render(f"Tiempo: {tick_actual} ciclos", True, self.color_texto_sec)
         pantalla.blit(txt_tick, (self.x0 + self.MARGEN, y))
-        y += 18
+        y += 22
 
         if self.estado.pausado:
-            txt = fuente.render("Pausado — N = 1 tick", True, (232, 200, 100))
+            txt = fuente.render("En pausa. Pulsa P o el boton", True, (232, 200, 100))
             pantalla.blit(txt, (self.x0 + self.MARGEN, y))
+            txt2 = fuente.render("de arriba para continuar.", True, (232, 200, 100))
+            pantalla.blit(txt2, (self.x0 + self.MARGEN, y + 16))
+            y += 36
+
+        y += 8
+        # Leyenda de colores
+        tit_ley = fuente_tit.render("QUE VES EN EL MAPA", True, self.color_texto)
+        pantalla.blit(tit_ley, (self.x0 + self.MARGEN, y))
+        y += 20
+        leyenda = [
+            ((120, 200, 80), "circulo", "Comida (alimento)"),
+            ((180, 140, 90), "circulo", "Material (recursos)"),
+            ((100, 150, 200), "cuadrado", "Refugio (descanso extra)"),
+            ((100, 180, 220), "circulo", "Entidad (agente vivo)"),
+        ]
+        for color, forma, desc in leyenda:
+            cx = self.x0 + self.MARGEN + 8
+            cy = y + 7
+            if forma == "circulo":
+                pygame.draw.circle(pantalla, color, (cx, cy), 5)
+                pygame.draw.circle(pantalla, (255, 255, 255), (cx, cy), 5, 1)
+            else:
+                pygame.draw.rect(pantalla, color, (cx - 5, cy - 5, 10, 10))
+                pygame.draw.rect(pantalla, (80, 120, 180), (cx - 5, cy - 5, 10, 10), 1)
+            txt_l = fuente.render(desc, True, self.color_texto_sec)
+            pantalla.blit(txt_l, (cx + 12, y))
+            y += 18
+
+        y += 8
+        tit_teclas = fuente_tit.render("ATAJOS DE TECLADO", True, self.color_texto)
+        pantalla.blit(tit_teclas, (self.x0 + self.MARGEN, y))
+        y += 20
+        atajos = [
+            ("P", "Pausar / reanudar"),
+            ("N", "Avanzar 1 paso"),
+            ("V", "Cambiar velocidad"),
+            ("M", "Cambiar vista del mapa"),
+            ("G", "Guardar partida"),
+            ("C", "Cargar partida"),
+        ]
+        for tecla, desc in atajos:
+            txt_a = fuente.render(f"[{tecla}] {desc}", True, self.color_texto_sec)
+            pantalla.blit(txt_a, (self.x0 + self.MARGEN + 4, y))
+            y += 16
 
     def _dibujar_ordenes(self, pantalla, fuente, fuente_tit, y, entidades) -> None:
         tit = fuente_tit.render("DAR ÓRDENES", True, self.color_texto)
@@ -582,13 +640,29 @@ class PanelControl:
                                      int(ent.estado_interno.hambre * 100), (200, 100, 60))
             y += 14
             acc = ent.estado_interno.accion_actual
-            txt = fuente.render(f"Accion: {acc.value if acc else '-'}", True, self.color_texto_sec)
+            _ACC_LEG = {"explorar": "Explorando", "mover": "Moviendose", "comer": "Comiendo",
+                        "descansar": "Descansando", "ir_refugio": "Yendo a refugio",
+                        "recoger_comida": "Recogiendo comida", "huir": "Huyendo!",
+                        "compartir": "Compartiendo", "robar": "Robando!", "seguir": "Siguiendo"}
+            acc_txt = _ACC_LEG.get(acc.value, acc.value) if acc else "Pensando..."
+            txt = fuente.render(f"Accion: {acc_txt}", True, self.color_texto_sec)
             pantalla.blit(txt, (self.x0 + self.MARGEN + 4, y))
 
+    _ACCION_LEGIBLE = {
+        "explorar": "Explorando", "mover": "Moviendose", "comer": "Comiendo",
+        "descansar": "Descansando", "ir_refugio": "Yendo a refugio",
+        "recoger_comida": "Recogiendo comida", "recoger_material": "Recogiendo material",
+        "huir": "Huyendo!", "evitar": "Evitando", "compartir": "Compartiendo",
+        "robar": "Robando!", "seguir": "Siguiendo", "atacar": "Atacando!",
+    }
+
     def _dibujar_entidades(self, pantalla, fuente, fuente_tit, y, entidades, mapa=None) -> None:
-        tit = fuente_tit.render("ENTIDADES", True, self.color_texto)
+        tit = fuente_tit.render("HABITANTES DEL MUNDO", True, self.color_texto)
         pantalla.blit(tit, (self.x0 + self.MARGEN, y))
-        y += 24
+        y += 18
+        sub = fuente.render("Haz clic en uno para ver mas detalles", True, self.color_texto_sec)
+        pantalla.blit(sub, (self.x0 + self.MARGEN, y))
+        y += 20
 
         for ent in entidades:
             sel = ent.id_entidad == self.estado.entidad_seleccionada_id
@@ -597,18 +671,13 @@ class PanelControl:
             pygame.draw.rect(pantalla, color_fondo, rect)
             pygame.draw.rect(pantalla, (60, 68, 78), rect, 1)
             nombre = getattr(ent, "nombre", f"E{ent.id_entidad}")
-            refugio_str = ""
-            if mapa:
-                celda = mapa.obtener_celda(ent.posicion)
-                if celda and celda.tiene_refugio() and celda.refugio:
-                    refugio_str = f" · Refugio #{celda.refugio.id_refugio}"
-            txt1 = fuente.render(f"{nombre}{refugio_str}", True, ent.color if not sel else (255, 255, 255))
+            txt1 = fuente.render(nombre, True, ent.color if not sel else (255, 255, 255))
             pantalla.blit(txt1, (self.x0 + self.MARGEN + 8, y + 4))
             acc = ent.estado_interno.accion_actual
-            acc_str = acc.value if acc else "-"
+            acc_str = self._ACCION_LEGIBLE.get(acc.value, acc.value) if acc else "Pensando..."
             e_val = int(ent.estado_interno.energia * 100)
             h_val = int(ent.estado_interno.hambre * 100)
-            txt2 = fuente.render(f"{acc_str} · E:{e_val}% H:{h_val}%", True, self.color_texto_sec)
+            txt2 = fuente.render(f"{acc_str}  Energ:{e_val}%  Hamb:{h_val}%", True, self.color_texto_sec)
             pantalla.blit(txt2, (self.x0 + self.MARGEN + 8, y + 18))
             y += 42
 
