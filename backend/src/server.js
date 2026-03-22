@@ -31,6 +31,9 @@ import controlTowerRoutes from './routes/controlTower.js';
 import approvalsRoutes from './routes/approvals.js';
 import boardsRoutes from './routes/boards.js';
 import gatewaysRoutes from './routes/gateways.js';
+import cookieParser from 'cookie-parser';
+import awAuthRoutes from './routes/awAuth.js';
+import awSyncRoutes from './routes/awSync.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { playerContext } from './middleware/playerContext.js';
 import logger, { setLogBroadcaster } from './utils/logger.js';
@@ -59,6 +62,7 @@ app.use((req, res, next) => {
   if (req.originalUrl === '/api/subscription/webhook') return next();
   express.json()(req, res, next);
 });
+app.use(cookieParser());
 app.use(playerContext);
 
 app.use('/api', apiRoutes);
@@ -73,6 +77,8 @@ app.use('/api/control-tower', controlTowerRoutes);
 app.use('/api/approvals', approvalsRoutes);
 app.use('/api/boards', boardsRoutes);
 app.use('/api/gateways', gatewaysRoutes);
+app.use('/api/aw', awAuthRoutes);
+app.use('/api/aw', awSyncRoutes);
 
 // 404 para rutas API no registradas
 app.use('/api', (req, res) => {

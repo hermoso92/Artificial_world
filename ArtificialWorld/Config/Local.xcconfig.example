@@ -1,0 +1,9 @@
+// Copiá este archivo a `Local.xcconfig` en la misma carpeta (no se commitea).
+// Team ID: Xcode → Settings → Accounts → tu equipo, o
+//   security find-identity -v -p codesigning
+//
+// Debe coincidir con la cuenta que firma en Xcode. Si ponés un team distinto al
+// del target en `project.pbxproj`, podés ver "No Account for Team …".
+// Opcional: no definir DEVELOPMENT_TEAM acá y dejar solo el del proyecto.
+//
+// DEVELOPMENT_TEAM = ABCDE12345

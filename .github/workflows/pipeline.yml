@@ -1,8 +1,8 @@
 # Pipeline: Testing → Deploy → Upload
 #
 # Flujo:
-#   PR abierto/actualizado → Test → Upload artefactos
-#   Merge a main (push)    → Test + Deploy Pages + Deploy VPS (en paralelo)
+#   PR / push → test (Python) y test-swift-core (SPM + Xcode) en paralelo → upload-summary
+#   Push a main → mismos tests; si ambos OK → Deploy Pages y Deploy VPS (entre sí en paralelo)
 #
 # Secrets requeridos:
 #   - PAGES_TOKEN: PAT para GitHub Pages (opcional si Pages ya está activo)
@@ -32,6 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Higiene del repo (sin monorepo anidado en iOS)
+        run: bash scripts/check_repo_hygiene.sh
 
       - uses: actions/setup-python@v5
         with:
@@ -72,12 +75,46 @@ jobs:
             pruebas/reporte_produccion.log
           if-no-files-found: ignore
 
+  test-swift-core:
+    name: Swift macOS (SPM + app iOS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Higiene del repo (sin monorepo anidado en iOS)
+        run: bash scripts/check_repo_hygiene.sh
+
+      - name: Swift package tests
+        run: swift test --package-path SwiftAWCore
+
+      - name: Build ArtificialWorld (iOS Simulator)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project ArtificialWorld/ArtificialWorld.xcodeproj \
+            -scheme ArtificialWorld \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Build ArtificialWorldV2 (iOS Simulator)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project ArtificialWorldV2/ArtificialWorldV2.xcodeproj \
+            -scheme ArtificialWorldV2 \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO
+
   # ─── 2. DEPLOY PAGES ───────────────────────────────────────────────────
   # Requiere: Settings > Pages > Source = GitHub Actions
   # Secret: PAGES_TOKEN (PAT con scope repo)
+  # Solo publica docs si pasan tests Python (ubuntu) y Swift SPM + build iOS (macOS).
   deploy:
     name: Deploy Pages
     runs-on: ubuntu-latest
+    needs: [test, test-swift-core]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
       contents: read
@@ -111,6 +148,7 @@ jobs:
   deploy-vps:
     name: Deploy VPS
     runs-on: ubuntu-latest
+    needs: [test, test-swift-core]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
@@ -166,8 +204,8 @@ jobs:
   upload-summary:
     name: Upload resumen
     runs-on: ubuntu-latest
-    needs: test
-    if: always() && needs.test.result != 'cancelled'
+    needs: [test, test-swift-core]
+    if: always() && needs.test.result != 'cancelled' && needs.test-swift-core.result != 'cancelled'
     steps:
       - name: Descargar artefactos de test
         uses: actions/download-artifact@v4

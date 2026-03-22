@@ -4,6 +4,8 @@
 
 **WebSocket:** `ws://localhost:3001/ws`
 
+**OpenAPI (cliente nativo sync + auth):** [`openapi-artificial-world-native-sync.yaml`](openapi-artificial-world-native-sync.yaml) — login JWT, sync, listados.
+
 ---
 
 ## /api (api.js)
@@ -93,6 +95,24 @@
 | POST | `/api/subscription/portal` | Portal de Stripe |
 | POST | `/api/subscription/webhook` | Webhook Stripe |
 | GET | `/api/subscription/stripe-status` | Estado Stripe |
+
+---
+
+## /api/aw (awSync.js)
+
+Cliente iOS / herramientas: ver OpenAPI. Auth JWT vía `POST /api/aw/auth/login` (cookie httpOnly + `data.token`); cierre con `POST /api/aw/auth/logout`.
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| POST | `/api/aw/auth/login` | Emite JWT (`JWT_AUTH_SECRET`); opcional `x-aw-bootstrap-secret` |
+| POST | `/api/aw/auth/logout` | Expira cookie JWT; nativos eliminan `data.token` local tras éxito |
+| POST | `/api/aw/sync/batch` | Ingesta de lote (`x-player-id` obligatoria; Bearer sync o JWT si el servidor lo exige) |
+| GET | `/api/aw/sync/batches` | Listado filtrado (`organizationId`, `playerId`, `limit`); Bearer o admin |
+| GET | `/api/aw/sync/batches/:batchId` | Detalle con eventos parseados; query opcional `organizationId` (aislamiento) |
+
+Variables de entorno: ver [`backend/.env.example`](../backend/.env.example) — `AW_NATIVE_SYNC_BEARER_TOKEN`, `AW_SYNC_REQUIRE_ORGANIZATION_ID`, etc.
+
+**Cookie JWT en navegador (origen distinto al API):** la cookie `Path=/api/aw` solo la envía el navegador si la petición va al mismo sitio o si configuras CORS con **`credentials: true`** en el cliente (`fetch` / `axios`) y en Express `cors({ origin: <lista>, credentials: true })` (no uses `*` con credenciales). En desarrollo con proxy del frontend al puerto del backend suele bastar mismo origen aparente.
 
 ---
 

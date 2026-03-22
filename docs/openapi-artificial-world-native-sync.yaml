@@ -1,0 +1,573 @@
+openapi: 3.0.3
+info:
+  title: Artificial World — Native sync (SyncEnvelopeV1)
+  description: |
+    Ingesta de lotes de telemetría desde el cliente iOS (Swift) u otras herramientas HTTP.
+    Implementación: `backend/src/routes/awSync.js`, validación `backend/src/services/awSyncIngest.js`.
+    Contrato cliente: `SwiftAWCore/Sources/AWDomain/SyncAndTelemetry.swift`.
+
+    **Autenticación:** `x-player-id` obligatoria en ingesta. Capa opcional: `AW_NATIVE_SYNC_BEARER_TOKEN` (Bearer M2M)
+    y/o `JWT_AUTH_SECRET` (JWT en `Authorization: Bearer` o cookie httpOnly `JWT_COOKIE_NAME`, default `aw_access_token`).
+    `POST /aw/auth/login` emite el JWT (cookie + cuerpo `data.token` para clientes nativos).
+    `POST /aw/auth/logout` limpia la cookie JWT (`Path=/api/aw`); los nativos deben borrar el Bearer local.
+    Sin Bearer estático ni JWT configurados, el listado `GET /aw/sync/batches` queda restringido a administradores (`ADMIN_PLAYER_IDS`).
+    Variable `AW_SYNC_REQUIRE_ORGANIZATION_ID` (1/true/yes) hace obligatorio `organizationId` en el sobre.
+
+    Un OpenAPI global del monorepo puede fusionar este fragmento.
+  version: 1.0.0
+
+servers:
+  - url: http://127.0.0.1:3001/api
+    description: Backend local (puerto por defecto del repo)
+
+tags:
+  - name: ArtificialWorldNative
+    description: Sync cliente nativo
+
+paths:
+  /aw/auth/login:
+    post:
+      operationId: postAwNativeAuthLogin
+      tags: [ArtificialWorldNative]
+      summary: Obtener JWT de sesión (cookie httpOnly + token en JSON)
+      description: |
+        Si `AW_AUTH_BOOTSTRAP_SECRET` está definido, exige cabecera `x-aw-bootstrap-secret` con el mismo valor.
+        Requiere `JWT_AUTH_SECRET` en el servidor. Cookie `Path=/api/aw`, `HttpOnly`, `SameSite=Lax`.
+      parameters:
+        - name: x-aw-bootstrap-secret
+          in: header
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AwAuthLoginRequest'
+      responses:
+        '200':
+          description: Sesión creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AwAuthLoginResponse'
+              headers:
+                Set-Cookie:
+                  schema:
+                    type: string
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+        '500':
+          description: `JWT_AUTH_SECRET` no configurado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+      security: []
+
+  /aw/auth/logout:
+    post:
+      operationId: postAwNativeAuthLogout
+      tags: [ArtificialWorldNative]
+      summary: Cerrar sesión (expira cookie JWT bajo /api/aw)
+      description: |
+        No requiere cuerpo. Devuelve `Set-Cookie` que expira `JWT_COOKIE_NAME` (default `aw_access_token`).
+        Clientes nativos que solo usan `data.token` deben eliminar el token almacenado tras éxito.
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Opcional; no exigido por el servidor hoy (simetría con otras rutas /api/aw).
+      responses:
+        '200':
+          description: Cookie limpiada y confirmación JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AwAuthLogoutResponse'
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+      security: []
+
+  /aw/sync/batches:
+    get:
+      operationId: listAwNativeSyncBatches
+      tags: [ArtificialWorldNative]
+      summary: Listar lotes ingeridos (filtrado servidor)
+      description: |
+        Devuelve metadatos de filas en `aw_sync_batches` (sin el JSON completo de eventos).
+        Autenticación: Bearer si `AW_NATIVE_SYNC_BEARER_TOKEN` está definido; si no, `x-player-id` debe ser admin.
+      parameters:
+        - name: organizationId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filtra por columna `organization_id`.
+        - name: playerId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filtra por columna `player_id`.
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: x-player-id
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Obligatoria si no hay Bearer y el listado usa modo administrador.
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+          description: `Bearer <token>` si el servidor exige `AW_NATIVE_SYNC_BEARER_TOKEN`.
+      responses:
+        '200':
+          description: Lista paginada por `limit` (orden `id` descendente)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncBatchListResponse'
+        '401':
+          description: Bearer ausente o inválido, o admin sin `x-player-id` válido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+        '403':
+          description: No administrador (modo sin Bearer)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+        '500':
+          description: Error interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+      security: []
+
+  /aw/sync/batches/{batchId}:
+    get:
+      operationId: getAwNativeSyncBatchById
+      tags: [ArtificialWorldNative]
+      summary: Detalle de un lote (incluye eventos parseados)
+      description: |
+        Misma autenticación que `GET /aw/sync/batches`.
+        Query opcional `organizationId`: si se envía y no coincide con el lote, responde 404 (sin filtrar por otros criterios).
+      parameters:
+        - name: batchId
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+        - name: organizationId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Si se indica, debe ser igual a `organization_id` del lote.
+        - name: x-player-id
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lote con `events` como array JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncBatchDetailResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+        '404':
+          description: No existe o `organizationId` de query no coincide
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+        '422':
+          description: batchId inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+      security: []
+
+  /aw/sync/batch:
+    post:
+      operationId: postAwNativeSyncBatch
+      tags: [ArtificialWorldNative]
+      summary: Ingerir lote SyncEnvelopeV1
+      description: |
+        Persiste el lote en `aw_sync_batches`. Requiere **`x-player-id`** no vacía (aislamiento por jugador / instalación).
+        Si existen **`x-organization-id`** y **`organizationId`** en el cuerpo como strings no vacíos, deben coincidir (403 si no).
+        Con **JWT** válido en `Authorization` o cookie: **`x-player-id`** debe coincidir con el claim `sub`; si el token incluye `org`,
+        el `organizationId` efectivo del sobre debe coincidir con ese claim (403 si no).
+        Si el servidor define **`AW_NATIVE_SYNC_BEARER_TOKEN`** y/o **`JWT_AUTH_SECRET`**, la ingesta exige Bearer/cookie válidos (401 si falta o es inválido).
+      parameters:
+        - name: x-player-id
+          in: header
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          description: Obligatoria. En iOS suele coincidir con el UUID de instalación enviado también en el cuerpo.
+        - name: x-organization-id
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Opcional. Si el cuerpo incluye `organizationId`, debe coincidir con esta cabecera.
+        - name: x-request-id
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Correlación; si falta, el servidor genera uno en respuestas de error.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncEnvelopeV1'
+      responses:
+        '201':
+          description: Lote aceptado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncBatchAcceptedResponse'
+              example:
+                success: true
+                data:
+                  batchId: 1
+                  acceptedEvents: 3
+        '400':
+          description: Cuerpo inválido (no objeto JSON)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+        '401':
+          description: |
+            Falta o vacía `x-player-id`. O bien el servidor exige capa de auth (`AW_NATIVE_SYNC_BEARER_TOKEN` y/o `JWT_AUTH_SECRET`)
+            y no se envió `Authorization: Bearer` válido ni cookie JWT válida, o el JWT es inválido/expirado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+        '403':
+          description: |
+            `organizationId` del cuerpo no coincide con `x-organization-id`. Con JWT: `x-player-id` distinto de `sub`.
+            Con JWT que incluye organización: `organizationId` efectivo del lote distinto del claim `org`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+        '422':
+          description: Validación del sobre (schemaVersion, worldSeed, events, etc.) u `organizationId` obligatorio si `AW_SYNC_REQUIRE_ORGANIZATION_ID`
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+        '500':
+          description: Error interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorEnvelope'
+      security: []
+
+components:
+  securitySchemes:
+    NativeSyncBearer:
+      type: http
+      scheme: bearer
+      description: Valor igual a `AW_NATIVE_SYNC_BEARER_TOKEN` en el servidor (opcional según despliegue).
+
+  schemas:
+    AwAuthLoginRequest:
+      type: object
+      required: [playerId]
+      properties:
+        playerId:
+          type: string
+          minLength: 1
+          description: Se copia a `sub` del JWT y debe usarse como `x-player-id` en sync.
+        organizationId:
+          type: string
+          nullable: true
+          description: Se copia a `org`; si está en el token, el lote de sync debe usar el mismo `organizationId`.
+
+    AwAuthLoginResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [expiresInMs, token]
+          properties:
+            expiresInMs:
+              type: integer
+              description: Tiempo hasta expiración aproximado (ms) alineado con la cookie.
+            token:
+              type: string
+              description: Mismo valor que la cookie httpOnly; usar como Bearer en clientes sin almacén de cookies.
+
+    AwAuthLogoutResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [loggedOut]
+          properties:
+            loggedOut:
+              type: boolean
+              enum: [true]
+
+    SyncBatchListResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [batches]
+          properties:
+            batches:
+              type: array
+              items:
+                $ref: '#/components/schemas/SyncBatchListRow'
+
+    SyncBatchListRow:
+      type: object
+      properties:
+        id:
+          type: integer
+        player_id:
+          type: string
+          nullable: true
+        organization_id:
+          type: string
+          nullable: true
+        world_id:
+          type: string
+          nullable: true
+        schema_version:
+          type: integer
+        world_seed:
+          type: string
+        device_installation_id:
+          type: string
+        emitted_at:
+          type: string
+        received_at:
+          type: string
+        events_payload_octets:
+          type: integer
+          description: Tamaño en octetos del campo `events_json` almacenado.
+
+    SyncBatchDetailResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [batch]
+          properties:
+            batch:
+              $ref: '#/components/schemas/SyncBatchDetail'
+
+    SyncBatchDetail:
+      type: object
+      description: Fila de `aw_sync_batches` con `events` como array JSON ya parseado.
+      properties:
+        id:
+          type: integer
+        player_id:
+          type: string
+          nullable: true
+        organization_id:
+          type: string
+          nullable: true
+        world_id:
+          type: string
+          nullable: true
+        schema_version:
+          type: integer
+        world_seed:
+          type: string
+        device_installation_id:
+          type: string
+        emitted_at:
+          type: string
+        received_at:
+          type: string
+        events:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+
+    SyncEnvelopeV1:
+      type: object
+      required:
+        - schemaVersion
+        - worldSeed
+        - deviceInstallationId
+        - emittedAt
+        - events
+      properties:
+        schemaVersion:
+          type: integer
+          enum: [1]
+          description: Versión del contrato; solo `1` está soportada en servidor.
+        organizationId:
+          type: string
+          nullable: true
+          description: Opcional; multi-tenant futuro.
+        worldId:
+          type: string
+          nullable: true
+        worldSeed:
+          description: Semilla del mundo; el servidor acepta entero o string no vacío.
+          oneOf:
+            - type: integer
+              format: int64
+            - type: string
+              minLength: 1
+        deviceInstallationId:
+          type: string
+          minLength: 1
+        emittedAt:
+          type: string
+          format: date-time
+          description: ISO-8601 (el cliente Swift usa estrategia `.iso8601`).
+        events:
+          type: array
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/TelemetryEventDTO'
+
+    TelemetryEventDTO:
+      type: object
+      required:
+        - kind
+      properties:
+        localRowId:
+          type: string
+          description: ID de fila local (puede vacío si el cliente no lo envía).
+        kind:
+          type: string
+          minLength: 1
+          description: p. ej. `refugeEnter`, `captureSuccess` (valores del enum Swift + extensibles).
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Metadatos clave-valor string; límites en servidor (claves/valores acotados).
+        createdAt:
+          type: string
+          format: date-time
+          description: Si falta o está vacío, el servidor puede sustituir por la hora actual.
+
+    SyncBatchAcceptedResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [batchId, acceptedEvents]
+          properties:
+            batchId:
+              type: integer
+              description: Clave insertada en `aw_sync_batches`.
+            acceptedEvents:
+              type: integer
+              minimum: 0
+
+    ApiErrorEnvelope:
+      type: object
+      required: [success, error]
+      properties:
+        success:
+          type: boolean
+          enum: [false]
+        error:
+          type: object
+          required: [code, message, statusCode, requestId, timestamp]
+          properties:
+            code:
+              type: string
+              example: VALIDATION_ERROR
+            message:
+              type: string
+            statusCode:
+              type: integer
+            requestId:
+              type: string
+            timestamp:
+              type: string
+              format: date-time
+            details:
+              description: Presente solo en algunos errores.
+              nullable: true
