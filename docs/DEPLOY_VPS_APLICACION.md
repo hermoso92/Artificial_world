@@ -153,10 +153,48 @@ volumes:
 
 | Problema | Solución |
 |----------|----------|
-| Pantalla negra al conectar | Espera 5–10 s tras iniciar el contenedor; el juego tarda en arrancar |
-| "Connection refused" | Comprueba que el puerto 6080 está abierto en el firewall |
-| Juego muy lento | Aumenta RAM del VPS o reduce `fps_objetivo` en `configuracion.py` |
-| Error al construir | Verifica que `novnc` y `websockify` están en los repos de tu distro |
+| Pantalla negra al conectar | Espera 10–15 s tras `docker compose up`. El juego tarda en arrancar. Si sigue negro: `docker compose logs` para ver errores de Python. |
+| Pantalla negra persistente | Reconstruye la imagen: `docker compose build --no-cache` y vuelve a levantar. Revisa `docker compose logs artificial-world` por excepciones. |
+| "Connection refused" | Comprueba que el puerto 6080 está abierto en el firewall del VPS. |
+| Juego muy lento | Aumenta RAM del VPS o reduce `fps_objetivo` en `configuracion.py`. |
+| Error al construir | Verifica que `novnc`, `websockify` y `fonts-liberation` están en los repos de tu distro. |
+
+---
+
+## 10. Deploy automático con GitHub Actions
+
+Cada push a `main` despliega automáticamente al VPS si configuras los secrets.
+
+### Secrets requeridos (Settings → Secrets and variables → Actions)
+
+| Secret | Descripción |
+|--------|-------------|
+| `SSH_HOST` | IP o dominio del VPS (ej. `123.45.67.89` o `vps.tudominio.com`) |
+| `SSH_USER` | Usuario SSH (ej. `root`) |
+| `SSH_PRIVATE_KEY` | Contenido completo de la clave privada SSH (incluyendo `-----BEGIN ... -----`) |
+| `REMOTE_PATH` | (Opcional) Ruta en el VPS. Por defecto: `/opt/artificial-world` |
+
+### Cómo obtener la clave privada
+
+```bash
+# Si ya tienes una clave
+cat ~/.ssh/id_rsa
+# Copia todo el contenido (incluyendo BEGIN y END) y pégalo en SSH_PRIVATE_KEY
+```
+
+### Requisitos previos en el VPS
+
+1. Docker y Docker Compose instalados (ver sección 1)
+2. Puerto 22 (SSH) y 6080 abiertos
+3. La clave pública correspondiente a `SSH_PRIVATE_KEY` debe estar en `~/.ssh/authorized_keys` del usuario
+
+### Flujo del deploy
+
+1. **Tests** pasan en GitHub Actions
+2. **Rsync** copia el proyecto al VPS
+3. **Docker compose** construye y levanta en el VPS
+
+Si falta algún secret, el job `Deploy VPS` fallará. Añade los secrets y vuelve a ejecutar el workflow.
 
 ---
 

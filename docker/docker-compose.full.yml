@@ -1,0 +1,232 @@
+# Artificial World — Orquestación completa
+# 3 entornos en paralelo: tests, producción, auditoría independiente
+#
+# Uso rápido:
+#   Tests:      docker compose -f docker/docker-compose.full.yml --profile tests up
+#   Producción: docker compose -f docker/docker-compose.full.yml --profile prod up
+#   Auditores:  docker compose -f docker/docker-compose.full.yml --profile audit up
+#   Todo:       docker compose -f docker/docker-compose.full.yml --profile tests --profile prod --profile audit up
+#
+# Los auditores montan el repo en modo READ-ONLY — no pueden modificar nada.
+# El coordinator sólo arranca cuando todos los agentes han terminado.
+
+networks:
+  prod-net:
+    driver: bridge
+  tests-net:
+    driver: bridge
+  audit-net:
+    driver: bridge
+
+volumes:
+  chess-output:
+  prod-data:
+  tests-data:
+
+# ─────────────────────────────────────────────
+# ENTORNO: PRODUCCIÓN
+# ─────────────────────────────────────────────
+
+services:
+
+  backend-prod:
+    build:
+      context: ..
+      dockerfile: Dockerfile.ci
+    command: ["node", "backend/src/server.js"]
+    working_dir: /app
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+    ports:
+      - "3001:3001"
+    volumes:
+      - prod-data:/app/data
+    networks:
+      - prod-net
+    profiles:
+      - prod
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  frontend-prod:
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run build && npx serve -s dist -l 5173"
+    environment:
+      NODE_ENV: production
+      VITE_API_URL: http://backend-prod:3001
+    volumes:
+      - ..:/app:ro
+    ports:
+      - "5173:5173"
+    depends_on:
+      backend-prod:
+        condition: service_healthy
+    networks:
+      - prod-net
+    profiles:
+      - prod
+
+# ─────────────────────────────────────────────
+# ENTORNO: TESTS
+# ─────────────────────────────────────────────
+
+  backend-tests:
+    build:
+      context: ..
+      dockerfile: Dockerfile.ci
+    command: sh -c "cd /app/backend && npm test"
+    working_dir: /app
+    environment:
+      NODE_ENV: test
+      PORT: 3002
+      CI: "true"
+    volumes:
+      - tests-data:/app/data
+      - ..:/app:ro
+    networks:
+      - tests-net
+    profiles:
+      - tests
+    restart: "no"
+
+  python-tests:
+    build:
+      context: ..
+      dockerfile: Dockerfile.ci
+    command: ["python", "pruebas/run_tests_produccion.py"]
+    working_dir: /app
+    environment:
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      CI: "true"
+    volumes:
+      - ..:/app:ro
+    networks:
+      - tests-net
+    profiles:
+      - tests
+    restart: "no"
+
+# ─────────────────────────────────────────────
+# ENTORNO: AUDITORÍA INDEPENDIENTE (Chess)
+# Los agentes son READ-ONLY — montan /repo sin escritura
+# El coordinator sólo escribe en /output (volumen chess-output)
+# ─────────────────────────────────────────────
+
+  agent-docs:
+    build: ./agents/agent-docs
+    volumes:
+      - ..:/repo:ro
+      - chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    networks:
+      - audit-net
+    restart: "no"
+    profiles:
+      - audit
+
+  agent-backend:
+    build: ./agents/agent-backend
+    volumes:
+      - ..:/repo:ro
+      - chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    networks:
+      - audit-net
+    restart: "no"
+    profiles:
+      - audit
+
+  agent-frontend:
+    build: ./agents/agent-frontend
+    volumes:
+      - ..:/repo:ro
+      - chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    networks:
+      - audit-net
+    restart: "no"
+    profiles:
+      - audit
+
+  agent-bd:
+    build: ./agents/agent-bd
+    volumes:
+      - ..:/repo:ro
+      - chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    networks:
+      - audit-net
+    restart: "no"
+    profiles:
+      - audit
+
+  agent-tests:
+    build: ./agents/agent-tests
+    volumes:
+      - ..:/repo:ro
+      - chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    networks:
+      - audit-net
+    restart: "no"
+    profiles:
+      - audit
+
+  agent-marketing:
+    build: ./agents/agent-marketing
+    volumes:
+      - ..:/repo:ro
+      - chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    networks:
+      - audit-net
+    restart: "no"
+    profiles:
+      - audit
+
+  coordinator:
+    build: ./coordinator
+    volumes:
+      - ..:/repo:ro
+      - chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    depends_on:
+      agent-docs:
+        condition: service_completed_successfully
+      agent-backend:
+        condition: service_completed_successfully
+      agent-frontend:
+        condition: service_completed_successfully
+      agent-bd:
+        condition: service_completed_successfully
+      agent-tests:
+        condition: service_completed_successfully
+      agent-marketing:
+        condition: service_completed_successfully
+    networks:
+      - audit-net
+    restart: "no"
+    profiles:
+      - audit

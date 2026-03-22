@@ -1,0 +1,144 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[spanish]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage[colorlinks=true,linkcolor=teal,urlcolor=teal]{hyperref}
+
+\definecolor{accent}{HTML}{0d9488}
+\definecolor{textmuted}{HTML}{4a5568}
+\definecolor{warncolor}{HTML}{b45309}
+\definecolor{critcolor}{HTML}{b91c1c}
+
+\setlength{\headheight}{14pt}
+\addtolength{\topmargin}{-2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{textmuted}Cr\'onica Fundacional --- Artificial World}
+\fancyhead[R]{\small\color{textmuted}2026-03-08}
+\fancyfoot[C]{\small\color{textmuted}P\'agina \thepage\ / \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% Evita destino PDF duplicado entre titlepage y fancyhdr
+\AtBeginDocument{\hypersetup{pageanchor=false}}
+\AfterEndPreamble{\hypersetup{pageanchor=true}}
+
+\begin{document}
+
+% ——— PORTADA ———
+\begin{titlepage}
+  \centering
+  \vspace*{2.5cm}
+  {\color{accent}\rule{\linewidth}{2pt}}\\[0.8em]
+  {\Huge\bfseries\color{accent} Cr\'onica Fundacional}\\[0.5em]
+  {\Large\color{textmuted} Artificial World}\\[0.4em]
+  {\color{accent}\rule{\linewidth}{2pt}}\\[1.5em]
+
+  \textit{\large Historia emergente de una sesi\'on fundacional reproducible.}
+
+  \vspace{2cm}
+
+  \begin{tabular}{rl}
+    \textbf{Fecha}     & 2026-03-08T12:53:48 \\[4pt]
+    \textbf{Veredicto} & \textcolor{warncolor}{\textbf{TENSI\'ON}} \\[4pt]
+    \textbf{Semilla}   & 42 \\[4pt]
+    \textbf{Fundador}  & Tryndamere \\[4pt]
+    \textbf{Refugio}   & Refugio Fundador \\[4pt]
+    \textbf{Ticks}     & 200 \\
+  \end{tabular}
+
+  \vfill
+  {\small\color{textmuted}
+    Artificial World --- Constr\'uyelo. Hab\'italo. Haz que crezca.
+  }
+\end{titlepage}
+
+% ——— RESUMEN ———
+\section*{Resumen}
+
+\noindent\colorbox{cyan!10}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+  Supervivencia en tensi\'on. \textbf{8 entidades vivas}.
+  Hambre m\'axima \textcolor{critcolor}{\textbf{1.00}},
+  energ\'ia m\'inima \textcolor{warncolor}{\textbf{0.18}}.
+  65 alertas del sistema.
+}}
+
+% ——— HITOS ———
+\section*{Hitos}
+
+\begin{itemize}[leftmargin=1.5em, itemsep=4pt]
+  \item \textbf{Tick 0} \textit{(inicio)}: Fundaci\'on iniciada. Comunidad despierta.
+  \item \textbf{Tick 50} \textit{(primer ciclo)}: Primeras interacciones sociales registradas.
+  \item \textbf{Tick 100} \textit{(mitad)}: Hambre generalizada detectada. Sistema emite primeras alertas cr\'iticas.
+  \item \textbf{Tick 199} \textit{(crisis)}: 65 alertas acumuladas. 7 de 8 entidades en hambre cr\'itica ($\geq 0.9$).
+  \item \textbf{Tick 200} \textit{(cierre)}: Sesi\'on fundacional completada. Supervivencia en tensi\'on.
+\end{itemize}
+
+% ——— ENTIDADES ———
+\section*{Entidades finales}
+
+\begin{tabular}{lrrr}
+  \toprule
+  \textbf{Nombre} & \textbf{Hambre} & \textbf{Energ\'ia} & \textbf{Posici\'on} \\
+  \midrule
+  Ana        & \textcolor{warncolor}{0.68} & 0.38                        & (47,\,21) \\
+  Bruno      & \textcolor{critcolor}{1.00} & 0.36                        & (0,\,34)  \\
+  Clara      & \textcolor{critcolor}{1.00} & 0.26                        & (25,\,5)  \\
+  David      & \textcolor{critcolor}{0.90} & \textcolor{warncolor}{0.18} & (10,\,22) \\
+  Eva        & \textcolor{critcolor}{1.00} & 0.40                        & (13,\,5)  \\
+  F\'elix    & \textcolor{critcolor}{1.00} & 0.38                        & (0,\,52)  \\
+  Amiguisimo & \textcolor{critcolor}{1.00} & 0.30                        & (12,\,42) \\
+  Tryndamere & \textcolor{critcolor}{1.00} & 0.40                        & (2,\,51)  \\
+  \bottomrule
+\end{tabular}
+
+\smallskip
+\textit{\small H = hambre (0 = saciado, 1 = cr\'itico) \quad E = energ\'ia (0 = agotado, 1 = pleno).}
+
+% ——— ALERTAS ———
+\section*{Alertas del sistema (resumen)}
+
+\textcolor{textmuted}{\small 65 alertas emitidas en la sesi\'on. Se muestran los tipos detectados y su frecuencia.}
+
+\vspace{6pt}
+
+\begin{tabular}{llrr}
+  \toprule
+  \textbf{Nivel} & \textbf{C\'odigo} & \textbf{\'Ultimo tick} & \textbf{Frec.} \\
+  \midrule
+  \textcolor{warncolor}{\textbf{WARN}} & \texttt{HAMBRE\_SIN\_COMIDA\_DISPONIBLE}    & 199 & 30 \\
+  \textcolor{critcolor}{\textbf{CRIT}} & \texttt{HAMBRE\_CRITICA\_SIN\_RESPUESTA}    & 199 & 35 \\
+  \bottomrule
+\end{tabular}
+
+\vspace{8pt}
+
+\noindent\textbf{Descripci\'on de alertas:}
+
+\begin{itemize}[leftmargin=1.5em, itemsep=4pt]
+  \item \textcolor{warncolor}{\textbf{WARN}} \texttt{HAMBRE\_SIN\_COMIDA\_DISPONIBLE}:
+    hambre cr\'itica durante 15 ticks consecutivos --- entidad movi\'endose sin encontrar comida.
+
+  \item \textcolor{critcolor}{\textbf{CRIT}} \texttt{HAMBRE\_CRITICA\_SIN\_RESPUESTA}:
+    hambre $\geq 0.9$ durante 8 ticks sin comer --- situaci\'on de riesgo vital.
+\end{itemize}
+
+\vfill
+\begin{center}
+  \color{textmuted}\small\rule{0.5\linewidth}{0.4pt}\\[4pt]
+  Artificial World --- Constr\'uyelo. Hab\'italo. Haz que crezca.
+\end{center}
+
+\end{document}

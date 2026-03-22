@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Search Engine Converter",
+  "version": "2.1.0",
+  "description": "Convierte búsquedas entre 33 motores: Google, Brave, DuckDuckGo, Bing, Amazon, YouTube, Wikipedia y más",
+  "author": "https://github.com/686f6c61",
+  "permissions": [
+    "activeTab",
+    "contextMenus",
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon16.png",
+      "32": "images/icon32.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "images/icon16.png",
+    "32": "images/icon32.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png",
+    "256": "images/icon256.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; style-src 'self'; font-src 'self'; img-src 'self' data:;"
+  }
+}

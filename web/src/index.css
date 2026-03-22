@@ -1,0 +1,71 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root, .dark {
+    --background: 222.2 47.4% 11.2%; /* #0f172a */
+    --foreground: 0 0% 100%; /* #ffffff */
+    --card: 215.3 32.6% 17.5%; /* #1e293b */
+    --card-foreground: 210 40% 98%; /* #f1f5f9 */
+    --popover: 215.3 32.6% 17.5%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 43.3 96.4% 56.3%; /* #fbbf24 */
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 215.3 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 215.3 32.6% 17.5%;
+    --muted-foreground: 212.7 26.8% 83.9%; /* #cbd5e1 */
+    --accent: 213.1 93.9% 67.8%; /* #60a5fa */
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 93.5% 70.8%; /* #f87171 */
+    --destructive-foreground: 222.2 47.4% 11.2%;
+    --border: 215.3 32.6% 17.5%;
+    --input: 215.3 32.6% 17.5%;
+    --ring: 43.3 96.4% 56.3%;
+    --radius: 0.75rem;
+    --success: 158.1 64.4% 51.6%; /* #34d399 */
+    --warning: 43.3 96.4% 56.3%;
+    --elevated: 215.3 32.6% 17.5%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-slate-950 text-slate-300 antialiased selection:bg-accent-amber/30 selection:text-accent-amber;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight text-white;
+  }
+}
+
+@layer utilities {
+  .skip-link {
+    @apply absolute z-[100] px-4 py-2 bg-accent-amber text-slate-950 font-bold rounded-lg;
+    left: -9999px;
+    top: 1rem;
+    transition: left 0.2s;
+  }
+  .skip-link:focus {
+    left: 1rem;
+    @apply outline-none ring-2 ring-white;
+  }
+  .glass {
+    @apply bg-slate-900/70 backdrop-blur-lg border border-slate-700 shadow-lg;
+  }
+  .glow-amber {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+  }
+  .glow-amber-text {
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+  }
+  .text-gradient-amber {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent-amber to-orange-300;
+  }
+}

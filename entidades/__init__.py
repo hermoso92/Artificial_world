@@ -1,8 +1,8 @@
-"""Módulo de entidades autónomas."""
+"""Módulo de entidades autónomas.
 
-from .entidad_base import EntidadBase
-from .entidad_social import EntidadSocial
-from .entidad_gato import EntidadGato
-from .fabrica_entidades import FabricaEntidades
+Reexporta desde core.entity para compatibilidad.
+"""
+
+from core.entity import EntidadBase, EntidadGato, EntidadSocial, FabricaEntidades
 
 __all__ = ["EntidadBase", "EntidadSocial", "EntidadGato", "FabricaEntidades"]

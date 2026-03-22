@@ -244,6 +244,7 @@ def test_caso6_atacar_objetivo_en_rango():
     """ATACAR_OBJETIVO: si objetivo adyacente, genera AccionAtacar."""
     from acciones.accion_atacar import AccionAtacar
     ami, entidades, mapa, cfg, bus, gestor = setup()
+    cfg.modo_combate_activo = True  # Requerido para atacar
     objetivo = next(e for e in entidades if e.id_entidad != ami.id_entidad)
     # Colocar objetivo adyacente
     objetivo.posicion = Posicion(ami.posicion.x + 1, ami.posicion.y)

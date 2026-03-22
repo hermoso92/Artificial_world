@@ -3,8 +3,6 @@
 from tipos.enums import ResultadoAccion, TipoAccion
 from tipos.modelos import Posicion
 
-from agentes.pesos_utilidad import obtener_utilidad_base
-
 from .accion_base import AccionBase
 
 
@@ -27,6 +25,7 @@ class AccionIrRefugio(AccionBase):
         return celda is not None and celda.tiene_refugio()
 
     def calcular_utilidad_base(self, entidad, contexto) -> float:
+        from agentes.pesos_utilidad import obtener_utilidad_base
         return obtener_utilidad_base("ir_refugio")
 
     def ejecutar(self, entidad, contexto) -> ResultadoAccion:

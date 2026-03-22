@@ -29,6 +29,10 @@ class Simulacion:
         self.gestor_modo_sombra = None
         self.renderizador = None
         self.estado_panel = EstadoPanel()
+        self.sistema_reporte = None
+        self.sistema_competencia = None
+        self.sistema_zonas = None
+        self.sistema_memoria_decisiones = None
         self.guardado_ok_tick = 0
         self.cargado_ok_tick = 0
 
@@ -38,6 +42,8 @@ class Simulacion:
         from .bus_eventos import BusEventos
         from sistemas.sistema_logs import SistemaLogs
         from sistemas.sistema_metricas import SistemaMetricas
+        from sistemas.sistema_zonas import SistemaZonas
+        from sistemas.sistema_memoria_decisiones import SistemaMemoriaDecisiones
         from sistemas.sistema_regeneracion import SistemaRegeneracion
         from sistemas.sistema_persistencia import SistemaPersistencia
         from sistemas.gestor_modo_sombra import GestorModoSombra
@@ -51,10 +57,27 @@ class Simulacion:
         self.bus_eventos = BusEventos()
         self.sistema_logs = SistemaLogs()
         self.sistema_metricas = SistemaMetricas()
+        self.sistema_zonas = SistemaZonas()
+        self.sistema_memoria_decisiones = SistemaMemoriaDecisiones()
         self.sistema_regeneracion = SistemaRegeneracion()
         from sistemas.sistema_watchdog import SistemaWatchdog
+        from sistemas.sistema_logging_reporte import SistemaReporte
+
         self.sistema_watchdog = SistemaWatchdog()
+        if getattr(self.configuracion, "reporte_sesion_activo", True):
+            self.sistema_reporte = SistemaReporte(
+                ruta=getattr(self.configuracion, "reporte_sesion_ruta", "reporte_sesion.json"),
+                activo=True,
+            )
+        from sistemas.sistema_modo_competencia import SistemaModoCompetencia
+        self.sistema_competencia = SistemaModoCompetencia(
+            activo=getattr(self.configuracion, "modo_competencia_activo", True),
+            ruta_db=getattr(self.configuracion, "modo_competencia_ruta_db", None),
+            umbral_alerta=getattr(self.configuracion, "modo_competencia_umbral_alerta", 60),
+            umbral_legal=getattr(self.configuracion, "modo_competencia_umbral_legal", 80),
+        )
         self.gestor_modo_sombra = GestorModoSombra(bus_eventos=self.bus_eventos)
+        self.gestor_modo_sombra.sistema_competencia = self.sistema_competencia
         self.renderizador = Renderizador(self.configuracion)
         self.renderizador.inicializar(estado_panel=self.estado_panel)
         # Inyectar gestor sombra en el panel de control
@@ -70,6 +93,8 @@ class Simulacion:
         gen.distribuir_comida(self.mapa)
         gen.distribuir_material(self.mapa)
         gen.distribuir_refugios(self.mapa)
+        for zona in gen.crear_zonas(self.mapa):
+            self.sistema_zonas.registrar_zona(zona)
 
     def crear_entidades_iniciales(self) -> None:
         """Crea las entidades iniciales."""
@@ -161,13 +186,40 @@ class Simulacion:
         """Procesa teclas."""
         import pygame
 
-        # --- Movimiento manual (WASD / flechas): controla entidad en modo sombra ---
         TECLAS_MOVIMIENTO = {
             pygame.K_w: (0, -1), pygame.K_UP:    (0, -1),
             pygame.K_s: (0,  1), pygame.K_DOWN:  (0,  1),
             pygame.K_a: (-1, 0), pygame.K_LEFT:  (-1, 0),
             pygame.K_d: (1,  0), pygame.K_RIGHT: (1,  0),
         }
+
+        # --- Flechas cuando pausado + entidad seleccionada: mueve esa entidad (sin modo sombra) ---
+        if key in TECLAS_MOVIMIENTO and self.estado_panel.pausado and self.estado_panel.entidad_seleccionada_id:
+            ent = next((e for e in self.entidades if e.id_entidad == self.estado_panel.entidad_seleccionada_id), None)
+            if ent:
+                from tipos.modelos import Posicion
+                dx, dy = TECLAS_MOVIMIENTO[key]
+                nx = ent.posicion.x + dx
+                ny = ent.posicion.y + dy
+                destino = Posicion(nx, ny)
+                if self.mapa and not self.mapa.es_posicion_valida(destino):
+                    self.estado_panel.mensaje_feedback = f"Posicion ({nx},{ny}) fuera del mapa"
+                    self.estado_panel.mensaje_feedback_tick = 30
+                    return
+                ent.control_total = True
+                ent.control_total_pendiente = destino
+                self.estado_panel.mensaje_feedback = f"[FLECHAS] {ent.nombre} -> ({nx},{ny})"
+                self.estado_panel.mensaje_feedback_tick = 45
+                return
+
+        # --- Flechas / N = paso a paso cuando pausado (si no hay entidad sombra esperando) ---
+        if key in (pygame.K_RIGHT, pygame.K_DOWN, pygame.K_n) and self.estado_panel.pausado:
+            entidad_sombra = self._obtener_entidad_control_total()
+            if not (entidad_sombra and self.estado_panel.modo_sombra and self.estado_panel.sombra_esperando_input):
+                self.estado_panel.paso_manual = True
+                return
+
+        # --- Movimiento manual (WASD / flechas): controla entidad en modo sombra ---
         if key in TECLAS_MOVIMIENTO:
             entidad_sombra = self._obtener_entidad_control_total()
             if entidad_sombra and self.estado_panel.modo_sombra:
@@ -204,9 +256,44 @@ class Simulacion:
                 self.estado_panel.mensaje_feedback_tick = 40
             return
 
+        # E = comer (consume comida del inventario)
+        if key == pygame.K_e:
+            entidad_sombra = self._obtener_entidad_control_total()
+            if entidad_sombra:
+                en_sombra = self.estado_panel.modo_sombra and self.estado_panel.sombra_esperando_input
+                en_ctrl_pausado = self.estado_panel.pausado and entidad_sombra.control_total
+                if en_sombra or en_ctrl_pausado:
+                    inv = entidad_sombra.estado_interno.inventario
+                    from tipos.enums import TipoRecurso
+                    if inv.tiene(TipoRecurso.COMIDA, 1):
+                        entidad_sombra.sombra_accion_pendiente = "comer"
+                        if en_sombra:
+                            self.estado_panel.sombra_esperando_input = False
+                        self.estado_panel.mensaje_feedback = f"[CTRL] {entidad_sombra.nombre} come"
+                        self.estado_panel.mensaje_feedback_tick = 40
+                    else:
+                        self.estado_panel.mensaje_feedback = f"[CTRL] {entidad_sombra.nombre} no tiene comida (recoge con R)"
+                        self.estado_panel.mensaje_feedback_tick = 60
+            return
+
+        # R = recoger recurso de la celda actual
+        if key == pygame.K_r:
+            entidad_sombra = self._obtener_entidad_control_total()
+            if entidad_sombra:
+                en_sombra = self.estado_panel.modo_sombra and self.estado_panel.sombra_esperando_input
+                en_ctrl_pausado = self.estado_panel.pausado and entidad_sombra.control_total
+                if en_sombra or en_ctrl_pausado:
+                    entidad_sombra.sombra_accion_pendiente = "recoger"
+                    if en_sombra:
+                        self.estado_panel.sombra_esperando_input = False
+                    self.estado_panel.mensaje_feedback = f"[CTRL] {entidad_sombra.nombre} recoge"
+                    self.estado_panel.mensaje_feedback_tick = 40
+            return
+
         if key == pygame.K_p:
             self.estado_panel.pausado = not self.estado_panel.pausado
         elif key == pygame.K_n:
+            # N = paso (tambien flechas cuando pausado, manejado arriba)
             self.estado_panel.paso_manual = True
         elif key == pygame.K_g:
             if self.sistema_persistencia and self.sistema_persistencia.guardar_estado(self):
@@ -246,6 +333,25 @@ class Simulacion:
             if ent:
                 self.estado_panel.entidad_seleccionada_id = ent.id_entidad
                 return
+            # Click en celda vacia: si hay entidad seleccionada, marcar destino IR_A_POSICION
+            id_ent = self.estado_panel.entidad_seleccionada_id
+            if id_ent:
+                ent = next((e for e in self.entidades if e.id_entidad == id_ent), None)
+                panel = self.renderizador.obtener_panel() if self.renderizador else None
+                from tipos.modelos import Posicion
+                if ent and panel and self.mapa and self.mapa.es_posicion_valida(Posicion(celda_x, celda_y)):
+                    from tipos.enums import TipoDirectiva
+                    tick = self.gestor_ticks.tick_actual
+                    directiva = panel.crear_directiva(id_ent, TipoDirectiva.IR_A_POSICION, tick, celda_x, celda_y)
+                    ent.recibir_directiva(directiva)
+                    self.estado_panel.mensaje_feedback = f">>> {ent.nombre} va a ({celda_x},{celda_y})"
+                    self.estado_panel.mensaje_feedback_tick = 120
+                    if self.sistema_logs:
+                        self.sistema_logs.registrar_directiva_recibida(
+                            nombre_ent=ent.nombre, tipo_dir="ir_a_posicion",
+                            tick=tick, duracion=200, intensidad=1.0,
+                        )
+                return
         panel = self.renderizador.obtener_panel() if self.renderizador else None
         if not panel:
             return
@@ -257,13 +363,17 @@ class Simulacion:
         )
         if not accion:
             return
+        import logging
+        logging.getLogger("simulacion").debug(f"CLICK panel accion={accion.get('tipo')} pos={pos}")
         self._manejar_accion_panel(accion)
 
     def _manejar_accion_panel(self, accion: dict) -> None:
         """Despacha una acción del panel al sistema correcto."""
         panel = self.renderizador.obtener_panel() if self.renderizador else None
         tipo = accion.get("tipo")
-        if tipo == "pausar":
+        if tipo == "cambiar_pestana":
+            pass  # ya cambiada en panel
+        elif tipo == "pausar":
             self.estado_panel.pausado = not self.estado_panel.pausado
         elif tipo == "tick_manual":
             self.estado_panel.paso_manual = True
@@ -281,7 +391,15 @@ class Simulacion:
                 self.cargado_ok_tick = self.gestor_ticks.tick_actual + 90
                 self.estado_panel.mensaje_feedback = "Cargado OK"
                 self.estado_panel.mensaje_feedback_tick = 60
+        elif tipo == "toggle_modo_combate":
+            if hasattr(self.configuracion, "modo_combate_activo"):
+                self.configuracion.modo_combate_activo = not self.configuracion.modo_combate_activo
+                estado = "ON" if self.configuracion.modo_combate_activo else "OFF"
+                self.estado_panel.mensaje_feedback = f"Modo combate: {estado}"
+                self.estado_panel.mensaje_feedback_tick = 90
         elif tipo == "toggle_control_total":
+            import logging
+            logging.getLogger("simulacion").info(f"ACCION toggle_control_total id={accion.get('id_entidad')}")
             id_ent = accion.get("id_entidad")
             ent = next((e for e in self.entidades if e.id_entidad == id_ent), None)
             if ent and hasattr(ent, "control_total"):
@@ -373,10 +491,26 @@ class Simulacion:
             self.estado_panel.coord_input_activo = True
             self.estado_panel.coord_input_texto = ""
         elif tipo == "deseleccionar":
+            prev_id = self.estado_panel.entidad_seleccionada_id
+            prev_ent = next((e for e in self.entidades if e.id_entidad == prev_id), None) if prev_id else None
+            if prev_ent and getattr(prev_ent, "control_total", False):
+                if self.gestor_modo_sombra:
+                    self.gestor_modo_sombra.desactivar_modo_sombra(prev_ent, self.gestor_ticks.tick_actual)
+                prev_ent.control_total = False
+                prev_ent.control_total_pendiente = None
+                prev_ent.sombra_accion_pendiente = None
+                from tipos.enums import ModoControl
+                prev_ent.modo_control = ModoControl.AUTONOMO
+                self.estado_panel.modo_sombra = False
+                self.estado_panel.sombra_esperando_input = False
             self.estado_panel.entidad_seleccionada_id = None
+            self.estado_panel.mensaje_feedback = "Selecciona otro agente"
+            self.estado_panel.mensaje_feedback_tick = 60
         elif tipo == "seleccionar":
             self.estado_panel.entidad_seleccionada_id = accion.get("id_entidad")
         elif tipo == "orden":
+            import logging
+            logging.getLogger("simulacion").info(f"ACCION orden id={accion.get('id_entidad')} tipo={accion.get('tipo_directiva')}")
             id_ent = accion.get("id_entidad")
             tipo_dir = accion.get("tipo_directiva")
             tick = accion.get("tick", self.gestor_ticks.tick_actual)
@@ -418,6 +552,8 @@ class Simulacion:
 
     def actualizar_entidad(self, entidad) -> None:
         """Actualiza una entidad: estado, percepción, decisión, ejecución."""
+        if not getattr(entidad.estado_interno, "activo", True):
+            return  # Entidad eliminada (salud<=0 por ataque)
         tick = self.gestor_ticks.tick_actual
         entidad.actualizar_estado_interno(self.configuracion)
         percepcion = entidad.percibir_entorno(self.mapa, self.configuracion)
@@ -450,6 +586,16 @@ class Simulacion:
                     energia=entidad.estado_interno.energia,
                     hambre=entidad.estado_interno.hambre,
                     num_directivas=num_dir,
+                )
+            if self.sistema_memoria_decisiones:
+                self.sistema_memoria_decisiones.registrar(
+                    {
+                        "accion": accion_puntuada.accion.tipo_accion.value,
+                        "score": accion_puntuada.puntuacion_final,
+                        "motivo": accion_puntuada.motivo_principal,
+                    },
+                    entidad,
+                    tick,
                 )
             contexto_sim = ContextoSimulacion(
                 tick_actual=tick,
@@ -572,19 +718,9 @@ class Simulacion:
             self.renderizador.renderizar(self.mapa, self.entidades, estado_ui)
 
     def _ejecutar_tick_completo(self) -> None:
-        """Avanza el mundo exactamente 1 tick: todas las entidades actúan."""
-        self.gestor_ticks.avanzar()
-        for entidad in self.entidades:
-            self.actualizar_entidad(entidad)
-        if self.sistema_watchdog:
-            self.sistema_watchdog.registrar_tick(self.gestor_ticks.tick_actual, self.entidades)
-        self.actualizar_mundo()
-        self.despachar_eventos()
-        self._escribir_debug_si_activo()
-        if self.sistema_persistencia:
-            if self.sistema_persistencia.auto_guardar_si_procede(self):
-                self.estado_panel.mensaje_feedback = "Auto-guardado"
-                self.estado_panel.mensaje_feedback_tick = 15
+        """Avanza el mundo exactamente 1 tick. Delega a core.simulation."""
+        from core.simulation.tick_runner import ejecutar_tick
+        ejecutar_tick(self)
 
     def ejecutar_bucle_principal(self) -> None:
         """Bucle principal de la simulación."""
@@ -637,12 +773,39 @@ class Simulacion:
                 entidad_sombra = self._obtener_entidad_control_total()
 
                 if entidad_sombra and self.estado_panel.modo_sombra:
-                    sombra_tiene_accion = (
+                    # Hay comando del gestor (IR_A_REFUGIO, etc.) → avanzar automáticamente
+                    tiene_cmd_gestor = (
+                        self.gestor_modo_sombra is not None
+                        and self.gestor_modo_sombra.obtener_comando_activo(entidad_sombra.id_entidad) is not None
+                    )
+                    # Input manual del usuario (WASD, esperar, comer, recoger)
+                    tiene_input_manual = (
                         entidad_sombra.control_total_pendiente is not None
                         or entidad_sombra.sombra_accion_pendiente is not None
                     )
-                    if sombra_tiene_accion:
+
+                    if tiene_cmd_gestor and not tiene_input_manual:
+                        # Comando automático del gestor: avanzar sin esperar input
                         self._ejecutar_tick_completo()
+                        pos = entidad_sombra.posicion
+                        motivo = (
+                            entidad_sombra.historial_decisiones[-1]["motivo"]
+                            if entidad_sombra.historial_decisiones else "?"
+                        )
+                        self.estado_panel.mensaje_feedback = (
+                            f"[SOMBRA t{self.gestor_ticks.tick_actual}] "
+                            f"{entidad_sombra.nombre} ({pos.x},{pos.y}) {motivo}"
+                        )
+                        self.estado_panel.mensaje_feedback_tick = 60
+                        # Verificar si el comando terminó
+                        cmd_ahora = self.gestor_modo_sombra.obtener_comando_activo(entidad_sombra.id_entidad)
+                        if not cmd_ahora or cmd_ahora.esta_terminado():
+                            self.estado_panel.sombra_esperando_input = True
+                    elif tiene_input_manual:
+                        # Input manual del usuario (WASD, esperar, comer, recoger)
+                        self._ejecutar_tick_completo()
+                        if getattr(entidad_sombra, "_ctrl_post_move_flags", False):
+                            self._ejecutar_tick_completo()
                         pos = entidad_sombra.posicion
                         motivo = (
                             entidad_sombra.historial_decisiones[-1]["motivo"]
@@ -656,6 +819,7 @@ class Simulacion:
                         self._escribir_debug_amiguisimo(entidad_sombra)
                         self.estado_panel.sombra_esperando_input = True
                     else:
+                        # Sin acción pendiente: esperar input del usuario
                         if not self.estado_panel.sombra_esperando_input:
                             self.estado_panel.sombra_esperando_input = True
 
@@ -672,8 +836,10 @@ class Simulacion:
                     self.estado_panel.mensaje_feedback_tick = 45
 
                 elif entidad_sombra and not self.estado_panel.modo_sombra:
-                    if entidad_sombra.control_total_pendiente is not None:
+                    if entidad_sombra.control_total_pendiente is not None or entidad_sombra.sombra_accion_pendiente is not None:
                         self._ejecutar_tick_completo()
+                        if getattr(entidad_sombra, "_ctrl_post_move_flags", False):
+                            self._ejecutar_tick_completo()
                         pos = entidad_sombra.posicion
                         self.estado_panel.mensaje_feedback = (
                             f"[CTRL] {entidad_sombra.nombre} ({pos.x},{pos.y})"
@@ -686,12 +852,28 @@ class Simulacion:
 
             except Exception as _exc:
                 import traceback as _tb
+                tick = self.gestor_ticks.tick_actual if self.gestor_ticks else "?"
+                if self.sistema_reporte:
+                    self.sistema_reporte.registrar_excepcion(_exc, f"BUCLE tick={tick}")
                 _logger.critical(
-                    f"EXCEPCION EN BUCLE tick={self.gestor_ticks.tick_actual if self.gestor_ticks else '?'}: "
+                    f"EXCEPCION EN BUCLE tick={tick}: "
                     f"{type(_exc).__name__}: {_exc}"
                 )
                 _logger.critical(_tb.format_exc())
-                raise
+                # Mostrar error al usuario en UI antes de cerrar
+                self.estado_panel.mensaje_feedback = (
+                    f"ERROR tick {tick}: {type(_exc).__name__}: {str(_exc)[:80]}"
+                )
+                self.estado_panel.mensaje_feedback_tick = 300  # ~10 seg a 30fps
+                for _ in range(90):  # 3 segundos para leer
+                    try:
+                        self.renderizar()
+                        reloj.tick(fps)
+                    except Exception:
+                        break
+                break
 
         _logger.info(f"BUCLE FINALIZADO en tick {self.gestor_ticks.tick_actual if self.gestor_ticks else '?'}")
+        if self.sistema_reporte:
+            self.sistema_reporte.generar_desde_simulacion(self)
         self.renderizador.cerrar()

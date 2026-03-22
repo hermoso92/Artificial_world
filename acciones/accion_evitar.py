@@ -1,6 +1,5 @@
 """Acción de evitar entidad o zona."""
 
-from agentes.pesos_utilidad import obtener_utilidad_base
 from tipos.enums import ResultadoAccion, TipoAccion
 
 from .accion_huir import (
@@ -22,6 +21,7 @@ class AccionEvitar(AccionBase):
         return riesgo > 0.3
 
     def calcular_utilidad_base(self, entidad, contexto) -> float:
+        from agentes.pesos_utilidad import obtener_utilidad_base
         return obtener_utilidad_base("evitar")
 
     def ejecutar(self, entidad, contexto) -> ResultadoAccion:

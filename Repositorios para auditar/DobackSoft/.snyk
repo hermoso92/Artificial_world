@@ -1,0 +1,33 @@
+# Snyk (https://snyk.io) policy file
+version: v1.25.0
+
+# Ignore specific vulnerabilities
+ignore:
+  'npm:node-fetch:20180115':
+    - '*':
+        reason: 'No direct usage of node-fetch'
+        expires: 2024-12-31T00:00:00.000Z
+
+# Patch specific vulnerabilities
+patch:
+  'npm:debug:20170905':
+    - '*':
+        patched: '2024-01-01T00:00:00.000Z'
+
+# Configure Snyk to fail only on high severity vulnerabilities
+failOnSeverity: high
+
+# Configure Snyk to fail only on upgradable vulnerabilities
+failOnUpgradable: true
+
+# Exclude test files and development dependencies
+exclude:
+  global:
+    - '**/__tests__/**'
+    - '**/*.test.ts'
+    - '**/*.spec.ts'
+    - 'test/**'
+    - 'tests/**'
+    - 'coverage/**'
+    - 'dist/**'
+    - 'node_modules/**' 

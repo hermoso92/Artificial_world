@@ -1,13 +1,5 @@
-"""
-Tipos de terreno para celdas.
-"""
+"""Reexporta TipoTerreno desde core.world."""
 
-from enum import Enum
+from core.world.terreno import TipoTerreno
 
-
-class TipoTerreno(Enum):
-    """Tipo de terreno de una celda."""
-
-    NORMAL = "normal"
-    AGUA = "agua"
-    OBSTACULO = "obstaculo"
+__all__ = ["TipoTerreno"]

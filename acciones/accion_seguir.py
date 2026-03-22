@@ -113,25 +113,24 @@ class AccionSeguir(AccionBase):
         return candidatos[0][1]
 
     def _obtener_cercanas(self, entidad, contexto) -> list:
+        """Devuelve lista de entidades cercanas (no tuplas)."""
         if contexto is None:
             return []
+        entidades = getattr(contexto, "entidades", []) or []
         if contexto.percepcion_local:
-            entidades_raw = getattr(contexto.percepcion_local, "entidades_visibles", [])
-            directas = []
-            ids_cercanos: set[int] = set()
-            for item in entidades_raw:
-                if hasattr(item, "id_entidad"):
-                    if item.id_entidad != entidad.id_entidad:
-                        directas.append(item)
-                else:
-                    _, ids = item
-                    ids_cercanos.update(ids)
-            if directas:
-                return directas
-            if ids_cercanos:
-                ids_cercanos.discard(entidad.id_entidad)
-                todas = getattr(contexto, "entidades", [])
-                return [e for e in todas if e.id_entidad in ids_cercanos]
-            return []
-        return [e for e in (getattr(contexto, "entidades", []) or [])
-                if e.id_entidad != entidad.id_entidad]
+            raw = getattr(contexto.percepcion_local, "entidades_visibles", [])
+            if not raw:
+                return []
+            # Puede ser list[(Posicion, list[int])] del mapa o list[Entidad] de tests
+            primer = raw[0]
+            if hasattr(primer, "id_entidad"):
+                return [e for e in raw if e.id_entidad != entidad.id_entidad]
+            resultado = []
+            for _pos, ids in raw:
+                for id_e in ids:
+                    if id_e != entidad.id_entidad:
+                        e = next((x for x in entidades if x.id_entidad == id_e), None)
+                        if e and e not in resultado:
+                            resultado.append(e)
+            return resultado
+        return [e for e in entidades if e.id_entidad != entidad.id_entidad]

@@ -196,22 +196,53 @@ class MotorDecision:
         return obtener_modificador_rasgo_entidad(entidad, tipo_str)
 
     def aplicar_modificadores_por_memoria(self, entidad, accion, contexto) -> float:
-        """Modificador por memoria y percepción."""
+        """Modificador por memoria y percepción.
+
+        Para MOVER:
+        - Bonus fuerte si destino ES la celda de comida (llegar).
+        - Bonus por acercarse a comida visible/recordada (reducir distancia).
+        """
         from tipos.modelos import Posicion
 
         if accion.tipo_accion == TipoAccion.MOVER:
             destino = Posicion(accion.destino_x, accion.destino_y)
+            hambre = entidad.estado_interno.hambre
+
+            # 1) Bonus al llegar a celda con comida
             if contexto.percepcion_local:
                 for pos, recurso in contexto.percepcion_local.recursos_visibles:
                     if pos == destino and recurso.tipo == TipoRecurso.COMIDA:
-                        if entidad.estado_interno.hambre >= 0.6:
+                        if hambre >= 0.6:
                             return 0.15
-                        if entidad.estado_interno.hambre >= 0.25:
+                        if hambre >= 0.25:
                             return 0.05
             recuerdos_comida = entidad.memoria.obtener_recursos_recientes("comida")
             for rec in recuerdos_comida:
-                if rec.posicion == destino and entidad.estado_interno.hambre >= 0.25:
+                if rec.posicion == destino and hambre >= 0.25:
                     return 0.08
+
+            # 2) Bonus por acercarse a comida visible/recordada
+            posiciones_comida: list[Posicion] = []
+            if contexto.percepcion_local:
+                for pos, recurso in contexto.percepcion_local.recursos_visibles:
+                    if recurso.tipo == TipoRecurso.COMIDA:
+                        posiciones_comida.append(pos)
+            for rec in recuerdos_comida:
+                posiciones_comida.append(rec.posicion)
+
+            if posiciones_comida and hambre >= 0.25:
+                dist_actual = min(
+                    entidad.posicion.distancia_manhattan(p) for p in posiciones_comida
+                )
+                dist_destino = min(
+                    destino.distancia_manhattan(p) for p in posiciones_comida
+                )
+                if dist_destino < dist_actual:
+                    if hambre >= 0.5:
+                        return 0.25
+                    return 0.12
+
+            # 3) Bonus refugio (sin cambios)
             recuerdos_refugio = entidad.memoria.obtener_refugios_conocidos()
             for rec in recuerdos_refugio:
                 if rec.posicion == destino and entidad.estado_interno.energia < 0.5:
@@ -236,19 +267,20 @@ class MotorDecision:
         if not entidades_cercanas:
             return 0.0
 
-        mod = 0.0
-        ids_procesados: list[int] = []
+        # entidades_visibles puede ser (pos, list[int]) del mapa o list[Entidad]
+        ids_cercanos: list[int] = []
         for item in entidades_cercanas:
             if hasattr(item, "id_entidad"):
-                ids_procesados.append(item.id_entidad)
-            else:
-                _, ids = item
-                ids_procesados.extend(ids)
+                ids_cercanos.append(item.id_entidad)
+            elif isinstance(item, (list, tuple)) and len(item) >= 2:
+                _, ids = item[0], item[1]
+                ids_cercanos.extend(ids if isinstance(ids, list) else [ids])
 
-        for id_e in ids_procesados:
-            if id_e == entidad.id_entidad:
+        mod = 0.0
+        for id_otra in ids_cercanos:
+            if id_otra == entidad.id_entidad:
                 continue
-            rel = relaciones.obtener_relacion(id_e)
+            rel = relaciones.obtener_relacion(id_otra)
 
             confianza = rel.confianza
             hostilidad = rel.hostilidad

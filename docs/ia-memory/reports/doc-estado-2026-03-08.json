@@ -1,0 +1,189 @@
+{
+  "fecha": "2026-03-08",
+  "modules": [
+    {
+      "name": "Motor Python",
+      "exists": true,
+      "sourceFiles": [
+        {
+          "file": "principal.py",
+          "exists": true
+        }
+      ],
+      "missingDocs": [],
+      "presentDocs": [
+        "README.md"
+      ]
+    },
+    {
+      "name": "Backend Node",
+      "exists": true,
+      "sourceFiles": [
+        {
+          "file": "src/server.js",
+          "exists": true
+        }
+      ],
+      "missingDocs": [],
+      "presentDocs": [
+        "../docs/backend/README.md"
+      ]
+    },
+    {
+      "name": "Frontend React",
+      "exists": true,
+      "sourceFiles": [
+        {
+          "file": "src/App.jsx",
+          "exists": true
+        }
+      ],
+      "missingDocs": [],
+      "presentDocs": [
+        "../docs/frontend/README.md"
+      ]
+    },
+    {
+      "name": "HeroRefuge",
+      "exists": true,
+      "sourceFiles": [
+        {
+          "file": "heroRefuge.js",
+          "exists": true
+        },
+        {
+          "file": "civilizationSeeds.js",
+          "exists": true
+        }
+      ],
+      "missingDocs": [],
+      "presentDocs": []
+    },
+    {
+      "name": "IA Local (aiCore)",
+      "exists": true,
+      "sourceFiles": [
+        {
+          "file": "aiCore.js",
+          "exists": true
+        },
+        {
+          "file": "aiMemory.js",
+          "exists": true
+        }
+      ],
+      "missingDocs": [],
+      "presentDocs": [
+        "../../../docs/ia-memory/README.md"
+      ]
+    },
+    {
+      "name": "Docker / Agentes Chess",
+      "exists": true,
+      "sourceFiles": [
+        {
+          "file": "docker-compose.full.yml",
+          "exists": true
+        }
+      ],
+      "missingDocs": [],
+      "presentDocs": [
+        "../docs/SISTEMA_CHESS.md"
+      ]
+    },
+    {
+      "name": "Tests Python",
+      "exists": true,
+      "sourceFiles": [],
+      "missingDocs": [],
+      "presentDocs": []
+    }
+  ],
+  "keyDocs": [
+    {
+      "file": "docs/DOCUMENTO_FINAL.md",
+      "desc": "Estado real del proyecto",
+      "exists": true,
+      "lines": 162,
+      "lastModified": "2026-03-08"
+    },
+    {
+      "file": "docs/DOCUMENTO_UNICO.md",
+      "desc": "Referencia técnica completa",
+      "exists": true,
+      "lines": 241,
+      "lastModified": "2026-03-08"
+    },
+    {
+      "file": "docs/ESENCIAL.md",
+      "desc": "Guía de 2 páginas",
+      "exists": true,
+      "lines": 94,
+      "lastModified": "2026-03-08"
+    },
+    {
+      "file": "docs/MODOS_EJECUCION.md",
+      "desc": "Python vs Web",
+      "exists": true,
+      "lines": 180,
+      "lastModified": "2026-03-08"
+    },
+    {
+      "file": "docs/VISION_CIVILIZACIONES_VIVAS.md",
+      "desc": "Tesis de producto",
+      "exists": true,
+      "lines": 311,
+      "lastModified": "2026-03-08"
+    },
+    {
+      "file": "docs/ESTRATEGIA_PRODUCTO.md",
+      "desc": "Estrategia y próximos pasos",
+      "exists": true,
+      "lines": 162,
+      "lastModified": "2026-03-08"
+    },
+    {
+      "file": "docs/ARTIFICIAL_WORD_CRONOGRAMA.md",
+      "desc": "Cronograma y GitHub",
+      "exists": true,
+      "lines": 218,
+      "lastModified": "2026-03-08"
+    },
+    {
+      "file": "docs/SISTEMA_CHESS.md",
+      "desc": "Sistema de auditoría Chess",
+      "exists": true,
+      "lines": 199,
+      "lastModified": "2026-03-08"
+    },
+    {
+      "file": "docs/ia-memory/README.md",
+      "desc": "IA local — memoria y prompts",
+      "exists": true,
+      "lines": 22,
+      "lastModified": "2026-03-08"
+    },
+    {
+      "file": "docs/backend/README.md",
+      "desc": "Backend — API reference",
+      "exists": true,
+      "lines": 72,
+      "lastModified": "2026-03-08"
+    },
+    {
+      "file": "docs/frontend/README.md",
+      "desc": "Frontend — componentes",
+      "exists": true,
+      "lines": 68,
+      "lastModified": "2026-03-08"
+    },
+    {
+      "file": "README.md",
+      "desc": "README principal del repo",
+      "exists": true,
+      "lines": 224,
+      "lastModified": "2026-03-08"
+    }
+  ],
+  "issues": []
+}

@@ -2,8 +2,6 @@
 
 from tipos.enums import ResultadoAccion, TipoAccion, TipoRecurso
 
-from agentes.pesos_utilidad import obtener_utilidad_base
-
 from .accion_base import AccionBase
 
 
@@ -25,6 +23,7 @@ class AccionRecogerComida(AccionBase):
         )
 
     def calcular_utilidad_base(self, entidad, contexto) -> float:
+        from agentes.pesos_utilidad import obtener_utilidad_base
         return obtener_utilidad_base("recoger_comida")
 
     def ejecutar(self, entidad, contexto) -> ResultadoAccion:

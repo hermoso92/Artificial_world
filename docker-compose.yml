@@ -1,0 +1,34 @@
+services:
+  mission-control-backend:
+    image: node:20-bookworm
+    working_dir: /workspace
+    command: >
+      sh -c "cd backend &&
+      npm install &&
+      node src/server.js"
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      MISSION_CONTROL_RUNTIME_MODE: ${MISSION_CONTROL_RUNTIME_MODE:-seed}
+      MISSION_CONTROL_TICK_MS: ${MISSION_CONTROL_TICK_MS:-4000}
+    ports:
+      - "3001:3001"
+    volumes:
+      - .:/workspace
+
+  mission-control-frontend:
+    image: node:20-bookworm
+    working_dir: /workspace
+    command: >
+      sh -c "cd frontend &&
+      npm install &&
+      npm run dev -- --host 0.0.0.0"
+    environment:
+      VITE_BACKEND_PORT: 3001
+      VITE_FRONTEND_PORT: 5173
+    ports:
+      - "5173:5173"
+    depends_on:
+      - mission-control-backend
+    volumes:
+      - .:/workspace

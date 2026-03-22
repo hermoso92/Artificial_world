@@ -1,0 +1,20 @@
+{
+  "name": "Artificial World — Constructor de Mundos",
+  "short_name": "Artificial World",
+  "description": "Ecosistema operativo único. Entrada → Hub → sistemas conectados. Simulación 2D, refugios, héroes y memoria.",
+  "theme_color": "#0a0b0d",
+  "background_color": "#0a0b0d",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/",
+  "orientation": "any",
+  "categories": ["games", "simulation"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

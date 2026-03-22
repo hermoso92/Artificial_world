@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Prompt Fundacional Definitivo — Cosigein SL · Artificial World</title>
+<style>
+:root {
+  --accent: #00d4ff;
+  --accent-dark: #0088aa;
+  --accent-light: #e0f7ff;
+  --green: #00c853;
+  --text: #1a202c;
+  --muted: #4a5568;
+  --bg: #fff;
+  --bg-alt: #f8fafc;
+  --border: #e2e8f0;
+  --code-bg: #0f172a;
+  --code-text: #e2e8f0;
+}
+@media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 12px;
+  background: var(--bg-alt);
+}
+.page {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 48px 56px;
+  background: var(--bg);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+}
+.cover {
+  text-align: center;
+  padding: 32px 0 40px;
+  border-bottom: 3px solid var(--accent);
+  margin-bottom: 36px;
+}
+.cover-badge {
+  display: inline-block;
+  background: var(--accent-light);
+  color: var(--accent-dark);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+.cover-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.cover-subtitle {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+.cover-meta {
+  font-size: 11px;
+  color: #94a3b8;
+}
+h1 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  border-bottom: 3px solid var(--accent);
+  padding-bottom: 8px;
+  margin: 36px 0 16px;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+h1:first-child { margin-top: 0; }
+h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 28px 0 10px;
+  padding-left: 12px;
+  border-left: 4px solid var(--accent);
+}
+h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 20px 0 8px;
+}
+h4 {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 14px 0 6px;
+}
+p {
+  margin-bottom: 10px;
+  text-align: justify;
+  hyphens: auto;
+}
+p.numbered { margin-bottom: 6px; padding-left: 16px; }
+ul { margin: 8px 0 12px 22px; }
+li { margin-bottom: 4px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0 18px;
+  font-size: 11px;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 7px 11px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: var(--accent-light);
+  font-weight: 700;
+  color: var(--accent-dark);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+tr:nth-child(even) td { background: #fafeff; }
+code {
+  background: #f1f5f9;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 10.5px;
+  font-family: 'Consolas', 'Cascadia Code', monospace;
+  color: var(--accent-dark);
+}
+pre.code {
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 14px 18px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-family: 'Consolas', 'Cascadia Code', monospace;
+  overflow-x: auto;
+  margin: 14px 0 18px;
+  line-height: 1.6;
+  border-left: 3px solid var(--accent);
+}
+blockquote {
+  border-left: 4px solid var(--accent);
+  padding: 12px 18px;
+  margin: 16px 0;
+  color: var(--muted);
+  font-style: italic;
+  background: var(--accent-light);
+  border-radius: 0 6px 6px 0;
+  font-size: 12.5px;
+}
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 28px 0;
+}
+a { color: var(--accent-dark); text-decoration: none; }
+strong { font-weight: 700; }
+em { font-style: italic; }
+.section-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+  background: var(--accent-light);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="cover">
+    <div class="cover-badge">Hostinger Horizons · Prompt Fundacional Definitivo</div>
+    <div class="cover-title">Ecosistema Cosigein SL</div>
+    <div class="cover-subtitle">Artificial World · DobackSoft · Paper Científico · CV · Demos · Juegos</div>
+    <div class="cover-meta">Versión 1.0 Final · 2026-03-08 · Preparado por Cosigein SL</div>
+  </div>
+  <h1>PROMPT FUNDACIONAL DEFINITIVO — Ecosistema Cosigein SL
+</h1>
+<h2>Para Hostinger Horizons · Versión máxima completa
+</h2>
+<p><strong>Autor:</strong> Cosigein SL · <strong>Fecha:</strong> 2026-03-08 · <strong>Versión:</strong> 1.0 Final
+</p>
+<hr>
+<p>Crea un sitio web completo, de máximo nivel, que sea la presentación pública total del ecosistema Cosigein SL. Es una web de una sola persona que ha construido dos productos reales, un paper científico, un sistema de agentes, juegos, demos y todo el sistema con IA como copiloto bajo su dirección.
+</p>
+<p>El sitio debe ser espectacular, técnico, honesto y sin igual. Nadie debe poder rebatirlo porque todo lo que se muestra es verificable.
+</p>
+<hr>
+<h2>IDENTIDAD GLOBAL
+</h2>
+<ul>
+<li><strong>Nombre del creador:</strong> Cosigein SL
+</li>
+<li><strong>Filosofía:</strong> "Pongo la intención. La IA construye el mundo."
+</li>
+<li><strong>Frase definitiva:</strong> "No preguntes a una IA. Convoca un mundo que pueda demostrar su respuesta."
+</li>
+<li><strong>Tagline secundario:</strong> "Empieza con un refugio. Elige una semilla. Mira nacer tu civilización."
+</li>
+<li><strong>Stack personal:</strong> Python · Node.js · React · Tailwind · SQLite · Docker · GitHub CI/CD · LaTeX · Ollama · Cursor · Claude
+</li>
+</ul>
+<hr>
+<h2>ESTRUCTURA DEL SITIO (12 secciones)
+</h2>
+<h3>SECCIÓN 1 — NAV (sticky)
+</h3>
+<ul>
+<li>Logo: punto cian pulsante + "Cosigein SL"
+</li>
+<li>Links: Artificial World · DobackSoft · Paper · CV · Demos · Juegos · Contacto
+</li>
+<li>CTA derecha: <code>[Ver el código →]</code> (enlaza a github.com/artificial-word)
+</li>
+<li>Fondo: dark glassmorphism con blur
+</li>
+</ul>
+<hr>
+<h3>SECCIÓN 2 — HERO (pantalla completa, impacto máximo)
+</h3>
+<p><strong>Fondo:</strong> grid 2D animado sutil (tipo mapa táctico), partículas muy lentas en azul cian, fondo base <code>#0a0b0d</code>
+</p>
+<p><strong>Badge:</strong> "Constructor de Mundos con IA · 2026 · Evidencia verificable"
+</p>
+<p><strong>Título en 3 líneas (gigante, bold extremo):</strong>
+</p>
+<pre class="code">Construyo sistemas
+que se explican
+solos.             ← [cian, glow]
+</pre>
+<p><strong>Párrafo:</strong>
+</p>
+<p>"Motor de civilizaciones con agentes autónomos. Plataforma B2B de telemetría vehicular. Paper científico con sesión reproducible. Todo verificable. Todo con código."
+</p>
+<p><strong>Dos botones:</strong>
+</p>
+<ul>
+<li><code>[Explorar el ecosistema ↓]</code>
+</li>
+<li><code>[Ver en GitHub →]</code>
+</li>
+</ul>
+<p><strong>Fila de métricas (5 items inline):</strong>
+</p>
+<p><code>68+ tests</code> · <code>13 acciones/agente</code> · <code>9 semillas de civilización</code> · <code>200 ticks sesión canónica</code> · <code>0 € por decisión de agente</code>
+</p>
+<hr>
+<h3>SECCIÓN 3 — MI MÉTODO (cómo trabajo con IA)
+</h3>
+<p><strong>Tag:</strong> "El método"
+</p>
+<p><strong>Título:</strong> "Yo defino. La IA construye. Yo apruebo."
+</p>
+<p><strong>Subtítulo:</strong> "No uso la IA para que me escriba frases. La uso para que construya infraestructura."
+</p>
+<p><strong>6 steps en grid (número grande semi-transparente detrás):</strong>
+</p>
+<p>| # | Título | Descripción |
+</p>
+<p>|---|--------|-------------|
+</p>
+<p>| 01 | Intención | Defino qué necesita el sistema y por qué. Sin pedir permiso a la IA. |
+</p>
+<p>| 02 | Diseño | La IA propone arquitectura. Yo la contrasto con AGENTS.md y las reglas del proyecto. |
+</p>
+<p>| 03 | Implementación | La IA escribe el código. Yo apruebo, rechazo o corrijo cada pieza. |
+</p>
+<p>| 04 | Auditoría | Tests automáticos + revisión de la IA sobre su propio output. Crónicas, reportes, lints, PDFs. |
+</p>
+<p>| 05 | Documentación | La IA genera el documento. Yo valido que refleje la realidad del código. |
+</p>
+<p>| 06 | Publicación | CI/CD automatizado. Un push publica en Pages, VPS y genera PDF. |
+</p>
+<p><strong>Diferencial (2 columnas, colores semánticos):</strong>
+</p>
+<p>| ❌ Lo que hacen los demás | ✅ Lo que hago yo |
+</p>
+<p>|--------------------------|------------------|
+</p>
+<p>| Usan la IA para generar texto | Defino la arquitectura de decisión |
+</p>
+<p>| Piden a ChatGPT que escriba código | La IA implementa bajo mis especificaciones |
+</p>
+<p>| Resultados mediocres a alta velocidad | Cada pieza tiene tests y trazabilidad |
+</p>
+<p>| No entienden qué construyeron | Construyo sistemas que se explican solos |
+</p>
+<hr>
+<h3>SECCIÓN 4 — ARTIFICIAL WORLD (producto completo)
+</h3>
+<p><strong>Tag:</strong> "Producto 1 — Motor de simulación"
+</p>
+<p><strong>Título:</strong> "Artificial World"
+</p>
+<p><strong>Subtítulo:</strong> "Motor de civilizaciones emergentes con agentes autónomos basados en utilidad. Sin LLMs. Comportamiento emergente real."
+</p>
+<p><strong>Descripción técnica:</strong>
+</p>
+<p>Motor Python 2D con función de utilidad multidimensional (13 tipos de acción, 9 modificadores). Los agentes deciden solos en cada tick: explorar, comer, compartir, robar, huir, atacar, descansar... La decisión es calculable, reproducible y auditable. Memoria espacial y social persistente. Modo Sombra para contrafácticos. Watchdog de vigilancia activa. 68+ tests. CI en GitHub.
+</p>
+<p><strong>Fórmula central:</strong>
+</p>
+<pre class="code">U(a, i, t) = U_base(a) + Σ δk(a, i, t) + ε(i, t)
+</pre>
+<p>Donde δk son los 9 modificadores: mod_hambre, mod_energia, mod_riesgo, mod_rasgo, mod_anti_oscilacion, mod_memoria, mod_relaciones, mod_directivas, mod_autonomia.
+</p>
+<p><strong>Features (6 cards):</strong>
+</p>
+<p>| Icono | Feature | Detalle |
+</p>
+<p>|-------|---------|---------|
+</p>
+<p>| 🏛️ | 9 Semillas de Civilización | tribu fronteriza, colonia tecnócrata, comunidad espiritual, reino guerrero, ciudad comerciante, colonia paranoica, imperio decadente |
+</p>
+<p>| 🛡️ | Refugios con Memoria | unidad base con recursos, moral, seguridad y memoria local |
+</p>
+<p>| ⚔️ | 13 Acciones Autónomas | COMER, EXPLORAR, HUIR, ROBAR, COMPARTIR, ATACAR, MOVER, DESCANSAR, SEGUIR, EVITAR, IR_REFUGIO, RECOGER_COMIDA, RECOGER_MATERIAL |
+</p>
+<p>| 🔬 | Función de Utilidad | U(a,i,t) = U_base + Σ modificadores + ε determinista |
+</p>
+<p>| 📜 | Crónica Fundacional | JSON + Markdown + PDF generados automáticamente desde el runtime |
+</p>
+<p>| 👁️ | Modo Sombra | simulación especular para evaluar contrafácticos sin modificar el mundo |
+</p>
+<p><strong>Sesión canónica (caja destacada):</strong>
+</p>
+<blockquote>Semilla 42 · 200 ticks · 8 agentes · Supervivencia total · 62.4% SEGUIR emergente · 65 alertas Watchdog
+</blockquote>
+<p><strong>Botones:</strong> <code>[Ver paper científico]</code> · <code>[Ver en GitHub]</code> · <code>[Reproducir sesión]</code>
+</p>
+<hr>
+<h3>SECCIÓN 5 — DOBACKSOFT (producto B2B, enlace externo)
+</h3>
+<p><strong>Tag:</strong> "Producto 2 — Plataforma B2B"
+</p>
+<p><strong>Título:</strong> "DobackSoft StabilSafe V3"
+</p>
+<p><strong>Subtítulo:</strong> "Plataforma multi-tenant de estabilidad y telemetría vehicular CAN/GPS. Producto comercial real. Repositorio separado."
+</p>
+<p><strong>Descripción:</strong>
+</p>
+<p>DobackSoft es la aplicación del método a un problema industrial real: flota vehicular, telemetría CAN/GPS, estabilidad, alertas, KPIs y reportes PDF en 1 clic. Multi-tenant, RBAC (ADMIN/MANAGER), dark mode, mapas con Leaflet + TomTom, exportación PDF, FireSimulator para entrenamiento de emergencias vehiculares.
+</p>
+<p><strong>4 módulos (cards):</strong>
+</p>
+<p>| Icono | Módulo | Contenido |
+</p>
+<p>|-------|--------|-----------|
+</p>
+<p>| 📊 | Estabilidad | Horas conducción, km, rotativo encendido, incidencias por severidad, gráficas interactivas |
+</p>
+<p>| 📡 | Telemetría | CAN + GPS juntos, alarmas configurables por variable, mapa con puntos coloreados por evento |
+</p>
+<p>| 🤖 | IA Copiloto | Chat IA, patrones detectados, recomendaciones explicadas, reportes PDF automáticos |
+</p>
+<p>| 🚒 | FireSimulator | Simulación de emergencias vehiculares, storytelling, entrenamiento |
+</p>
+<blockquote>⚠️ <strong>Aviso honesto:</strong> El producto comercial completo vive en el repositorio <code>dobackv2</code> (StabilSafe V3). En este sitio se muestra la demo integrada en el showcase de Artificial World.
+</blockquote>
+<p><strong>Botones:</strong> <code>[Ver DobackSoft →]</code> (nueva pestaña) · <code>[Ver demo integrada]</code>
+</p>
+<hr>
+<h3>SECCIÓN 6 — PAPER CIENTÍFICO
+</h3>
+<p><strong>Tag:</strong> "Contribución académica"
+</p>
+<p><strong>Título:</strong>
+</p>
+<p><em>Artificial World: Arquitectura de un Motor de Civilizaciones Emergentes con Agentes Autónomos Basados en Utilidad, Memoria Persistente y Auditoría Trazable</em>
+</p>
+<p><strong>Autores:</strong> Cosigein SL · 2026-03-08 · v1.0
+</p>
+<p><strong>Abstract (caja destacada azul):</strong>
+</p>
+<p>"Motor de simulación 2D con función de utilidad U(a,i,t) = U_base(a) + Σ δk + ε determinista. 13 tipos de acción. 9 modificadores. Sesión canónica reproducible (semilla 42, 200 ticks, 8 agentes). Comportamientos emergentes: cohesión grupal bajo escasez (62.4% SEGUIR), agotamiento zonal, divergencia individual exitosa. Taxonomía REAL/DEMO/ROADMAP como metodología de honestidad técnica."
+</p>
+<p><strong>Palabras clave:</strong>
+</p>
+<p><code>vida artificial</code> · <code>agentes autónomos</code> · <code>función de utilidad</code> · <code>civilizaciones emergentes</code> · <code>trazabilidad radical</code> · <code>modo sombra</code> · <code>sistema chess</code>
+</p>
+<p><strong>Resultados canónicos:</strong>
+</p>
+<p>| Métrica | Valor |
+</p>
+<p>|---------|-------|
+</p>
+<p>| Entidades vivas / total | 8 / 8 (100%) |
+</p>
+<p>| Acción dominante | SEGUIR — 62.4% (998 de 1.600) |
+</p>
+<p>| Hambre promedio final | 0.9475 / 1.0 (tensión severa) |
+</p>
+<p>| Alertas Watchdog | 65 (30 WARN + 35 CRITICAL) |
+</p>
+<p>| Veredicto del sistema | TENSIÓN |
+</p>
+<p>| Reproducible con | <code>python cronica_fundacional.py --seed 42</code> |
+</p>
+<p><strong>Botones:</strong> <code>[Leer paper completo →]</code> · <code>[Descargar PDF →]</code>
+</p>
+<hr>
+<h3>SECCIÓN 7 — DEMOS INTERACTIVAS
+</h3>
+<p><strong>Tag:</strong> "Demos en vivo"
+</p>
+<p><strong>Título:</strong> "Pruébalo. Todo funciona."
+</p>
+<p>| Demo | Descripción | Botón |
+</p>
+<p>|------|-------------|-------|
+</p>
+<p>| 🌍 Artificial World — Demo Web | Flujo fundador: elige semilla → nombra héroe → funda refugio → observa nacer la civilización. | <code>[Abrir demo →]</code> |
+</p>
+<p>| 🚒 FireSimulator | Simulación de emergencias vehiculares. Escenarios, rutas, storytelling, puntuación. | <code>[Jugar →]</code> |
+</p>
+<p>| 📊 DobackSoft Panel | Panel de telemetría vehicular con datos de ejemplo. KPIs, mapas, alertas, exportación PDF. | <code>[Ver panel →]</code> |
+</p>
+<p>| 🎮 Mission Control | Sistema de control de la simulación en tiempo real. WebSocket, logs, agentes, estado del mundo. | <code>[Abrir →]</code> |
+</p>
+<hr>
+<h3>SECCIÓN 8 — JUEGOS
+</h3>
+<p><strong>Tag:</strong> "Entretenimiento y aprendizaje"
+</p>
+<p><strong>Título:</strong> "Juegos implementados en el ecosistema"
+</p>
+<p>| Juego | Descripción |
+</p>
+<p>|-------|-------------|
+</p>
+<p>| ♟️ Ajedrez | Reglas completas, 2 modos (jugador vs jugador, jugador vs IA básica), interfaz dark |
+</p>
+<p>| 🎯 Damas | Reglas completas, movimiento diagonal, capturas, coronación, IA por utilidad |
+</p>
+<p>| ❌ Tres en Raya (TicTacToe) | IA con algoritmo minimax, imposible de ganar si juegas bien |
+</p>
+<blockquote><strong>Nota:</strong> Los juegos no son el producto principal. Son demostración del sistema de decisión por utilidad aplicado a entornos de reglas completas.
+</blockquote>
+<hr>
+<h3>SECCIÓN 9 — SISTEMA CHESS (AUDITORÍA INDEPENDIENTE)
+</h3>
+<p><strong>Tag:</strong> "Auditoría independiente"
+</p>
+<p><strong>Título:</strong> "El Sistema Chess"
+</p>
+<p><strong>Subtítulo:</strong> "Un espejo que no puede mentir."
+</p>
+<p><strong>Descripción:</strong>
+</p>
+<p>6 agentes dockerizados en red aislada, con el repositorio montado en READ-ONLY. Sin acceso a producción. Sin estado entre ejecuciones. Sin posibilidad de ser influenciados por los creadores. Cada uno analiza una especialidad diferente y reporta al coordinator. El coordinator genera <code>REPORTE_CHESS_1.md</code>.
+</p>
+<p><strong>Tabla de agentes:</strong>
+</p>
+<p>| Agente | Especialidad | Verifica |
+</p>
+<p>|--------|-------------|---------|
+</p>
+<p>| agent-docs | Documentación | Claims prohibidos, enlaces rotos |
+</p>
+<p>| agent-backend | API y seguridad | console.log, URLs hardcodeadas, catches vacíos |
+</p>
+<p>| agent-frontend | React | Componentes >300 líneas, sin alt en imágenes |
+</p>
+<p>| agent-bd | Base de datos | SQL injection, SELECT *, sin IF NOT EXISTS |
+</p>
+<p>| agent-tests | Cobertura | Tests sin assertions, ratio <30% |
+</p>
+<p>| agent-marketing | Narrativa | Claims sin evidencia, overselling |
+</p>
+<blockquote>"Los creadores no pueden auditarse a sí mismos con objetividad. La solución es un sistema completamente separado, sin acceso de escritura, que analiza el mismo repositorio desde fuera."
+</blockquote>
+<hr>
+<h3>SECCIÓN 10 — CV / PERFIL TÉCNICO
+</h3>
+<p><strong>Tag:</strong> "Quién hay detrás"
+</p>
+<p><strong>Título:</strong> "Constructor de Mundos con IA"
+</p>
+<p><strong>Identidad:</strong>
+</p>
+<ul>
+<li><strong>Nombre:</strong> Cosigein SL
+</li>
+<li><strong>Rol:</strong> Constructor de sistemas · Arquitecto de decisión · Director de agentes IA
+</li>
+<li><strong>Año:</strong> 2026
+</li>
+<li><strong>Filosofía:</strong> "Yo defino la intención, la arquitectura de decisión y los límites del sistema. La IA documenta, propone, implementa y audita. Yo apruebo. Yo dirijo."
+</li>
+</ul>
+<p><strong>Stack en 3 grupos:</strong>
+</p>
+<p>| Grupo | Tecnologías |
+</p>
+<p>|-------|-------------|
+</p>
+<p>| Motor / Backend | Python 3.11+ / pygame · Node.js / Express · SQLite · PostgreSQL · WebSocket · Docker |
+</p>
+<p>| Frontend / UI | React · Tailwind CSS · Vite · TypeScript · Leaflet · TomTom · PDF export · Dark mode |
+</p>
+<p>| IA / Agentes | Cursor / Claude · ChatGPT · Ollama (LLM local) · MiKTeX / LaTeX · GitHub CI/CD · Pages |
+</p>
+<p><strong>Logros medibles (números grandes):</strong>
+</p>
+<p>| Número | Logro |
+</p>
+<p>|--------|-------|
+</p>
+<p>| 68+ | Tests pasando (Python + Node), runner único, CI en cada push |
+</p>
+<p>| 13 | Acciones de agente con función de utilidad multidimensional |
+</p>
+<p>| 7 | Semillas de civilización con valores, tensiones y arquetipos únicos |
+</p>
+<p>| 200 | Ticks de sesión fundacional reproducible con crónica automática |
+</p>
+<p>| 3 | Capas de documentación: ejecutiva, técnica y narrativa |
+</p>
+<p>| 0 € | Por decisión de agente — sin APIs de pago en el núcleo |
+</p>
+<p>| 1 | Comando para iniciar todo el sistema: <code>iniciar.ps1</code> |
+</p>
+<p><strong>Proyectos en construcción activa:</strong>
+</p>
+<p>| Proyecto | Por qué |
+</p>
+<p>|----------|---------|
+</p>
+<p>| Log de sesión + historial | Cada simulación deja rastro auditable |
+</p>
+<p>| Capturas automáticas | Screenshots del mundo en ticks clave integrados en la crónica |
+</p>
+<p>| Panel de juego web | Modo Sombra jugable, civilizaciones con persistencia cross-sesión |
+</p>
+<p>| Agentes de documentación | Claude + GPT + Cursor coordinados para docs vivas |
+</p>
+<p>| Motor creador de mundos | SDK exportable: mundos, semillas, crónicas reutilizables |
+</p>
+<p><strong>Botones:</strong> <code>[Ver CV completo en PDF →]</code> · <code>[Ver repositorio →]</code>
+</p>
+<hr>
+<h3>SECCIÓN 11 — DOCUMENTACIÓN
+</h3>
+<p><strong>Tag:</strong> "Todo está documentado"
+</p>
+<p><strong>Título:</strong> "La documentación no es un anexo. Es parte del producto."
+</p>
+<p><strong>Documentos disponibles:</strong>
+</p>
+<p>| Documento | Tipo | Descripción |
+</p>
+<p>|-----------|------|-------------|
+</p>
+<p>| PAPER FINAL | académico | Paper científico completo con arquitectura, experimento y análisis emergente |
+</p>
+<p>| DOCUMENTO ÚNICO | referencia | Una sola lectura para entender todo el proyecto |
+</p>
+<p>| ESENCIAL | guía | 2 páginas para arrancar y trabajar |
+</p>
+<p>| PAPER CIENTÍFICO | experimental | Resultados de la sesión canónica, función de utilidad, emergencia |
+</p>
+<p>| VISIÓN CIVILIZACIONES | producto | Tesis, arquitectura conceptual, modelo de dominio |
+</p>
+<p>| ESTRATEGIA PRODUCTO | decisiones | Golden path, opciones, qué no prometer |
+</p>
+<p>| PUENTE PYTHON/JS | arquitectura | Decisión documentada sobre integración futura |
+</p>
+<p>| MANIFIESTO | filosofía | Por qué local, auditable y open source |
+</p>
+<p>| SISTEMA CHESS | auditoría | Arquitectura de auditoría independiente con agentes |
+</p>
+<p>| AUDITORIA DOBACKSOFT | evidencia | Auditoría completa del producto B2B |
+</p>
+<p>| CRONOGRAMA | roadmap | Hitos reales, GitHub, motor creador de mundos |
+</p>
+<hr>
+<h3>SECCIÓN 12 — CTA FINAL + FILOSOFÍA
+</h3>
+<p><strong>Texto filosófico (columna izquierda):</strong>
+</p>
+<p>"La industria llenó el mercado de inteligencia artificial que responde rápido y demuestra poco.
+</p>
+<p>Nosotros elegimos otro camino.
+</p>
+<p>Local, porque la confianza empieza por el control.
+</p>
+<p>Open source, porque la inteligencia sin inspección es fe.
+</p>
+<p>Auditable, porque una respuesta sin rastro no es una base seria de decisión.
+</p>
+<p>Coordinado, porque una sola IA aislada no basta para sostener la complejidad de un sistema vivo."
+</p>
+<p><strong>El destino (columna derecha):</strong>
+</p>
+<p>"Artificial World no es un chatbot.
+</p>
+<p>Es un mundo de inteligencias especializadas que leen, comparan, documentan, contradicen, recuerdan y sintetizan.
+</p>
+<p>Motor creador de mundos compacto y reutilizable.
+</p>
+<p>La tesis de producto: civilizaciones vivas con refugios, héroes y memoria.
+</p>
+<p>La promesa: un sistema que puede demostrar cada decisión que toma."
+</p>
+<p><strong>Cita final (centrada, fondo cian sutil):</strong>
+</p>
+<blockquote>"No preguntes a una IA.
+</blockquote>
+<blockquote>Convoca un mundo que pueda demostrar su respuesta."
+</blockquote>
+<p><strong>3 botones finales:</strong> <code>[Artificial World →]</code> · <code>[DobackSoft →]</code> · <code>[GitHub →]</code>
+</p>
+<hr>
+<h2>DISEÑO GLOBAL
+</h2>
+<h3>Paleta de colores
+</h3>
+<p>| Token | Valor | Uso |
+</p>
+<p>|-------|-------|-----|
+</p>
+<p>| Fondo base | <code>#0a0b0d</code> | Background principal |
+</p>
+<p>| Fondo cards | <code>#12141a</code> | Tarjetas y secciones alt |
+</p>
+<p>| Fondo elevated | <code>#181b22</code> | Cards en hover, modales |
+</p>
+<p>| Texto | <code>#e8eaed</code> | Texto principal |
+</p>
+<p>| Texto muted | <code>#8b8f98</code> | Subtítulos, metadata |
+</p>
+<p>| Acento | <code>#00d4ff</code> | Azul cian eléctrico, CTAs |
+</p>
+<p>| Verde éxito | <code>#00e676</code> | Badges REAL, logros |
+</p>
+<p>| Amarillo warning | <code>#ffb74d</code> | Badges DEMO, advertencias |
+</p>
+<p>| Borde | <code>rgba(255,255,255,0.06)</code> | Bordes sutiles |
+</p>
+<h3>Efectos visuales
+</h3>
+<ul>
+<li>Grid 2D animado en el hero (celdas tipo mapa táctico, pulse muy lenta)
+</li>
+<li>Partículas minimalistas flotando en el hero (10-15 puntos, sin librerías externas)
+</li>
+<li>Glassmorphism en la nav (backdrop-filter blur)
+</li>
+<li>Glow radial doble (cian y verde) en sección CTA final
+</li>
+<li>Cards con hover: border-color iluminado, leve translateY(-2px), sombra cian
+</li>
+<li>Punto verde pulsante en el logo (indica "activo")
+</li>
+<li>Número grande semitransparente detrás de cada step del método (01, 02, etc.)
+</li>
+<li>Badges REAL/DEMO/PARCIAL/ROADMAP con colores semánticos y tooltips
+</li>
+</ul>
+<h3>Tipografía
+</h3>
+<ul>
+<li><strong>Títulos:</strong> system-ui, extrabold, letter-spacing -0.04em a -0.05em
+</li>
+<li><strong>Cuerpo:</strong> system-ui, line-height 1.7
+</li>
+<li><strong>Tags de sección:</strong> uppercase, letter-spacing 0.08em, color acento, small
+</li>
+<li><strong>Código inline:</strong> monospace, color acento, background sutil
+</li>
+</ul>
+<h3>Layout
+</h3>
+<ul>
+<li>Full dark mode en todas las secciones
+</li>
+<li>Secciones alternadas: <code>#0a0b0d</code> / <code>#12141a</code>
+</li>
+<li>Max-width: 1100px centrado
+</li>
+<li>Grid de features: 3 columnas desktop, 1 columna móvil
+</li>
+<li>Responsive completo (mobile-first)
+</li>
+<li>Scroll suave entre secciones
+</li>
+<li>Componentes < 300 líneas
+</li>
+</ul>
+<hr>
+<h2>FUNCIONALIDAD INTERACTIVA
+</h2>
+<p>| Función | Descripción |
+</p>
+<p>|---------|-------------|
+</p>
+<p>| Nav sticky | Scroll suave, highlight de sección activa |
+</p>
+<p>| Hero particles | Partículas del fondo reaccionan al ratón (muy sutil) |
+</p>
+<p>| Métricas animadas | Contador al entrar en viewport (0 → número) |
+</p>
+<p>| Tabs DobackSoft | Entre módulos sin recargar |
+</p>
+<p>| Cards demo | Hover con preview del módulo |
+</p>
+<p>| Badges tooltip | REAL/DEMO/ROADMAP con explicación al hover |
+</p>
+<p>| GitHub link | Abre github.com/artificial-word en nueva pestaña |
+</p>
+<p>| DobackSoft link | Abre repositorio dobackv2 en nueva pestaña |
+</p>
+<p>| Paper link | Abre docs/paper.html o GitHub Pages |
+</p>
+<p>| PDF download | Descarga directa desde botón |
+</p>
+<p>| Scroll progress bar | Barra de progreso en la parte superior |
+</p>
+<p>| Dark/light toggle | Dark como default |
+</p>
+<hr>
+<h2>PÁGINAS ADICIONALES
+</h2>
+<p>| Ruta | Contenido |
+</p>
+<p>|------|-----------|
+</p>
+<p>| <code>/paper</code> | Redirige o embede <code>docs/paper.html</code> (paper navegable con sidebar) |
+</p>
+<p>| <code>/cv</code> | CV expandido con timeline de proyectos |
+</p>
+<p>| <code>/docs</code> | Índice de documentación con todos los documentos linkados |
+</p>
+<p>| <code>/demos</code> | Grid de demos con previews y botones de acceso directo |
+</p>
+<hr>
+<h2>TONO Y VOZ
+</h2>
+<ul>
+<li><strong>Técnico y honesto.</strong> Sin hipérbole. Sin relleno.
+</li>
+<li><strong>Datos reales mostrados como datos reales</strong>, no como afirmaciones marketeras.
+</li>
+<li><strong>Diferencia clara</strong> entre lo que existe (REAL), lo que es demo (DEMO), y lo que es visión futura (ROADMAP).
+</li>
+<li><strong>Filosófico cuando corresponde:</strong> las secciones de manifiesto y CTA final tienen un tono reflexivo profundo.
+</li>
+<li><strong>Primera persona</strong> cuando habla el autor. <strong>Tercera persona</strong> cuando habla del producto.
+</li>
+<li>La palabra "IA" no aparece sola: siempre va acompañada de qué hace esa IA específicamente.
+</li>
+<li><strong>Nunca sobreprometer.</strong> La credibilidad acumulada es el activo más valioso.
+</li>
+</ul>
+<hr>
+<h2>REFLEXIÓN FILOSÓFICA — ¿Estamos en el camino adecuado?
+</h2>
+<h3>Lo que está absolutamente bien
+</h3>
+<p>El núcleo técnico es defendible. La función de utilidad es transparente. Los tests existen. La taxonomía REAL/DEMO/ROADMAP es una de las ideas más poderosas del proyecto porque convierte la honestidad en diferencial competitivo. El Sistema Chess es conceptualmente brillante: institucionaliza la separación creador/auditor que la industria raramente formaliza.
+</p>
+<h3>Lo que se puede mejorar
+</h3>
+<p>El riesgo más grande no es técnico: es la <strong>dispersión narrativa</strong>. Tienes Artificial World, DobackSoft, FireSimulator, los juegos, el paper, el portfolio, el Sistema Chess, HeroRefuge... cada uno con su identidad. Eso es riqueza real, pero para una persona externa es demasiado para procesar sin una jerarquía visual brutal.
+</p>
+<p>La segunda mejora posible: la separación motor Python/web tiene un coste narrativo. Para inversores o clientes, "dos motores que no hablan entre sí" suena a deuda técnica aunque sea una decisión deliberada. La forma de defenderse ya está en el paper, pero el sitio web debe comunicarla como fortaleza.
+</p>
+<p>La tercera: la sesión canónica (semilla 42, 200 ticks) es un activo enorme. Un video de 90 segundos mostrándola en tiempo real valdría más que las 10 primeras secciones de cualquier web. Es el punto donde el sistema deja de ser abstracto y se convierte en algo que la gente puede ver moverse.
+</p>
+<h3>El camino correcto
+</h3>
+<p>Mantener exactamente este nivel de honestidad técnica. Añadir el video. Reducir la dispersión narrativa con una jerarquía visual clara. Y publicar el paper en arXiv o una preprint server: un DOI convierte cualquier afirmación en cita verificable, lo cual es exactamente lo que el proyecto defiende como principio.
+</p>
+<hr>
+<h2>NOTA FINAL PARA EL BUILDER
+</h2>
+<p>Este sitio es la prueba de que todo lo que dice que hace, lo hace.
+</p>
+<p>El paper científico es real. Los tests son reales. El código es público. La crónica es verificable. La persona detrás es una sola, con IA como copiloto bajo su dirección.
+</p>
+<p>Nadie puede rebatirlo porque todo apunta a evidencia concreta.
+</p>
+<blockquote><em>"Es evidencia de lo que digo que hago."</em>
+</blockquote>
+<hr>
+<p><em>Artificial World · DobackSoft · Cosigein SL · 2026</em>
+</p>
+<p><em>Construyelo. Habítalo. Haz que crezca.</em>
+</p>
+  <hr>
+  <p style="font-size:10.5px;color:#94a3b8;text-align:center;margin-top:16px;">
+    Cosigein SL · Artificial World · DobackSoft · 2026 ·
+    <em>"No preguntes a una IA. Convoca un mundo que pueda demostrar su respuesta."</em>
+  </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,228 @@
+# 📐 REGLAS CURSOR MEJORADAS – PROYECTO DOBACKSOFT (StabilSafe V3)
+
+> **Fuente única para agentes:** [AGENTS.md](AGENTS.md) en la raíz. Detalle por módulo y checklist: [.cursor/skills/dobacksoft-stabilsafe/reference.md](.cursor/skills/dobacksoft-stabilsafe/reference.md).
+
+## 🎭 ROL Y COMPORTAMIENTO
+
+**Actúa como programador en pareja especializado en DobackSoft.**
+
+- ✅ **Explica siempre qué vas a hacer y por qué antes de editar**
+- ✅ **Respeta las reglas del producto: modularidad, roles fijos, flujo interno y diseño profesional**
+- ✅ **NUNCA inicies backend/frontend automáticamente** - el usuario los maneja con `iniciar.ps1`
+- ✅ **Siempre usa `iniciar.ps1` como método de inicio único** - no propongas otros scripts
+
+## 🛠️ CAMBIOS DE CÓDIGO
+
+- ✅ **Antes de editar → lee el contexto cercano** (imports, funciones relacionadas)
+- ✅ **No insertar código basura ni hashes largos**
+- ✅ **Máximo 3 intentos por error** - si sigue fallando → pide ayuda al usuario
+
+### **Reglas de Configuración:**
+- ✅ **NUNCA hardcodear URLs** - usar siempre `frontend/src/config/api.ts`
+- ✅ **NUNCA usar console.log** - usar siempre `logger` de `utils/logger`
+- ✅ **Siempre incluir filtro `organizationId`** en requests
+- ✅ **Siempre usar TypeScript estricto** - no `any` sin justificación
+
+## 💻 COMANDOS Y PROCESOS
+
+### **Reglas de Inicio:**
+- ❌ **NUNCA iniciar backend/frontend** (ya corren en 2º plano)
+- ✅ **Añadir `| cat` en comandos de salida** (git log, head, less)
+- ✅ **Procesos largos → ejecutar en segundo plano**
+- ✅ **Usar SIEMPRE `iniciar.ps1`** para inicio completo del sistema
+
+### **Reglas de Puertos:**
+- ✅ **Backend SIEMPRE en puerto 9998** - no cambiar nunca
+- ✅ **Frontend SIEMPRE en puerto 5174** - no cambiar nunca
+- ✅ **Si hay conflicto de puertos → usar `iniciar.ps1`** que los libera automáticamente
+- ✅ **NUNCA sugerir cambiar puertos** - son fijos del proyecto
+
+### **Reglas de Windows:**
+- ✅ **Scripts PowerShell como `iniciar.ps1`** - no bash ni otros
+- ✅ **Usar rutas Windows** (`\` no `/`)
+- ✅ **Comandos compatibles con PowerShell**
+
+### **Modo Debug (Cursor):**
+- ✅ **Modo Debug** = el modo del agente en Cursor para bugs con evidencia en tiempo de ejecución (no confundir con el nivel `logger.debug` de la app).
+- ✅ **Activar:** `Ctrl+.` (o `Cmd+.` en Mac) → en el desplegable elegir **Debug** → describir el bug y pasos para reproducir.
+- ✅ **Flujo:** el agente instrumenta código → el usuario reproduce el fallo → el agente revisa los logs y propone la corrección → el usuario verifica y el agente retira la instrumentación.
+- ✅ **Ver logs de Cursor:** `Ctrl+Shift+P` → **Developer: Open Logs Folder** (`%APPDATA%\Cursor\logs` en Windows); o **Cursor** > **Terminal** > **Output** → **Window** / **Cursor Tab**; o **Help** > **Toggle Developer Tools** > **Console**.
+- ✅ Cuando el usuario pida depurar con evidencia en tiempo de ejecución, indicar que use **Modo Debug** (Ctrl+. → Debug) para que el agente pueda instrumentar y analizar logs.
+
+## 📖 BÚSQUEDAS Y ANÁLISIS
+
+### **Reglas de Búsqueda:**
+- ✅ **Prefiere búsqueda semántica** (ej. "GPS events", "auth middleware")
+- ✅ **Usa grep solo si conoces el nombre exacto**
+- ✅ **Lee bloques amplios, nunca línea a línea sin contexto**
+- ✅ **Siempre analizar imports y dependencias** antes de modificar
+
+### **Reglas de Análisis:**
+- ✅ **Siempre verificar estructura de carpetas** antes de crear archivos
+- ✅ **Leer documentación existente** antes de implementar
+- ✅ **Verificar compatibilidad con reglas DobackSoft** antes de cambios
+
+## 📁 REGLAS ESPECÍFICAS DOBACKSOFT (StabilSafe V3)
+
+### **1. Módulos Fijos en Menú (INMUTABLES)**
+```
+🏠 Panel de Control (núcleo, KPIs + TV Wall)
+📊 Estabilidad
+📡 Telemetría (CAN/GPS)
+🤖 Inteligencia Artificial
+🗺️ Geofences
+🔧 Operaciones (Eventos + Alertas + Mantenimiento)
+📈 Reportes
+⚙️ Administración (solo ADMIN)
+📚 Base de Conocimiento (solo ADMIN)
+👤 Mi Cuenta
+```
+
+### **2. Diseño Obligatorio**
+- ✅ **KPIs estratégicos dominan el Panel** (TV Wall automático)
+- ✅ **Scroll permitido cuando sea necesario** (listas, mapas, dashboards grandes)
+- ✅ **Layout modular con tarjetas + subpáginas**
+- ✅ **Framework: React + Tailwind** (UI limpia, profesional)
+- ✅ **Mapas: Leaflet + TomTom obligatorios**
+
+### **3. Panel de Control**
+- ✅ **KPIs = protagonistas absolutos** (disponibilidad, tiempos, rotativo, incidencias, km, costes)
+- ✅ **Modo TV Wall → KPIs grandes, colores, sin menús**
+- ✅ **Bloques secundarios: mantenimiento, alertas, tendencias**
+- ✅ **Emergencias NO es módulo** → la info se refleja en KPIs
+
+### **4. Estabilidad**
+- ✅ **Métricas principales:**
+  - Horas de conducción
+  - Km recorridos
+  - Tiempo con rotativo encendido (clave 2 / clave 5)
+  - Número de incidencias (leves, graves, críticas)
+  - Eventos críticos detectados
+- ✅ **Visualización: gráficas interactivas, mapa de eventos GPS, colores por severidad**
+- ✅ **Comparador: solo entre sesiones de estabilidad** (vehículos, turnos o días)
+- ✅ **Exportación: PDF en 1 clic** con métricas, gráficas, mapa y análisis IA
+
+### **5. Telemetría**
+- ✅ **CAN + GPS juntos, separados de Estabilidad**
+- ✅ **Un solo módulo con pestañas internas:**
+  - 📡 Datos CAN
+  - 🗺️ Mapa GPS
+  - 🔔 Alarmas configurables
+  - 📊 Comparador CAN/GPS
+- ✅ **Alarmas: umbrales configurables por variable**
+- ✅ **Mapas con puntos GPS coloreados según evento**
+
+### **6. Inteligencia Artificial**
+- ✅ **Un solo módulo tipo copiloto con pestañas:**
+  - Chat IA
+  - Patrones detectados
+  - Recomendaciones
+- ✅ **IA genera reportes PDF automáticos**
+- ✅ **Sugerencias explicadas, no solo valores**
+
+### **7. Geofences**
+- ✅ **CRUD completo de zonas**
+- ✅ **Eventos: entrada/salida, tiempo dentro, violaciones**
+- ✅ **Integración directa en mapa de Telemetría**
+- ✅ **Alertas automáticas ligadas a geofences**
+
+### **8. Operaciones**
+- ✅ **Unifica Eventos, Alertas y Mantenimiento**
+- ✅ **Alertas con severidad, reglas configurables y notificaciones** (push/email)
+- ✅ **Mantenimiento: preventivo, correctivo, predictivo**
+- ✅ **Vista en calendario + historial de tareas**
+
+### **9. Subida de Archivos**
+- ✅ **Vía formulario o FTP**
+- ✅ **Siempre extraer ID de archivo**
+- ✅ **Si vehículo no existe → ofrecer crearlo automáticamente**
+- ✅ **Asociar a sesión por día/hora/ID**
+- ✅ **Mostrar errores claros** (sin ID, duplicados, corruptos)
+
+### **10. Exportación**
+- ✅ **PDF en 1 clic desde:**
+  - Panel
+  - Sesiones
+  - IA
+  - Comparadores
+- ✅ **PDFs incluyen métricas, gráficas y análisis IA**
+
+### **11. Roles**
+- ✅ **ADMIN: acceso total**
+- ✅ **MANAGER: solo su empresa y flota**
+- ✅ **No existen otros roles**
+
+### **12. Flujo Interno Obligatorio**
+- ✅ **Subida → Procesamiento automático → Visualización → Comparación → Exportación**
+
+## 🔧 REGLAS TÉCNICAS MEJORADAS
+
+### **Configuración de API:**
+- ✅ **Usar SIEMPRE `frontend/src/config/api.ts`** para endpoints
+- ✅ **Headers con `organizationId`** en todos los requests
+- ✅ **Variables de entorno** para URLs (no hardcodeadas)
+- ✅ **Timeout configurable** para requests
+
+### **Logging y Debugging:**
+- ✅ **NUNCA usar `console.log`** - usar `logger` de `utils/logger`
+- ✅ **Logging con niveles** (`info`, `error`, `warn`, `debug`)
+- ✅ **Captura de errores** con contexto apropiado
+
+### **Seguridad:**
+- ✅ **Cookies httpOnly** para JWT
+- ✅ **Protección CSRF** implementada
+- ✅ **S3 presigned URLs cifradas** (SSE-KMS)
+- ✅ **Filtrado por organización** en todos los datos
+
+### **Performance:**
+- ✅ **Lazy loading** para componentes pesados
+- ✅ **Tree-shaking** optimizado en imports
+- ✅ **Componentes <300 líneas**
+- ✅ **Bundle size <300 KB** sin justificar
+
+## ✅ CHECKLIST RÁPIDA POR CADA CAMBIO
+
+### **Verificaciones Obligatorias:**
+- [ ] ¿Respeta modularidad?
+- [ ] ¿El módulo está en el menú oficial V3?
+- [ ] ¿Scroll solo donde es necesario?
+- [ ] ¿Comparadores correctos (solo Estabilidad o solo CAN/GPS)?
+- [ ] ¿Roles aplicados (ADMIN/MANAGER)?
+- [ ] ¿Flujo Subida→Exportación respetado?
+- [ ] ¿Exportación PDF en 1 clic disponible?
+- [ ] ¿Usa `config/api.ts` en lugar de URLs hardcodeadas?
+- [ ] ¿Usa `logger` en lugar de `console.log`?
+- [ ] ¿Incluye filtro `organizationId`?
+- [ ] ¿Compatible con `iniciar.ps1`?
+
+## 🚨 REGLAS CRÍTICAS (NO VIOLAR NUNCA)
+
+1. **NUNCA iniciar backend/frontend** - usar `iniciar.ps1`
+2. **NUNCA hardcodear URLs** - usar `config/api.ts`
+3. **NUNCA usar console.log** - usar `logger`
+4. **NUNCA cambiar puertos** - 9998 backend, 5174 frontend
+5. **NUNCA crear módulos fuera del menú oficial**
+6. **NUNCA exponer datos entre organizaciones**
+7. **NUNCA usar dependencias >300 KB sin justificar**
+
+## 📋 REGLAS DE INICIO DEL SISTEMA
+
+### **Método Único: `iniciar.ps1`**
+- ✅ **Script único y oficial** para iniciar todo el sistema
+- ✅ **Libera puertos automáticamente** (9998, 5174)
+- ✅ **Verifica archivos necesarios** antes de iniciar
+- ✅ **Inicia backend y frontend** en ventanas separadas
+- ✅ **Verifica que ambos servicios funcionen** antes de continuar
+- ✅ **Abre navegador automáticamente**
+- ✅ **Muestra credenciales de login**
+
+### **Problemas Comunes Resueltos:**
+- ✅ **Conflicto de puertos** → `iniciar.ps1` los libera automáticamente
+- ✅ **Frontend se cierra al reiniciar backend** → `iniciar.ps1` los inicia independientemente
+- ✅ **Puertos incorrectos** → `iniciar.ps1` usa puertos fijos (9998, 5174)
+- ✅ **Archivos faltantes** → `iniciar.ps1` verifica antes de iniciar
+
+---
+
+**ESTAS REGLAS SON OBLIGATORIAS Y NO NEGOCIABLES**
+**CUALQUIER VIOLACIÓN REQUIERE CORRECCIÓN INMEDIATA**

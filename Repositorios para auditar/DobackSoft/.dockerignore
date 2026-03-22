@@ -1,0 +1,100 @@
+# =========================
+# Version control
+# =========================
+.git
+.gitattributes
+.gitignore
+
+# =========================
+# Dependencies
+# =========================
+node_modules
+**/node_modules
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+.npm
+**/.npm
+.yarn
+**/.yarn
+.pnpm-store
+**/.pnpm-store
+
+# =========================
+# Build output / caches
+# =========================
+dist
+**/dist
+build
+**/build
+out
+**/out
+coverage
+**/coverage
+.nyc_output
+**/.nyc_output
+*.tsbuildinfo
+
+.cache
+**/.cache
+.tmp
+**/.tmp
+tmp
+**/tmp
+temp
+**/temp
+
+# =========================
+# Env (NO al build context)
+# =========================
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# =========================
+# IDE/OS
+# =========================
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs (CLAVE)
+# =========================
+*.log
+**/*.log
+logs
+**/logs
+backend/logs
+backend/**/logs
+frontend/logs
+frontend/**/logs
+app/logs
+app/**/logs
+
+# =========================
+# Carpetas pesadas / no necesarias
+# =========================
+osrm-data
+data
+backups
+.cursor
+.deprecados
+
+# Si no se usan en build, ignóralas:
+tests
+**/__tests__
+*.test.*
+*.spec.*
+
+# GitHub metadata (no suele hacer falta en build)
+.github
+.husky

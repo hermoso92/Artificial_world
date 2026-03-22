@@ -1,0 +1,461 @@
+<!doctype html>
+<!--
+  Otro cliente no oficial de X para macOS
+  Copyright © 2025 686f6c61
+
+  Author: 686f6c61 (https://github.com/686f6c61)
+  Repository: https://github.com/686f6c61/Xcom-mac-silicon
+
+  Help page - Documentación completa del cliente
+-->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ayuda - Otro cliente no oficial de X</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: #000;
+        color: #fff;
+        padding: 2rem;
+        line-height: 1.6;
+        font-size: 14px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        border-bottom: 2px solid #fff;
+        padding-bottom: 0.5rem;
+      }
+
+      .subtitle {
+        color: #999;
+        margin-bottom: 2rem;
+        font-size: 1rem;
+      }
+
+      .section {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: #111;
+        border: 1px solid #333;
+        border-radius: 4px;
+      }
+
+      h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        color: #fff;
+        border-bottom: 1px solid #333;
+        padding-bottom: 0.5rem;
+      }
+
+      h3 {
+        font-size: 1rem;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        color: #fff;
+        font-weight: 600;
+      }
+
+      p {
+        color: #ccc;
+        margin-bottom: 0.75rem;
+      }
+
+      ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      li {
+        color: #ccc;
+        margin-bottom: 0.5rem;
+        padding-left: 1.5rem;
+        position: relative;
+      }
+
+      li:before {
+        content: "▸";
+        position: absolute;
+        left: 0;
+        color: #fff;
+      }
+
+      a {
+        color: #fff;
+        text-decoration: underline;
+      }
+
+      a:hover {
+        color: #ccc;
+      }
+
+      .warning {
+        color: #fff;
+        font-weight: 600;
+        background: #222;
+        padding: 0.75rem;
+        border-left: 3px solid #fff;
+        margin: 1rem 0;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 0.5rem 1rem;
+        margin-top: 1rem;
+      }
+
+      .label {
+        color: #fff;
+        font-weight: 600;
+      }
+
+      .value {
+        color: #ccc;
+      }
+
+      .kbd {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        background: #222;
+        border: 1px solid #444;
+        border-radius: 3px;
+        font-family: Monaco, Courier, monospace;
+        font-size: 0.9em;
+        color: #fff;
+      }
+
+      .command-list {
+        margin-top: 0.5rem;
+      }
+
+      .command-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #222;
+      }
+
+      .command-item:last-child {
+        border-bottom: none;
+      }
+
+      .command-name {
+        color: #ccc;
+      }
+
+      .command-shortcut {
+        color: #999;
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Otro cliente no oficial de X</h1>
+      <p class="subtitle">Cliente para macOS con soporte multicuenta y menús nativos</p>
+
+      <div class="section">
+        <h2>Información del proyecto</h2>
+        <div class="info-grid">
+          <span class="label">Autor:</span>
+          <span class="value">686f6c61</span>
+
+          <span class="label">Repositorio:</span>
+          <span class="value"><a href="https://github.com/686f6c61/Xcom-mac-silicon" target="_blank">github.com/686f6c61/Xcom-mac-silicon</a></span>
+
+          <span class="label">Versión:</span>
+          <span class="value">0.6.0</span>
+
+          <span class="label">Motor:</span>
+          <span class="value">Tauri 2.x</span>
+
+          <span class="label">Copyright:</span>
+          <span class="value">2025-2026 686f6c61</span>
+
+          <span class="label">Licencia:</span>
+          <span class="value">MIT</span>
+        </div>
+
+        <div class="warning">
+          AVISO: Esta es una aplicación no oficial. No está afiliada ni respaldada por X Corp.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Sistema multicuenta y sesión persistente</h2>
+        <p>Gestiona múltiples cuentas de X con restauración best-effort de sesión, cookies y almacenamiento local.</p>
+
+        <h3>Características</h3>
+        <ul>
+          <li>Detección automática de login sobre X.com real</li>
+          <li>Almacenamiento seguro en macOS Keychain con encriptación AES-256-GCM</li>
+          <li>Cambio rápido entre cuentas con restauración de cookies y localStorage accesible</li>
+          <li>Identificadores únicos (UUID) por cuenta</li>
+          <li>Persistencia del estado activo al reiniciar la aplicación</li>
+        </ul>
+
+        <h3>Uso</h3>
+        <ul>
+          <li>Agregar cuenta: Menú Cuentas → Agregar Cuenta... o <span class="kbd">⌘⇧N</span></li>
+          <li>Cambiar cuenta: Click en el nombre de usuario en el menú Cuentas</li>
+          <li>Eliminar cuenta: Menú Cuentas → Eliminar Cuenta Activa o <span class="kbd">⌘⌫</span></li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Comandos de teclado</h2>
+
+        <h3>Archivo</h3>
+        <div class="command-list">
+          <div class="command-item">
+            <span class="command-name">Nueva Publicación</span>
+            <span class="command-shortcut"><span class="kbd">⌘N</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Cerrar Ventana</span>
+            <span class="command-shortcut"><span class="kbd">⌘W</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Cerrar Todo</span>
+            <span class="command-shortcut"><span class="kbd">⌘⇧W</span></span>
+          </div>
+        </div>
+
+        <h3>Edición</h3>
+        <div class="command-list">
+          <div class="command-item">
+            <span class="command-name">Buscar</span>
+            <span class="command-shortcut"><span class="kbd">⌘F</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Deshacer</span>
+            <span class="command-shortcut"><span class="kbd">⌘Z</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Rehacer</span>
+            <span class="command-shortcut"><span class="kbd">⌘⇧Z</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Copiar</span>
+            <span class="command-shortcut"><span class="kbd">⌘C</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Pegar</span>
+            <span class="command-shortcut"><span class="kbd">⌘V</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Seleccionar Todo</span>
+            <span class="command-shortcut"><span class="kbd">⌘A</span></span>
+          </div>
+        </div>
+
+        <h3>Cuentas</h3>
+        <div class="command-list">
+          <div class="command-item">
+            <span class="command-name">Agregar Cuenta</span>
+            <span class="command-shortcut"><span class="kbd">⌘⇧N</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Eliminar Cuenta Activa</span>
+            <span class="command-shortcut"><span class="kbd">⌘⌫</span></span>
+          </div>
+        </div>
+
+        <h3>Visualización</h3>
+        <div class="command-list">
+          <div class="command-item">
+            <span class="command-name">Recargar</span>
+            <span class="command-shortcut"><span class="kbd">⌘R</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Pantalla Completa</span>
+            <span class="command-shortcut"><span class="kbd">⌃⌘F</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Acercar Zoom</span>
+            <span class="command-shortcut"><span class="kbd">⌘+</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Alejar Zoom</span>
+            <span class="command-shortcut"><span class="kbd">⌘-</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Restablecer Zoom</span>
+            <span class="command-shortcut"><span class="kbd">⌘0</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Aumentar Texto</span>
+            <span class="command-shortcut"><span class="kbd">⌘⇧+</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Reducir Texto</span>
+            <span class="command-shortcut"><span class="kbd">⌘⇧-</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Restablecer Texto</span>
+            <span class="command-shortcut"><span class="kbd">⌘⇧0</span></span>
+          </div>
+        </div>
+
+        <h3>Navegación</h3>
+        <div class="command-list">
+          <div class="command-item">
+            <span class="command-name">Explorar</span>
+            <span class="command-shortcut"><span class="kbd">⌘1</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Grok</span>
+            <span class="command-shortcut"><span class="kbd">⌘2</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Notificaciones</span>
+            <span class="command-shortcut"><span class="kbd">⌘3</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Mensajes</span>
+            <span class="command-shortcut"><span class="kbd">⌘4</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Elementos Guardados</span>
+            <span class="command-shortcut"><span class="kbd">⌘L</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Perfil</span>
+            <span class="command-shortcut"><span class="kbd">⌘P</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Desplazar Arriba</span>
+            <span class="command-shortcut"><span class="kbd">⌘↑</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Desplazar Abajo</span>
+            <span class="command-shortcut"><span class="kbd">⌘↓</span></span>
+          </div>
+        </div>
+
+        <h3>Aplicación</h3>
+        <div class="command-list">
+          <div class="command-item">
+            <span class="command-name">Ajustes</span>
+            <span class="command-shortcut"><span class="kbd">⌘,</span></span>
+          </div>
+          <div class="command-item">
+            <span class="command-name">Modo Oscuro</span>
+            <span class="command-shortcut"><span class="kbd">⌘D</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Sistema de actualizaciones</h2>
+        <p>La aplicación verifica automáticamente nuevas versiones desde GitHub al iniciar.</p>
+
+        <h3>Proceso automático</h3>
+        <ul>
+          <li>Verificación al iniciar (2 segundos después del arranque)</li>
+          <li>Consulta a GitHub API: github.com/686f6c61/Xcom-mac-silicon/releases</li>
+          <li>Comparación de versiones (actual vs. última disponible)</li>
+          <li>Apertura automática de la página de releases si hay actualización</li>
+        </ul>
+
+        <h3>Verificación manual</h3>
+        <p>Accede a Menú Ayuda → Buscar Actualizaciones para verificar manualmente.</p>
+      </div>
+
+      <div class="section">
+        <h2>Seguridad y privacidad</h2>
+        <ul>
+          <li>Credenciales almacenadas en macOS Keychain (protección del sistema operativo)</li>
+          <li>Encriptación AES-256-GCM para todos los datos sensibles</li>
+          <li>Derivación de claves con Argon2id (resistente a ataques)</li>
+          <li>Identificadores únicos UUID v4 por cuenta</li>
+          <li>Sin recopilación de datos personales</li>
+          <li>Sin intermediarios: comunicación directa con X.com</li>
+          <li>Código abierto: auditable en GitHub</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Arquitectura técnica</h2>
+
+        <h3>Backend</h3>
+        <ul>
+          <li>Rust (edición 2021)</li>
+          <li>Tauri 2.x (framework multiplataforma)</li>
+          <li>Security Framework (integración con macOS Keychain)</li>
+          <li>AES-GCM 0.10 (encriptación autenticada)</li>
+          <li>Argon2 0.5 (derivación de claves)</li>
+        </ul>
+
+        <h3>Frontend</h3>
+        <ul>
+          <li>WebView nativo de macOS (WKWebView)</li>
+          <li>JavaScript modular (ES6+)</li>
+          <li>Detector de login automático con monitoreo de DOM</li>
+          <li>Comunicación bidireccional con backend vía postMessage</li>
+        </ul>
+
+        <h3>Menús nativos</h3>
+        <ul>
+          <li>7 menús principales: App, Archivo, Edición, Cuentas, Visualización, Navegación, Ayuda</li>
+          <li>50+ elementos de menú con atajos de teclado</li>
+          <li>Menú Cuentas dinámico (se reconstruye al agregar/eliminar cuentas)</li>
+          <li>Integración completa con macOS (servicios, ocultación, etc.)</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Comandos Tauri disponibles</h2>
+        <p>Interfaz JavaScript-Rust para funcionalidades avanzadas:</p>
+
+        <h3>Gestión de credenciales</h3>
+        <ul>
+          <li>save_credentials - Guardar credenciales encriptadas</li>
+          <li>get_credentials - Recuperar credenciales desencriptadas</li>
+          <li>delete_credentials - Eliminar credenciales del Keychain</li>
+        </ul>
+
+        <h3>Multicuenta</h3>
+        <ul>
+          <li>list_accounts - Listar todas las cuentas guardadas</li>
+          <li>get_active_account - Obtener cuenta activa actual</li>
+          <li>set_active_account - Establecer cuenta activa</li>
+          <li>save_account_credentials - Guardar cuenta con detección automática</li>
+          <li>delete_account - Eliminar cuenta permanentemente</li>
+          <li>switch_account - Cambiar a otra cuenta</li>
+          <li>rebuild_accounts_menu - Reconstruir menú de cuentas</li>
+        </ul>
+
+        <h3>Utilidades</h3>
+        <ul>
+          <li>check_updates - Verificar actualizaciones desde GitHub</li>
+          <li>open_help - Abrir página de ayuda</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Licencia</h2>
+        <p>Este proyecto es software libre bajo licencia MIT.</p>
+        <p>Consulta el repositorio para más información: <a href="https://github.com/686f6c61/Xcom-mac-silicon" target="_blank">github.com/686f6c61/Xcom-mac-silicon</a></p>
+      </div>
+    </div>
+
+    <script src="help.js"></script>
+  </body>
+</html>

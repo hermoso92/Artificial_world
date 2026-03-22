@@ -1,0 +1,231 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SlidesIntro from '../components/SlidesIntro.astro';
+import SlidesModelos from '../components/SlidesModelos.astro';
+import SlidesAgentes from '../components/SlidesAgentes.astro';
+import '../styles/global.css';
+
+const tocSections = [
+  {
+    title: 'Fundamentos',
+    items: [
+      { num: 1, label: '¿Qué NO es la IA?', id: 'que-no-es' },
+      { num: 2, label: '¿Qué SÍ es la IA?', id: 'que-si-es' },
+      { num: 3, label: 'Determinismo vs estocástico', id: 'determinismo' },
+      { num: 4, label: 'Principios de la IA', id: 'principios' },
+      { num: 5, label: '¿Qué es un token?', id: 'tokens' },
+      { num: 6, label: '¿Qué es un embedding?', id: 'embeddings' },
+      { num: 7, label: 'Entrenamiento vs inferencia', id: 'entrenamiento-inferencia' },
+    ],
+  },
+  {
+    title: 'Arquitecturas y modelos',
+    items: [
+      { num: 8, label: 'Arquitecturas', id: 'arquitecturas' },
+      { num: 9, label: '¿Cómo funciona un Transformer?', id: 'transformer-ninos' },
+      { num: 10, label: 'Arquitectura MoE', id: 'moe' },
+      { num: 11, label: '¿Cómo funciona MoE?', id: 'moe-ninos' },
+      { num: 12, label: '¿Qué es un LLM?', id: 'llm' },
+      { num: 13, label: 'Parámetros de configuración', id: 'parametros' },
+    ],
+  },
+  {
+    title: 'Uso práctico',
+    items: [
+      { num: 14, label: 'Prompt engineering', id: 'prompt-engineering' },
+      { num: 15, label: 'Modelos frontier', id: 'frontier' },
+      { num: 16, label: 'Hugging Face + LM Studio', id: 'huggingface-lmstudio' },
+      { num: 17, label: 'RAG', id: 'rag' },
+      { num: 18, label: 'Bases de datos vectoriales', id: 'vectordb' },
+    ],
+  },
+  {
+    title: 'Agentes y orquestación',
+    items: [
+      { num: 19, label: '¿Qué es un agente?', id: 'agentes' },
+      { num: 20, label: 'Contexto y memoria', id: 'contexto-memoria' },
+      { num: 21, label: 'Multi-modelo', id: 'multi-modelo' },
+      { num: 22, label: 'Patrones de orquestación', id: 'patrones-orquestacion' },
+      { num: 23, label: 'Sistemas de orquestación', id: 'orquestacion' },
+      { num: 24, label: 'Orquestadores y ADKs', id: 'orquestadores-adks' },
+      { num: 25, label: 'Claude Code (estructura)', id: 'claude-code-estructura' },
+      { num: 26, label: 'MCP', id: 'mcp' },
+    ],
+  },
+  {
+    title: 'Realidad del ingeniero',
+    items: [
+      { num: 27, label: 'IDE web vs terminal', id: 'ide-terminal' },
+      { num: 28, label: 'Agente vs prompt', id: 'agente-vs-prompt' },
+      { num: 29, label: 'Seguridad y riesgos', id: 'seguridad' },
+      { num: 30, label: 'Tokens y coste', id: 'costes' },
+      { num: 31, label: 'Cambio de paradigma', id: 'cambio-paradigma' },
+      { num: 32, label: 'Recursos', id: 'recursos' },
+      { num: 33, label: 'Demo', id: 'demo' },
+    ],
+  },
+];
+---
+
+<Layout title="IA entre amigos - Workshop Marzo 2026">
+  <!-- TABLE OF CONTENTS OVERLAY -->
+  <div class="toc-overlay" id="toc">
+    <div class="toc-content">
+      <div class="toc-header">
+        <h2>Índice</h2>
+        <button class="toc-close" id="toc-close" aria-label="Cerrar índice">&times;</button>
+      </div>
+      {tocSections.map((section) => (
+        <div class="toc-section">
+          <p class="toc-section-title">{section.title}</p>
+          {section.items.map((item) => (
+            <button class="toc-item" data-goto={item.id}>
+              <span class="toc-num">{String(item.num).padStart(2, '0')}</span>
+              {item.label}
+            </button>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- SLIDES -->
+  <div class="slides-container" id="slides-container">
+    <SlidesIntro />
+    <SlidesModelos />
+    <SlidesAgentes />
+  </div>
+
+  <!-- NAVIGATION BAR -->
+  <nav class="nav-bar">
+    <div class="nav-buttons">
+      <button class="nav-btn" id="prev-btn" aria-label="Slide anterior">&#8592;</button>
+      <span class="nav-counter" id="nav-counter">0 / 0</span>
+      <button class="nav-btn" id="next-btn" aria-label="Slide siguiente">&#8594;</button>
+    </div>
+    <div class="nav-progress">
+      <div class="nav-progress-bar" id="progress-bar"></div>
+    </div>
+    <button class="nav-toc-btn" id="toc-btn">Índice</button>
+    <div class="nav-keys">
+      <kbd>&#8592;</kbd><kbd>&#8594;</kbd>
+    </div>
+  </nav>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = /** @type {NodeListOf<HTMLElement>} */ (document.querySelectorAll('.slide'));
+      const counter = document.getElementById('nav-counter');
+      const progressBar = document.getElementById('progress-bar');
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+      const tocOverlay = document.getElementById('toc');
+      const tocBtn = document.getElementById('toc-btn');
+      const tocClose = document.getElementById('toc-close');
+      const tocItems = /** @type {NodeListOf<HTMLElement>} */ (document.querySelectorAll('.toc-item'));
+
+      let current = 0;
+      const total = slides.length;
+      let numberBuffer = '';
+      let numberTimer = null;
+
+      function showSlide(index) {
+        if (index < 0 || index >= total) return;
+        slides[current].classList.remove('active');
+        current = index;
+        slides[current].classList.add('active');
+        slides[current].scrollTop = 0;
+        updateUI();
+        const id = slides[current].id;
+        history.replaceState(null, '', `#${id}`);
+      }
+
+      function updateUI() {
+        counter.textContent = `${current} / ${total - 1}`;
+        const progress = total > 1 ? (current / (total - 1)) * 100 : 0;
+        progressBar.style.width = `${progress}%`;
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === total - 1;
+      }
+
+      function next() { showSlide(current + 1); }
+      function prev() { showSlide(current - 1); }
+
+      function goToSlide(id) {
+        const index = Array.from(slides).findIndex(s => s.id === id);
+        if (index !== -1) {
+          showSlide(index);
+          closeToc();
+        }
+      }
+
+      function openToc() { tocOverlay.classList.add('active'); }
+      function closeToc() { tocOverlay.classList.remove('active'); }
+
+      prevBtn.addEventListener('click', prev);
+      nextBtn.addEventListener('click', next);
+      tocBtn.addEventListener('click', openToc);
+      tocClose.addEventListener('click', closeToc);
+
+      tocOverlay.addEventListener('click', (e) => {
+        if (e.target === tocOverlay) closeToc();
+      });
+
+      tocItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const id = item.dataset.goto;
+          if (id) goToSlide(id);
+        });
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { closeToc(); return; }
+        if (tocOverlay.classList.contains('active')) return;
+
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+          e.preventDefault(); next();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault(); prev();
+        } else if (e.key === 'Home') {
+          e.preventDefault(); showSlide(0);
+        } else if (e.key === 'End') {
+          e.preventDefault(); showSlide(total - 1);
+        } else if (e.key >= '0' && e.key <= '9') {
+          numberBuffer += e.key;
+          clearTimeout(numberTimer);
+          numberTimer = setTimeout(() => {
+            const num = parseInt(numberBuffer, 10);
+            if (num >= 0 && num < total) showSlide(num);
+            numberBuffer = '';
+          }, 500);
+        }
+      });
+
+      // Touch/swipe support
+      let touchStartX = 0;
+      let touchStartY = 0;
+
+      document.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      document.addEventListener('touchend', (e) => {
+        const deltaX = e.changedTouches[0].clientX - touchStartX;
+        const deltaY = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+          if (deltaX < 0) next(); else prev();
+        }
+      }, { passive: true });
+
+      // Initial slide from hash
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        const index = Array.from(slides).findIndex(s => s.id === hash);
+        if (index !== -1) current = index;
+      }
+      slides[current].classList.add('active');
+      updateUI();
+    });
+  </script>
+</Layout>

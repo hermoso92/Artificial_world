@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artificial World — Infografía 9 páginas</title>
+  <style>
+    :root {
+      --accent: #0088aa;
+      --accent-light: #e0f4f8;
+      --accent-dark: #006680;
+      --text: #1a1d21;
+      --text-muted: #4a5568;
+      --bg: #ffffff;
+      --bg-alt: #f7fafc;
+      --border: #e2e8f0;
+      --radius: 10px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      .page { box-shadow: none !important; border: 1px solid #e2e8f0 !important; }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+      background: var(--bg-alt);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    .no-print {
+      position: fixed; top: 16px; right: 16px; z-index: 1000;
+      background: var(--accent); color: white;
+      padding: 10px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 500;
+      box-shadow: var(--shadow);
+    }
+
+    .page {
+      max-width: 720px;
+      margin: 24px auto;
+      padding: 40px 48px;
+      background: var(--bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      page-break-after: always;
+    }
+    .page:last-of-type { page-break-after: auto; margin-bottom: 24px; }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 3px solid var(--accent);
+    }
+    .page-num {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .page-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .page-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent-dark);
+      margin: 24px 0 12px;
+      letter-spacing: -0.01em;
+    }
+    h2:first-of-type { margin-top: 0; }
+
+    p { margin: 0 0 12px; color: var(--text); }
+    p:last-child { margin-bottom: 0; }
+
+    .highlight {
+      background: var(--accent-light);
+      padding: 20px 24px;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent);
+      margin: 16px 0;
+      font-weight: 500;
+      font-style: italic;
+    }
+
+    .keyword-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 20px 0;
+    }
+    @media (max-width: 600px) {
+      .keyword-cards { grid-template-columns: 1fr; }
+    }
+    .keyword-card {
+      background: var(--bg-alt);
+      padding: 20px;
+      border-radius: 8px;
+      border-top: 4px solid var(--accent);
+      text-align: center;
+    }
+    .keyword-card strong {
+      display: block;
+      font-size: 1rem;
+      color: var(--accent-dark);
+      margin-bottom: 8px;
+    }
+    .keyword-card span { font-size: 0.9rem; color: var(--text-muted); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    th, td {
+      padding: 14px 18px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) { background: var(--bg-alt); }
+
+    ul, ol {
+      margin: 12px 0;
+      padding-left: 24px;
+    }
+    li { margin: 8px 0; }
+    li::marker { color: var(--accent); }
+
+    pre {
+      background: #1a1d21;
+      color: #e8eaed;
+      padding: 20px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      overflow-x: auto;
+      margin: 16px 0;
+      line-height: 1.5;
+    }
+    code {
+      background: var(--bg-alt);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    .tagline {
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .final-cta {
+      text-align: center;
+      padding: 32px;
+      background: linear-gradient(135deg, var(--accent-light) 0%, #fff 100%);
+      border-radius: 12px;
+      margin-top: 24px;
+    }
+    .final-cta strong { font-size: 1.2rem; color: var(--accent-dark); }
+    .final-cta em { display: block; margin-top: 8px; color: var(--text-muted); }
+
+    .cover-page {
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center;
+      background: linear-gradient(180deg, var(--accent-light) 0%, var(--bg) 40%);
+    }
+    .cover-content { max-width: 520px; }
+    .cover-title {
+      font-size: 2.8rem; font-weight: 800; color: var(--accent-dark);
+      letter-spacing: -0.04em; margin-bottom: 8px;
+      line-height: 1.15;
+    }
+    .cover-subtitle { font-size: 1.15rem; color: var(--text-muted); margin-bottom: 32px; font-weight: 500; }
+    .cover-desc { font-size: 1rem; color: var(--text); margin-bottom: 36px; line-height: 1.6; }
+    .cover-tagline { font-size: 1.15rem; font-style: italic; color: var(--accent); font-weight: 600; margin-bottom: 40px; }
+    .cover-index {
+      text-align: left; font-size: 0.9rem; color: var(--text-muted);
+      padding: 20px 28px; background: var(--bg); border-radius: var(--radius);
+      border: 1px solid var(--border); width: 100%; max-width: 320px;
+    }
+    .cover-index div { margin: 6px 0; }
+    .cover-index span { color: var(--accent-dark); font-weight: 600; margin-right: 8px; }
+    .screenshot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .screenshot-item { text-align: center; }
+    .screenshot-item img { width: 100%; border-radius: 8px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+    .screenshot-item figcaption { font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; font-weight: 500; }
+    .screenshot-full { margin: 12px 0; page-break-inside: avoid; }
+    .screenshot-full img { width: 100%; max-height: 240px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+    .screenshot-full figcaption { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; }
+    .step-badge { display: inline-block; background: var(--accent); color: white; font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-right: 8px; }
+    .page-footer {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      text-align: center; font-size: 0.8rem; color: var(--text-muted);
+      padding: 12px;
+    }
+    .page { position: relative; min-height: 100%; padding-bottom: 48px; }
+  </style>
+</head>
+<body>
+  <div class="no-print">Ctrl+P → Guardar como PDF</div>
+
+  <!-- Portada -->
+  <div class="page cover-page">
+    <div class="cover-content">
+      <h1 class="cover-title">Artificial World</h1>
+      <p class="cover-subtitle">Infografía en 9 páginas</p>
+      <p class="cover-desc">Para informáticos, jefes, inversores y abuelos. Cada página está pensada para que cualquiera entienda algo.</p>
+      <div class="cover-tagline">Constrúyelo. Habítalo. Haz que crezca.</div>
+      <div class="cover-index">
+        <div><span>1</span> La idea en 30 segundos</div>
+        <div><span>2</span> Para tu abuelo</div>
+        <div><span>3</span> Para tu jefe e inversores</div>
+        <div><span>4</span> Para el informático</div>
+        <div><span>5</span> Cómo probarlo</div>
+        <div><span>6</span> Tutorial (parte 1)</div>
+        <div><span>7</span> Tutorial (parte 2)</div>
+        <div><span>8</span> Resumen y cierre</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div class="page-num">1</div>
+      <div>
+        <div class="page-title">La idea en 30 segundos</div>
+        <div class="page-subtitle">Para todos. Si solo lees esto, ya sabes de qué va.</div>
+      </div>
+    </div>
+
+    <h2>¿Qué es Artificial World?</h2>
+    <p><strong>Un mundo virtual donde los personajes piensan, recuerdan y se relacionan.</strong></p>
+    <p>Como un acuario digital: pones criaturas, les das reglas, y ellas deciden qué hacer. Comen cuando tienen hambre, huyen del peligro, comparten con amigos y desconfían de quienes les han robado.</p>
+    <p><strong>La diferencia:</strong> No usa ChatGPT ni nada parecido. Cada decisión es calculada, predecible y gratis. Corre en tu ordenador, sin internet.</p>
+
+    <h2>En una frase</h2>
+    <div class="highlight">No persigas la IA. Construye un mundo que la necesite.</div>
+
+    <h2>Tres palabras clave</h2>
+    <div class="keyword-cards">
+      <div class="keyword-card"><strong>Memoria</strong><span>Los personajes recuerdan lo que vieron y lo que pasó</span></div>
+      <div class="keyword-card"><strong>Relaciones</strong><span>Confianza, miedo, hostilidad que cambian con el tiempo</span></div>
+      <div class="keyword-card"><strong>Local</strong><span>Todo en tu PC. Cero coste por uso</span></div>
+    </div>
+
+    <p class="tagline">Artificial World — Constrúyelo. Habítalo. Haz que crezca.</p>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div class="page-num">2</div>
+      <div>
+        <div class="page-title">Para tu abuelo</div>
+        <div class="page-subtitle">Analogía simple. Sin jerga.</div>
+      </div>
+    </div>
+
+    <h2>Imagina un pueblo pequeño</h2>
+    <p>En ese pueblo hay vecinos. Cada uno tiene su casa, su huerto y sus recuerdos.</p>
+    <ul>
+      <li><strong>Si ayudas a uno</strong>, te guarda confianza. La próxima vez te tratará mejor.</li>
+      <li><strong>Si le robas</strong>, te tendrá miedo. Huirá cuando te vea.</li>
+      <li><strong>Si no comes</strong>, te debilitas. Si no descansas, te cansas.</li>
+    </ul>
+    <p><strong>Artificial World es ese pueblo</strong>, pero en pantalla. Los vecinos son personajes que el ordenador controla siguiendo reglas. No son aleatorios: cada acción tiene una razón (hambre, miedo, amistad).</p>
+
+    <h2>¿Para qué sirve?</h2>
+    <p>Para que los videojuegos y las simulaciones tengan personajes que <strong>importan</strong>. Que te reconozcan. Que cambien según lo que hagas.</p>
+
+    <h2>¿Quién puede usarlo?</h2>
+    <p>Cualquiera que quiera un mundo con vida. Estudiantes, creadores de juegos, empresas que simulan comportamientos.</p>
+
+    <p class="tagline">Página 2 — Artificial World</p>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div class="page-num">3</div>
+      <div>
+        <div class="page-title">Para tu jefe e inversores</div>
+        <div class="page-subtitle">Valor, mercado, oportunidad.</div>
+      </div>
+    </div>
+
+    <h2>El problema que resuelve</h2>
+    <p>Los personajes de muchos juegos y simulaciones son <strong>estáticos</strong>. Dicen lo mismo, no recuerdan, no evolucionan. Los jugadores lo notan.</p>
+    <p>Las alternativas con IA generativa (ChatGPT, etc.) <strong>cuestan dinero por uso</strong>, tienen latencia y son impredecibles. No escalan para mundos con cientos de personajes.</p>
+
+    <h2>La solución</h2>
+    <table>
+      <tr><th>Artificial World</th><th>Competencia (LLM)</th></tr>
+      <tr><td>Coste: Cero por decisión</td><td>$ por token</td></tr>
+      <tr><td>Latencia: &lt; 1 ms</td><td>100–500 ms</td></tr>
+      <tr><td>Predecible: Sí</td><td>No</td></tr>
+      <tr><td>Memoria persistente: Sí</td><td>Limitada</td></tr>
+      <tr><td>Escalable: Miles de agentes</td><td>Coste crece con uso</td></tr>
+    </table>
+
+    <h2>Mercado y oportunidad</h2>
+    <ul>
+      <li><strong>Estudios indie</strong> — NPCs creíbles sin presupuesto de API</li>
+      <li><strong>Simulaciones</strong> — Gestión, logística, formación</li>
+      <li><strong>Educación</strong> — Enseñar IA por utilidad</li>
+      <li><strong>Investigación</strong> — Motor abierto, modificable</li>
+    </ul>
+
+    <h2>Estado actual</h2>
+    <ul>
+      <li>Motor funcional (Python + Web)</li>
+      <li>68+ tests pasando</li>
+      <li>Ejecutable Windows (.exe) listo</li>
+      <li>Documentación completa</li>
+    </ul>
+
+    <p class="tagline">Página 3 — Artificial World</p>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div class="page-num">4</div>
+      <div>
+        <div class="page-title">Para el informático</div>
+        <div class="page-subtitle">Stack, arquitectura, cómo funciona.</div>
+      </div>
+    </div>
+
+    <h2>Stack</h2>
+    <table>
+      <tr><th>Capa</th><th>Tecnología</th></tr>
+      <tr><td>Motor principal</td><td>Python 3.11+, pygame</td></tr>
+      <tr><td>Persistencia</td><td>SQLite (mundo_artificial.db)</td></tr>
+      <tr><td>Web</td><td>Node.js + Express, React + Vite</td></tr>
+      <tr><td>Tiempo real</td><td>WebSocket</td></tr>
+    </table>
+
+    <h2>Arquitectura del motor</h2>
+    <pre>nucleo.Simulacion → tick_runner
+    ├── mundo/ (mapa, celdas, recursos)
+    ├── entidades/ (EntidadSocial, EntidadGato)
+    ├── agentes/ (MotorDecision, memoria, relaciones)
+    ├── acciones/ (13: mover, comer, compartir, robar, huir, atacar...)
+    └── sistemas/ (persistencia, watchdog, logs)</pre>
+
+    <h2>Cómo decide un agente</h2>
+    <ol>
+      <li><strong>Genera</strong> acciones candidatas (mover, comer, ir al refugio...)</li>
+      <li><strong>Puntúa</strong> cada una por utilidad (hambre, energía, rasgo, relaciones)</li>
+      <li><strong>Selecciona</strong> la de mayor puntuación</li>
+      <li><strong>Ejecuta</strong> y actualiza memoria/relaciones</li>
+    </ol>
+    <p>Sin LLMs. Todo determinista y trazable.</p>
+
+    <h2>Cómo probarlo</h2>
+    <pre># Python (motor completo)
+pip install -r requirements.txt
+python principal.py
+
+# Web (demo)
+.\scripts\iniciar_fullstack.ps1
+# → http://localhost:5173
+
+# Ejecutable Windows
+.\build_exe.ps1
+# → dist\MundoArtificial.exe</pre>
+
+    <p class="tagline">Página 4 — Artificial World</p>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div class="page-num">5</div>
+      <div>
+        <div class="page-title">Cómo probarlo</div>
+        <div class="page-subtitle">Pasos concretos. Para todos.</div>
+      </div>
+    </div>
+
+    <h2>Opción A — Demo en el navegador (5 min)</h2>
+    <ol>
+      <li>Descarga el proyecto</li>
+      <li>Abre PowerShell en la carpeta del proyecto</li>
+      <li>Ejecuta: <code>.\scripts\iniciar_fullstack.ps1</code></li>
+      <li>Espera a que abra el navegador en http://localhost:5173</li>
+      <li>Explora: crea refugios, suelta agentes, observa</li>
+    </ol>
+
+    <h2>Opción B — Versión completa en tu PC (10 min)</h2>
+    <ol>
+      <li>Instala Python 3.11+</li>
+      <li>En la carpeta del proyecto: <code>pip install -r requirements.txt</code></li>
+      <li>Ejecuta: <code>python principal.py</code></li>
+      <li>Se abre una ventana con el mundo. Usa los paneles para dar órdenes, cambiar de entidad (Modo Sombra), guardar y cargar.</li>
+    </ol>
+
+    <h2>Opción C — Sin instalar nada (Windows)</h2>
+    <ol>
+      <li>Descarga el archivo <code>MundoArtificial.exe</code></li>
+      <li>Ejecútalo</li>
+      <li>Funciona igual que la versión completa</li>
+    </ol>
+
+    <h2>Enlaces</h2>
+    <ul>
+      <li><strong>Repositorio</strong> — GitHub (ver README del proyecto)</li>
+      <li><strong>Documentación</strong> — docs/ESENCIAL.md</li>
+      <li><strong>Landing</strong> — artificial-world.html</li>
+    </ul>
+
+    <p class="tagline">Página 5 — Artificial World</p>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div class="page-num">6</div>
+      <div>
+        <div class="page-title">Tutorial con capturas (1/2)</div>
+        <div class="page-subtitle">Guía visual paso a paso. Demo web.</div>
+      </div>
+    </div>
+
+    <h2><span class="step-badge">1</span> Landing</h2>
+    <p>Al abrir la app verás la pantalla de bienvenida. <strong>Empezar a construir</strong> (flujo guiado) o <strong>Ya tengo un mundo</strong> (ir al Hub).</p>
+    <figure class="screenshot-full">
+      <img src="tutorial/screenshots/01-landing.png" alt="Landing Artificial World" />
+      <figcaption>Pantalla de bienvenida</figcaption>
+    </figure>
+
+    <h2><span class="step-badge">2</span> Hub (centro de mando)</h2>
+    <p>Desde el Hub accedes a Tu Mundo, Arena, Emergencias y Observatorio.</p>
+    <figure class="screenshot-full">
+      <img src="tutorial/screenshots/02-hub.png" alt="Hub" />
+      <figcaption>Hub — punto de partida</figcaption>
+    </figure>
+
+    <h2><span class="step-badge">3</span> Tu Mundo (simulación)</h2>
+    <p>Crea refugios, especies y libera agentes. Observa cómo se mueven, recogen recursos y se relacionan.</p>
+    <figure class="screenshot-full">
+      <img src="tutorial/screenshots/03-simulation.png" alt="Simulación" />
+      <figcaption>Simulación principal</figcaption>
+    </figure>
+
+    <p class="tagline">Artificial World — Constrúyelo. Habítalo. Haz que crezca.</p>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div class="page-num">7</div>
+      <div>
+        <div class="page-title">Tutorial con capturas (2/2)</div>
+        <div class="page-subtitle">Mission Control y zonas del Hub.</div>
+      </div>
+    </div>
+
+    <h2><span class="step-badge">4</span> Mission Control</h2>
+    <p>Vista en vivo, actividad, auditoría y lista de agentes por refugio.</p>
+    <figure class="screenshot-full">
+      <img src="tutorial/screenshots/04-missioncontrol.png" alt="Mission Control" />
+      <figcaption>Observatorio — Mission Control</figcaption>
+    </figure>
+
+    <h2><span class="step-badge">5</span> Tarjetas del Hub</h2>
+    <p>Cada tarjeta te lleva a una zona distinta.</p>
+    <figure class="screenshot-full">
+      <img src="tutorial/screenshots/05-hub-cards.png" alt="Tarjetas del Hub" />
+      <figcaption>Zonas disponibles</figcaption>
+    </figure>
+
+    <div class="highlight" style="margin-top: 20px;">
+      <strong>Regenerar capturas:</strong> Con la app corriendo, ejecuta <code>node scripts/capture-screenshots.js</code>. Las imágenes se guardan en docs/tutorial/screenshots/.
+    </div>
+
+    <p class="tagline">Artificial World — Constrúyelo. Habítalo. Haz que crezca.</p>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div class="page-num">8</div>
+      <div>
+        <div class="page-title">Resumen y cierre</div>
+        <div class="page-subtitle">Un mensaje que funcione para todos.</div>
+      </div>
+    </div>
+
+    <h2>Artificial World en tres líneas</h2>
+    <ol>
+      <li><strong>Es</strong> un motor de vida artificial donde los personajes piensan, recuerdan y se relacionan.</li>
+      <li><strong>No usa</strong> ChatGPT ni APIs de pago. Todo corre local, gratis y predecible.</li>
+      <li><strong>Sirve</strong> para juegos, simulaciones, educación e investigación.</li>
+    </ol>
+
+    <h2>Para cada persona</h2>
+    <table>
+      <tr><th>Si eres...</th><th>Tu siguiente paso</th></tr>
+      <tr><td>Abuelo / no técnico</td><td>Pide que te enseñen la demo en pantalla</td></tr>
+      <tr><td>Jefe / inversor</td><td>Revisa la página 4 (valor y mercado)</td></tr>
+      <tr><td>Informático</td><td>Clona el repo y ejecuta python principal.py</td></tr>
+      <tr><td>Cualquiera</td><td>Comparte esta infografía con quien creas que le interese</td></tr>
+    </table>
+
+    <div class="final-cta">
+      <strong>Constrúyelo. Habítalo. Haz que crezca.</strong>
+      <em>Artificial World — Simulación de vida artificial 2D con agentes autónomos</em>
+    </div>
+
+    <p class="tagline">Página 8 — Artificial World</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artificial World — Film Fundacional</title>
+  <meta name="description" content="Toda gran civilización comienza con una intención. No preguntamos a una máquina. Convocamos un mundo capaz de demostrar su respuesta.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #030303;
+      --amber: #d4a84b;
+      --amber-glow: rgba(212, 168, 75, 0.4);
+      --amber-soft: rgba(255, 193, 95, 0.15);
+      --white-soft: rgba(255, 255, 255, 0.92);
+      --white-dim: rgba(255, 255, 255, 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; background: var(--black); }
+
+    .film-wrapper {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--black);
+    }
+
+    .film-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: min(100vw, 177.78vh);
+      max-height: min(100vh, 56.25vw);
+      aspect-ratio: 16 / 9;
+      margin: auto;
+      background: var(--black);
+      overflow: hidden;
+    }
+
+    .film-container::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 80% 50% at 50% 50%, transparent 35%, rgba(3,3,3,0.6) 70%, var(--black) 100%);
+      z-index: 2;
+    }
+
+    .film-container::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 120px rgba(0,0,0,0.5);
+      z-index: 1;
+    }
+
+    #canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .text-layer {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 8%;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .quote {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.4rem, 3.5vw, 2.8rem);
+      font-weight: 400;
+      line-height: 1.4;
+      text-align: center;
+      color: var(--white-soft);
+      max-width: 85%;
+      opacity: 0;
+      transition: opacity 1.2s ease, transform 0.8s ease;
+      transform: translateY(12px);
+    }
+
+    .quote.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .quote.italic { font-style: italic; }
+    .quote.amber { color: var(--amber); text-shadow: 0 0 40px var(--amber-glow); }
+
+    .cta {
+      font-family: 'Outfit', system-ui, sans-serif;
+      font-size: clamp(1rem, 2.2vw, 1.4rem);
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--white-dim);
+      margin-top: 1.5rem;
+      opacity: 0;
+      transition: opacity 1.5s ease 0.5s;
+    }
+
+    .cta.visible { opacity: 1; }
+
+    .logo-aw {
+      position: absolute;
+      bottom: 6%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Outfit', system-ui, sans-serif;
+      font-size: clamp(0.75rem, 1.8vw, 1rem);
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      color: var(--white-dim);
+      opacity: 0;
+      transition: opacity 2s ease;
+      z-index: 4;
+    }
+
+    .logo-aw.visible { opacity: 0.7; }
+
+    .progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--amber), transparent);
+      width: 0%;
+      transition: width 0.1s linear;
+      z-index: 5;
+    }
+
+    .replay-btn {
+      position: absolute;
+      bottom: 8%;
+      right: 6%;
+      font-family: 'Outfit', system-ui, sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: var(--white-dim);
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.5s ease, border-color 0.3s, color 0.3s;
+      z-index: 6;
+    }
+    .replay-btn.visible { opacity: 1; }
+    .replay-btn:hover { border-color: var(--amber); color: var(--amber); }
+  </style>
+</head>
+<body>
+  <div class="film-wrapper">
+  <div class="film-container">
+    <canvas id="canvas"></canvas>
+    <div class="text-layer">
+      <p class="quote" id="q1">Toda gran civilización comienza con una intención.</p>
+      <p class="quote" id="q2">No preguntamos a una máquina.</p>
+      <p class="quote" id="q3">Convocamos un mundo capaz de demostrar su respuesta.</p>
+      <p class="quote italic amber" id="q4">Empieza con un refugio. Elige una semilla. Mira nacer tu civilización.</p>
+      <span class="cta" id="cta">Constrúyelo</span>
+    </div>
+    <div class="logo-aw" id="logo">ARTIFICIAL WORLD</div>
+    <div class="progress-bar" id="progress"></div>
+    <button type="button" class="replay-btn" id="replay" aria-label="Reproducir de nuevo">Repetir</button>
+  </div>
+  </div>
+
+  <script>
+    (function () {
+      const DURATION = 50;
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      let width, height, animationId;
+      let startTime = null;
+
+      const quotes = [
+        { id: 'q1', start: 6, end: 13 },
+        { id: 'q2', start: 13, end: 20 },
+        { id: 'q3', start: 22, end: 30 },
+        { id: 'q4', start: 36, end: 50 },
+        { id: 'cta', start: 43, end: 50 },
+        { id: 'logo', start: 3, end: 50 }
+      ];
+
+      const particles = [];
+      const NUM_PARTICLES = 180;
+      const amber = { r: 212, g: 168, b: 75 };
+      const white = { r: 255, g: 255, b: 255 };
+
+      function resize() {
+        const container = canvas.parentElement;
+        width = canvas.width = container.clientWidth;
+        height = canvas.height = container.clientHeight;
+      }
+
+      function initParticles() {
+        particles.length = 0;
+        for (let i = 0; i < NUM_PARTICLES; i++) {
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            radius: Math.random() * 1.5 + 0.3,
+            alpha: 0,
+            targetAlpha: Math.random() * 0.6 + 0.2,
+            phase: Math.random() * Math.PI * 2
+          });
+        }
+      }
+
+      function getPhase(t) {
+        if (t < 5) return 'darkness';
+        if (t < 10) return 'pulse';
+        if (t < 18) return 'intelligence';
+        if (t < 28) return 'worlds';
+        if (t < 40) return 'mythology';
+        return 'destiny';
+      }
+
+      function drawPulse(t) {
+        const pulsePhase = (t - 5) / 5;
+        const pulse = Math.exp(-pulsePhase * 2) * (0.4 + 0.3 * Math.sin(t * 2));
+        const gradient = ctx.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, width * 0.6);
+        gradient.addColorStop(0, `rgba(212, 168, 75, ${pulse * 0.25})`);
+        gradient.addColorStop(0.4, `rgba(212, 168, 75, ${pulse * 0.08})`);
+        gradient.addColorStop(1, 'transparent');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      function drawParticles(t, phase) {
+        const intensity = phase === 'darkness' ? 0 : phase === 'pulse' ? (t - 5) / 5 * 0.5 : phase === 'intelligence' ? 0.7 : phase === 'worlds' ? 0.9 : phase === 'mythology' ? 1 : 0.95;
+        particles.forEach((p, i) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > width) p.vx *= -1;
+          if (p.y < 0 || p.y > height) p.vy *= -1;
+          const breathe = 0.5 + 0.5 * Math.sin(t * 0.8 + p.phase);
+          const a = p.targetAlpha * intensity * breathe;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          const mix = phase === 'mythology' || phase === 'destiny' ? 0.7 : 0.3;
+          ctx.fillStyle = `rgba(${amber.r * mix + white.r * (1 - mix)}, ${amber.g * mix + white.g * (1 - mix)}, ${amber.b * mix + white.b * (1 - mix)}, ${a})`;
+          ctx.fill();
+        });
+      }
+
+      function drawWorldMap(t, phase) {
+        if (phase !== 'worlds' && phase !== 'mythology' && phase !== 'destiny') return;
+        const progress = phase === 'worlds' ? (t - 18) / 10 : phase === 'mythology' ? 0.8 + (t - 28) / 12 * 0.2 : 1;
+        ctx.save();
+        const cx = width / 2, cy = height / 2;
+        const r = Math.min(width, height) * 0.38 * progress;
+
+        ctx.globalAlpha = Math.min(1, progress) * 0.2;
+        ctx.strokeStyle = 'rgba(212, 168, 75, 0.35)';
+        ctx.lineWidth = 0.6;
+        for (let i = 0; i < 16; i++) {
+          const a = (i / 16) * Math.PI * 2 + t * 0.015;
+          const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+        }
+        ctx.beginPath();
+        ctx.arc(cx, cy, r * 0.25, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.stroke();
+
+        const nodes = 8;
+        for (let i = 0; i < nodes; i++) {
+          const a = (i / nodes) * Math.PI * 2 + t * 0.03;
+          const x = cx + Math.cos(a) * r * 0.7, y = cy + Math.sin(a) * r * 0.7;
+          ctx.globalAlpha = 0.4 + 0.3 * Math.sin(t + i);
+          ctx.fillStyle = 'rgba(212, 168, 75, 0.6)';
+          ctx.beginPath();
+          ctx.arc(x, y, 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
+      function drawCivilizationNodes(t, phase) {
+        if (phase !== 'intelligence' && phase !== 'worlds' && phase !== 'mythology') return;
+        const cx = width / 2, cy = height / 2;
+        const baseR = Math.min(width, height) * 0.2;
+        ctx.save();
+        const alpha = phase === 'intelligence' ? (t - 10) / 8 * 0.25 : 0.25;
+        ctx.globalAlpha = alpha;
+        for (let ring = 1; ring <= 3; ring++) {
+          const count = ring * 4;
+          for (let i = 0; i < count; i++) {
+            const a = (i / count) * Math.PI * 2 + t * 0.05 + ring * 0.5;
+            const x = cx + Math.cos(a) * baseR * ring, y = cy + Math.sin(a) * baseR * ring;
+            const pulse = 0.5 + 0.5 * Math.sin(t * 1.5 + i);
+            ctx.fillStyle = `rgba(255, 220, 150, ${pulse * 0.4})`;
+            ctx.beginPath();
+            ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        ctx.restore();
+      }
+
+      function drawSeedGlow(t, phase) {
+        if (phase !== 'mythology' && phase !== 'destiny') return;
+        const cx = width / 2, cy = height / 2;
+        const pulse = 0.35 + 0.25 * Math.sin(t * 1.2);
+        const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(width, height) * 0.5);
+        gradient.addColorStop(0, `rgba(212, 168, 75, ${pulse * 0.6})`);
+        gradient.addColorStop(0.3, `rgba(212, 168, 75, ${pulse * 0.2})`);
+        gradient.addColorStop(0.7, `rgba(212, 168, 75, ${pulse * 0.05})`);
+        gradient.addColorStop(1, 'transparent');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.save();
+        ctx.globalAlpha = 0.6 + 0.2 * Math.sin(t * 0.8);
+        ctx.strokeStyle = 'rgba(212, 168, 75, 0.5)';
+        ctx.lineWidth = 1;
+        const r = 25 + 5 * Math.sin(t * 0.5);
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const a = (i / 6) * Math.PI * 2 - Math.PI / 6;
+          const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function render(t) {
+        const elapsed = (performance.now() - startTime) / 1000;
+        if (elapsed > DURATION) {
+          cancelAnimationFrame(animationId);
+          document.getElementById('replay').classList.add('visible');
+          return;
+        }
+
+        ctx.fillStyle = '#030303';
+        ctx.fillRect(0, 0, width, height);
+
+        const phase = getPhase(elapsed);
+
+        if (elapsed < 5) {
+          const darkPulse = 0.02 + 0.02 * Math.sin(elapsed * 3);
+          ctx.fillStyle = `rgba(212, 168, 75, ${darkPulse})`;
+          ctx.fillRect(0, 0, width, height);
+        } else {
+          drawPulse(elapsed);
+          drawSeedGlow(elapsed, phase);
+          drawCivilizationNodes(elapsed, phase);
+          drawWorldMap(elapsed, phase);
+          drawParticles(elapsed, phase);
+        }
+
+        document.getElementById('progress').style.width = (elapsed / DURATION * 100) + '%';
+        quotes.forEach(({ id, start, end }) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const visible = elapsed >= start && elapsed <= end;
+          el.classList.toggle('visible', visible);
+        });
+
+        animationId = requestAnimationFrame(render);
+      }
+
+      function start() {
+        startTime = performance.now();
+        document.getElementById('progress').style.width = '0%';
+        resize();
+        initParticles();
+        render(0);
+      }
+
+      window.addEventListener('resize', () => { resize(); });
+      document.getElementById('replay').addEventListener('click', () => {
+        document.getElementById('replay').classList.remove('visible');
+        document.querySelectorAll('.quote, .cta, .logo-aw').forEach(el => el.classList.remove('visible'));
+        start();
+      });
+      start();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+========================================
+  DOBACKSOFT - INSTRUCCIONES RÁPIDAS
+========================================
+
+Modo DESARROLLO (sin Docker completo): usar .\iniciar.ps1 en la raíz.
+  Ver docs\INFRAESTRUCTURA\INSTALACION-LOCAL-DOCKER.md para Dev con DB+Redis en Docker.
+
+REQUISITO (modo comercial): Tener instalado Docker Desktop (Windows).
+  Si no lo tienes: https://www.docker.com/products/docker-desktop/
+  Debe estar ABIERTO y en ejecución antes de usar los scripts.
+
+----------------------------------------
+PRIMERA VEZ (o si quieres restaurar datos de demo)
+----------------------------------------
+1. Descomprime esta carpeta en un sitio corto, por ejemplo:
+   C:\DobackSoft   o   Escritorio\DobackSoft
+
+2. Comprueba que en la raíz de la carpeta existe el archivo .env
+   (si no está, nada funcionará; pide al que te lo envió que lo incluya)
+
+3. Doble clic en: INICIAR_DOBACKSOFT_COMERCIAL.bat
+
+4. Espera (la primera vez puede tardar varios minutos en restaurar la base de datos y construir).
+
+5. Se abrirá el navegador en http://localhost:5174
+
+----------------------------------------
+DÍAS SIGUIENTES (solo volver a levantar)
+----------------------------------------
+Si ya usaste el programa antes y solo cerraste los contenedores:
+
+  Doble clic en: LEVANTAR_DOBACKSOFT.bat
+
+Es mucho más rápido (no restaura ni construye).
+
+----------------------------------------
+SI ALGO FALLA
+----------------------------------------
+- "Docker no está en ejecución" → Abre Docker Desktop y espera a que arranque. Vuelve a ejecutar el .bat.
+- "No se encontró .env" → El archivo .env debe estar en la raíz de esta carpeta. Pide al remitente que lo incluya en el ZIP.
+- La ventana se cierra sin mensaje → Abre PowerShell, ve a esta carpeta (cd ruta\a\DobackSoft) y ejecuta: .\INICIAR_DOBACKSOFT_COMERCIAL.ps1   para ver el mensaje de error.
+- Puertos en uso → Cierra cualquier programa que use los puertos 5174, 9998, 5433 o 6379.
+
+========================================

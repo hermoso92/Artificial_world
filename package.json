@@ -1,0 +1,21 @@
+{
+  "name": "artificial-world",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "guardrails:scan": "node scripts/guardrails/run-guardrails.js",
+    "guardrails:console-logs": "node scripts/guardrails/scan-console-logs.js",
+    "guardrails:hardcoded-urls": "node scripts/guardrails/scan-hardcoded-urls.js",
+    "test:e2e": "node scripts/test-e2e-autonomous.js",
+    "screenshots": "node scripts/capture-screenshots.js",
+    "portfolio:self": "node scripts/generar-portfolio-externo.js --self",
+    "portfolio:repo": "node scripts/generar-portfolio-externo.js --repo",
+    "portfolio:github": "node scripts/generar-portfolio-externo.js --github",
+    "paper:pdf": "node scripts/generar-pdf-paper-final.js",
+    "pdf:compacto": "node scripts/generar-pdf-compacto-unico.js",
+    "pdf:auditoria": "node scripts/generar-pdf-auditoria-independiente.js"
+  },
+  "devDependencies": {
+    "puppeteer": "^24.38.0"
+  }
+}

@@ -2,7 +2,6 @@
 
 import random
 
-from agentes.pesos_utilidad import obtener_utilidad_base
 from tipos.enums import ResultadoAccion, TipoAccion
 from tipos.modelos import Posicion
 
@@ -45,6 +44,7 @@ class AccionExplorar(AccionBase):
         return len(contexto.mapa.obtener_vecinos(entidad.posicion)) > 0
 
     def calcular_utilidad_base(self, entidad, contexto) -> float:
+        from agentes.pesos_utilidad import obtener_utilidad_base
         return obtener_utilidad_base("explorar")
 
     def ejecutar(self, entidad, contexto) -> ResultadoAccion:

@@ -1,0 +1,29 @@
+.mission-shell {
+  background:
+    radial-gradient(circle at top right, rgba(34, 211, 238, 0.1), transparent 24%),
+    radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.08), transparent 20%),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.96), rgba(2, 6, 23, 1));
+}
+
+.mission-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(34, 211, 238, 0.32) rgba(255, 255, 255, 0.04);
+}
+
+.mission-scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.mission-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.mission-scroll::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.5), rgba(59, 130, 246, 0.22));
+}
+
+.mission-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.7), rgba(59, 130, 246, 0.38));
+}

@@ -90,6 +90,8 @@ class PanelControl:
             return self._procesar_click_ordenes(x, y, y_base, entidades, tick)
         if self.estado.pestana_actual == PestanaPanel.SOMBRA:
             return self.panel_sombra.procesar_click((x, y), tick, entidades, mapa)
+        if self.estado.pestana_actual == PestanaPanel.CONTROL_TOTAL:
+            return self._procesar_click_control_total(x, y, y_base, entidades, tick)
         if self.estado.pestana_actual == PestanaPanel.ENTIDADES:
             return self._procesar_click_entidades(x, y, y_base, entidades)
         if self.estado.pestana_actual == PestanaPanel.EVENTOS:
@@ -230,6 +232,102 @@ class PanelControl:
             by += 42
         return None
 
+    def _procesar_click_control_total(self, x: int, y: int, y_base: int, entidades: list, tick: int) -> dict | None:
+        """Modo Control Total: gestionar a CUALQUIER agente."""
+        bx = self.x0 + self.MARGEN
+        w = self.ancho - 2 * self.MARGEN
+
+        by = y_base + 22 + 18
+
+        id_sel = self.estado.entidad_seleccionada_id
+        ent_sel = next((e for e in entidades if e.id_entidad == id_sel), None) if id_sel else None
+
+        if ent_sel:
+            # Boton "Cambiar agente" (deseleccionar)
+            r_desel = pygame.Rect(bx, by, w, 20)
+            if r_desel.collidepoint(x, y):
+                return {"tipo": "deseleccionar"}
+            by += 24
+
+            r_ctrl = pygame.Rect(bx, by, w, self.ALTURA_BOTON + 6)
+            if r_ctrl.collidepoint(x, y):
+                return {"tipo": "toggle_control_total", "id_entidad": id_sel}
+            by += self.ALTURA_BOTON + 6 + self.ESPACIO + 6
+
+            if ent_sel and getattr(ent_sel, "control_total", False):
+                by += self.ALTURA_BOTON  # hint text line
+
+        by += 16
+        for ent in entidades:
+            r = pygame.Rect(bx, by, w, 32)
+            if r.collidepoint(x, y):
+                return {"tipo": "seleccionar", "id_entidad": ent.id_entidad}
+            by += 36
+        return None
+
+    def _dibujar_control_total(self, pantalla, fuente, fuente_tit, y, entidades, tick_actual) -> None:
+        """Panel Modo Control Total: gestionar a CUALQUIER agente."""
+        x0 = self.x0 + self.MARGEN
+        ancho = self.ancho - 2 * self.MARGEN
+
+        tit = fuente_tit.render("CONTROL TOTAL — Gestionar cualquier agente", True, (100, 180, 255))
+        pantalla.blit(tit, (x0, y))
+        y += 22
+
+        txt_desc = fuente.render("Selecciona un agente y toma control. WASD=mover, Espacio=esperar.", True, self.color_texto_sec)
+        pantalla.blit(txt_desc, (x0, y))
+        y += 18
+
+        id_sel = self.estado.entidad_seleccionada_id
+        ent_sel = next((e for e in entidades if e.id_entidad == id_sel), None) if id_sel else None
+
+        if ent_sel:
+            # Boton para cambiar de agente
+            nombre_ent = getattr(ent_sel, "nombre", f"E{ent_sel.id_entidad}")
+            r_desel = (x0, y, ancho, 20)
+            pygame.draw.rect(pantalla, (60, 50, 70), r_desel)
+            pygame.draw.rect(pantalla, (120, 100, 140), r_desel, 1)
+            t_desel = fuente.render(f"\u25c4 Cambiar agente (ahora: {nombre_ent})", True, (200, 180, 220))
+            pantalla.blit(t_desel, (x0 + 4, y + 3))
+            y += 24
+
+            en_ctrl = getattr(ent_sel, "control_total", False)
+            color_btn = (200, 80, 20) if en_ctrl else (40, 100, 180)
+            borde_btn = (255, 140, 40) if en_ctrl else (80, 160, 220)
+            pygame.draw.rect(pantalla, color_btn, (x0, y, ancho, self.ALTURA_BOTON + 6))
+            pygame.draw.rect(pantalla, borde_btn, (x0, y, ancho, self.ALTURA_BOTON + 6), 2)
+            lbl = ">> LIBERAR (volver a IA) <<" if en_ctrl else ">> TOMAR CONTROL TOTAL <<"
+            txt_btn = fuente_tit.render(lbl, True, (255, 255, 200) if en_ctrl else (200, 220, 255))
+            pantalla.blit(txt_btn, (x0 + 6, y + 5))
+            if en_ctrl:
+                hint = fuente.render("WASD/flechas=mover  P=pausa  N=paso  Click mapa=destino", True, (255, 200, 100))
+                pantalla.blit(hint, (x0 + 4, y + 20))
+            y += self.ALTURA_BOTON + 6 + self.ESPACIO + 6
+
+        # Lista de agentes
+        txt_lista = fuente.render("Agentes (clic para seleccionar):", True, self.color_texto_sec)
+        pantalla.blit(txt_lista, (x0, y))
+        y += 16
+
+        for ent in entidades:
+            sel = ent.id_entidad == id_sel
+            en_ctrl = getattr(ent, "control_total", False)
+            color_fondo = (55, 75, 65) if sel else (40, 46, 54)
+            if en_ctrl:
+                color_fondo = (80, 50, 30)
+            rect = (x0, y, ancho, 32)
+            pygame.draw.rect(pantalla, color_fondo, rect)
+            pygame.draw.rect(pantalla, (60, 68, 78), rect, 1)
+            nombre = getattr(ent, "nombre", f"E{ent.id_entidad}")
+            prefijo = "[TÚ] " if en_ctrl else ""
+            acc = ent.estado_interno.accion_actual
+            acc_str = acc.value if acc else "-"
+            txt1 = fuente.render(f"{prefijo}{nombre}", True, ent.color if not sel else (255, 255, 255))
+            pantalla.blit(txt1, (x0 + 8, y + 4))
+            txt2 = fuente.render(f"{acc_str}", True, self.color_texto_sec)
+            pantalla.blit(txt2, (x0 + 8, y + 16))
+            y += 36
+
     def _procesar_click_archivo(self, x: int, y: int, y_base: int, tick: int) -> dict | None:
         bx = self.x0 + self.MARGEN
         by = y_base + self.OFFSET_TITULO
@@ -277,6 +375,8 @@ class PanelControl:
                 color = (140, 50, 50) if not activa else (180, 70, 70)
             elif p == PestanaPanel.SOMBRA and self.estado.modo_sombra:
                 color = (140, 80, 30) if not activa else (200, 120, 50)
+            elif p == PestanaPanel.CONTROL_TOTAL:
+                color = (60, 90, 140) if not activa else (100, 140, 220)
             else:
                 color = self.color_pestana_activa if activa else self.color_pestana_inactiva
             pygame.draw.rect(pantalla, color, (rx, 0, pestana_w, self.ALTURA_PESTANA))
@@ -289,7 +389,10 @@ class PanelControl:
                 "watchdog": "Alertas",
                 "archivo": "Archivo",
             }
-            lbl = _ETIQUETAS_PESTANA.get(p.value, p.value[:4].upper())
+            if p == PestanaPanel.CONTROL_TOTAL:
+                lbl = "CTRL"
+            else:
+                lbl = _ETIQUETAS_PESTANA.get(p.value, p.value[:4].upper())
             txt = fuente.render(lbl, True, self.color_texto)
             pantalla.blit(txt, (rx + pestana_w // 2 - txt.get_width() // 2, 7))
             if i > 0:
@@ -303,6 +406,8 @@ class PanelControl:
             self._dibujar_ordenes(pantalla, fuente, fuente_tit, y, entidades)
         elif self.estado.pestana_actual == PestanaPanel.SOMBRA:
             self.panel_sombra.dibujar(pantalla, entidades, tick_actual, self.gestor_sombra)
+        elif self.estado.pestana_actual == PestanaPanel.CONTROL_TOTAL:
+            self._dibujar_control_total(pantalla, fuente, fuente_tit, y, entidades, tick_actual)
         elif self.estado.pestana_actual == PestanaPanel.ENTIDADES:
             self._dibujar_entidades(pantalla, fuente, fuente_tit, y, entidades, mapa)
         elif self.estado.pestana_actual == PestanaPanel.EVENTOS:

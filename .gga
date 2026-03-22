@@ -1,0 +1,18 @@
+# Gentleman Guardian Angel - Config
+# Proveedor: Ollama (local, gratuito)
+PROVIDER="ollama:qwen2.5-coder:7b"
+
+# Archivos a revisar
+FILE_PATTERNS="*.js,*.jsx,*.ts,*.tsx,*.py"
+
+# Archivos excluidos de review
+EXCLUDE_PATTERNS="*.test.js,*.test.jsx,*.test.ts,*.test.tsx,*.spec.*,*.min.js,dist/*,build/*,node_modules/*,*.log,simulacion.log,audit_competencia.db,mundo_artificial.db"
+
+# Archivo con las reglas del proyecto
+RULES_FILE="AGENTS.md"
+
+# Modo estricto: bloquea el commit si la IA responde ambiguamente
+STRICT_MODE="true"
+
+# Timeout en segundos (Ollama local puede tardar un poco)
+TIMEOUT="120"

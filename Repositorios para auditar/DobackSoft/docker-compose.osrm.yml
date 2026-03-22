@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  osrm:
+    image: osrm/osrm-backend:latest
+    container_name: dobacksoft-osrm
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./osrm-data:/data
+    command: osrm-routed --algorithm mld /data/madrid-latest.osrm
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/nearest/v1/driving/-3.692,40.419"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+

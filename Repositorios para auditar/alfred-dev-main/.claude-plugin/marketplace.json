@@ -1,0 +1,21 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "alfred-dev",
+  "description": "Tu empresa de ingeniería de software en un plugin de Claude Code",
+  "owner": {
+    "name": "686f6c61"
+  },
+  "plugins": [
+    {
+      "name": "alfred-dev",
+      "description": "Plugin de ingeniería de software completa: 15 agentes (8 de núcleo + 7 opcionales), 59 skills, memoria persistente, dashboard web en tiempo real, quality gates y compliance europeo integrado.",
+      "version": "0.3.4",
+      "source": "./",
+      "author": {
+        "name": "686f6c61"
+      },
+      "category": "development",
+      "homepage": "https://686f6c61.github.io/alfred-dev/"
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auditoría Técnica Independiente — Artificial Word</title>
+  <style>
+    @media print {
+      body { margin: 0; padding: 0; }
+      .no-print { display: none !important; }
+      a { color: #000; text-decoration: none; }
+      h1, h2, h3 { page-break-after: avoid; }
+      table { page-break-inside: avoid; }
+    }
+    @media screen {
+      .no-print { position: fixed; bottom: 20px; right: 20px; padding: 12px 24px; background: #2563eb; color: white; border-radius: 8px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+      .no-print:hover { background: #1d4ed8; }
+    }
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; color: #1e293b; max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+    h1 { font-size: 1.75rem; border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-top: 0; }
+    h2 { font-size: 1.25rem; margin-top: 2rem; color: #0f172a; }
+    h3 { font-size: 1.1rem; margin-top: 1.5rem; color: #334155; }
+    p { margin: 0.5rem 0; }
+    ul { margin: 0.5rem 0; padding-left: 1.5rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    th, td { border: 1px solid #cbd5e1; padding: 8px 12px; text-align: left; }
+    th { background: #f1f5f9; font-weight: 600; }
+    hr { border: none; border-top: 1px solid #e2e8f0; margin: 2rem 0; }
+    .meta { color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .verdict { background: #dcfce7; border: 1px solid #22c55e; padding: 1rem 1.5rem; border-radius: 8px; font-weight: 600; margin: 1.5rem 0; }
+    .footer { margin-top: 2rem; font-size: 0.85rem; color: #64748b; }
+  </style>
+</head>
+<body>
+  <button class="no-print" onclick="window.print()">Guardar como PDF</button>
+
+  <h1>Auditoría Técnica Independiente — Proyecto Artificial Word</h1>
+  <p class="meta"><strong>Fecha:</strong> 9 de marzo de 2026<br>
+  <strong>Alcance:</strong> Repositorio completo (auditoría desde cero, sin depender de documentos previos)<br>
+  <strong>Metodología:</strong> Inspección directa del código, análisis de estructura y verificación cruzada</p>
+
+  <hr>
+
+  <h2>Resumen Ejecutivo</h2>
+  <p><strong>Artificial Word</strong> es un proyecto multicomponente: un motor de simulación Python (pygame), una demo web Node/React, y varios subproyectos. El motor Python es el componente principal y está bien probado. La pila web es una demo separada con su propio motor de simulación en JavaScript. La documentación es extensa pero fragmentada, con algunas inconsistencias.</p>
+  <p><strong>Veredicto:</strong> El proyecto es técnicamente sólido y el README separa claramente lo real de lo demo. Riesgos principales: estructura dual de Python (<code>nucleo</code>/<code>mundo</code> vs <code>core</code>), uso de <code>print()</code> en tests, y dispersión documental.</p>
+
+  <hr>
+
+  <h2>1. Metodología</h2>
+  <ul>
+    <li><strong>Estructura:</strong> Análisis de directorios, imports y dependencias</li>
+    <li><strong>Motor Python:</strong> Lectura de principal.py, nucleo/simulacion.py, sistemas/sistema_persistencia.py, cronica_fundacional.py, pruebas/run_tests_produccion.py</li>
+    <li><strong>Web fullstack:</strong> Lectura de backend/src/server.js, rutas, frontend/src/App.jsx, config/api.js</li>
+    <li><strong>Documentación:</strong> Revisión de docs/, índices y claims</li>
+    <li><strong>Exports:</strong> Inspección de IA-Entre-Amigos-main/ y horizons-export-*/</li>
+    <li><strong>Riesgos:</strong> Búsqueda de console.log, URLs hardcodeadas, print(), secretos y referencias rotas</li>
+  </ul>
+
+  <h2>2. Mapa de Estructura</h2>
+  <table>
+    <thead><tr><th>Área</th><th>Ruta</th><th>Contenido</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Motor Python</strong></td><td>principal.py, nucleo/, sistemas/, acciones/, agentes/, entidades/, mundo/, core/, interfaz/, tipos/, utilidades/</td><td>Motor de simulación, persistencia, UI</td></tr>
+      <tr><td><strong>Backend</strong></td><td>backend/src/</td><td>API Express, WebSocket, Mission Control, IA, HeroRefuge, DobackSoft</td></tr>
+      <tr><td><strong>Frontend</strong></td><td>frontend/src/</td><td>React + Vite, Hub, SimulationView, MissionControl, DobackSoft, FireSimulator</td></tr>
+      <tr><td><strong>Docs</strong></td><td>docs/</td><td>129+ archivos MD, papers, prompts</td></tr>
+      <tr><td><strong>Subproyecto: IA-Entre-Amigos</strong></td><td>IA-Entre-Amigos-main/</td><td>Presentación Astro (33 slides sobre IA)</td></tr>
+      <tr><td><strong>Subproyecto: horizons-export</strong></td><td>horizons-export-*/</td><td>Export Vite React (estructura de app distinta)</td></tr>
+      <tr><td><strong>Scripts</strong></td><td>scripts/, iniciar.ps1</td><td>iniciar_fullstack.ps1, iniciar.ps1</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3. Motor Python</h2>
+  <h3>3.1 Puntos de entrada</h3>
+  <table>
+    <thead><tr><th>Archivo</th><th>Propósito</th></tr></thead>
+    <tbody>
+      <tr><td>principal.py</td><td>Entrada principal; --web abre landing, --cronica ejecuta crónica headless</td></tr>
+      <tr><td>cronica_fundacional.py</td><td>Ejecución headless independiente; --seed, --ticks, --founder, --refuge</td></tr>
+    </tbody>
+  </table>
+  <h3>3.2 Módulos principales</h3>
+  <ul>
+    <li><strong>nucleo/:</strong> simulacion.py (orquestador), gestor_ticks.py, bus_eventos.py, contexto.py, constantes.py</li>
+    <li><strong>sistemas/:</strong> sistema_persistencia.py (SQLite + JSON), gestor_modo_sombra.py, sistema_watchdog.py, sistema_regeneracion.py, sistema_metricas.py, sistema_logs.py, sistema_modo_competencia.py, cronica_fundacional.py</li>
+    <li><strong>mundo/:</strong> Usa core/world/</li>
+    <li><strong>core/:</strong> world/, shelter/, entity/, simulation/ — implementación de bajo nivel</li>
+  </ul>
+  <h3>3.3 Persistencia</h3>
+  <p>sistemas/sistema_persistencia.py: SQLite mundo_artificial.db, backup JSON, guardado automático cada N ticks. Tablas: estado (id, tick, datos, actualizado_at)</p>
+  <h3>3.4 Tests</h3>
+  <p><strong>Runner:</strong> pruebas/run_tests_produccion.py — 11 suites. Entorno: SDL_VIDEODRIVER=dummy, SDL_AUDIODRIVER=dummy para headless.</p>
+  <h3>3.5 Veredicto</h3>
+  <p><strong>Ejecutable:</strong> Sí. <strong>Tests:</strong> 11 suites definidos. <strong>Estructura dual:</strong> nucleo/mundo vs core — redundante pero consistente.</p>
+
+  <h2>4. Web Fullstack</h2>
+  <h3>4.1 Backend (Node.js Express)</h3>
+  <p><strong>Puerto:</strong> 3001. <strong>Rutas:</strong> /api (simulación), /api/ai, /api/hero, /api/dobacksoft, /api/subscription, /api/admin, /api/chess, /api/mission-control, /api/approvals, /api/boards, /api/gateways. <strong>WebSocket:</strong> /ws. <strong>Simulación:</strong> backend/src/simulation/engine.js — motor JS, no Python.</p>
+  <h3>4.2 Frontend (React + Vite)</h3>
+  <p><strong>Puerto:</strong> 5173. <strong>Enrutamiento:</strong> Hash (#hub, #simulation, #missioncontrol, etc.). Vistas: LandingPublic, Landing, Hub, SimulationView, MinigamesLobby, DobackSoft, FireSimulator, MysticQuestView, MissionControl, AdminPanel, Docs.</p>
+  <h3>4.3 Qué funciona</h3>
+  <table>
+    <thead><tr><th>Componente</th><th>Estado</th><th>Notas</th></tr></thead>
+    <tbody>
+      <tr><td>Hub</td><td>Funcional</td><td>Secciones, pilares, navegación</td></tr>
+      <tr><td>SimulationView</td><td>Funcional</td><td>Usa motor JS del backend, WebSocket</td></tr>
+      <tr><td>Mission Control</td><td>Funcional</td><td>Runtime seeded, boards, approvals, gateways</td></tr>
+      <tr><td>HeroRefuge</td><td>Funcional</td><td>Persistencia SQLite, scoping por playerId</td></tr>
+      <tr><td>DobackSoft</td><td>Demo</td><td>sessionsStore en memoria, MOCK_ROUTE</td></tr>
+      <tr><td>FireSimulator</td><td>Demo</td><td>Reproduce datos del visor; sin telemetría real</td></tr>
+    </tbody>
+  </table>
+  <h3>4.5 Veredicto</h3>
+  <p>La pila web es una demo separada con su propio motor de simulación JS. README y docs/MODOS_EJECUCION.md indican correctamente que la web no es el motor Python.</p>
+
+  <h2>5. Documentación</h2>
+  <p>129+ archivos MD en docs/. Varios documentos "definitivos" pueden generar confusión. Referencias rotas (ej. ARTIFICIAL_WORLD_COMPLETO.pdf). README y MODOS_EJECUCION.md están alineados.</p>
+
+  <h2>6. Exports</h2>
+  <p><strong>IA-Entre-Amigos-main:</strong> Astro 5.17.1, 33 slides sobre IA. Presentación independiente. <strong>horizons-export:</strong> Vite 7.3.1, React 18.3.1. Export separado de sitio marketing/landing.</p>
+
+  <h2>7. Matriz de Riesgos</h2>
+  <table>
+    <thead><tr><th>Riesgo</th><th>Severidad</th><th>Probabilidad</th><th>Mitigación</th></tr></thead>
+    <tbody>
+      <tr><td>Sobreventa (web = motor Python)</td><td>Alta</td><td>Baja</td><td>README y docs ya lo aclaran</td></tr>
+      <tr><td>Estructura dual Python (nucleo/core)</td><td>Media</td><td>N/A</td><td>Refactorizar o documentar</td></tr>
+      <tr><td>print() en tests Python</td><td>Baja</td><td>Alta</td><td>AGENTS.md prefiere logger</td></tr>
+      <tr><td>Desajuste env cupón</td><td>Baja</td><td>Media</td><td>Alinear .env.example</td></tr>
+      <tr><td>Enlaces rotos en docs</td><td>Baja</td><td>Media</td><td>Auditar y corregir</td></tr>
+      <tr><td>Dispersión documental</td><td>Media</td><td>Alta</td><td>Consolidar docs definitivos</td></tr>
+      <tr><td>DobackSoft mock como real</td><td>Media</td><td>Baja</td><td>Etiquetas UI coherentes</td></tr>
+    </tbody>
+  </table>
+
+  <h2>8. Recomendaciones</h2>
+  <ol>
+    <li><strong>Python:</strong> Sustituir print() en código no-test por logging.</li>
+    <li><strong>Documentación:</strong> Elegir un único documento definitivo; corregir enlaces rotos.</li>
+    <li><strong>Config cupón:</strong> Alinear .env.example con DOBACKSOFT_COUPON_CODE.</li>
+    <li><strong>Estructura:</strong> Añadir nota de arquitectura nucleo/mundo vs core.</li>
+    <li><strong>Exports:</strong> Añadir README en horizons-export e IA-Entre-Amigos-main.</li>
+  </ol>
+
+  <h2>9. Veredicto Final</h2>
+  <div class="verdict">ESTADO: APROBADO (con observaciones)</div>
+  <p>El proyecto es técnicamente coherente. El motor Python es el componente principal y está bien probado. La pila web se describe correctamente como demo. No se encontraron problemas críticos de seguridad. Principales seguimientos: consolidación documental y limpiezas menores.</p>
+
+  <hr>
+  <p class="footer">Auditoría realizada de forma independiente. Sin dependencia de DOCUMENTO_UNIFICADO_AW.md ni documentos de auditoría previos. Fecha: 9 de marzo de 2026.</p>
+</body>
+</html>

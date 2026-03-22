@@ -1,0 +1,39 @@
+<!doctype html>
+<!--
+  X - Cliente no oficial de X (Twitter) para macOS
+  Copyright © 2024 686f6c61
+
+  Author: 686f6c61 (https://github.com/686f6c61)
+  Repository: https://github.com/686f6c61/Xcom-mac-silicon
+
+  Main page - Fallback local para assets y soporte
+-->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>X - Cliente no oficial</title>
+    <script type="module" src="/main.js" defer></script>
+  </head>
+  <body>
+    <main id="app" class="shell">
+      <section class="shell-card">
+        <p class="eyebrow">X para macOS</p>
+        <h1>Shell local de respaldo</h1>
+        <p>
+          La aplicación principal carga <strong>X.com</strong> directamente en el
+          WebView nativo. Esta página local solo se mantiene como fallback y
+          para alojar assets internos.
+        </p>
+      </section>
+    </main>
+
+    <dialog id="helpDialog" class="dialog">
+      <div class="dialog-content">
+        <button class="close-btn" id="closeHelp">×</button>
+        <iframe src="/help.html" frameborder="0" class="help-frame"></iframe>
+      </div>
+    </dialog>
+  </body>
+</html>

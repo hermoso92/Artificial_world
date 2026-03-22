@@ -33,26 +33,26 @@ if TYPE_CHECKING:
 
 
 # ──────────────────────────────────────────────
-# Colores
+# Colores (coherentes con tema Ecosistema Viviente)
 # ──────────────────────────────────────────────
-COLOR_FONDO        = (28, 30, 38)
-COLOR_TITULO       = (200, 200, 210)
-COLOR_SUBTITULO    = (120, 140, 180)
-COLOR_TEXTO        = (190, 190, 200)
-COLOR_TEXTO_SEC    = (130, 135, 145)
-COLOR_AUTONOMO     = (80, 180, 80)
-COLOR_DIRIGIDO     = (80, 160, 220)
-COLOR_POSEIDO      = (220, 100, 40)
-COLOR_BTN_DIRECTIVA = (60, 100, 160)
-COLOR_BTN_COMANDO  = (140, 50, 40)
-COLOR_BTN_CANCELAR = (80, 40, 40)
-COLOR_BTN_HOVER    = (100, 120, 160)
-COLOR_SELECCION    = (90, 160, 110)
-COLOR_BORDE        = (70, 74, 82)
-COLOR_BARRA_BUENA  = (80, 180, 80)
-COLOR_BARRA_MALA   = (200, 80, 60)
-COLOR_BARRA_MEDIA  = (200, 160, 60)
-COLOR_SOMBRA_ACTIVA = (200, 80, 20)
+COLOR_FONDO        = (30, 35, 42)
+COLOR_TITULO       = (232, 237, 244)
+COLOR_SUBTITULO    = (138, 153, 168)
+COLOR_TEXTO        = (210, 215, 225)
+COLOR_TEXTO_SEC    = (130, 140, 155)
+COLOR_AUTONOMO     = (107, 198, 126)
+COLOR_DIRIGIDO     = (90, 159, 212)
+COLOR_POSEIDO      = (232, 140, 60)
+COLOR_BTN_DIRECTIVA = (55, 100, 145)
+COLOR_BTN_COMANDO  = (160, 70, 55)
+COLOR_BTN_CANCELAR = (70, 45, 45)
+COLOR_BTN_HOVER    = (75, 95, 130)
+COLOR_SELECCION    = (70, 140, 95)
+COLOR_BORDE        = (55, 62, 72)
+COLOR_BARRA_BUENA  = (107, 198, 126)
+COLOR_BARRA_MALA   = (224, 122, 90)
+COLOR_BARRA_MEDIA  = (232, 180, 90)
+COLOR_SOMBRA_ACTIVA = (232, 140, 60)
 
 
 # ──────────────────────────────────────────────
@@ -100,11 +100,15 @@ class PanelModoSombra:
         self.ancho = ancho
         self.alto  = alto
         self.estado = estado
+        self.configuracion = configuracion
 
         # Rects de botones registrados en cada draw (para hit-test)
         self._rects_directivas: dict[str, pygame.Rect] = {}
         self._rects_comandos:   dict[str, pygame.Rect] = {}
+        self._rects_entidades: list[tuple[int, pygame.Rect]] = []
+        self._rect_deseleccionar: pygame.Rect | None = None
         self._rect_control_total: pygame.Rect | None = None
+        self._rect_modo_combate:  pygame.Rect | None = None
         self._rect_desactivar:    pygame.Rect | None = None
         self._rect_coord_input:   pygame.Rect | None = None
         self._rect_coord_confirm: pygame.Rect | None = None
@@ -131,6 +135,8 @@ class PanelModoSombra:
         """Dibuja el panel completo."""
         self._rects_directivas.clear()
         self._rects_comandos.clear()
+        self._rects_entidades.clear()
+        self._rect_deseleccionar = None
         self._rect_control_total = None
         self._rect_desactivar = None
 
@@ -156,12 +162,13 @@ class PanelModoSombra:
         ent = next((e for e in entidades if e.id_entidad == id_sel), None) if id_sel else None
 
         if ent is None:
-            # Sin entidad seleccionada
+            # Sin entidad seleccionada — mostrar lista de agentes
             txt2 = f_norm.render("Selecciona una entidad:", True, COLOR_TEXTO_SEC)
             pantalla.blit(txt2, (self.x0 + self.MARGEN, y))
             y += 18
             for e in entidades:
                 r = pygame.Rect(self.x0 + self.MARGEN, y, self.ancho - 2*self.MARGEN, 26)
+                self._rects_entidades.append((e.id_entidad, r))
                 pygame.draw.rect(pantalla, (50, 80, 120), r)
                 pygame.draw.rect(pantalla, (80, 120, 160), r, 1)
                 nombre = getattr(e, "nombre", f"E{e.id_entidad}")
@@ -169,6 +176,16 @@ class PanelModoSombra:
                 pantalla.blit(t, (self.x0 + self.MARGEN + 4, y + 4))
                 y += 30
             return
+
+        # Boton para cambiar de agente (deseleccionar actual)
+        r_desel = pygame.Rect(self.x0 + self.MARGEN, y, self.ancho - 2*self.MARGEN, 20)
+        self._rect_deseleccionar = r_desel
+        pygame.draw.rect(pantalla, (60, 50, 70), r_desel)
+        pygame.draw.rect(pantalla, (120, 100, 140), r_desel, 1)
+        nombre_ent = getattr(ent, "nombre", f"E{ent.id_entidad}")
+        t_desel = f_norm.render(f"◄ Cambiar agente (ahora: {nombre_ent})", True, (200, 180, 220))
+        pantalla.blit(t_desel, (self.x0 + self.MARGEN + 4, y + 3))
+        y += 24
 
         # ── BLOQUE 1: OBSERVAR ──────────────────────────────────────────
         y = self._dibujar_bloque_observar(pantalla, f_bold, f_norm, f_sm, y, ent, tick_actual, gestor_sombra)
@@ -372,6 +389,19 @@ class PanelModoSombra:
         pantalla.blit(t, (x0 + 5, y + 5))
         y += self.ALTURA_BTN + 4 + self.ESPACIO + 2
 
+        # Toggle Modo combate (permite atacar/eliminar entidades)
+        if self.configuracion and y + self.ALTURA_BTN + 2 < self.alto - 5:
+            modo_combate = getattr(self.configuracion, "modo_combate_activo", False)
+            color_cb = (180, 60, 50) if modo_combate else (50, 55, 65)
+            r_cb = pygame.Rect(x0, y, w, self.ALTURA_BTN)
+            self._rect_modo_combate = r_cb
+            pygame.draw.rect(pantalla, color_cb, r_cb)
+            pygame.draw.rect(pantalla, (120, 80, 70) if modo_combate else COLOR_BORDE, r_cb, 1)
+            lbl = "Modo combate: ON (atacar/matar)" if modo_combate else "Modo combate: OFF [activar]"
+            t_cb = f_norm.render(lbl, True, (255, 200, 180) if modo_combate else COLOR_TEXTO_SEC)
+            pantalla.blit(t_cb, (x0 + 5, y + 4))
+            y += self.ALTURA_BTN + self.ESPACIO
+
         # Campo de entrada de posición (si hay comando pendiente que la requiere)
         if self.cmd_pos_input_activo and y + self.ALTURA_BTN + 2 < self.alto - 5:
             color_in = (50, 70, 50) if self.cmd_pos_input_activo else (35, 45, 35)
@@ -407,7 +437,10 @@ class PanelModoSombra:
             y += 13
 
         # Botones de comandos forzados
+        modo_combate = getattr(self.configuracion, "modo_combate_activo", False) if self.configuracion else False
         for tipo_cmd, label, req_pos, req_ent in COMANDOS_PANEL:
+            if tipo_cmd in (TipoComandoSombra.ATACAR_OBJETIVO, TipoComandoSombra.MATAR_OBJETIVO) and not modo_combate:
+                continue  # Ocultar atacar/matar si modo combate desactivado
             if y + self.ALTURA_BTN + 2 > self.alto - 5:
                 break
             color_c = (160, 40, 30) if tipo_cmd in (
@@ -455,19 +488,23 @@ class PanelModoSombra:
 
         id_sel = self.estado.entidad_seleccionada_id
         if id_sel is None:
-            # Seleccionar entidad
-            for e in entidades:
-                r_guess = pygame.Rect(
-                    self.x0 + self.MARGEN,
-                    0, self.ancho - 2*self.MARGEN, self.alto
-                )
-                if r_guess.collidepoint(x, y):
-                    return {"tipo": "seleccionar", "id_entidad": e.id_entidad}
+            # Seleccionar entidad — usar rects trackeados del ultimo draw
+            for eid, rect in self._rects_entidades:
+                if rect.collidepoint(x, y):
+                    return {"tipo": "seleccionar", "id_entidad": eid}
             return None
+
+        # Boton "Cambiar agente" (deseleccionar)
+        if self._rect_deseleccionar and self._rect_deseleccionar.collidepoint(x, y):
+            return {"tipo": "deseleccionar"}
 
         # Toggle POSEIDO
         if self._rect_control_total and self._rect_control_total.collidepoint(x, y):
             return {"tipo": "toggle_control_total", "id_entidad": id_sel}
+
+        # Toggle Modo combate
+        if self._rect_modo_combate and self._rect_modo_combate.collidepoint(x, y):
+            return {"tipo": "toggle_modo_combate"}
 
         # Botón desactivar
         if self._rect_desactivar and self._rect_desactivar.collidepoint(x, y):

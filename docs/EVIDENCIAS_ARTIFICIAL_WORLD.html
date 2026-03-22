@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artificial World — Documento único con evidencias</title>
+  <style>
+    :root { --accent: #0088aa; --accent-light: #e0f4f8; --text: #1a1d21; --text-muted: #4a5568; --bg: #fff; --border: #e2e8f0; --radius: 8px; }
+    @media print { body { -webkit-print-color-adjust: exact; } .no-print { display: none !important; } }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; color: var(--text); line-height: 1.6; font-size: 14px; background: #f7fafc; }
+    .page { max-width: 700px; margin: 20px auto; padding: 36px 44px; background: var(--bg); border-radius: var(--radius); page-break-after: always; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .page:last-of-type { page-break-after: auto; }
+    h1 { font-size: 1.6rem; margin-bottom: 8px; color: var(--accent); border-bottom: 3px solid var(--accent); padding-bottom: 8px; }
+    h2 { font-size: 1.2rem; margin: 24px 0 12px; color: var(--text); }
+    h3 { font-size: 1rem; margin: 16px 0 8px; }
+    p, li { margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+    th { background: var(--accent-light); font-weight: 600; }
+    pre, .evidencia { background: #1e293b; color: #e2e8f0; padding: 16px; border-radius: var(--radius); overflow-x: auto; font-size: 11px; line-height: 1.5; margin: 12px 0; }
+    .evidencia-title { font-weight: 600; color: var(--accent); margin-bottom: 8px; font-size: 13px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .badge-ok { background: #dcfce7; color: #166534; }
+    .badge-demo { background: #fef3c7; color: #92400e; }
+    .badge-roadmap { background: #e0e7ff; color: #3730a3; }
+    ul { margin-left: 20px; margin-bottom: 12px; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+    .footer-note { font-size: 12px; color: var(--text-muted); margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Artificial World — Documento único con evidencias</h1>
+    <p><em>Un solo documento para entender, ejecutar, verificar y trabajar en el proyecto.</em></p>
+    <p><strong>Generado:</strong> 2026-03-08 11:23:58</p>
+
+    <h2>1. Qué es Artificial World</h2>
+    <p><strong>Artificial World</strong> es una base para crear civilizaciones vivas con memoria, héroes, refugios y comunidades. La verdad estratégica vive en 2D; la encarnación 3D es capa futura.</p>
+    <p><strong>Mensaje corto:</strong> <em>Empieza con un refugio. Elige una semilla. Mira nacer tu civilización.</em></p>
+
+    <h3>Qué existe hoy (verificado)</h3>
+    <table>
+      <tr><th>Capa</th><th>Estado</th><th>Evidencia</th></tr>
+      <tr><td>Motor Python</td><td><span class="badge badge-ok">Real</span></td><td>principal.py, 13 acciones, persistencia SQLite, Modo Sombra</td></tr>
+      <tr><td>Web fullstack</td><td><span class="badge badge-demo">Demo</span></td><td>Backend 3001, Frontend 5173, motor JS propio</td></tr>
+      <tr><td>HeroRefuge</td><td><span class="badge badge-demo">Parcial</span></td><td>Refugios jugables, semillas, mundos ligeros</td></tr>
+      <tr><td>Panel Administrador</td><td><span class="badge badge-ok">Real</span></td><td>AdminPanel.jsx, ruta #admin, modo dios</td></tr>
+      <tr><td>DobackSoft</td><td><span class="badge badge-demo">Demo</span></td><td>UI en hub; producto completo fuera del repo</td></tr>
+      <tr><td>3D</td><td><span class="badge badge-roadmap">Roadmap</span></td><td>No implementado</td></tr>
+    </table>
+
+    <h2>2. Panel Administrador</h2>
+    <p>El <strong>Panel Administrador</strong> está implementado y operativo. Acceso: <code>#admin</code> en el Hub (requiere <code>ADMIN_PLAYER_IDS</code> en .env).</p>
+    <ul>
+      <li>Reset simulación</li>
+      <li>Destruir mundos Hero</li>
+      <li>Reset DobackSoft ciudadanos</li>
+      <li>Vista de eventos de auditoría</li>
+    </ul>
+    <p><em>Ubicación:</em> frontend/src/components/AdminPanel.jsx</p>
+  </div>
+
+  <div class="page">
+    <h2>3. Evidencia — Log de tests de producción</h2>
+    <p class="evidencia-title">pruebas/reporte_produccion.log</p>
+    <pre>[2026-03-08 12:23:12] ======================================================================
+[2026-03-08 12:23:12] MUNDO_ARTIFICIAL - TESTS PRODUCCION
+[2026-03-08 12:23:12] Inicio: 2026-03-08T12:23:12.447643
+[2026-03-08 12:23:12] ======================================================================
+[2026-03-08 12:23:12] 
+--- test_estructural: Tests estructurales (imports, config, modulos) ---
+[2026-03-08 12:23:12] OK test_estructural
+[2026-03-08 12:23:12]   OK test_import_principal
+[2026-03-08 12:23:12]   OK test_import_sistemas
+[2026-03-08 12:23:12]   OK test_import_tipos
+[2026-03-08 12:23:12]   OK test_utilidades_paths
+[2026-03-08 12:23:12]   Estructurales: 13 OK, 0 FAIL
+[2026-03-08 12:23:12] 
+--- test_core: Tests nucleo (motor, directivas, watchdog) ---
+[2026-03-08 12:23:13] OK test_core
+[2026-03-08 12:23:13]     OK test_watchdog_detecta_trampa
+[2026-03-08 12:23:13]     OK test_watchdog_detecta_bucle_accion
+[2026-03-08 12:23:13]     OK test_watchdog_sin_variedad_global
+[2026-03-08 12:23:13]     OK test_watchdog_sin_alertas_variedad_normal
+[2026-03-08 12:23:13]   22/22 tests pasaron
+[2026-03-08 12:23:13] 
+--- test_cronica_fundacional: Tests cronica fundacional (headless, artefactos) ---
+[2026-03-08 12:23:15] OK test_cronica_fundacional
+[2026-03-08 12:23:15]   OK test_cronica_genera_archivos
+[2026-03-08 12:23:15]   OK test_cronica_reproducible_misma_semilla
+[2026-03-08 12:23:15]   OK test_script_cronica_ejecuta
+[2026-03-08 12:23:15]   Todas las pruebas de crónica pasaron.
+[2026-03-08 12:23:15] 
+--- test_modo_sombra_completo: Tests Modo Sombra completo ---
+[2026-03-08 12:23:15] OK test_modo_sombra_completo
+[2026-03-08 12:23:15]   OK test_trazabilidad_comando_completado: ['comando_sombra_iniciado', 'comando_sombra_completado']
+[2026-03-08 12:23:15]   OK test_trazabilidad_historial: ['COMANDO_EMITIDO', 'MODO_ACTIVADO']
+[2026-03-08 12:23:15]   OK test_legacy_control_total_wasd_sin_gestor
+[2026-03-08 12:23:15]   OK test_cola_vacia_vuelve_a_autonomo
+[2026-03-08 12:23:15]   TODOS LOS TESTS MODO SOMBRA COMPLETO: OK
+[2026-03-08 12:23:15] 
+--- test_perseguir_hasta_matar: Tests persecucion hasta matar (combate) ---
+[2026-03-08 12:23:16] OK test_perseguir_hasta_matar
+[2026-03-08 12:23:16]   OK test_atacar_adyacente_mata_en_4_golpes: 4 golpes, salud final=0.0
+[2026-03-08 12:23:16]   OK test_perseguir_hasta_matar: víctima eliminada en tick 31
+[2026-03-08 12:23:16]   TODOS OK
+[2026-03-08 12:23:16] 
+--- test_interacciones_sociales: Tests interacciones sociales ---
+[2026-03-08 12:23:16] OK test_interacciones_sociales
+[2026-03-08 12:23:16]   OK test_seguir_emite_evento: ['siguio']
+[2026-03-08 12:23:16]   OK test_seguir_adyacente_mejora_confianza: 0.00-&gt;0.07
+[2026-03-08 12:23:16]   OK test_relaciones_afectan_motor_decision_compartir: mod_relaciones sin=0.000 con=0.240
+[2026-03-08 12:23:16]   OK test_relaciones_afectan_motor_decision_huir: mod_relaciones sin=0.000 con=0.280
+[2026-03-08 12:23:16]   TODOS LOS TESTS INTERACCIONES SOCIALES: OK
+[2026-03-08 12:23:16] 
+--- test_bug_robar: Tests regresion robar ---
+[2026-03-08 12:23:17] OK test_bug_robar
+[2026-03-08 12:23:17]   OK: AccionRobar.es_viable = False cuando no hay nadie cerca con comida
+[2026-03-08 12:23:17]   OK: robar NO aparece en candidatas
+[2026-03-08 12:23:17]   OK: Clara decide 'descansar' (score=0.048)
+[2026-03-08 12:23:17]   OK: AccionRobar.es_viable = True cuando hay victima cercana con comida
+[2026-03-08 12:23:17]   TODOS LOS TESTS DEL BUG ROBAR: PASADOS
+[2026-03-08 12:23:17] 
+--- test_watchdog_fixes: Tests fixes watchdog ---
+[2026-03-08 12:23:17] OK test_watchdog_fixes
+[2026-03-08 12:23:17]     OK  FIX1 OK: hambre=1.0 + mover -&gt; HAMBRE_CRITICA_SIN_RESPUESTA generada
+[2026-03-08 12:23:17]     OK  FIX2 OK: hambre=1.0 + mover 15 ticks -&gt; HAMBRE_SIN_COMIDA_DISPONIBLE generada
+[2026-03-08 12:23:17]     OK  FIX3 OK: mover 100% sin supervivencia -&gt; SOLO_MOVIMIENTO_GLOBAL generada
+[2026-03-08 12:23:17]     OK  FIX4 OK: hambre=1.0 + comer -&gt; sin falso positivo HAMBRE_CRITICA_SIN_RESPUESTA
+[2026-03-08 12:23:17]   Resumen: 4 OK, 0 FALLOS
+[2026-03-08 12:23:17] 
+--- test_watchdog_integracion: Tests integracion watchdog ---
+[2026-03-08 12:23:17] OK test_watchdog_integracion
+[2026-03-08 12:23:17]   OK: test_watchdog_integracion_trampa_posicion
+[2026-03-08 12:23:17]   OK: test_watchdog_integracion_log_escrito
+[2026-03-08 12:23:17]   OK: test_watchdog_integracion_simulacion_completa
+[2026-03-08 12:23:17]   Todos los tests de integración del watchdog pasaron.
+[2026-03-08 12:23:17] 
+--- test_arranque_limpio: Test arranque limpio ---
+[2026-03-08 12:23:18] OK test_arranque_limpio
+[2026-03-08 12:23:18]   OK: 10 ticks ejecutados sin excepcion
+[2026-03-08 12:23:18]   TEST ARRANQUE LIMPIO: OK
+[2026-03-08 12:23:18] 
+--- test_integracion_produccion: Tests integracion produccion ---
+[2026-03-08 12:23:20] OK test_integracion_produccion
+[2026-03-08 12:23:20]   OK test_hambre_mejora_con_fix: 8/7 con hambre OK
+[2026-03-08 12:23:20]   OK test_modo_sombra_comandos_ejecutan
+[2026-03-08 12:23:20]   OK test_simulacion_200_ticks_sin_crash
+[2026-03-08 12:23:20]   OK test_sintaxis_todos_modulos
+[2026-03-08 12:23:20]   Integracion produccion: 5 OK, 0 FAIL
+[2026-03-08 12:23:20] 
+======================================================================
+[2026-03-08 12:23:20] RESUMEN
+[2026-03-08 12:23:20] Suites: 11 OK, 0 FAIL de 11
+[2026-03-08 12:23:20] Duracion: 8.3s
+[2026-03-08 12:23:20] Reporte: C:\Users\Cosigein SL\Desktop\artificial word\pruebas\reporte_produccion.log
+[2026-03-08 12:23:20] ======================================================================
+</pre>
+  </div>
+
+  <div class="page">
+    <h2>4. Evidencia — Verificación completa (JSON)</h2>
+    <p class="evidencia-title">verificacion_completa.json</p>
+    <pre>{
+  "version": 1,
+  "proyecto": "artificial_word",
+  "timestamp": "2026-03-08T12:23:28.469131",
+  "duracion_segundos": 16.76,
+  "resumen": {
+    "total": 8,
+    "ok": 8,
+    "fail": 0,
+    "estado": "OK"
+  },
+  "verificaciones": [
+    {
+      "nombre": "sintaxis",
+      "ok": true,
+      "mensaje": "Todos los .py compilan",
+      "detalles": {
+        "errores": []
+      }
+    },
+    {
+      "nombre": "tests_produccion",
+      "ok": true,
+      "mensaje": "9 suites OK",
+      "detalles": {
+        "exit_code": 0,
+        "resumen": [
+          "  OK test_sintaxis_todos_modulos",
+          "  Integracion produccion: 5 OK, 0 FAIL",
+          "Suites: 11 OK, 0 FAIL de 11"
+        ]
+      }
+    },
+    {
+      "nombre": "modo_competencia",
+      "ok": true,
+      "mensaje": "1 eventos, integridad OK",
+      "detalles": {
+        "eventos": 1,
+        "corruptos": []
+      }
+    },
+    {
+      "nombre": "simulacion_completa",
+      "ok": true,
+      "mensaje": "guardar OK, cargar OK, reporte OK, competencia=5 eventos",
+      "detalles": {
+        "tick": 50,
+        "entidades": 8,
+        "eventos_competencia": 5
+      }
+    },
+    {
+      "nombre": "modo_sombra",
+      "ok": true,
+      "mensaje": "activar, comando, desactivar OK. Competencia=3 eventos",
+      "detalles": {
+        "eventos_competencia": 3
+      }
+    },
+    {
+      "nombre": "logs_cierre",
+      "ok": true,
+      "mensaje": "Cierre limpio detectado",
+      "detalles": {
+        "cierre_limpio": true
+      }
+    },
+    {
+      "nombre": "reporte_sesion",
+      "ok": true,
+      "mensaje": "Reporte válido: 0 ticks",
+      "detalles": {
+        "ticks": 0,
+        "keys": [
+          "version",
+          "proyecto",
+          "inicio",
+          "fin",
+          "duracion_segundos",
+          "tick_final",
+          "entidades",
+          "nombres_entidades",
+          "metricas_globales",
+          "alertas_watchdog_total"
+        ]
+      }
+    },
+    {
+      "nombre": "browser_e2e",
+      "ok": true,
+      "mensaje": "Tests E2E HTML OK",
+      "detalles": {
+        "exit_code": 0,
+        "stderr": "127.0.0.1 - - [08/Mar/2026 12:23:24] \"GET /artificial-world.html HTTP/1.1\" 200 -\n"
+      }
+    }
+  ]
+}</pre>
+  </div>
+
+  <div class="page">
+    <h2>5. Cómo ejecutar</h2>
+    <table>
+      <tr><th>Modo</th><th>Comando</th><th>Resultado</th></tr>
+      <tr><td>Python</td><td><code>python principal.py</code></td><td>Ventana pygame, motor completo</td></tr>
+      <tr><td>Web</td><td><code>.scriptsiniciar_fullstack.ps1</code></td><td>Backend 3001, Frontend 5173</td></tr>
+      <tr><td>Tests</td><td><code>python pruebas/run_tests_produccion.py</code></td><td>11 suites</td></tr>
+    </table>
+
+    <h2>6. Tabla real / demo / roadmap</h2>
+    <table>
+      <tr><th>Componente</th><th>Estado</th><th>Dónde</th></tr>
+      <tr><td>Motor Python</td><td>Real</td><td>principal.py, nucleo/, agentes/</td></tr>
+      <tr><td>Persistencia</td><td>Real</td><td>mundo_artificial.db</td></tr>
+      <tr><td>Modo Sombra</td><td>Real</td><td>gestor_modo_sombra.py</td></tr>
+      <tr><td>Web fullstack</td><td>Demo</td><td>scripts/iniciar_fullstack.ps1</td></tr>
+      <tr><td>Admin Panel</td><td>Real</td><td>AdminPanel.jsx, #admin</td></tr>
+      <tr><td>HeroRefuge</td><td>Parcial</td><td>backend/src/simulation/heroRefuge.js</td></tr>
+      <tr><td>3D</td><td>Roadmap</td><td>—</td></tr>
+    </table>
+
+    <p class="footer-note">Artificial World — Constrúyelo. Habítalo. Haz que crezca.</p>
+  </div>
+  <div class="page"><h2>Captura: landing</h2><img src="tutorial/screenshots/01-landing.png" style="max-width:100%;height:auto;border-radius:8px;" alt="landing"/></div>
+<div class="page"><h2>Captura: hub</h2><img src="tutorial/screenshots/02-hub.png" style="max-width:100%;height:auto;border-radius:8px;" alt="hub"/></div>
+<div class="page"><h2>Captura: simulation</h2><img src="tutorial/screenshots/03-simulation.png" style="max-width:100%;height:auto;border-radius:8px;" alt="simulation"/></div>
+<div class="page"><h2>Captura: missioncontrol</h2><img src="tutorial/screenshots/04-missioncontrol.png" style="max-width:100%;height:auto;border-radius:8px;" alt="missioncontrol"/></div>
+<div class="page"><h2>Captura: hub cards</h2><img src="tutorial/screenshots/05-hub-cards.png" style="max-width:100%;height:auto;border-radius:8px;" alt="hub cards"/></div>
+<div class="page"><h2>Captura: admin panel</h2><img src="tutorial/screenshots/06-admin-panel.png" style="max-width:100%;height:auto;border-radius:8px;" alt="admin panel"/></div>
+<div class="page"><h2>Captura: dobacksoft</h2><img src="tutorial/screenshots/07-dobacksoft.png" style="max-width:100%;height:auto;border-radius:8px;" alt="dobacksoft"/></div>
+</body>
+</html>

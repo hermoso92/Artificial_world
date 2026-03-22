@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan de acción — Artificial World</title>
+  <style>
+    :root { --accent: #0088aa; --accent-light: #e0f4f8; --text: #1a1d21; --text-muted: #4a5568; --bg: #fff; --border: #e2e8f0; --radius: 8px; }
+    @media print { body { -webkit-print-color-adjust: exact; } }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; color: var(--text); line-height: 1.6; font-size: 14px; background: #f7fafc; }
+    .page { max-width: 700px; margin: 20px auto; padding: 36px 44px; background: var(--bg); border-radius: var(--radius); page-break-after: always; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .page:last-of-type { page-break-after: auto; }
+    h1 { font-size: 1.6rem; margin-bottom: 16px; color: var(--accent); border-bottom: 3px solid var(--accent); padding-bottom: 8px; }
+    h2 { font-size: 1.2rem; margin: 24px 0 12px; color: var(--text); }
+    h3 { font-size: 1rem; margin: 16px 0 8px; }
+    p, li { margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+    th { background: var(--accent-light); font-weight: 600; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+    ul { margin-left: 20px; margin-bottom: 12px; }
+    .footer-note { font-size: 12px; color: var(--text-muted); margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Plan de acción — Artificial World</h1>
+    <p><em>Documento maestro con el plan a seguir. Generado a partir del análisis de implementación vs documentación.</em></p>
+    <p><strong>Fecha:</strong> 2026-03-08</p>
+    <div style="margin-top: 24px;">
+      <h1>Plan de acción — Artificial World</h1>
+<p></p>
+<p>&gt; Documento maestro con el plan a seguir. Generado a partir del análisis de implementación vs documentación.</p>
+<p></p>
+<p><strong>Fecha:</strong> 2026-03-08  </p>
+<p><strong>Versión:</strong> 1.0</p>
+<p></p>
+<p>---</p>
+<p></p>
+<h2>1. Resumen ejecutivo</h2>
+<p></p>
+<p>Este plan recoge las acciones recomendadas para cerrar las brechas entre lo implementado y lo documentado, y para completar las piezas pendientes del Sistema Chess.</p>
+<p></p>
+<p>| Prioridad | Acción | Estado |</p>
+<p>|-----------|--------|--------|</p>
+<p>| Alta | Añadir Chess al README y DOCUMENTO_UNICO | ✅ Hecho |</p>
+<p>| Alta | Crear docs/backend/README.md | ✅ Hecho |</p>
+<p>| Alta | Crear docs/frontend/README.md | ✅ Hecho |</p>
+<p>| Alta | Definir índice de API | ✅ Hecho |</p>
+<p>| Media | Pipeline contenedor privado Chess | ✅ Hecho |</p>
+<p>| Media | Integración WeTransfer / Transfer.sh | ✅ Hecho |</p>
+<p>| Media | Página aceptación términos | ✅ Hecho |</p>
+<p>| Baja | Ampliar reglas auditoría por agente | ✅ Hecho |</p>
+<p>| Baja | Resolver inconsistencias (puertos, nombres) | ✅ Hecho |</p>
+<p></p>
+<p>---</p>
+<p></p>
+<h2>2. Acciones completadas</h2>
+<p></p>
+<h3>2.1 Chess en README y DOCUMENTO_UNICO</h3>
+<p></p>
+<p>- Enlace a <code>docs/SISTEMA_CHESS.md</code> en la sección de documentación.</p>
+<p>- Mención de <code>run_chess_audit.ps1</code> para auditoría automatizada.</p>
+<p>- Inclusión en DOCUMENTO_UNICO sección de documentos adicionales.</p>
+<p></p>
+<h3>2.2 docs/backend/README.md</h3>
+<p></p>
+<p>- Estructura de carpetas <code>backend/src/</code>.</p>
+<p>- Rutas montadas: <code>/api</code>, <code>/api/ai</code>, <code>/api/hero</code>, <code>/api/dobacksoft</code>, <code>/api/subscription</code>, <code>/api/admin</code>.</p>
+<p>- Scripts: <code>npm start</code>, <code>npm test</code>.</p>
+<p>- Variables de entorno relevantes.</p>
+<p>- Enlace al índice de API.</p>
+<p></p>
+<h3>2.3 docs/frontend/README.md</h3>
+<p></p>
+<p>- Estructura de carpetas <code>frontend/src/</code>.</p>
+<p>- Componentes principales: Hub, HeroRefuge, DobackSoft, AdminPanel.</p>
+<p>- Scripts: <code>npm run dev</code>, <code>npm run build</code>, <code>npm test</code>.</p>
+<p>- Configuración: <code>config/api.js</code>, puerto 5173.</p>
+<p></p>
+<h3>2.4 docs/API_INDEX.md</h3>
+<p></p>
+<p>- Índice único de todos los endpoints <code>/api/*</code>.</p>
+<p>- Agrupado por módulo: api, ai, hero, dobacksoft, subscription, admin.</p>
+<p>- Método, ruta, descripción breve.</p>
+<p></p>
+<p>---</p>
+<p></p>
+<h2>3. Acciones pendientes</h2>
+<p></p>
+<h3>3.1 Pipeline contenedor privado (Sistema Chess)</h3>
+<p></p>
+<p><strong>Objetivo:</strong> Aplicar las mejoras del reporte en un contenedor Docker exclusivo del cliente.</p>
+<p></p>
+<p><strong>Tareas:</strong></p>
+<p>1. Definir Dockerfile base que copie el repo auditado.</p>
+<p>2. Script que aplique parches/mejoras según <code>reporte-completo.json</code>.</p>
+<p>3. Build de imagen con tag único por cliente.</p>
+<p>4. Export a tar o push a registry privado.</p>
+<p></p>
+<p><strong>Documento:</strong> <code>docs/SISTEMA_CHESS.md</code> sección 4 (Fase 3).</p>
+<p></p>
+<h3>3.2 Integración WeTransfer</h3>
+<p></p>
+<p><strong>Objetivo:</strong> Enviar al cliente el enlace de descarga del contenedor.</p>
+<p></p>
+<p><strong>Opciones:</strong></p>
+<p>- WeTransfer API (si existe plan adecuado).</p>
+<p>- Alternativas: Transfer.sh, S3 presigned URL, Google Drive API.</p>
+<p></p>
+<p><strong>Tareas:</strong></p>
+<p>1. Evaluar APIs disponibles.</p>
+<p>2. Implementar servicio de subida.</p>
+<p>3. Generar enlace con expiración.</p>
+<p>4. Enviar email con enlace (opcional).</p>
+<p></p>
+<h3>3.3 Página de aceptación de términos</h3>
+<p></p>
+<p><strong>Objetivo:</strong> El cliente acepta condiciones antes de acceder al contenedor.</p>
+<p></p>
+<p><strong>Condiciones clave:</strong></p>
+<p>- Autorización para usar información (código, patrones, hallazgos) en entrenamiento.</p>
+<p>- Propiedad del código sigue siendo del cliente.</p>
+<p></p>
+<p><strong>Tareas:</strong></p>
+<p>1. Crear página HTML/React con términos.</p>
+<p>2. Checkbox + botón "Acepto".</p>
+<p>3. Registrar aceptación (timestamp, IP, email si aplica).</p>
+<p>4. Solo tras aceptación, mostrar/enviar enlace.</p>
+<p></p>
+<h3>3.4 Ampliar reglas de auditoría ✅</h3>
+<p></p>
+<p>Implementado:</p>
+<p>- agent-docs: detección de enlaces rotos en markdown.</p>
+<p>- agent-frontend: imágenes sin atributo <code>alt</code>.</p>
+<p></p>
+<p>---</p>
+<p></p>
+<h2>4. Inconsistencias resueltas</h2>
+<p></p>
+<p>| Problema | Acción recomendada |</p>
+<p>|----------|--------------------|</p>
+<p>| Puertos 9998/5174 vs 3001/5173 | Aclarar en docs: 9998/5174 = DobackSoft (dobackv2); 3001/5173 = Artificial World |</p>
+<p>| "Artificial Word" vs "Artificial World" | Unificar a "Artificial World" en toda la documentación |</p>
+<p>| Estructura core/ vs mundo/ | Actualizar architecture.md con relación real |</p>
+<p></p>
+<p>---</p>
+<p></p>
+<h2>5. Criterios de éxito</h2>
+<p></p>
+<p>- [ ] Un desarrollador nuevo encuentra Chess en el README en menos de 2 minutos.</p>
+<p>- [ ] Backend y frontend tienen README con estructura y scripts.</p>
+<p>- [ ] Existe un único documento que lista todos los endpoints API.</p>
+<p>- [ ] El flujo Chess completo (auditoría → reporte → mejoras → contenedor → WeTransfer → términos) está operativo.</p>
+<p></p>
+<p>---</p>
+<p></p>
+<h2>6. Generar PDF del plan</h2>
+<p></p>
+<pre style="background:#1e293b;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:12px;">node scripts/generar-pdf-plan.js
+</pre>
+<p></p>
+<p>Salida: <code>docs/PLAN_ACCION.pdf</code></p>
+<p></p>
+<h2>7. Referencias</h2>
+<p></p>
+<p>| Documento | Propósito |</p>
+<p>|-----------|-----------|</p>
+<p>| [docs/SISTEMA_CHESS.md](SISTEMA_CHESS.md) | Sistema Chess completo |</p>
+<p>| [docs/DOCUMENTO_UNICO.md](DOCUMENTO_UNICO.md) | Documento único del proyecto |</p>
+<p>| [docs/ESENCIAL.md](ESENCIAL.md) | Guía esencial 2 páginas |</p>
+<p>| [docs/API_INDEX.md](API_INDEX.md) | Índice de API |</p>
+<p>| [docs/backend/README.md](backend/README.md) | Backend estructura |</p>
+<p>| [docs/frontend/README.md](frontend/README.md) | Frontend estructura |</p>
+<p>| [docs/PUERTOS_Y_PRODUCTOS.md](PUERTOS_Y_PRODUCTOS.md) | Puertos AW vs DobackSoft |</p>
+<p>| [docs/PLAN_ACCION.pdf](PLAN_ACCION.pdf) | PDF de este plan |</p>
+<p></p>
+<h3>Scripts Chess</h3>
+<p></p>
+<p>| Script | Uso |</p>
+<p>|--------|-----|</p>
+<p>| <code>run_chess_audit.ps1</code> | Auditoría completa |</p>
+<p>| <code>chess_apply_build.ps1</code> | Construir contenedor privado |</p>
+<p>| <code>chess_upload_transfer.ps1</code> | Subir tar a Transfer.sh |</p>
+<p></p>
+<h3>Página de términos</h3>
+<p></p>
+<p><code>/chess-terminos.html</code> — Aceptación de condiciones antes de descargar.</p>
+<p></p>
+<p>---</p>
+<p></p>
+<p><em>Artificial World — Constrúyelo. Habítalo. Haz que crezca.</em></p>
+<p></p>
+    </div>
+    <p class="footer-note">Artificial World — Constrúyelo. Habítalo. Haz que crezca.</p>
+  </div>
+</body>
+</html>

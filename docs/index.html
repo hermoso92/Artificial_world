@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artificial World — Un mundo dentro de un mundo</title>
+  <style>
+    :root {
+      --bg-dark: #0a0b0d;
+      --bg-card: #12141a;
+      --border: rgba(255, 255, 255, 0.06);
+      --text: #e8eaed;
+      --text-muted: #8b8f98;
+      --accent: #00d4ff;
+      --success: #00e676;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .container { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .hero { text-align: center; margin-bottom: 3rem; }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero .subtitle { font-size: 1.25rem; color: var(--accent); margin-bottom: 0.5rem; }
+    .hero .desc { font-size: 1rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.8rem;
+      background: rgba(0, 212, 255, 0.15);
+      color: var(--accent);
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+    .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.75rem 1.5rem; font-size: 0.95rem; font-weight: 600; border-radius: 8px;
+      text-decoration: none; transition: all 0.2s; border: none; font-family: inherit;
+    }
+    .btn-primary { background: var(--accent); color: var(--bg-dark); }
+    .btn-primary:hover { background: #33ddff; transform: translateY(-1px); }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--text-muted); background: var(--bg-card); }
+    section {
+      margin: 2.5rem 0;
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    section h2 { font-size: 1.25rem; margin-bottom: 1rem; color: var(--text); }
+    section p { color: var(--text-muted); margin-bottom: 0.75rem; }
+    section ul { color: var(--text-muted); margin-left: 1.25rem; margin-bottom: 1rem; }
+    .roadmap-grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .roadmap-item {
+      padding: 1rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+    }
+    .roadmap-item h3 { font-size: 1rem; margin-bottom: 0.5rem; color: var(--accent); }
+    .roadmap-item p { margin: 0; font-size: 0.9rem; }
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="hero">
+      <h1>Artificial World</h1>
+      <p class="subtitle">El futuro de los NPCs empieza aquí.</p>
+      <p class="desc">Simulación 2D donde cada agente piensa, recuerda y se relaciona. Sin LLMs. Sin latencia. Juega la demo. Reserva la app completa.</p>
+      <span class="badge">Early adopter · Código de acceso incluido</span>
+      <div class="hero-buttons">
+        <a href="artificial-world.html" class="btn btn-primary">Jugar demo gratis</a>
+        <a href="ARTIFICIAL_WORLD_COMPACTO_UNICO.pdf" class="btn btn-secondary">Documento compacto (PDF)</a>
+        <a href="damas-ai.html" class="btn btn-secondary">Damas vs IA</a>
+        <a href="mailto:reserva@artificial.world?subject=Reserva%200.99" class="btn btn-secondary">Reservar app completa — 0,99€</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>Pruébalo ahora. Sin registrarte.</h2>
+      <p>La demo corre en tu navegador. Agentes autónomos, recursos, refugios, modo sombra. Todo el motor en acción.</p>
+      <a href="artificial-world.html" class="btn btn-primary">Abrir demo</a>
+    </section>
+
+    <section>
+      <h2>La aplicación completa. Tuya por 0,99€.</h2>
+      <ul>
+        <li>Ejecutable Windows (.exe) — sin instalar Python</li>
+        <li>Modo Sombra completo — control por turnos</li>
+        <li>Persistencia SQLite — guardar y cargar mundos</li>
+        <li>12 acciones — mover, explorar, comer, compartir, robar, huir, atacar...</li>
+        <li>Relaciones sociales — confianza, miedo, hostilidad</li>
+        <li>Código de acceso enviado al email tras la reserva</li>
+      </ul>
+      <a href="mailto:reserva@artificial.world?subject=Reserva%200.99" class="btn btn-primary">Reservar ahora — 0,99€</a>
+    </section>
+
+    <section>
+      <h2>Próximamente — Un mundo dentro de un mundo</h2>
+      <p>Ecosistema de experiencias conectadas. Minijuegos contra jugadores o contra IAs. Simuladores. Todo alimentado por el mismo motor.</p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item">
+          <h3>Minijuegos</h3>
+          <p>3 en raya, damas, ajedrez. Juega contra otros jugadores (PvP) o contra IAs que piensan (PvAI).</p>
+          <a href="damas-ai.html" class="btn btn-primary" style="margin-top:0.5rem;display:inline-flex;font-size:0.85rem">Jugar Damas AI ahora</a>
+        </div>
+        <div class="roadmap-item">
+          <h3>DobackSoft</h3>
+          <p>Conduce un camión de bomberos por paisajes 2D realistas. Objetivo: llegar a la emergencia. Niveles, objetos, obstáculos.</p>
+        </div>
+        <div class="roadmap-item">
+          <h3>Mundo contenedor</h3>
+          <p>Hub que conecta la simulación, los minijuegos y DobackSoft. Un mundo dentro de un mundo.</p>
+        </div>
+      </div>
+      <p style="margin-top:1rem"><a href="ROADMAP_TECNICO.md" class="btn btn-secondary" style="display:inline-flex">Ver roadmap técnico</a></p>
+    </section>
+
+    <section>
+      <h2>Artificial World vs IA generativa</h2>
+      <table style="width:100%;border-collapse:collapse;color:var(--text-muted);font-size:0.9rem">
+        <tr style="border-bottom:1px solid var(--border)">
+          <th style="text-align:left;padding:0.5rem 0">Aspecto</th>
+          <th style="text-align:left;padding:0.5rem 0">LLMs (Inworld, etc.)</th>
+          <th style="text-align:left;padding:0.5rem 0">Artificial World</th>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:0.5rem 0">Coste</td><td>$ por token</td><td>0,99€ una vez</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:0.5rem 0">Latencia</td><td>100–500 ms</td><td>&lt; 1 ms</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:0.5rem 0">Determinismo</td><td>No</td><td>Sí</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:0.5rem 0">Memoria</td><td>Limitada</td><td>Total</td></tr>
+        <tr><td style="padding:0.5rem 0">Control</td><td>Bajo</td><td>Total</td></tr>
+      </table>
+    </section>
+
+    <section style="text-align:center">
+      <h2>¿Listo para ser early adopter?</h2>
+      <p>0,99€. Demo gratis. Código de acceso incluido.</p>
+      <a href="mailto:reserva@artificial.world?subject=Reserva%200.99" class="btn btn-primary">Reservar mi copia — 0,99€</a>
+    </section>
+
+    <footer class="footer">
+      Artificial World · Vida artificial que piensa<br>
+      <a href="mailto:contacto@artificial.world">contacto@artificial.world</a> · <a href="mailto:reserva@artificial.world">reserva@artificial.world</a>
+    </footer>
+  </div>
+</body>
+</html>

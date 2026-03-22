@@ -1,0 +1,61 @@
+# Secretos - NUNCA commitear
+.env
+.env.local
+.env.*.local
+*.key
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Chess audit output
+docker/chess-output/
+chess-output/
+
+# Chess data
+data/chess_acceptances.json
+
+# Logs y datos de sesión
+*.log
+.cursor/debug*.log
+reporte_sesion.json
+cronica_fundacional.json
+cronica_fundacional.md
+verificacion_completa.json
+mundo_artificial.db
+audit_competencia.db
+audit_simulacion.db
+subscriptions.db
+constructor.db
+mission-control.db
+*.db-shm
+*.db-wal
+debug_*.json
+debug_*.txt
+error_critico.txt
+
+# Node
+node_modules/
+
+# Build
+build/
+dist/
+*.aux
+*.out
+*.spec
+*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

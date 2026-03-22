@@ -1,0 +1,116 @@
+# Orquestación de agentes Chess — auditoría independiente
+# Uso: docker compose -f docker/docker-compose.agents.yml run --rm coordinator
+# (coordinator depende de todos los agentes; se ejecutan en orden)
+# Nota: no_cache:true garantiza que el audit.js se ejecuta siempre fresco
+
+services:
+  agent-docs:
+    build:
+      context: ./agents/agent-docs
+      no_cache: true
+    volumes:
+      - ..:/repo:ro
+      - ./chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    restart: "no"
+    profiles:
+      - agents
+
+  agent-backend:
+    build:
+      context: ./agents/agent-backend
+      no_cache: true
+    volumes:
+      - ..:/repo:ro
+      - ./chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    restart: "no"
+    profiles:
+      - agents
+
+  agent-frontend:
+    build:
+      context: ./agents/agent-frontend
+      no_cache: true
+    volumes:
+      - ..:/repo:ro
+      - ./chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    restart: "no"
+    profiles:
+      - agents
+
+  agent-bd:
+    build:
+      context: ./agents/agent-bd
+      no_cache: true
+    volumes:
+      - ..:/repo:ro
+      - ./chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    restart: "no"
+    profiles:
+      - agents
+
+  agent-tests:
+    build:
+      context: ./agents/agent-tests
+      no_cache: true
+    volumes:
+      - ..:/repo:ro
+      - ./chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    restart: "no"
+    profiles:
+      - agents
+
+  agent-marketing:
+    build:
+      context: ./agents/agent-marketing
+      no_cache: true
+    volumes:
+      - ..:/repo:ro
+      - ./chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    restart: "no"
+    profiles:
+      - agents
+
+  coordinator:
+    build:
+      context: ./coordinator
+      no_cache: true
+    volumes:
+      - ..:/repo:ro
+      - ./chess-output:/output
+    environment:
+      REPO_PATH: /repo
+      OUTPUT_PATH: /output
+    depends_on:
+      agent-docs:
+        condition: service_completed_successfully
+      agent-backend:
+        condition: service_completed_successfully
+      agent-frontend:
+        condition: service_completed_successfully
+      agent-bd:
+        condition: service_completed_successfully
+      agent-tests:
+        condition: service_completed_successfully
+      agent-marketing:
+        condition: service_completed_successfully
+    restart: "no"
+    profiles:
+      - agents

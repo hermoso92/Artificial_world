@@ -63,7 +63,8 @@ def test_simulacion_init_sin_render():
     assert s.mapa.ancho >= 2
     assert s.mapa.alto >= 2
     assert len(s.entidades) >= 1
-    assert len(s.entidades) <= c.cantidad_entidades_sociales + (1 if c.incluir_gato else 0)
+    extra = (1 if c.incluir_gato else 0) + (1 if getattr(c, "incluir_tryndamere", False) else 0)
+    assert len(s.entidades) <= c.cantidad_entidades_sociales + extra
 
 
 def test_entidades_posiciones_distintas():

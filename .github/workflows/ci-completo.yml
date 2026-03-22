@@ -1,0 +1,134 @@
+﻿# artificial word - CI completo: tests automáticos en tiempo real
+# Dispara en: push, PR, schedule (cron), y manual
+# Usa contenedores Docker para entorno reproducible
+
+name: CI Completo
+
+on:
+  push:
+    branches: [main, "feature/*"]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Ejecuta cada 6 horas para verificación continua
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    # Ejecución manual desde GitHub Actions
+
+jobs:
+  tests-nativo:
+    name: Tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Instalar Playwright Chromium
+        run: playwright install chromium
+
+      - name: Tests producción
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: python pruebas/run_tests_produccion.py
+
+      - name: Verificación completa
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: python pruebas/verificar_todo.py
+
+      - name: Subir reporte
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verificacion-${{ matrix.python }}
+          path: |
+            verificacion_completa.json
+            pruebas/reporte_produccion.log
+
+  tests-docker:
+    name: Tests (Docker)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build imagen CI
+        run: docker build -f Dockerfile.ci -t artificial-word-ci .
+
+      - name: Ejecutar verificación en contenedor
+        run: |
+          mkdir -p _ci_output
+          docker run --rm -v ${{ github.workspace }}/_ci_output:/out artificial-word-ci sh -c "
+            python pruebas/verificar_todo.py && cp verificacion_completa.json /out/ 2>/dev/null || true
+          "
+
+      - name: Subir reporte Docker
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verificacion-docker
+          path: _ci_output/verificacion_completa.json
+          if-no-files-found: ignore
+
+  ci-redis:
+    name: CI con Redis
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Instalar Playwright Chromium
+        run: playwright install chromium
+
+      - name: Verificar Redis
+        run: |
+          pip install redis --quiet
+          python -c "
+          import redis
+          r = redis.Redis(host='localhost', port=6379)
+          r.ping()
+          r.set('ci_test', 'ok')
+          assert r.get('ci_test') == b'ok'
+          print('Redis OK')
+          "
+
+      - name: Tests con Redis disponible
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+          REDIS_URL: redis://localhost:6379/0
+        run: python pruebas/verificar_todo.py
