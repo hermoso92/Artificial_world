@@ -1,270 +1,324 @@
 # Artificial World
 
-Artificial World es una base para crear **civilizaciones vivas** con memoria, héroes, refugios y comunidades. Proyecto local-first y open source.
+**Producto objetivo:** app **iOS** de simulación 2D con agentes autónomos, refugios, héroes y memoria — open source, local-first. El resto de este monorepo existe para **especificar, probar, sincronizar y documentar** esa app, no como segundo producto frente al usuario.
 
-## Tesis principal
+> **Lema interno:** *No persigas la IA. Construye un mundo que la necesite.*
 
-**Empieza con un refugio. Elige una semilla. Mira nacer tu civilización.**
+---
 
-- **2D** = verdad sistémica (mapa, rutas, recursos, refugios)
-- **3D** = encarnación futura (roadmap, no implementada hoy)
+## ¿De qué va?
 
-Lema interno: *No persigas la IA. Construye un mundo que la necesite.*
+En pantalla, el mundo modela entidades que perciben, recuerdan, puntúan acciones por utilidad y persisten estado. **Lo que se publica como “Artificial World” al usuario final es la app** en [`ArtificialWorld/`](ArtificialWorld/) + [`SwiftAWCore`](SwiftAWCore/) (SwiftUI, núcleo en SPM: `AWDomain`, `AWAgent`, `AWPersistence`). Arquitectura y fases: [docs/AW_FASE0_AUDITORIA_Y_ARQUITECTURA.md](docs/AW_FASE0_AUDITORIA_Y_ARQUITECTURA.md).
 
-## La verdad actual del repo
+**Qué más hay en el repo (ingeniería, no el binario de App Store):**
 
-La línea de verdad de este repositorio sigue siendo esta:
+| Capa | Rol frente a la app iOS |
+|------|-------------------------|
+| **App iOS** ([`ArtificialWorld/`](ArtificialWorld/) + [`SwiftAWCore`](SwiftAWCore/)) | **Único entregable de producto** (vertical slice + sync) |
+| **App iOS V2** ([`ArtificialWorldV2/`](ArtificialWorldV2/)) | Cliente **nuevo** para grid multi-agente y cambio de control; mismo SPM, bundle distinto — ver [README](ArtificialWorldV2/README.md) |
+| **Motor Python** (`principal.py`, `nucleo/`, `agentes/`, …) | Referencia auditable, tests y spec del dominio; pygame + SQLite en laboratorio |
+| **Web** (`frontend/` + `backend/`) | Demo React + Express (motor JS aparte), sync nativo (`/api/aw`), operador — **soporte**; no sustituye la app |
+| **HTML estáticos** (`artificial-world.html`, `docs/…`) | Marketing / Pages; **no** son spec de simulación para iOS |
 
-- `Artificial World` es, hoy, un **motor principal en Python + pygame**.
-- La web fullstack es una **demo funcional con motor JavaScript propio**, no una interfaz del motor Python.
-- `DobackSoft` dentro de este repo es una **vertical demo**; el producto completo de esa línea no vive aquí.
+Dentro de la carpeta web hay verticales históricas o de laboratorio (DobackSoft, HeroRefuge, Mission Control, Control Tower, etc.): **no definen** el producto iOS salvo que se porten explícitamente a Swift bajo contrato de dominio.
 
-La nueva narrativa del proyecto no sustituye esta base. La reorganiza y la proyecta hacia una categoría más ambiciosa sin confundir presente con visión.
+**Integraciones externas y límites del núcleo:** [docs/AW_FASE0_AUDITORIA_Y_ARQUITECTURA.md](docs/AW_FASE0_AUDITORIA_Y_ARQUITECTURA.md) §10 y [docs/CORE_BOUNDARIES.md](docs/CORE_BOUNDARIES.md).
 
-## Ownership estratégico
+---
 
-| Marca | Rol |
-|-------|-----|
-| **DobackSoft** | Producto principal / empresa (repo `dobackv2`) |
-| **Artificial World** | Laboratorio local, auditable y open source |
-| **Juego / FireSimulator** | Superficie de demo y entrenamiento, no núcleo de negocio |
+## Stack tecnológico
 
-Documentos maestros: [docs/OWNERSHIP_ESTRATEGICO.md](docs/OWNERSHIP_ESTRATEGICO.md), [docs/SUPERFICIE_JUEGO.md](docs/SUPERFICIE_JUEGO.md)
+### Motor Python
+- Python 3.11+
+- pygame 2.6.1
+- SQLite (via Python stdlib)
+- python-dotenv
 
-## Qué es hoy
+### Demo web — Backend
+- Node.js 20
+- Express 4
+- better-sqlite3 (SQLite)
+- WebSocket (ws)
+- Stripe (pagos opcionales)
+- Ollama (IA local opcional, modelo `llama3.2`)
+- Vitest
 
-`Artificial World` modela entidades que perciben, recuerdan, puntúan acciones y actúan dentro de un mundo persistente. Esa base técnica es el cimiento desde el que ahora se plantea una evolución hacia sistemas locales de comprensión, comparación y auditoría.
+### Demo web — Frontend
+- React 18
+- Vite 5
+- Tailwind CSS 4
+- Zustand 5
+- Radix UI
+- i18next (ES, EN, PT, FR, DE)
+- Recharts
+- PWA (vite-plugin-pwa)
+- Vitest + Testing Library
 
-La parte más verificable del proyecto está en el motor Python:
+### Infraestructura
+- Docker / Docker Compose (dev, prod, VPS, CI)
+- Puppeteer (generación de PDFs, screenshots)
 
-- 13 tipos de acción en `tipos/enums.py`
-- memoria espacial y social en `systems/memory/memoria_entidad.py`
-- persistencia SQLite en `sistemas/sistema_persistencia.py`
-- Modo Sombra en `sistemas/gestor_modo_sombra.py`
-- runner de pruebas en `pruebas/run_tests_produccion.py`
+---
 
-## Qué puede llegar a ser
+## Cómo correr el proyecto
 
-- **Motor creador de mundos** compacto y reutilizable
-- Civilizaciones con historia emergente, memoria y comunidad
-- Puente opcional entre motor Python y capa web
-- Análisis de proyectos y auditoría (visión futura)
+### Prerrequisitos
 
-## Qué incluye este repo
+- **App iOS:** Xcode (Swift 6), ver [docs/AW_FASE0_AUDITORIA_Y_ARQUITECTURA.md](docs/AW_FASE0_AUDITORIA_Y_ARQUITECTURA.md) (build SPM + proyecto).
+- **Monorepo (laboratorio):** Python 3.11+, Node.js 20+, npm
 
-| Componente | Estado | Qué es |
-|------------|--------|--------|
-| Motor Python (`principal.py`) | Real | Núcleo principal con persistencia, Modo Sombra, watchdog y pruebas |
-| Web fullstack (`scripts/iniciar_fullstack.ps1`) | Demo funcional | Motor JavaScript independiente con REST + WebSocket |
-| DobackSoft (`frontend/src/components/DobackSoft.jsx`) | Demo vertical | Landing, cupón, visor y ruta demo; no producto B2B completo |
-| HeroRefuge | Mixto | Módulo web con persistencia parcial, refugios jugables 2D, companion IA y mundos ligeros |
-| IA local base | Real pero acotada | Servicios de chat, resumen, análisis de fallos y memoria documental |
+### App iOS (producto)
 
-## IA local y automatización
+Abrí `ArtificialWorld/ArtificialWorld.xcodeproj` en Xcode y compilá el esquema **ArtificialWorld** (simulador o dispositivo). Tests del núcleo: `swift test --package-path SwiftAWCore` desde la raíz del repo.
 
-La base mínima compartida ya implementada en este repo incluye:
+### Motor Python (laboratorio — pygame)
 
-- `backend/src/services/aiCore.js` con `health`, `chat`, `summarize`, `analyzeTestFailure` y `analyzeSession`
-- `backend/src/services/llmService.mjs` como adaptador de `HeroRefuge` sobre el `ai-core`
-- memoria local versionada en `docs/ia-memory/`
-- endpoints `/api/ai/*`
-- `iniciar.ps1` como `bootstrap/doctor/launcher`
-
-Documentación asociada:
-
-- [docs/IMPLEMENTACION_AI_CORE_LOCAL.md](docs/IMPLEMENTACION_AI_CORE_LOCAL.md)
-- [docs/IA_LOCAL_BASE.md](docs/IA_LOCAL_BASE.md)
-
-## Mission Control para OpenClaw
-
-La capa web incluye ahora un `MISSION CONTROL` operativo pensado para coordinar agentes con visibilidad central, board kanban, feed en vivo, approvals humanas y soporte multi-gateway local-first.
-
-Qué es hoy:
-
-- vive dentro de la app React existente en la ruta `#missioncontrol`
-- usa backend Express existente con un dominio aislado en `/api/mission-control`, `/api/approvals`, `/api/boards` y `/api/gateways`
-- persiste en `mission-control.db` con modelo propio para `gateways`, `agents`, `tasks`, `runs`, `approvals`, `events`, `boards` y `board_groups`
-- arranca en modo híbrido: runtime seed local persistente ahora, adapter preparado para conectar gateways OpenClaw reales después
-- reutiliza el WebSocket existente como transporte, pero emite mensajes propios `mission-control:snapshot` y `mission-control:event`
-- incluye adapter OpenClaw real opcional por WebSocket: handshake `connect`, `status`, `heartbeat_trigger`, normalización de `response`, `tool_call`, `tool_result`, `heartbeat_status`, `error` y `exec.approval.requested`
-
-Qué puedes probar ahora:
-
-- dashboard operativo con KPIs, gateways y errores recientes
-- rail persistente de agentes con heartbeat y tarea actual
-- board kanban con estados `Backlog`, `In Progress`, `Review`, `Done` y `Blocked`
-- feed de eventos en vivo con pausa de autoscroll
-- approval center con aprobar/rechazar y trazabilidad persistente
-- inspector lateral con detalle de tarea, run, approval o evento
-
-Arranque recomendado:
-
-```powershell
-.\scripts\iniciar_fullstack.ps1
-```
-
-Luego abre:
-
-- `http://localhost:5173/#missioncontrol`
-
-Alternativa con Docker:
-
-```powershell
-docker compose up
-```
-
-Variables útiles:
-
-- `MISSION_CONTROL_RUNTIME_MODE=seed` para usar el runtime local
-- `MISSION_CONTROL_RUNTIME_MODE=disabled` para dejar libre la futura conexión a gateway real
-- `MISSION_CONTROL_TICK_MS=4000` para ajustar el ritmo del stream local
-- `OPENCLAW_GATEWAY_URLS=ws://localhost:18789` para conectar uno o más gateways OpenClaw reales
-- `OPENCLAW_GATEWAY_TOKEN=` si el gateway requiere auth
-- `OPENCLAW_GATEWAY_SCOPES=operator.read,operator.approvals` para el rol operador del adapter
-
-## Realidad, demo y visión
-
-### Real hoy
-
-- Un motor Python ejecutable localmente con persistencia en `mundo_artificial.db`
-- Un runner de producción con **11 suites** en `pruebas/run_tests_produccion.py`
-- Crónica fundacional headless: `python cronica_fundacional.py` o `python principal.py --cronica`
-- Base documental extensa y una primera capa de IA local utilitaria
-
-### Demo hoy
-
-- La simulación web usa un motor JavaScript distinto al motor Python
-- `DobackSoft` en este repo usa almacenamiento en memoria y rutas mock en `backend/src/routes/dobacksoft.js`
-- El modo “ruta real” del `FireSimulator` depende de datos entregados por el visor; no valida por sí solo una integración real con telemetría externa
-
-### Visión defendible
-
-- Convertir Artificial World en una infraestructura local para comprender proyectos reales con IA coordinada y trazable
-- Mantener la filosofía local-first, open source y auditable como rasgo central
-- Hacer que la narrativa, el producto y la arquitectura dependan de evidencia y no de promesas sueltas
-
-## Qué puede probar alguien hoy en 3 minutos
-
-### Golden path recomendado
-
-Para probar la parte más real del proyecto, sigue [docs/GOLDEN_PATH.md](docs/GOLDEN_PATH.md).
-
-Resumen corto:
-
-```powershell
+```bash
 pip install -r requirements.txt
 python principal.py
 ```
 
-Eso demuestra el motor principal: simulación, persistencia, Modo Sombra y flujo core.
+Esto abre la ventana pygame con la simulación de **referencia** en laboratorio (no sustituye la app iOS).
 
-### Vista rápida de la demo web
+**Variante headless — Crónica fundacional:**
 
-```powershell
-.\scripts\iniciar_fullstack.ps1
-```
-
-Resultado esperado:
-
-- se abre `http://localhost:5173`
-- puedes navegar el hub y ver la demo web
-- esto demuestra la **capa demo web**, no el motor principal Python
-
-### Crónica fundacional
-
-```powershell
+```bash
 python cronica_fundacional.py --seed 42 --ticks 200
 ```
 
-Genera `cronica_fundacional.json` y `cronica_fundacional.md` con hitos, entidades finales, alertas y veredicto de supervivencia.
+Genera `cronica_fundacional.json` y `cronica_fundacional.md` sin ventana gráfica.
 
-## Ejecución
+**Variante — abrir landing HTML:**
 
-### Motor principal (Python)
-
-```powershell
-pip install -r requirements.txt
-python principal.py
-```
-
-### Demo web fullstack
-
-```powershell
-.\scripts\iniciar_fullstack.ps1
-```
-
-### Crónica fundacional (headless)
-
-```powershell
-python cronica_fundacional.py
-python principal.py --cronica
-```
-
-### Landing HTML
-
-```powershell
+```bash
 python principal.py --web
 ```
 
-### Generar ejecutable Windows
+### Demo web fullstack (local)
 
-```powershell
-.\build_exe.ps1
+```bash
+# Backend (puerto 3001)
+cd backend
+npm install
+npm run dev
+
+# Frontend (puerto 5173) — en otra terminal
+cd frontend
+npm install
+npm run dev
 ```
 
-El script existe en el repo. La disponibilidad del binario final depende de ejecutarlo localmente.
+Abrir: `http://localhost:5173`
 
-### Auditoría Chess (agentes IA independientes)
+### Demo web con Docker
 
-```powershell
-.\scripts\run_chess_audit.ps1
+```bash
+docker compose up
 ```
 
-Ejecuta 6 agentes Docker que auditan documentación, backend, frontend, BBDD, tests y marketing. Salida: `REPORTE_CHESS_1.md`. Ver [docs/SISTEMA_CHESS.md](docs/SISTEMA_CHESS.md).
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:3001`
+- Mission Control: `http://localhost:5173/#missioncontrol`
 
-## Qué no afirmar con este repo
+### Producción con Docker
 
-No conviene presentar como hecho, sin más evidencia, lo siguiente:
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
 
-- latencia `< 1 ms`
-- miles de agentes
-- telemetría real integrada
-- producto `enterprise`
-- DobackSoft completo en este mismo repo
-- robustez total o escalado masivo
-- comprensión perfecta de cualquier repositorio
-- coordinación multiagente madura de extremo a extremo
+Sirve frontend compilado y backend desde `http://localhost:3001`.
 
-Si algo de eso se quiere defender, debe apoyarse en benchmarks, pruebas o integración real versionada.
+### Tests
 
-## Documentos fundacionales de esta nueva etapa
+```bash
+# Tests Python (11 suites)
+python pruebas/run_tests_produccion.py
 
-- [docs/DOCUMENTO_UNICO_1_PORCIENTO.md](docs/DOCUMENTO_UNICO_1_PORCIENTO.md) — Documento único para el 1%: auditoría completa, precios (9.99 vs 99.99), comparativa agentes IA, definición del sistema
-- [docs/PITCH_1_PORCIENTO.md](docs/PITCH_1_PORCIENTO.md) — Resumen ejecutivo para pitch final
-- [docs/OWNERSHIP_ESTRATEGICO.md](docs/OWNERSHIP_ESTRATEGICO.md) — DobackSoft = producto; Artificial World = laboratorio; juego = demo
-- [docs/FRONTERA_CONTRATOS.md](docs/FRONTERA_CONTRATOS.md) — Contratos versionados (session, route, event, report)
-- [docs/NARRATIVA_MAESTRA.md](docs/NARRATIVA_MAESTRA.md)
-- [docs/ARQUITECTURA_CONCEPTUAL.md](docs/ARQUITECTURA_CONCEPTUAL.md)
-- [docs/PRINCIPIOS_EDITORIALES.md](docs/PRINCIPIOS_EDITORIALES.md)
-- [docs/ROADMAP_BASE.md](docs/ROADMAP_BASE.md)
-- [docs/DOCUMENTO_FINAL.md](docs/DOCUMENTO_FINAL.md) — **Documento definitivo**
-- [docs/ARTIFICIAL_WORD_CRONOGRAMA.md](docs/ARTIFICIAL_WORD_CRONOGRAMA.md) — Cronograma real, GitHub, motor creador de mundos
-- [docs/MODO_FUNDADOR.md](docs/MODO_FUNDADOR.md)
-- [docs/MANIFIESTO.md](docs/MANIFIESTO.md)
+# Tests backend JS
+cd backend && npm test
 
-## Documentación por audiencia
+# Tests frontend JS
+cd frontend && npm test
+```
 
-- Técnica: [docs/ESENCIAL.md](docs/ESENCIAL.md), [AGENTE_ENTRANTE.md](AGENTE_ENTRANTE.md)
-- Producto / dirección: [docs/DOCUMENTACION_COMPLETA.md](docs/DOCUMENTACION_COMPLETA.md)
-- Estrategia: [docs/ESTRATEGIA_PRODUCTO.md](docs/ESTRATEGIA_PRODUCTO.md)
-- Visión previa: [docs/VISION_CIVILIZACIONES_VIVAS.md](docs/VISION_CIVILIZACIONES_VIVAS.md)
-- Relato ampliado: [docs/PAQUETE_RELATO/NARRATIVA_MAESTRA.md](docs/PAQUETE_RELATO/NARRATIVA_MAESTRA.md)
-- Exploración general: [docs/CONOCE_ARTIFICIAL_WORLD.md](docs/CONOCE_ARTIFICIAL_WORLD.md)
-- Ruta recomendada de prueba: [docs/GOLDEN_PATH.md](docs/GOLDEN_PATH.md)
-- IA local y automatización: [docs/IA_LOCAL_BASE.md](docs/IA_LOCAL_BASE.md)
-- Auditoría Chess (agentes Docker): [docs/SISTEMA_CHESS.md](docs/SISTEMA_CHESS.md)
-- Plan de acción: [docs/PLAN_ACCION.md](docs/PLAN_ACCION.md)
+---
 
-## Regla editorial central
+## Variables de entorno
 
-Artificial World puede hablar en grande, pero no puede prometer por encima de su evidencia. La ambición es obligatoria. La confusión no.
+No hay `.env.example` en la raíz del proyecto. Las variables del backend se leen desde `.env` en la raíz (buscado automáticamente por el servidor). Crear un archivo `.env` con:
+
+```dotenv
+# Puerto del backend (default: 3001)
+PORT=3001
+
+# Entorno (development | production)
+NODE_ENV=development
+
+# CORS en producción (requerido si NODE_ENV=production)
+# ALLOWED_ORIGINS=https://tudominio.com
+
+# IA local — Ollama (opcional)
+# OLLAMA_HOST=http://127.0.0.1:11434
+# OLLAMA_MODEL=llama3.2
+# OLLAMA_TIMEOUT_MS=30000
+
+# Stripe (opcional — la app funciona sin esto)
+# STRIPE_SECRET_KEY=sk_test_...
+# STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Mission Control
+# MISSION_CONTROL_RUNTIME_MODE=seed   # seed | disabled
+# MISSION_CONTROL_TICK_MS=4000
+
+# OpenClaw gateway (opcional)
+# OPENCLAW_GATEWAY_URLS=ws://localhost:18789
+# OPENCLAW_GATEWAY_TOKEN=
+# OPENCLAW_GATEWAY_SCOPES=operator.read,operator.approvals
+
+# Frontend (Vite — en frontend/.env si aplica)
+# VITE_BACKEND_PORT=3001
+```
+
+**Importante:** En `NODE_ENV=production` el servidor lanza un error fatal si `ALLOWED_ORIGINS` no está definida.
+
+---
+
+## Estructura del proyecto
+
+```
+Artificial_world/
+├── principal.py              # Punto de entrada del motor Python
+├── configuracion.py          # Parámetros de la simulación
+├── cronica_fundacional.py    # Sesión headless reproducible
+├── requirements.txt          # Dependencias Python
+│
+├── core/                     # Dominio puro (fuente de verdad Python)
+│   ├── world/                # Mapa, celdas, recursos, zonas, terreno
+│   ├── shelter/              # Refugio (bonus descanso, ownership futuro)
+│   ├── entity/               # EntidadBase, EntidadSocial, EntidadGato, Fábrica
+│   └── simulation/           # Tick runner y contextos de decisión
+│
+├── systems/                  # Sistemas transversales
+│   ├── memory/               # Memoria espacial y social de entidades
+│   ├── events/               # Bus de eventos
+│   ├── ai/                   # Motor de decisión y percepción
+│   ├── persistence/          # Guardado/carga SQLite
+│   └── observability/        # Logs y métricas
+│
+├── agentes/                  # IA, memoria, rasgos, relaciones (reexporta systems)
+├── nucleo/                   # Simulacion, contexto, gestor ticks, bus eventos
+├── acciones/                 # 13 tipos de acción ejecutable
+├── sistemas/                 # Persistencia, watchdog, Modo Sombra, modo competencia
+├── interfaz/                 # Pygame: renderizador, paneles, cámara, entrada
+├── tipos/                    # Enums y modelos
+├── utilidades/               # Arranque, paths, azar, conversores
+│
+├── mundo/                    # Reexporta core.world (compatibilidad)
+├── entidades/                # Reexporta core.entity (compatibilidad)
+├── interface/                # Reexporta interfaz (compatibilidad)
+├── gameplay/                 # Reexporta acciones/directivas (compatibilidad)
+│
+├── pruebas/                  # 11 suites de tests Python
+│
+├── backend/                  # API Express + WebSocket + SQLite
+│   ├── src/
+│   │   ├── server.js         # Entry point, monta todas las rutas
+│   │   ├── config.js         # Ollama, puertos
+│   │   ├── routes/           # api, ai, heroRefuge, dobacksoft, chess, missionControl...
+│   │   ├── services/         # aiCore, llmService, stripeService, missionControl, controlTower
+│   │   ├── simulation/       # Motor JS: engine, agent, world, heroRefuge, blueprints
+│   │   ├── db/               # database.js (SQLite), missionControlDb.js
+│   │   ├── realtime/         # WebSocket
+│   │   ├── middleware/       # errorHandler, playerContext, requireAdmin, validate
+│   │   └── audit/            # eventStore
+│   └── db/schema.sql         # Schema PostgreSQL preparado (no usado actualmente)
+│
+├── frontend/                 # React 18 + Vite + Tailwind 4
+│   └── src/
+│       ├── App.jsx           # Router hash-based
+│       ├── components/       # Hub, SimulationView, MissionControl, DobackSoft, HeroRefuge...
+│       ├── hooks/            # useRealtimeSimulation, useSimulationData
+│       ├── services/         # api.js
+│       └── locales/          # ES, EN, PT, FR, DE
+│
+├── web/                      # App React alternativa con Three.js/3D (en desarrollo)
+├── docker-compose.yml        # Dev (backend + frontend)
+├── docker-compose.prod.yml   # Producción (imagen única)
+├── docker-compose.vps.yml    # VPS
+├── Dockerfile.prod           # Multi-stage: build frontend + serve con Node
+├── docs/                     # Documentación extensa (arquitectura, roadmap, auditorías)
+└── scripts/                  # Scripts de deploy, generación de PDFs, guardrails
+```
+
+**Nota sobre alias de carpetas:** `mundo/`, `entidades/`, `interface/`, `gameplay/` son módulos de compatibilidad que reexportan el código que vive en `core/` y `systems/`. El código fuente real está en `core/`.
+
+---
+
+## Estado actual
+
+### Qué funciona
+
+- Motor Python completo: simulación pygame, mapa 60x60, entidades con hambre/energía/salud, 13 tipos de acción, memoria espacial y social, relaciones dinámicas, refugios
+- Persistencia real en SQLite (`mundo_artificial.db`)
+- Modo Sombra: control manual de una entidad en tiempo real
+- Modo Competencia: auditoría forense activa (`audit_competencia.db`)
+- Crónica fundacional headless: genera artefactos JSON/Markdown reproducibles
+- 11 suites de tests Python ejecutables sin pantalla (`SDL_VIDEODRIVER=dummy`)
+- Demo web: simulación JavaScript con REST API y WebSocket en tiempo real
+- Mission Control: dashboard operativo con kanban, feed de eventos, approval center
+- Control Tower: análisis estático de repositorios → dossier técnico-ejecutivo
+- HeroRefuge: refugios jugables con persistencia parcial
+- FireSimulator: mini-juego de rutas de vehículos de emergencia
+- Internacionalización (ES, EN, PT, FR, DE) en el frontend
+- PWA instalable (manifiesto + service worker)
+- Docker multi-stage para producción
+
+### Qué no funciona o puede fallar
+
+- **No existe `.env.example` en la raíz**: el desarrollador que clona el repo no sabe qué variables configurar para arrancar el backend
+- **Stripe deshabilitado por defecto**: funciona pero emite warning en cada arranque si `STRIPE_SECRET_KEY` no está configurada
+- **Ollama requerido para IA local**: `aiCore.js` y `llmService.mjs` dependen de Ollama corriendo localmente; si no está disponible, los endpoints `/api/ai/*` fallan
+- **ALLOWED_ORIGINS en producción**: si `NODE_ENV=production` sin esta variable, el servidor no arranca
+- **Schema PostgreSQL sin usar**: `backend/db/schema.sql` define un schema para PostgreSQL, pero el backend usa SQLite (`better-sqlite3`). Son dos modelos distintos que no están sincronizados
+- **Motor Python y demo web son independientes**: no hay puente real entre ambas capas; el README lo documenta, pero puede confundir a nuevos contribuidores
+- **`web/`**: app React alternativa con Three.js (visión 3D) en estado de exploración, sin integración con el resto
+- **DobackSoft en este repo**: usa datos en memoria y rutas mock; el producto B2B real vive en otro repositorio
+- **carpetas duplicadas con alias**: `mundo/`, `entidades/`, `interface/`, `gameplay/` son módulos de reexportación; puede generar confusión al navegar el código
+
+### Qué falta
+
+- `.env.example` en la raíz del proyecto con todas las variables documentadas
+- Tests de integración entre motor Python y demo web (actualmente son sistemas separados sin tests de contrato)
+- CI/CD configurado: existe `docker-compose.ci.yml` y workflows referenciados en docs, pero no hay `.github/workflows/` en el repo
+- Documentación de setup en Linux/macOS (todos los scripts de arranque son `.ps1` o `.bat`)
+- Alineación del schema PostgreSQL (`backend/db/schema.sql`) con el modelo SQLite real
+- Implementación del espacio 20x20 del Refugio (clase preparada, lógica no implementada)
+- Conexiones entre zonas/refugios (estructura definida, lógica pendiente)
+- Desacoplamiento de feedback visual en la persistencia (actualmente escribe directo en `estado_panel`)
+
+---
+
+## Documentación relevante
+
+| Documento | Propósito |
+|-----------|-----------|
+| [docs/architecture.md](docs/architecture.md) | Arquitectura técnica del motor Python |
+| [docs/GOLDEN_PATH.md](docs/GOLDEN_PATH.md) | Recorrido de demostración recomendado |
+| [AGENTE_ENTRANTE.md](AGENTE_ENTRANTE.md) | Onboarding técnico para nuevos contribuidores |
+| [docs/MODOS_EJECUCION.md](docs/MODOS_EJECUCION.md) | Comparación motor Python vs demo web |
+| [docs/IA_LOCAL_BASE.md](docs/IA_LOCAL_BASE.md) | Capa de IA local con Ollama |
+| [docs/SISTEMA_CHESS.md](docs/SISTEMA_CHESS.md) | Auditoría con agentes Docker |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | Roadmap del proyecto |
+| [docs/OWNERSHIP_ESTRATEGICO.md](docs/OWNERSHIP_ESTRATEGICO.md) | Relación entre AW, DobackSoft y la demo |
+
+---
+
+## Regla editorial
+
+Artificial World puede hablar en grande, pero no puede prometer por encima de su evidencia. La ambición es obligatoria. La confusión, no.
+
+Lo que este repo **no es** hoy:
+- Un producto enterprise listo para producción
+- DobackSoft completo (ese vive en otro repo)
+- Una integración real Python ↔ web
+- Un sistema con miles de agentes o latencia < 1ms

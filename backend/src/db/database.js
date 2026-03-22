@@ -86,6 +86,24 @@ export function getDb() {
     CREATE INDEX IF NOT EXISTS idx_heroes_player ON heroes(player_id);
     CREATE INDEX IF NOT EXISTS idx_hero_worlds_hero ON hero_worlds(hero_id);
     CREATE INDEX IF NOT EXISTS idx_hero_worlds_alive ON hero_worlds(alive);
+
+    CREATE TABLE IF NOT EXISTS aw_sync_batches (
+      id                    INTEGER PRIMARY KEY AUTOINCREMENT,
+      player_id             TEXT,
+      organization_id       TEXT,
+      world_id              TEXT,
+      schema_version        INTEGER NOT NULL,
+      world_seed            TEXT NOT NULL,
+      device_installation_id TEXT NOT NULL,
+      emitted_at            TEXT NOT NULL,
+      received_at           TEXT NOT NULL DEFAULT (datetime('now')),
+      events_json           TEXT NOT NULL,
+      FOREIGN KEY (player_id) REFERENCES players(id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_aw_sync_batches_player ON aw_sync_batches(player_id);
+    CREATE INDEX IF NOT EXISTS idx_aw_sync_batches_org ON aw_sync_batches(organization_id);
+    CREATE INDEX IF NOT EXISTS idx_aw_sync_batches_received ON aw_sync_batches(received_at);
   `);
 
   ensureColumn(_db, 'hero_worlds', 'metadata', "TEXT NOT NULL DEFAULT '{}'");
@@ -254,4 +272,138 @@ export function saveHeroState(hero) {
     }
   });
   tx();
+}
+
+// ─── Artificial World native sync (SyncEnvelopeV1) ─────────────────
+
+/**
+ * @param {{
+ *   playerId: string | null,
+ *   organizationId: string | null,
+ *   worldId: string | null,
+ *   schemaVersion: number,
+ *   worldSeed: string,
+ *   deviceInstallationId: string,
+ *   emittedAt: string,
+ *   events: unknown[],
+ * }} row
+ * @returns {number} lastInsertRowid
+ */
+export function insertAwSyncBatch(row) {
+  const db = getDb();
+  const result = db
+    .prepare(
+      `
+    INSERT INTO aw_sync_batches (
+      player_id, organization_id, world_id, schema_version, world_seed,
+      device_installation_id, emitted_at, events_json
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `,
+    )
+    .run(
+      row.playerId ?? null,
+      row.organizationId ?? null,
+      row.worldId ?? null,
+      row.schemaVersion,
+      row.worldSeed,
+      row.deviceInstallationId,
+      row.emittedAt,
+      JSON.stringify(row.events),
+    );
+  return Number(result.lastInsertRowid);
+}
+
+/**
+ * Lista lotes de sync (sin devolver el JSON completo de eventos).
+ * @param {{ organizationId?: string | null, playerId?: string | null, limit?: number }} filters
+ * @returns {Array<{
+ *   id: number,
+ *   player_id: string | null,
+ *   organization_id: string | null,
+ *   world_id: string | null,
+ *   schema_version: number,
+ *   world_seed: string,
+ *   device_installation_id: string,
+ *   emitted_at: string,
+ *   received_at: string,
+ *   events_payload_octets: number,
+ * }>}
+ */
+export function listAwSyncBatches(filters = {}) {
+  const db = getDb();
+  const limit = Math.min(Math.max(Number(filters.limit) || 50, 1), 200);
+  let sql = `
+    SELECT id, player_id, organization_id, world_id, schema_version, world_seed,
+           device_installation_id, emitted_at, received_at,
+           length(events_json) AS events_payload_octets
+    FROM aw_sync_batches
+    WHERE 1 = 1
+  `;
+  const params = [];
+  if (filters.organizationId != null && String(filters.organizationId).trim()) {
+    sql += ' AND organization_id = ?';
+    params.push(String(filters.organizationId).trim());
+  }
+  if (filters.playerId != null && String(filters.playerId).trim()) {
+    sql += ' AND player_id = ?';
+    params.push(String(filters.playerId).trim());
+  }
+  sql += ' ORDER BY id DESC LIMIT ?';
+  params.push(limit);
+  return db.prepare(sql).all(...params);
+}
+
+/**
+ * Un lote por id, con `events` ya parseados desde `events_json`.
+ * @param {number} id
+ * @returns {null | {
+ *   id: number,
+ *   player_id: string | null,
+ *   organization_id: string | null,
+ *   world_id: string | null,
+ *   schema_version: number,
+ *   world_seed: string,
+ *   device_installation_id: string,
+ *   emitted_at: string,
+ *   received_at: string,
+ *   events: unknown,
+ * }}
+ */
+export function getAwSyncBatchById(id) {
+  const db = getDb();
+  const numericId = Number(id);
+  if (!Number.isInteger(numericId) || numericId < 1) {
+    return null;
+  }
+  const row = db
+    .prepare(
+      `
+    SELECT id, player_id, organization_id, world_id, schema_version, world_seed,
+           device_installation_id, emitted_at, received_at, events_json
+    FROM aw_sync_batches
+    WHERE id = ?
+  `,
+    )
+    .get(numericId);
+  if (!row) {
+    return null;
+  }
+  let events;
+  try {
+    events = JSON.parse(row.events_json ?? '[]');
+  } catch {
+    events = [];
+  }
+  return {
+    id: row.id,
+    player_id: row.player_id,
+    organization_id: row.organization_id,
+    world_id: row.world_id,
+    schema_version: row.schema_version,
+    world_seed: row.world_seed,
+    device_installation_id: row.device_installation_id,
+    emitted_at: row.emitted_at,
+    received_at: row.received_at,
+    events,
+  };
 }

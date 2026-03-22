@@ -1,0 +1,529 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BD801EA72F6FE17D00C62C79 /* AWDomain in Frameworks */ = {isa = PBXBuildFile; productRef = CE3FB07C2F6CC66900100061 /* AWDomain */; };
+		BD801EA82F6FE17D00C62C79 /* AWAgent in Frameworks */ = {isa = PBXBuildFile; productRef = CE3FB07C2F6CC66900100062 /* AWAgent */; };
+		BD801EA92F6FE17D00C62C79 /* AWPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = CE3FB07C2F6CC66900100063 /* AWPersistence */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CE3FB07C2F6CC66900100050 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE3FB07C2F6CC66900100001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CE3FB07C2F6CC66900100020;
+			remoteInfo = ArtificialWorld;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CE3FB07C2F6CC66900100004 /* ArtificialWorld.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArtificialWorld.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE3FB07C2F6CC66900100005 /* ArtificialWorldTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArtificialWorldTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE3FB07C2F6CC66900100130 /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
+		CE3FB07C2F6CC66900100131 /* Local.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = Local.xcconfig.example; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		CE3FB07C2F6CC66900100010 /* ArtificialWorld */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ArtificialWorld;
+			sourceTree = "<group>";
+		};
+		CE3FB07C2F6CC66900100011 /* ArtificialWorldTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ArtificialWorldTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CE3FB07C2F6CC66900100031 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD801EA92F6FE17D00C62C79 /* AWPersistence in Frameworks */,
+				BD801EA82F6FE17D00C62C79 /* AWAgent in Frameworks */,
+				BD801EA72F6FE17D00C62C79 /* AWDomain in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CE3FB07C2F6CC66900100041 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CE3FB07C2F6CC66900100002 = {
+			isa = PBXGroup;
+			children = (
+				CE3FB07C2F6CC66900100135 /* Config */,
+				CE3FB07C2F6CC66900100010 /* ArtificialWorld */,
+				CE3FB07C2F6CC66900100011 /* ArtificialWorldTests */,
+				CE3FB07C2F6CC66900100003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CE3FB07C2F6CC66900100003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CE3FB07C2F6CC66900100004 /* ArtificialWorld.app */,
+				CE3FB07C2F6CC66900100005 /* ArtificialWorldTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CE3FB07C2F6CC66900100135 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				CE3FB07C2F6CC66900100130 /* Signing.xcconfig */,
+				CE3FB07C2F6CC66900100131 /* Local.xcconfig.example */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CE3FB07C2F6CC66900100020 /* ArtificialWorld */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE3FB07C2F6CC66900100202 /* Build configuration list for PBXNativeTarget "ArtificialWorld" */;
+			buildPhases = (
+				CE3FB07C2F6CC66900100030 /* Sources */,
+				CE3FB07C2F6CC66900100031 /* Frameworks */,
+				CE3FB07C2F6CC66900100032 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CE3FB07C2F6CC66900100010 /* ArtificialWorld */,
+			);
+			name = ArtificialWorld;
+			packageProductDependencies = (
+				CE3FB07C2F6CC66900100061 /* AWDomain */,
+				CE3FB07C2F6CC66900100062 /* AWAgent */,
+				CE3FB07C2F6CC66900100063 /* AWPersistence */,
+			);
+			productName = ArtificialWorld;
+			productReference = CE3FB07C2F6CC66900100004 /* ArtificialWorld.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CE3FB07C2F6CC66900100021 /* ArtificialWorldTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE3FB07C2F6CC66900100203 /* Build configuration list for PBXNativeTarget "ArtificialWorldTests" */;
+			buildPhases = (
+				CE3FB07C2F6CC66900100040 /* Sources */,
+				CE3FB07C2F6CC66900100041 /* Frameworks */,
+				CE3FB07C2F6CC66900100042 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CE3FB07C2F6CC66900100051 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CE3FB07C2F6CC66900100011 /* ArtificialWorldTests */,
+			);
+			name = ArtificialWorldTests;
+			packageProductDependencies = (
+			);
+			productName = ArtificialWorldTests;
+			productReference = CE3FB07C2F6CC66900100005 /* ArtificialWorldTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CE3FB07C2F6CC66900100001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					CE3FB07C2F6CC66900100020 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					CE3FB07C2F6CC66900100021 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = CE3FB07C2F6CC66900100020;
+					};
+				};
+			};
+			buildConfigurationList = CE3FB07C2F6CC66900100201 /* Build configuration list for PBXProject "ArtificialWorld" */;
+			developmentRegion = es;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				es,
+			);
+			mainGroup = CE3FB07C2F6CC66900100002;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CE3FB07C2F6CC66900100060 /* XCLocalSwiftPackageReference "../SwiftAWCore" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = CE3FB07C2F6CC66900100003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CE3FB07C2F6CC66900100020 /* ArtificialWorld */,
+				CE3FB07C2F6CC66900100021 /* ArtificialWorldTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CE3FB07C2F6CC66900100032 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CE3FB07C2F6CC66900100042 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CE3FB07C2F6CC66900100030 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CE3FB07C2F6CC66900100040 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CE3FB07C2F6CC66900100051 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CE3FB07C2F6CC66900100020 /* ArtificialWorld */;
+			targetProxy = CE3FB07C2F6CC66900100050 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		CE3FB07C2F6CC66900100101 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CE3FB07C2F6CC66900100102 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CE3FB07C2F6CC66900100111 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE3FB07C2F6CC66900100130 /* Signing.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 2S747NZP4R;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Info-ATS.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Artificial World";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.antoniohermoso.artificialworld;
+				PRODUCT_MODULE_NAME = ArtificialWorld;
+				PRODUCT_NAME = ArtificialWorld;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CE3FB07C2F6CC66900100112 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE3FB07C2F6CC66900100130 /* Signing.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 2S747NZP4R;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Info-ATS.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Artificial World";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.antoniohermoso.artificialworld;
+				PRODUCT_MODULE_NAME = ArtificialWorld;
+				PRODUCT_NAME = ArtificialWorld;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CE3FB07C2F6CC66900100121 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE3FB07C2F6CC66900100130 /* Signing.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.antoniohermoso.artificialworld.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArtificialWorld.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ArtificialWorld";
+				TEST_TARGET_NAME = ArtificialWorld;
+			};
+			name = Debug;
+		};
+		CE3FB07C2F6CC66900100122 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE3FB07C2F6CC66900100130 /* Signing.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.antoniohermoso.artificialworld.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArtificialWorld.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ArtificialWorld";
+				TEST_TARGET_NAME = ArtificialWorld;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CE3FB07C2F6CC66900100201 /* Build configuration list for PBXProject "ArtificialWorld" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3FB07C2F6CC66900100101 /* Debug */,
+				CE3FB07C2F6CC66900100102 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CE3FB07C2F6CC66900100202 /* Build configuration list for PBXNativeTarget "ArtificialWorld" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3FB07C2F6CC66900100111 /* Debug */,
+				CE3FB07C2F6CC66900100112 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CE3FB07C2F6CC66900100203 /* Build configuration list for PBXNativeTarget "ArtificialWorldTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3FB07C2F6CC66900100121 /* Debug */,
+				CE3FB07C2F6CC66900100122 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		CE3FB07C2F6CC66900100060 /* XCLocalSwiftPackageReference "../SwiftAWCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../SwiftAWCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CE3FB07C2F6CC66900100061 /* AWDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE3FB07C2F6CC66900100060 /* XCLocalSwiftPackageReference "../SwiftAWCore" */;
+			productName = AWDomain;
+		};
+		CE3FB07C2F6CC66900100062 /* AWAgent */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE3FB07C2F6CC66900100060 /* XCLocalSwiftPackageReference "../SwiftAWCore" */;
+			productName = AWAgent;
+		};
+		CE3FB07C2F6CC66900100063 /* AWPersistence */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE3FB07C2F6CC66900100060 /* XCLocalSwiftPackageReference "../SwiftAWCore" */;
+			productName = AWPersistence;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = CE3FB07C2F6CC66900100001 /* Project object */;
+}

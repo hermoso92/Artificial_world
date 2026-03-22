@@ -1,4 +1,4 @@
-﻿# artificial word - CI completo: tests automáticos en tiempo real
+# artificial word - CI completo: tests automáticos en tiempo real
 # Dispara en: push, PR, schedule (cron), y manual
 # Usa contenedores Docker para entorno reproducible
 
@@ -25,6 +25,9 @@ jobs:
         python: ["3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Higiene del repo (sin monorepo anidado en iOS)
+        run: bash scripts/check_repo_hygiene.sh
 
       - uses: actions/setup-python@v5
         with:
@@ -63,6 +66,38 @@ jobs:
           path: |
             verificacion_completa.json
             pruebas/reporte_produccion.log
+
+  swiftawcore-spm:
+    name: Swift macOS (SPM + app iOS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Higiene del repo (sin monorepo anidado en iOS)
+        run: bash scripts/check_repo_hygiene.sh
+
+      - name: Swift package tests
+        run: swift test --package-path SwiftAWCore
+
+      - name: Build ArtificialWorld (iOS Simulator)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project ArtificialWorld/ArtificialWorld.xcodeproj \
+            -scheme ArtificialWorld \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Build ArtificialWorldV2 (iOS Simulator)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project ArtificialWorldV2/ArtificialWorldV2.xcodeproj \
+            -scheme ArtificialWorldV2 \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO
 
   tests-docker:
     name: Tests (Docker)

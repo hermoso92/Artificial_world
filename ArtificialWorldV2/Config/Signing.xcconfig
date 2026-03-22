@@ -1,0 +1,3 @@
+// Reutiliza política de firma de V1; overrides locales opcionales en este directorio.
+#include "../../ArtificialWorld/Config/Signing.xcconfig"
+#include? "Local.xcconfig"

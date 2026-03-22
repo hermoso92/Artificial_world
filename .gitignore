@@ -59,3 +59,20 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+
+# Nunca volcar el monorepo dentro del directorio sincronizado de la app iOS
+ArtificialWorld/ArtificialWorld/Artificial_world/
+
+# SwiftPM local build
+SwiftAWCore/.build/
+
+# Xcode (por usuario / máquina)
+**/xcuserdata/
+*.xcuserstate
+
+# Xcode: firma local (equipo Apple); ver Config/Local.xcconfig.example
+ArtificialWorld/Config/Local.xcconfig
+ArtificialWorldV2/Config/Local.xcconfig
+
+# Agent Teams Lite (orchestrator artifacts)
+.atl/

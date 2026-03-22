@@ -1,0 +1,96 @@
+{
+  "sourceLanguage" : "es",
+  "strings" : {
+    "terrain.legend.dense_forest" : {
+      "comment" : "Short terrain label: forest cells on the grid map legend.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dense forest"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bosque denso"
+          }
+        }
+      }
+    },
+    "terrain.legend.empty" : {
+      "comment" : "Short terrain label: empty/plain cells on the grid map legend.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empty"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vacío"
+          }
+        }
+      }
+    },
+    "terrain.legend.refuge" : {
+      "comment" : "Short terrain label: shelter/refuge cells on the grid map legend.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shelter"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refugio"
+          }
+        }
+      }
+    },
+    "terrain.legend.rock_outcrop" : {
+      "comment" : "Short terrain label: rock cells on the grid map legend.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rock"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Roca"
+          }
+        }
+      }
+    },
+    "terrain.legend.wild_grass" : {
+      "comment" : "Short terrain label: grass cells on the grid map legend.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grass"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasto"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

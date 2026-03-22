@@ -1,6 +1,8 @@
 # Límites del Core — Artificial World
 
-Clasificación de módulos para la reestructuración del núcleo. Este documento fija qué forma parte del runtime principal y qué queda explícitamente fuera del core.
+**Producto usuario final:** la app **iOS** (`SwiftAWCore` + `ArtificialWorld/`). Lo que sigue clasifica el **motor Python** del monorepo (laboratorio y spec), no redefine el binario de App Store — visión unificada en [AW_FASE0_AUDITORIA_Y_ARQUITECTURA.md](AW_FASE0_AUDITORIA_Y_ARQUITECTURA.md) §4.
+
+Clasificación de módulos para la reestructuración del núcleo Python. Este documento fija qué forma parte de ese runtime y qué queda explícitamente fuera del core.
 
 ## Runtime principal (core)
 
@@ -73,3 +75,7 @@ No forman parte del núcleo de simulación:
 - Reglas de simulación duplicadas entre Python y `artificial-world.html` (JS).
 - Lógica de movimiento/energía/eventos repetida en acciones y `gestor_modo_sombra._traducir_comando`.
 - Scripts de diagnóstico replican el pipeline de `Simulacion.actualizar_entidad()`.
+
+## Integraciones externas (límite duro)
+
+Motores de terceros orientados a **LLM + memoria cloud + simulación social tipo OASIS** (p. ej. ecosistemas estilo MiroFish) **no** forman parte del runtime de este monorepo: sin submódulos, sin código AGPL embebido en `backend/` o `SwiftAWCore`. Política y CI: [`docs/AW_FASE0_AUDITORIA_Y_ARQUITECTURA.md`](AW_FASE0_AUDITORIA_Y_ARQUITECTURA.md) §10 y [`scripts/check_repo_hygiene.sh`](../scripts/check_repo_hygiene.sh).
