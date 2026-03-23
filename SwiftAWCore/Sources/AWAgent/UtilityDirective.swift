@@ -17,19 +17,22 @@ public struct UtilityContext: Sendable {
     public var nearestHostileDistance: Double?
     public var inventory: InventoryState?
     public var memory: AgentMemory?
+    public var personality: AgentPersonality
 
     public init(
         vitals: SurvivalVitals,
         presence: PresenceState,
         nearestHostileDistance: Double? = nil,
         inventory: InventoryState? = nil,
-        memory: AgentMemory? = nil
+        memory: AgentMemory? = nil,
+        personality: AgentPersonality = .neutral
     ) {
         self.vitals = vitals
         self.presence = presence
         self.nearestHostileDistance = nearestHostileDistance
         self.inventory = inventory
         self.memory = memory
+        self.personality = personality
     }
 }
 
@@ -39,9 +42,12 @@ public enum UtilitySafetyRules {
         if context.vitals.needsRefugeSoon {
             return .returnToRefuge
         }
+        // Solo huir si un agente está EXTREMADAMENTE cerca (< 3 celdas base × cautela).
+        // Los agentes del mismo mundo no son inherentemente hostiles.
         if let d = context.nearestHostileDistance {
-            let hostileFleeRadius: Double =
-                context.memory?.stressFromPerceivedThreat == true ? 18 : 12
+            let baseRadius: Double =
+                context.memory?.stressFromPerceivedThreat == true ? 4 : 2
+            let hostileFleeRadius = baseRadius * context.personality.caution
             if d < hostileFleeRadius {
                 return .returnToRefuge
             }
@@ -55,7 +61,7 @@ public enum UtilitySafetyRules {
         }
         switch context.presence {
         case .insideRefuge:
-            if let inv = context.inventory, inv.nutrientPackets > 0, context.vitals.hunger >= 0.28 {
+            if let inv = context.inventory, inv.nutrientPackets > 0, context.vitals.hunger >= 0.22 {
                 return .consumeNutrient
             }
             return .rest

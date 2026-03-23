@@ -2,87 +2,152 @@ import AWAgent
 import AWDomain
 import Combine
 import SwiftUI
+import UIKit
 
-/// Partida: mapa + modo de control + D-pad + lista de agentes.
+/// Partida: mapa dominante con controles flotantes, tap en agente abre perfil.
 struct V2PlayView: View {
     @Bindable var session: V2WorldSession
     let makeSaveData: () -> WorldSaveData
     let onLoadSession: (V2WorldSession) -> Void
+    let onStartNewGame: (TerrainBiomeDefinition) -> Void
 
-    @State private var worldAutoAdvance = true
+    @State private var music = GameMusicController()
+    @State private var sfx = GameSFXController()
+    @StateObject private var autoTick = AutoTickDriver()
+
+    private let hapticMoveOK = UIImpactFeedbackGenerator(style: .light)
+    private let hapticMoveBlocked = UIImpactFeedbackGenerator(style: .rigid)
+    private let hapticTickStep = UIImpactFeedbackGenerator(style: .medium)
+    private let hapticPauseToggle = UIImpactFeedbackGenerator(style: .soft)
+    private let hapticSuccess = UIImpactFeedbackGenerator(style: .medium)
+    private let hapticActionFailed = UIImpactFeedbackGenerator(style: .heavy)
     @State private var showSaveLoad = false
+    @State private var showNewGame = false
+    @State private var confirmNewGameDiscard = false
     @State private var showInventoryRefuge = false
-    private let pulse = Timer.publish(every: 1.8, on: .main, in: .common).autoconnect()
+    @State private var showTerrainLegend = false
+    @State private var showQuickHelp = false
 
     var body: some View {
-        VStack(spacing: 12) {
-            // Título con tick counter
-            Text("Tick \(session.worldTick) · modo \(session.controlMode.rawValue)")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
+        ZStack(alignment: .bottom) {
+            // Main map (dominates the screen)
+            VStack(spacing: 0) {
+                statusBar
+                    .padding(.horizontal)
+                    .padding(.top, 4)
 
-            if let warn = session.autosaveWarning {
-                Text(warn)
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .accessibilityLabel(warn)
+                GridMapCanvas(session: session)
+                    .padding(.horizontal, 4)
+                    .padding(.top, 4)
             }
 
-            GridMapCanvas(session: session)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel("Mapa del mundo")
-                .accessibilityHint("Tocá una celda con agente para elegir quién controlás. Los colores de terreno coinciden con la leyenda debajo.")
-
-            terrainLegend
-
-            Picker("Modo de control", selection: $session.controlMode) {
-                ForEach(PlayerControlMode.allCases, id: \.self) { mode in
-                    Text(label(for: mode)).tag(mode)
-                }
-            }
-            .pickerStyle(.segmented)
-            .accessibilityHint("Elegí manual, autónomo o híbrido para quién decide el movimiento en cada tick.")
-
-            Toggle("Tiempo corre (tick auto ~1,8 s)", isOn: $worldAutoAdvance)
-                .font(.caption)
-                .accessibilityHint("Si está activado, el mundo avanza solo cada pocos segundos.")
-
-            HStack(spacing: 10) {
-                Text("Mover")
-                    .font(.caption.weight(.semibold))
-                    .accessibilityHidden(true)
-                dPad
-            }
-            .accessibilityElement(children: .contain)
-            .accessibilityLabel("Cruceta de movimiento")
-
-            Button("Avanzar 1 tick") {
-                session.advanceTick()
-            }
-            .buttonStyle(.bordered)
-            .accessibilityHint("Avanza la simulación un paso sin esperar el temporizador.")
-
-            agentList
+            // Floating controls at bottom
+            floatingControls
         }
-        .padding()
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button("Inventario") {
-                    showInventoryRefuge = true
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    showQuickHelp = true
+                } label: {
+                    Image(systemName: "questionmark.circle")
                 }
-                .accessibilityLabel("Inventario y refugio")
-                .accessibilityHint("Nutrientes, fibra y craft en el refugio.")
+                .accessibilityLabel(String(localized: "help.toolbar.a11y"))
+            }
+            ToolbarItem(placement: .automatic) {
+                Button(String(localized: "play.toolbar.new_game")) {
+                    if session.worldTick > 0 {
+                        confirmNewGameDiscard = true
+                    } else {
+                        showNewGame = true
+                    }
+                }
             }
             ToolbarItem(placement: .primaryAction) {
-                Button("Guardar / Cargar") {
-                    showSaveLoad = true
+                Menu {
+                    Button {
+                        showQuickHelp = true
+                    } label: {
+                        Label(String(localized: "help.menu.quick"), systemImage: "questionmark.circle")
+                    }
+                    Divider()
+                    Button {
+                        showInventoryRefuge = true
+                    } label: {
+                        Label(String(localized: "play.menu.inventory"), systemImage: "bag.fill")
+                    }
+                    Button {
+                        showSaveLoad = true
+                    } label: {
+                        Label(String(localized: "play.menu.save_load"), systemImage: "square.and.arrow.down")
+                    }
+                    Button {
+                        showTerrainLegend.toggle()
+                    } label: {
+                        Label(String(localized: "play.menu.terrain_legend"), systemImage: "map")
+                    }
+                    Divider()
+                    Toggle(
+                        isOn: Binding(
+                            get: { music.isEnabled },
+                            set: { music.setMusicEnabled($0) }
+                        )
+                    ) {
+                        Text(String(localized: "play.menu.music_toggle"))
+                    }
+                    .disabled(!music.canPlayAmbient)
+                    .help(
+                        music.canPlayAmbient
+                            ? String(localized: "play.menu.music_help_available")
+                            : String(localized: "play.menu.music_help_missing")
+                    )
+                    if music.canPlayAmbient {
+                        HStack {
+                            Text(String(localized: "play.menu.volume"))
+                            Slider(
+                                value: Binding(
+                                    get: { Double(music.volume) },
+                                    set: { music.setVolume(Float($0)) }
+                                ),
+                                in: 0...1
+                            )
+                            .frame(maxWidth: 180)
+                        }
+                    }
+                    Toggle(
+                        isOn: Binding(
+                            get: { sfx.isEnabled },
+                            set: { sfx.setSFXEnabled($0) }
+                        )
+                    ) {
+                        Text(String(localized: "play.menu.sfx_toggle"))
+                    }
+                    .help(String(localized: "play.menu.sfx_help"))
+                    Picker(selection: $session.controlMode) {
+                        ForEach(PlayerControlMode.allCases, id: \.self) { mode in
+                            Text(label(for: mode)).tag(mode)
+                        }
+                    } label: {
+                        Text(String(localized: "play.menu.control_mode_picker"))
+                    }
+                    Picker(
+                        selection: Binding(
+                            get: { autoTick.intervalSeconds },
+                            set: { autoTick.setIntervalSeconds($0) }
+                        )
+                    ) {
+                        ForEach(AutoTickDriver.intervalPresets, id: \.self) { sec in
+                            Text(Self.tickSpeedLabel(for: sec)).tag(sec)
+                        }
+                    } label: {
+                        Text(String(localized: "play.menu.autotick_speed_picker"))
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
                 }
-                .accessibilityLabel("Guardar o cargar partida")
-                .accessibilityHint("Abrí la lista de archivos guardados en el dispositivo.")
             }
+        }
+        .sheet(isPresented: $showQuickHelp) {
+            QuickControlsHelpSheet()
         }
         .sheet(isPresented: $showInventoryRefuge) {
             InventoryRefugeSheet(session: session)
@@ -93,140 +158,325 @@ struct V2PlayView: View {
                 onLoadSession: onLoadSession
             )
         }
-        .onReceive(pulse) { _ in
-            if worldAutoAdvance {
+        .sheet(isPresented: $showTerrainLegend) {
+            terrainLegendSheet
+        }
+        .sheet(item: $session.profileSheetRoute) { route in
+            AgentProfileSheet(
+                session: session,
+                agentId: route.id,
+                onTakeControl: {
+                    session.selectAgent(id: route.id)
+                    session.profileSheetRoute = nil
+                },
+                onDismiss: {
+                    session.profileSheetRoute = nil
+                }
+            )
+        }
+        .confirmationDialog(
+            String(localized: "play.newgame.confirm_title"),
+            isPresented: $confirmNewGameDiscard,
+            titleVisibility: .visible
+        ) {
+            Button(String(localized: "play.newgame.discard_confirm"), role: .destructive) {
+                showNewGame = true
+            }
+            Button(String(localized: "Cancelar"), role: .cancel) {}
+        } message: {
+            Text(
+                String(
+                    format: String(localized: "play.newgame.discard_message_fmt"),
+                    locale: .current,
+                    session.worldTick
+                )
+            )
+        }
+        .sheet(isPresented: $showNewGame) {
+            NewGameSheet { profile in
+                onStartNewGame(profile)
+            }
+        }
+        .onAppear {
+            music.prepareForPlay()
+            hapticMoveOK.prepare()
+            hapticMoveBlocked.prepare()
+            hapticTickStep.prepare()
+            hapticPauseToggle.prepare()
+            hapticSuccess.prepare()
+            hapticActionFailed.prepare()
+            autoTick.configure(advance: { session.advanceTick() })
+        }
+        .onChange(of: ObjectIdentifier(session)) { _, _ in
+            autoTick.configure(advance: { session.advanceTick() })
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .awGamePickupFiber)) { note in
+            guard pickupNoteMatchesControlled(note) else { return }
+            sfx.playFiberPickup()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .awGamePickupNutrient)) { note in
+            guard pickupNoteMatchesControlled(note) else { return }
+            sfx.playNutrientPickup()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .awGameControlledSuccess)) { _ in
+            hapticSuccess.prepare()
+            hapticSuccess.impactOccurred()
+            sfx.playControlledSuccess()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .awGameControlledFailure)) { _ in
+            hapticActionFailed.prepare()
+            hapticActionFailed.impactOccurred()
+            sfx.playControlledFailure()
+        }
+    }
+
+    private var autoTickStatusLine: String {
+        if autoTick.isAutoEnabled {
+            let s = autoTick.intervalSeconds
+            let intervalLabel = Self.formattedTickSeconds(s)
+            return String(
+                format: String(localized: "play.autotick.status_active_fmt"),
+                locale: .current,
+                intervalLabel
+            )
+        }
+        return String(localized: "play.autotick.status_paused")
+    }
+
+    private static func formattedTickSeconds(_ s: Double) -> String {
+        switch s {
+        case 0.9: return "0.9s"
+        case 1.8: return "1.8s"
+        case 3.0: return "3s"
+        default: return String(format: "%.1fs", s)
+        }
+    }
+
+    private static func tickSpeedLabel(for seconds: Double) -> String {
+        switch seconds {
+        case 0.9: String(localized: "play.autotick.preset_fast")
+        case 1.8: String(localized: "play.autotick.preset_normal")
+        case 3.0: String(localized: "play.autotick.preset_slow")
+        default: String(format: "%.1fs", seconds)
+        }
+    }
+
+    private func pickupNoteMatchesControlled(_ note: Notification) -> Bool {
+        guard let s = note.userInfo?["agentId"] as? String else { return false }
+        return s == session.controlledId.uuidString
+    }
+
+    // MARK: - Status Bar (compact)
+
+    private var statusBar: some View {
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(
+                    String(
+                        format: String(localized: "play.tick_fmt"),
+                        locale: .current,
+                        session.worldTick
+                    )
+                )
+                    .font(.subheadline.monospacedDigit().bold())
+                Text(
+                    String(
+                        format: String(localized: "play.status.terrain_mode_fmt"),
+                        locale: .current,
+                        session.terrainProfile.localizedDisplayName,
+                        label(for: session.controlMode)
+                    )
+                )
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Text(autoTickStatusLine)
+                    .font(.caption2.monospacedDigit())
+                    .foregroundStyle(autoTick.isAutoEnabled ? .secondary : .tertiary)
+                Text(session.statusMessage)
+                    .font(.caption2)
+                    .foregroundStyle(.primary)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+                if let hint = session.controlledProximityHint {
+                    Text(hint)
+                        .font(.caption2)
+                        .foregroundStyle(
+                            hint.hasPrefix(String(localized: "session.proximity.high_prefix"))
+                                ? .orange
+                                : .secondary
+                        )
+                }
+                if let c = session.controlledAgent {
+                    let fiberTarget = session.softFiberGoalTarget
+                    let fib = c.inventory.fiberScraps
+                    Text(
+                        String(
+                            format: String(localized: "play.status.goal_fiber_fmt"),
+                            locale: .current,
+                            fib,
+                            fiberTarget
+                        )
+                    )
+                        .font(.caption2.monospacedDigit())
+                        .foregroundStyle(fib >= fiberTarget ? .green : .secondary)
+                    let nutTarget = session.softNutrientGoalTarget
+                    let nut = c.inventory.nutrientPackets
+                    Text(
+                        String(
+                            format: String(localized: "play.status.goal_nutrient_fmt"),
+                            locale: .current,
+                            nut,
+                            nutTarget
+                        )
+                    )
+                        .font(.caption2.monospacedDigit())
+                        .foregroundStyle(nut >= nutTarget ? .green : .secondary)
+                }
+                if let line = session.controlledLatestNotableActivityLine {
+                    Text(
+                        String(
+                            format: String(localized: "play.status.last_notable_fmt"),
+                            locale: .current,
+                            line
+                        )
+                    )
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.8)
+                }
+            }
+
+            Spacer()
+
+            if let warn = session.autosaveWarning {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.orange)
+                    .help(warn)
+            }
+        }
+    }
+
+    // MARK: - Floating Controls
+
+    private var floatingControls: some View {
+        HStack(spacing: 12) {
+            // Auto-advance toggle
+            Button {
+                hapticPauseToggle.prepare()
+                autoTick.toggleAutoEnabled()
+                hapticPauseToggle.impactOccurred()
+            } label: {
+                Image(systemName: autoTick.isAutoEnabled ? "pause.circle.fill" : "play.circle.fill")
+                    .font(.title)
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(autoTick.isAutoEnabled ? .green : .secondary)
+            }
+            .accessibilityLabel(
+                autoTick.isAutoEnabled
+                    ? String(localized: "play.a11y.pause_autotick")
+                    : String(localized: "play.a11y.resume_autotick")
+            )
+
+            // Advance 1 tick
+            Button {
+                hapticTickStep.prepare()
                 session.advanceTick()
+                hapticTickStep.impactOccurred()
+            } label: {
+                Image(systemName: "forward.frame.fill")
+                    .font(.title2)
+                    .symbolRenderingMode(.hierarchical)
+            }
+            .accessibilityLabel(String(localized: "play.a11y.advance_one_tick"))
+
+            Spacer()
+
+            // D-pad (compact)
+            if manualPadEnabled {
+                compactDPad
             }
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .padding(.horizontal, 8)
+        .padding(.bottom, 4)
     }
 
-    private func label(for mode: PlayerControlMode) -> String {
-        switch mode {
-        case .manual: "Manual"
-        case .autonomous: "Autónomo"
-        case .hybrid: "Híbrido"
+    private var compactDPad: some View {
+        HStack(spacing: 6) {
+            dpadButton(dx: -1, dy: 0, systemName: "arrow.left.circle.fill", accessibilityLabel: String(localized: "play.a11y.move_west"))
+            VStack(spacing: 6) {
+                dpadButton(dx: 0, dy: -1, systemName: "arrow.up.circle.fill", accessibilityLabel: String(localized: "play.a11y.move_north"))
+                dpadButton(dx: 0, dy: 1, systemName: "arrow.down.circle.fill", accessibilityLabel: String(localized: "play.a11y.move_south"))
+            }
+            dpadButton(dx: 1, dy: 0, systemName: "arrow.right.circle.fill", accessibilityLabel: String(localized: "play.a11y.move_east"))
         }
+        .symbolRenderingMode(.hierarchical)
     }
 
-    private var terrainLegend: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Leyenda de terreno")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-            LazyVGrid(
-                columns: [GridItem(.adaptive(minimum: 118), spacing: 8, alignment: .leading)],
-                alignment: .leading,
-                spacing: 8
-            ) {
+    private func dpadButton(dx: Int, dy: Int, systemName: String, accessibilityLabel: String) -> some View {
+        Button {
+            hapticMoveOK.prepare()
+            hapticMoveBlocked.prepare()
+            if session.moveControlled(dx: dx, dy: dy) {
+                hapticMoveOK.impactOccurred()
+            } else {
+                hapticMoveBlocked.impactOccurred()
+            }
+        } label: {
+            Image(systemName: systemName)
+                .font(.system(size: 34, weight: .semibold))
+                .frame(minWidth: 48, minHeight: 48)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.bordered)
+        .tint(.primary)
+        .accessibilityLabel(accessibilityLabel)
+    }
+
+    // MARK: - Terrain Legend Sheet
+
+    private var terrainLegendSheet: some View {
+        NavigationStack {
+            List {
                 ForEach(TerrainSquareKind.allCases, id: \.self) { kind in
-                    HStack(spacing: 8) {
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                    HStack(spacing: 12) {
+                        RoundedRectangle(cornerRadius: 6, style: .continuous)
                             .fill(kind.mapSwiftUIColor)
-                            .frame(width: 20, height: 20)
+                            .frame(width: 28, height: 28)
                             .overlay(
-                                RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                    .strokeBorder(.secondary.opacity(0.35), lineWidth: 0.5)
+                                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                    .strokeBorder(.secondary.opacity(0.3), lineWidth: 0.5)
                             )
-                            .accessibilityHidden(true)
                         Text(kind.mapLegendTitle)
-                            .font(.caption)
-                            .foregroundStyle(.primary)
+                            .font(.body)
                     }
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel("Terreno: \(kind.mapLegendTitle)")
+                }
+            }
+            .navigationTitle(String(localized: "play.terrain_legend.title"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(String(localized: "Cerrar")) { showTerrainLegend = false }
                 }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(10)
-        .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("Leyenda de terreno")
+        .presentationDetents([.medium])
     }
 
-    private var dPad: some View {
-        VStack(spacing: 4) {
-            Button {
-                session.moveControlled(dx: 0, dy: -1)
-            } label: {
-                Image(systemName: "arrow.up.circle.fill").font(.title2)
-            }
-            .disabled(!manualPadEnabled)
-            .accessibilityLabel("Mover arriba")
-            HStack(spacing: 24) {
-                Button {
-                    session.moveControlled(dx: -1, dy: 0)
-                } label: {
-                    Image(systemName: "arrow.left.circle.fill").font(.title2)
-                }
-                .disabled(!manualPadEnabled)
-                .accessibilityLabel("Mover a la izquierda")
-                Button {
-                    session.moveControlled(dx: 1, dy: 0)
-                } label: {
-                    Image(systemName: "arrow.right.circle.fill").font(.title2)
-                }
-                .disabled(!manualPadEnabled)
-                .accessibilityLabel("Mover a la derecha")
-            }
-            Button {
-                session.moveControlled(dx: 0, dy: 1)
-            } label: {
-                Image(systemName: "arrow.down.circle.fill").font(.title2)
-            }
-            .disabled(!manualPadEnabled)
-            .accessibilityLabel("Mover abajo")
-        }
-    }
+    // MARK: - Helpers
 
     private var manualPadEnabled: Bool {
         session.controlMode == .manual || session.controlMode == .hybrid
     }
 
-    private var agentList: some View {
-        List {
-            Section {
-                if session.agents.isEmpty {
-                    ContentUnavailableView(
-                        "Sin agentes en pantalla",
-                        systemImage: "person.3.sequence",
-                        description: Text("Si acabás de cargar un mundo, revisá el mapa; tocá un círculo de agente para asignar control.")
-                    )
-                    .frame(minHeight: 120)
-                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel("Lista de agentes vacía. Tocá un agente en el mapa para asignar control.")
-                } else {
-                    ForEach(session.agents) { agent in
-                        HStack(alignment: .center, spacing: 10) {
-                            Circle()
-                                .fill(Color(hue: agent.hue, saturation: 0.78, brightness: 0.92))
-                                .frame(width: 10, height: 10)
-                                .accessibilityHidden(true)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(agent.displayName)
-                                    .font(.subheadline.weight(agent.id == session.controlledId ? .bold : .regular))
-                                Text("(\(agent.position.x), \(agent.position.y)) · E \(agent.vitals.energy, format: .number.precision(.fractionLength(2))) · H \(agent.vitals.hunger, format: .number.precision(.fractionLength(2)))")
-                                    .font(.caption2.monospacedDigit())
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .accessibilityElement(children: .combine)
-                        .accessibilityLabel(agentAccessibilitySummary(agent))
-                    }
-                }
-            } header: {
-                Text("Agentes (tocá el mapa para controlar)")
-            }
+    private func label(for mode: PlayerControlMode) -> String {
+        switch mode {
+        case .manual: String(localized: "play.control_mode.manual")
+        case .autonomous: String(localized: "play.control_mode.autonomous")
+        case .hybrid: String(localized: "play.control_mode.hybrid")
         }
-        .listStyle(.plain)
-        .frame(minHeight: 160, maxHeight: 220)
-    }
-
-    private func agentAccessibilitySummary(_ agent: V2GridAgent) -> String {
-        let role = agent.id == session.controlledId ? "Agente bajo control: " : "Agente: "
-        let e = agent.vitals.energy.formatted(.number.precision(.fractionLength(2)))
-        let h = agent.vitals.hunger.formatted(.number.precision(.fractionLength(2)))
-        return "\(role)\(agent.displayName). Posición \(agent.position.x) coma \(agent.position.y). Energía \(e). Hambre \(h)."
     }
 }

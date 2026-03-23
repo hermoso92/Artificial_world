@@ -14,11 +14,11 @@ public enum TerrainSquareKind: String, Sendable, Codable, CaseIterable {
         case .empty, .refuge:
             return 0.0
         case .wildGrass:
-            return 0.15
+            return 0.30
         case .denseForest:
-            return 0.25
+            return 0.40
         case .rockOutcrop:
-            return 0.10
+            return 0.18
         }
     }
 
@@ -38,7 +38,7 @@ public enum TerrainSquareKind: String, Sendable, Codable, CaseIterable {
 }
 
 /// Definición de bioma de terreno con zona lógica.
-public struct TerrainBiomeDefinition: Sendable {
+public struct TerrainBiomeDefinition: Equatable, Hashable, Sendable {
     public let zoneID: ZoneID
     public let displayName: String
     public let dominantTerrain: TerrainSquareKind
@@ -75,4 +75,10 @@ public enum TerrainBiomeCatalog {
         deepWoods,
         rockyPlains,
     ]
+
+    /// Resuelve un bioma persistido por `zoneID.raw`; `nil` o desconocido → el llamador suele usar `wildEdge`.
+    public static func definition(forZoneIDRaw raw: String?) -> TerrainBiomeDefinition? {
+        guard let raw, !raw.isEmpty else { return nil }
+        return allBiomes.first { $0.zoneID.raw == raw }
+    }
 }

@@ -1,96 +1,4224 @@
 {
-  "sourceLanguage" : "es",
-  "strings" : {
-    "terrain.legend.dense_forest" : {
-      "comment" : "Short terrain label: forest cells on the grid map legend.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dense forest"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bosque denso"
+  "sourceLanguage": "es",
+  "strings": {
+    "": {},
+    "¿Crear una partida nueva?": {},
+    "¿Eliminar esta partida?": {},
+    "(%lld, %lld)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "new",
+            "value": "(%1$lld, %2$lld)"
           }
         }
       }
     },
-    "terrain.legend.empty" : {
-      "comment" : "Short terrain label: empty/plain cells on the grid map legend.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Empty"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vacío"
+    "%@ · %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · %2$@"
           }
         }
       }
     },
-    "terrain.legend.refuge" : {
-      "comment" : "Short terrain label: shelter/refuge cells on the grid map legend.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shelter"
+    "%lld": {},
+    "%lld / 3": {},
+    "%lld%%": {},
+    "+1": {},
+    "Acción actual": {},
+    "Acciones": {},
+    "Actualizar lista": {},
+    "Agente más cercano: %lld celdas": {},
+    "Agente no encontrado": {},
+    "Almacén (rango)": {},
+    "Bioma de terreno": {},
+    "Cada agente tiene su refugio y sus mejoras. Craft y consumo usan el inventario del controlado; tenés que estar en la celda de su refugio para mejorar.": {},
+    "Cancelar": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Refugio"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar"
           }
         }
       }
     },
-    "terrain.legend.rock_outcrop" : {
-      "comment" : "Short terrain label: rock cells on the grid map legend.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rock"
+    "Cargar": {},
+    "Cargar partida %@": {},
+    "Cerrar": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Roca"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerrar"
           }
         }
       }
     },
-    "terrain.legend.wild_grass" : {
-      "comment" : "Short terrain label: grass cells on the grid map legend.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grass"
+    "Cierra esta hoja y restaura el mundo desde el archivo.": {},
+    "Controlado": {},
+    "Tomá el control": {},
+    "Crea o sobrescribe un archivo con el estado actual del mundo.": {},
+    "Crear": {},
+    "Define el terreno predominante al generar el mapa nuevo.": {},
+    "Descanso (rango)": {},
+    "Descanso: 4 fibra por nivel · Almacén: 3 fibra por nivel. Máximo rango 3 cada uno.": {},
+    "El mundo va por el tick %llu. Lo que no esté guardado se pierde.": {},
+    "El nombre queda en este dispositivo. Podés cargar después desde la misma lista.": {},
+    "Elegí un agente en el mapa.": {},
+    "Eliminar": {},
+    "Eliminar %@": {},
+    "Energía": {},
+    "Estado": {},
+    "Fibra": {},
+    "Guardá con un nombre descriptivo para retomar el tick, el mapa y los agentes.": {},
+    "Guardar / Cargar": {},
+    "Guardar partida": {},
+    "Hambre": {},
+    "Inventario": {},
+    "Inventario y refugio": {},
+    "Las acciones aparecen acá mientras corre la partida.": {},
+    "Letras y números; evitá barras y comillas. Se usa como nombre de archivo.": {},
+    "Leyenda de terreno": {},
+    "Mejorar almacén (%@)": {},
+    "Mejorar eficiencia de descanso (%@)": {},
+    "Mejoras del refugio": {},
+    "Memoria reciente": {},
+    "Mensaje: %@": {},
+    "Modo": {},
+    "Nombre del archivo": {},
+    "Nombre del guardado": {},
+    "Nueva partida": {},
+    "Nuevo guardado": {},
+    "Nutrientes": {},
+    "Partidas en el dispositivo": {},
+    "Personalidad": {},
+    "Pide confirmación antes de borrar el archivo.": {},
+    "Posición": {},
+    "Quizá fue removido al cargar otra partida.": {},
+    "Racha: %@ × %u": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Racha: %1$@ × %2$u"
+          }
+        }
+      }
+    },
+    "Recuperación en refugio": {},
+    "Reduce hambre y gasta un paquete del inventario del controlado.": {},
+    "Refugio: (%lld, %lld)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Refugio: (%1$lld, %2$lld)"
+          }
+        }
+      }
+    },
+    "Registro en vivo": {},
+    "Restablecer zoom": {},
+    "Se borrará «%@» de forma permanente en este dispositivo.": {},
+    "Se crea un mundo nuevo con la semilla y el tamaño de grid del dispositivo. Guardá la partida actual antes si no querés perderla.": {},
+    "Sí, descartar esta partida": {},
+    "Sin agente": {},
+    "Sin archivos guardados. Usá la sección anterior para guardar.": {},
+    "Sin eventos recientes": {},
+    "Su refugio": {},
+    "t%llu": {},
+    "terrain.legend.dense_forest": {
+      "comment": "Short terrain label: forest cells on the grid map legend.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dense forest"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pasto"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bosque denso"
+          }
+        }
+      }
+    },
+    "terrain.legend.empty": {
+      "comment": "Short terrain label: empty/plain cells on the grid map legend.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empty"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vacío"
+          }
+        }
+      }
+    },
+    "terrain.legend.refuge": {
+      "comment": "Short terrain label: shelter/refuge cells on the grid map legend.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refugio"
+          }
+        }
+      }
+    },
+    "terrain.legend.rock_outcrop": {
+      "comment": "Short terrain label: rock cells on the grid map legend.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rock"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roca"
+          }
+        }
+      }
+    },
+    "terrain.legend.wild_grass": {
+      "comment": "Short terrain label: grass cells on the grid map legend.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grass"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasto"
+          }
+        }
+      }
+    },
+    "help.bottom.dpad": {
+      "comment": "Quick help: D-pad moves controlled agent.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direction pad: moves the controlled agent (manual or hybrid mode)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cruz de direcciones: mueve al controlado (modo manual o híbrido)."
+          }
+        }
+      }
+    },
+    "help.bottom.play_pause": {
+      "comment": "Quick help: auto tick play pause.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play/pause: automatic world ticks (interval is set in the ⋯ menu)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play/pausa: avance automático del mundo (el intervalo se elige en el menú ⋯)."
+          }
+        }
+      }
+    },
+    "help.bottom.step_tick": {
+      "comment": "Quick help: single tick button.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrow button: advance exactly one tick."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flecha: avanza exactamente un tick."
+          }
+        }
+      }
+    },
+    "help.button.done": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listo"
+          }
+        }
+      }
+    },
+    "help.map.pinch_zoom": {
+      "comment": "Quick help: pinch to zoom map.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pinch with two fingers to zoom the map in or out."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pellizcá con dos dedos para acercar o alejar el mapa."
+          }
+        }
+      }
+    },
+    "help.map.refuge_names": {
+      "comment": "Quick help: refuge labels.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each refuge shows its owner’s name."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada refugio muestra el nombre de su dueño."
+          }
+        }
+      }
+    },
+    "help.map.tap_agent": {
+      "comment": "Quick help: tap near agent.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap near an agent to open their profile and take control."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tocá cerca de un agente para abrir su ficha y tomar el control."
+          }
+        }
+      }
+    },
+    "help.menu.items": {
+      "comment": "Quick help: ellipsis menu items.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventory, save/load, terrain legend."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventario, guardar/cargar, leyenda de terreno."
+          }
+        }
+      }
+    },
+    "help.menu.quick": {
+      "comment": "Menu: open quick help sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quick help"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayuda rápida"
+          }
+        }
+      }
+    },
+    "help.menu.settings": {
+      "comment": "Quick help: menu audio and tick settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Music, sounds, control mode, and auto-tick speed."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Música, sonidos, modo de control y velocidad de auto-tick."
+          }
+        }
+      }
+    },
+    "help.section.bottom_bar": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bottom bar"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barra inferior"
+          }
+        }
+      }
+    },
+    "help.section.map": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Map"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mapa"
+          }
+        }
+      }
+    },
+    "help.section.menu": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menu (⋯)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menú (⋯)"
+          }
+        }
+      }
+    },
+    "help.title.controls": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controls"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controles"
+          }
+        }
+      }
+    },
+    "agent.a11y.map_hint": {
+      "comment": "VoiceOver hint on agent bubble on map.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the map, tap near this cell to open the profile and take control."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En el mapa, tocá cerca de esta celda para ver la ficha y tomar el control."
+          }
+        }
+      }
+    },
+    "help.toolbar.a11y": {
+      "comment": "Accessibility label for help toolbar button.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Game controls help"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayuda de controles del juego"
+          }
+        }
+      }
+    },
+    "map.a11y.hint": {
+      "comment": "VoiceOver hint for main grid map.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pinch to zoom. Tap near a character for their profile and control."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pellizcá para zoom. Tocá cerca de un personaje para su ficha y el control."
+          }
+        }
+      }
+    },
+    "map.a11y.label_fmt": {
+      "comment": "VoiceOver label; args: side, side (cell count).",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "World map, %lld by %lld cells"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mapa del mundo, %lld por %lld celdas"
+          }
+        }
+      }
+    },
+    "map.zoom.decrease_a11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoom out"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alejar mapa"
+          }
+        }
+      }
+    },
+    "map.zoom.increase_a11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoom in"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acercar mapa"
+          }
+        }
+      }
+    },
+    "map.zoom.reset_help": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset zoom to fit"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restablecer zoom"
+          }
+        }
+      }
+    },
+    "map.zoom.reset_a11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset map zoom"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restablecer zoom del mapa"
+          }
+        }
+      }
+    },
+    "play.autotick.preset_fast": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fast (0.9s)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rápido (0.9s)"
+          }
+        }
+      }
+    },
+    "play.autotick.preset_normal": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Normal (1.8s)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Normal (1.8s)"
+          }
+        }
+      }
+    },
+    "play.autotick.preset_slow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slow (3s)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lento (3s)"
+          }
+        }
+      }
+    },
+    "play.autotick.status_active_fmt": {
+      "comment": "Arg is interval label e.g. 1.8s",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto-tick: every %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto-tick: cada %@"
+          }
+        }
+      }
+    },
+    "play.autotick.status_paused": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto-tick: paused (tap ▶︎)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto-tick: pausado (tocá ▶︎)"
+          }
+        }
+      }
+    },
+    "play.control_mode.autonomous": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autonomous"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autónomo"
+          }
+        }
+      }
+    },
+    "play.control_mode.hybrid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hybrid"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Híbrido"
+          }
+        }
+      }
+    },
+    "play.control_mode.manual": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manual"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manual"
+          }
+        }
+      }
+    },
+    "play.menu.autotick_speed_picker": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto-tick speed"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Velocidad auto-tick"
+          }
+        }
+      }
+    },
+    "play.menu.control_mode_picker": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Control mode"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modo"
+          }
+        }
+      }
+    },
+    "play.menu.inventory": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventory"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventario"
+          }
+        }
+      }
+    },
+    "play.menu.music_help_available": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loops from the app bundle (AWAmbient.m4a or other supported names)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loop desde el bundle (AWAmbient.m4a u otros nombres soportados)."
+          }
+        }
+      }
+    },
+    "play.menu.music_help_missing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No track in bundle: add AWAmbient.m4a to the app target."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin pista en el bundle: agregá AWAmbient.m4a al target de la app."
+          }
+        }
+      }
+    },
+    "play.menu.music_toggle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ambient music"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Música ambiental"
+          }
+        }
+      }
+    },
+    "play.menu.save_load": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save / Load"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar / Cargar"
+          }
+        }
+      }
+    },
+    "play.menu.sfx_help": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional SFX: fiber, nutrient, confirm, fail (SFX_Fail…)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SFX opcionales: fibra, nutriente, confirmación, fallo (SFX_Fail…)."
+          }
+        }
+      }
+    },
+    "play.menu.sfx_toggle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sounds (pickups and actions)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sonidos (recolección y acciones)"
+          }
+        }
+      }
+    },
+    "play.menu.terrain_legend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terrain legend"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leyenda de terreno"
+          }
+        }
+      }
+    },
+    "play.menu.volume": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volume"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volumen"
+          }
+        }
+      }
+    },
+    "play.newgame.confirm_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start a new game?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Crear una partida nueva?"
+          }
+        }
+      }
+    },
+    "play.newgame.discard_confirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yes, discard this game"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sí, descartar esta partida"
+          }
+        }
+      }
+    },
+    "play.newgame.discard_message_fmt": {
+      "comment": "Arg: current world tick (UInt64).",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The world is at tick %llu. Anything not saved will be lost."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El mundo va por el tick %llu. Lo que no esté guardado se pierde."
+          }
+        }
+      }
+    },
+    "play.status.goal_fiber_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fiber goal: %lld / %lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meta fibra: %lld / %lld"
+          }
+        }
+      }
+    },
+    "play.status.goal_nutrient_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nutrient goal: %lld / %lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meta nutrientes: %lld / %lld"
+          }
+        }
+      }
+    },
+    "play.status.last_notable_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last notable: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Último notable: %@"
+          }
+        }
+      }
+    },
+    "play.status.terrain_mode_fmt": {
+      "comment": "Args: terrain display name, control mode label.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@"
+          }
+        }
+      }
+    },
+    "play.terrain_legend.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terrain legend"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leyenda de terreno"
+          }
+        }
+      }
+    },
+    "play.tick_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tick %llu"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tick %llu"
+          }
+        }
+      }
+    },
+    "play.toolbar.new_game": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New game"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nueva partida"
+          }
+        }
+      }
+    },
+    "play.a11y.advance_one_tick": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Advance world by one tick"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avanzar un tick del mundo"
+          }
+        }
+      }
+    },
+    "play.a11y.move_east": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move east"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mover este"
+          }
+        }
+      }
+    },
+    "play.a11y.move_north": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move north"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mover norte"
+          }
+        }
+      }
+    },
+    "play.a11y.move_south": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move south"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mover sur"
+          }
+        }
+      }
+    },
+    "play.a11y.move_west": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move west"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mover oeste"
+          }
+        }
+      }
+    },
+    "play.a11y.pause_autotick": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause automatic world ticks"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausar avance automático del mundo"
+          }
+        }
+      }
+    },
+    "play.a11y.resume_autotick": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resume automatic world ticks"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reanudar avance automático del mundo"
+          }
+        }
+      }
+    },
+    "Tick %llu": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tick %llu"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tick %llu"
+          }
+        }
+      }
+    },
+    "Tocá cargar para reemplazar la partida actual.": {},
+    "Todavía no hay partidas": {},
+    "Ubicación": {},
+    "Usar 1 nutriente": {},
+    "Vitales": {},
+    "Volvé a la partida sin cambios.": {},
+    "Vuelve a leer los archivos guardados en el dispositivo.": {},
+    "agent.a11y.controlled_prefix": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlled. "
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlado. "
+          }
+        }
+      }
+    },
+    "agent.a11y.row_col_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Row %lld, column %lld. "
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fila %lld, columna %lld. "
+          }
+        }
+      }
+    },
+    "agent.a11y.intent_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intent: %@. "
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intención: %@. "
+          }
+        }
+      }
+    },
+    "agent.a11y.vitals_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Energy %lld percent, hunger %lld percent. "
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Energía %lld por ciento, hambre %lld por ciento. "
+          }
+        }
+      }
+    },
+    "agent.a11y.archetype_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archetype %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arquetipo %@."
+          }
+        }
+      }
+    },
+    "directive.short.explore": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explore"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explora"
+          }
+        }
+      }
+    },
+    "directive.short.captureNearest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hunt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caza"
+          }
+        }
+      }
+    },
+    "directive.short.returnToRefuge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refugio"
+          }
+        }
+      }
+    },
+    "directive.short.rest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rest"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descansa"
+          }
+        }
+      }
+    },
+    "directive.short.consumeNutrient": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eat"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Come"
+          }
+        }
+      }
+    },
+    "directive.name.explore": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exploring"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explorando"
+          }
+        }
+      }
+    },
+    "directive.name.captureNearest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chasing"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Persiguiendo"
+          }
+        }
+      }
+    },
+    "directive.name.returnToRefuge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Returning to shelter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volviendo al refugio"
+          }
+        }
+      }
+    },
+    "directive.name.rest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resting"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descansando"
+          }
+        }
+      }
+    },
+    "directive.name.consumeNutrient": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eating"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comiendo"
+          }
+        }
+      }
+    },
+    "directive.desc.explore": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roaming the terrain for resources"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recorriendo el terreno en busca de recursos"
+          }
+        }
+      }
+    },
+    "directive.desc.captureNearest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Closing in on the nearest target"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acercándose al objetivo más cercano"
+          }
+        }
+      }
+    },
+    "directive.desc.returnToRefuge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heading back to shelter for safety or need"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regresando al refugio por seguridad o necesidad"
+          }
+        }
+      }
+    },
+    "directive.desc.rest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recovering energy at the shelter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperando energía en el refugio"
+          }
+        }
+      }
+    },
+    "directive.desc.consumeNutrient": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consuming a nutrient from inventory"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consumiendo un nutriente del inventario"
+          }
+        }
+      }
+    },
+    "profile.not_found_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent not found"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agente no encontrado"
+          }
+        }
+      }
+    },
+    "profile.not_found_desc": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "They may have been removed when loading another save."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quizá fue removido al cargar otra partida."
+          }
+        }
+      }
+    },
+    "profile.take_control": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take control"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tomá el control"
+          }
+        }
+      }
+    },
+    "profile.controlled_badge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlled"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlado"
+          }
+        }
+      }
+    },
+    "profile.refuge_coords_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelter: (%lld, %lld)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refugio: (%lld, %lld)"
+          }
+        }
+      }
+    },
+    "profile.trait.aggressiveness": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggression"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agresividad"
+          }
+        }
+      }
+    },
+    "profile.trait.curiosity": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Curiosity"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Curiosidad"
+          }
+        }
+      }
+    },
+    "profile.trait.caution": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caution"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cautela"
+          }
+        }
+      }
+    },
+    "profile.trait.metabolism": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metabolism"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metabolismo"
+          }
+        }
+      }
+    },
+    "profile.personality_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personality"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personalidad"
+          }
+        }
+      }
+    },
+    "profile.current_action_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current action"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acción actual"
+          }
+        }
+      }
+    },
+    "profile.activity_empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actions appear here while the game runs."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las acciones aparecen acá mientras corre la partida."
+          }
+        }
+      }
+    },
+    "profile.activity_tick_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "t%llu"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "t%llu"
+          }
+        }
+      }
+    },
+    "profile.activity_log_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live log"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registro en vivo"
+          }
+        }
+      }
+    },
+    "profile.vital_energy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Energy"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Energía"
+          }
+        }
+      }
+    },
+    "profile.vital_hunger": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hunger"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hambre"
+          }
+        }
+      }
+    },
+    "profile.vitals_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vitals"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vitales"
+          }
+        }
+      }
+    },
+    "profile.inv_fiber": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fiber"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fibra"
+          }
+        }
+      }
+    },
+    "profile.inv_nutrients": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nutrients"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nutrientes"
+          }
+        }
+      }
+    },
+    "profile.inventory_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventory"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventario"
+          }
+        }
+      }
+    },
+    "profile.single_agent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only one agent on the map."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un solo agente en el mapa."
+          }
+        }
+      }
+    },
+    "profile.cells_from_nearest_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld cells from nearest"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A %lld celdas del más cercano"
+          }
+        }
+      }
+    },
+    "profile.proximity_very_close": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Very close → more flee, capture, or shelter depending on vitals and personality."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muy cerca → más huida, captura o refugio según vitales y personalidad."
+          }
+        }
+      }
+    },
+    "profile.proximity_medium": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nearby → with recent stress, “virtual” flee triggers sooner."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cercanía → con estrés reciente, la huida “virtual” se anticipa."
+          }
+        }
+      }
+    },
+    "profile.proximity_far": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Far → priority on exploring and surviving the map."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lejos → prioridad en explorar y sobrevivir al mapa."
+          }
+        }
+      }
+    },
+    "profile.location_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ubicación"
+          }
+        }
+      }
+    },
+    "profile.presence.refuge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inside shelter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En el refugio"
+          }
+        }
+      }
+    },
+    "profile.presence.exploring": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exploring"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explorando"
+          }
+        }
+      }
+    },
+    "profile.memory_empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No recent events"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin eventos recientes"
+          }
+        }
+      }
+    },
+    "profile.memory_streak_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Streak: %@ × %lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Racha: %@ × %lld"
+          }
+        }
+      }
+    },
+    "profile.memory_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent memory"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memoria reciente"
+          }
+        }
+      }
+    },
+    "profile.event.prefer_explore": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prefers exploring"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prefiere explorar"
+          }
+        }
+      }
+    },
+    "profile.event.threat_stress": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perceived threat — stress"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amenaza percibida — estrés"
+          }
+        }
+      }
+    },
+    "inv.nav_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventory & shelter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventario y refugio"
+          }
+        }
+      }
+    },
+    "inv.section.inventory": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventory"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventario"
+          }
+        }
+      }
+    },
+    "inv.field.controlled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlled"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlado"
+          }
+        }
+      }
+    },
+    "inv.field.position": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Position"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posición"
+          }
+        }
+      }
+    },
+    "inv.field.their_refuge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Their shelter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Su refugio"
+          }
+        }
+      }
+    },
+    "inv.field.fiber": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fiber"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fibra"
+          }
+        }
+      }
+    },
+    "inv.field.nutrients": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nutrients"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nutrientes"
+          }
+        }
+      }
+    },
+    "inv.field.energy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Energy"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Energía"
+          }
+        }
+      }
+    },
+    "inv.field.hunger": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hunger"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hambre"
+          }
+        }
+      }
+    },
+    "inv.no_agent_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No agent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin agente"
+          }
+        }
+      }
+    },
+    "inv.no_agent_desc": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick an agent on the map."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elegí un agente en el mapa."
+          }
+        }
+      }
+    },
+    "inv.section.refuge_upgrades": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelter upgrades"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejoras del refugio"
+          }
+        }
+      }
+    },
+    "inv.field.rest_rank": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rest (rank)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descanso (rango)"
+          }
+        }
+      }
+    },
+    "inv.field.refuge_recovery": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recovery in shelter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación en refugio"
+          }
+        }
+      }
+    },
+    "inv.field.storage_rank": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Storage (rank)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Almacén (rango)"
+          }
+        }
+      }
+    },
+    "inv.footer.craft_rule": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each agent has their own shelter and upgrades. Crafting and consumption use the controlled agent’s inventory; you must be on their shelter cell to upgrade."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada agente tiene su refugio y sus mejoras. Craft y consumo usan el inventario del controlado; tenés que estar en la celda de su refugio para mejorar."
+          }
+        }
+      }
+    },
+    "inv.section.actions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actions"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acciones"
+          }
+        }
+      }
+    },
+    "inv.action.use_nutrient": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use 1 nutrient"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usar 1 nutriente"
+          }
+        }
+      }
+    },
+    "inv.action.use_nutrient_a11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reduces hunger and spends one pack from the controlled inventory."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reduce hambre y gasta un paquete del inventario del controlado."
+          }
+        }
+      }
+    },
+    "inv.action.craft_rest_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Improve rest efficiency (%@)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejorar eficiencia de descanso (%@)"
+          }
+        }
+      }
+    },
+    "inv.action.craft_storage_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Improve storage (%@)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejorar almacén (%@)"
+          }
+        }
+      }
+    },
+    "inv.footer.costs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rest: 4 fiber per level · Storage: 3 fiber per level. Max rank 3 each."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descanso: 4 fibra por nivel · Almacén: 3 fibra por nivel. Máximo rango 3 cada uno."
+          }
+        }
+      }
+    },
+    "inv.section.status": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estado"
+          }
+        }
+      }
+    },
+    "inv.cost.max": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "max"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "máx."
+          }
+        }
+      }
+    },
+    "inv.cost.free": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "free"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gratis"
+          }
+        }
+      }
+    },
+    "inv.cost.fiber_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld fiber"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld fibra"
+          }
+        }
+      }
+    },
+    "inv.cost.nut_short_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld nut."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld nut."
+          }
+        }
+      }
+    },
+    "newgame.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New game"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nueva partida"
+          }
+        }
+      }
+    },
+    "newgame.biome_picker": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terrain biome"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bioma de terreno"
+          }
+        }
+      }
+    },
+    "newgame.biome_a11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sets the dominant terrain when generating the new map."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Define el terreno predominante al generar el mapa nuevo."
+          }
+        }
+      }
+    },
+    "newgame.footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Creates a new world using the device seed and grid size. Save the current game first if you don’t want to lose it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se crea un mundo nuevo con la semilla y el tamaño de grid del dispositivo. Guardá la partida actual antes si no querés perderla."
+          }
+        }
+      }
+    },
+    "newgame.create": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crear"
+          }
+        }
+      }
+    },
+    "save.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save / Load"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar / Cargar"
+          }
+        }
+      }
+    },
+    "save.field.filename": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File name"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre del archivo"
+          }
+        }
+      }
+    },
+    "save.a11y.filename": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save name"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre del guardado"
+          }
+        }
+      }
+    },
+    "save.a11y.filename_hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letters and numbers; avoid slashes and quotes. Used as the file name."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letras y números; evitá barras y comillas. Se usa como nombre de archivo."
+          }
+        }
+      }
+    },
+    "save.button.save": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save game"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar partida"
+          }
+        }
+      }
+    },
+    "save.hint.save": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Creates or overwrites a file with the current world state."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crea o sobrescribe un archivo con el estado actual del mundo."
+          }
+        }
+      }
+    },
+    "save.section.new": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New save"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuevo guardado"
+          }
+        }
+      }
+    },
+    "save.footer.new": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The name stays on this device. You can load later from the same list."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El nombre queda en este dispositivo. Podés cargar después desde la misma lista."
+          }
+        }
+      }
+    },
+    "save.empty.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No saves yet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todavía no hay partidas"
+          }
+        }
+      }
+    },
+    "save.empty.desc": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save with a clear name to resume tick, map, and agents."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardá con un nombre descriptivo para retomar el tick, el mapa y los agentes."
+          }
+        }
+      }
+    },
+    "save.row.load_hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap load to replace the current game."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tocá cargar para reemplazar la partida actual."
+          }
+        }
+      }
+    },
+    "save.button.load": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Load"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargar"
+          }
+        }
+      }
+    },
+    "save.a11y.load_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Load game %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargar partida %@"
+          }
+        }
+      }
+    },
+    "save.hint.load": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Closes this sheet and restores the world from the file."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cierra esta hoja y restaura el mundo desde el archivo."
+          }
+        }
+      }
+    },
+    "save.a11y.delete_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar %@"
+          }
+        }
+      }
+    },
+    "save.hint.delete": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asks for confirmation before deleting the file."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pide confirmación antes de borrar el archivo."
+          }
+        }
+      }
+    },
+    "save.section.list": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Games on device"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Partidas en el dispositivo"
+          }
+        }
+      }
+    },
+    "save.section.status": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estado"
+          }
+        }
+      }
+    },
+    "save.a11y.message_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Message: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mensaje: %@"
+          }
+        }
+      }
+    },
+    "save.close_hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Return to the game without changes."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volvé a la partida sin cambios."
+          }
+        }
+      }
+    },
+    "save.refresh.label": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh list"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualizar lista"
+          }
+        }
+      }
+    },
+    "save.refresh.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Re-reads save files on the device."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vuelve a leer los archivos guardados en el dispositivo."
+          }
+        }
+      }
+    },
+    "save.delete.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete this save?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar esta partida?"
+          }
+        }
+      }
+    },
+    "save.delete.confirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar"
+          }
+        }
+      }
+    },
+    "save.delete.message_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” will be permanently removed on this device."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se borrará «%@» de forma permanente en este dispositivo."
+          }
+        }
+      }
+    },
+    "save.error.list_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not read saves: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No pudimos leer la lista de guardados: %@"
+          }
+        }
+      }
+    },
+    "save.ok.saved_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved “%@”."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listo: se guardó «%@»."
+          }
+        }
+      }
+    },
+    "save.error.save_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not save: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo guardar: %@"
+          }
+        }
+      }
+    },
+    "save.loading_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading “%@”…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargando «%@»…"
+          }
+        }
+      }
+    },
+    "save.error.load_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not load “%@”: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo cargar «%@»: %@"
+          }
+        }
+      }
+    },
+    "save.ok.deleted_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deleted “%@”."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se eliminó «%@»."
+          }
+        }
+      }
+    },
+    "save.error.delete_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not delete: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo eliminar: %@"
+          }
+        }
+      }
+    },
+    "save.empty.a11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No saved files. Use the section above to save."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin archivos guardados. Usá la sección anterior para guardar."
+          }
+        }
+      }
+    },
+    "session.status.welcome": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each agent has a shelter on the map. Tap one to open their profile."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada agente tiene su refugio en el mapa. Tocá uno para ver su ficha."
+          }
+        }
+      }
+    },
+    "session.proximity.alert_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warning: another agent %lld cells away"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atención: otro agente a %lld celdas"
+          }
+        }
+      }
+    },
+    "session.proximity.near_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nearby: another agent %lld cells away"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cercanía: otro agente a %lld celdas"
+          }
+        }
+      }
+    },
+    "session.proximity.high_prefix": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warning:"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atención:"
+          }
+        }
+      }
+    },
+    "session.status.control_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Control: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Control: %@"
+          }
+        }
+      }
+    },
+    "session.error.no_nutrients": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No nutrients in the controlled inventory."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay nutrientes en el inventario del controlado."
+          }
+        }
+      }
+    },
+    "session.error.craft_rest_max": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough fiber or rest upgrade is already max (3)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No alcanza la fibra o el descanso ya está al máximo (3)."
+          }
+        }
+      }
+    },
+    "session.error.craft_storage_max": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough fiber or storage is already max (3)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No alcanza la fibra o el almacén ya está al máximo (3)."
+          }
+        }
+      }
+    },
+    "session.status.controlled_vitals_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: E%lld%% H%lld%% · fib %lld nut %lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: E%lld%% H%lld%% · fib %lld nut %lld"
+          }
+        }
+      }
+    },
+    "session.status.no_controlled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No controlled agent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin agente controlado"
+          }
+        }
+      }
+    },
+    "session.cardinal.north": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "north"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "norte"
+          }
+        }
+      }
+    },
+    "session.cardinal.south": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "south"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sur"
+          }
+        }
+      }
+    },
+    "session.cardinal.east": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "east"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "este"
+          }
+        }
+      }
+    },
+    "session.cardinal.west": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "west"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "oeste"
+          }
+        }
+      }
+    },
+    "session.cardinal.generic": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "new cell"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nueva celda"
+          }
+        }
+      }
+    },
+    "session.move.manual.arrived_refuge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrived at their shelter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Llegó a su refugio"
+          }
+        }
+      }
+    },
+    "session.move.manual.left_refuge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Left their shelter to gather resources"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salió de su refugio a buscar recursos"
+          }
+        }
+      }
+    },
+    "session.move.manual.walked_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Walked %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caminó al %@"
+          }
+        }
+      }
+    },
+    "session.move.manual.walked_foraging_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Walked %@ — looking for food or materials"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caminó al %@ — buscando comida o materiales"
+          }
+        }
+      }
+    },
+    "session.move.ai.arrived_rest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrived at shelter to rest"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Llegó a su refugio a descansar"
+          }
+        }
+      }
+    },
+    "session.move.ai.entered_refuge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entered their shelter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entró a su refugio"
+          }
+        }
+      }
+    },
+    "session.move.ai.toward_refuge_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heading to shelter — step toward %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Va a su refugio — paso hacia el %@"
+          }
+        }
+      }
+    },
+    "session.move.ai.approach_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Approaching another agent — %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se acerca a otro agente — %@"
+          }
+        }
+      }
+    },
+    "session.move.ai.explore_after_rest_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Left shelter to explore (rest complete) — %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salió del refugio a explorar (descanso cumplido) — %@"
+          }
+        }
+      }
+    },
+    "session.move.ai.explore_forage_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exploring for food or fiber — %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explora a por comida o fibra — %@"
+          }
+        }
+      }
+    },
+    "session.move.ai.explore_map_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exploring the map — %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explora el mapa — %@"
+          }
+        }
+      }
+    },
+    "session.move.ai.shifted_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moved %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se movió al %@"
+          }
+        }
+      }
+    },
+    "session.log.pickup_fiber": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Found fiber while exploring"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encontró fibra al explorar"
+          }
+        }
+      }
+    },
+    "session.log.pickup_nutrient": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Found food (nutrient)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encontró comida (nutriente)"
+          }
+        }
+      }
+    },
+    "session.log.ate_nutrient_manual": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ate a nutrient (manual)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comió un nutriente (manual)"
+          }
+        }
+      }
+    },
+    "session.log.upgrade_rest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Improved shelter rest efficiency"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejoró eficiencia de descanso del refugio"
+          }
+        }
+      }
+    },
+    "session.log.upgrade_storage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Improved shelter storage"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejoró almacén del refugio"
+          }
+        }
+      }
+    },
+    "session.log.eat_no_nutrients": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eat — no nutrients in inventory"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comer — sin nutrientes en inventario"
+          }
+        }
+      }
+    },
+    "session.log.ate_nutrient": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ate a nutrient"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comió un nutriente"
+          }
+        }
+      }
+    },
+    "log.prefix.found": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Found"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encontró"
+          }
+        }
+      }
+    },
+    "log.prefix.improved": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Improved"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejoró"
+          }
+        }
+      }
+    },
+    "log.prefix.ate": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ate"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comió"
+          }
+        }
+      }
+    },
+    "log.prefix.arrived": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrived"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Llegó"
+          }
+        }
+      }
+    },
+    "log.prefix.left": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Left"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salió"
+          }
+        }
+      }
+    },
+    "log.prefix.entered": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entered"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entró"
+          }
+        }
+      }
+    },
+    "log.prefix.heading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heading"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Va"
+          }
+        }
+      }
+    },
+    "log.prefix.approaching": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Approaching"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se acerca"
+          }
+        }
+      }
+    },
+    "log.prefix.exploring": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exploring"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explora"
+          }
+        }
+      }
+    },
+    "root.autosave_failed_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autosave failed: %@. You can use Save / Load with a name."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autosave falló: %@. Podés usar Guardar / Cargar con nombre."
+          }
+        }
+      }
+    },
+    "biome.name.wild_edge_01": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wild Edge"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Borde Salvaje"
+          }
+        }
+      }
+    },
+    "biome.name.deep_woods_01": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deep Woods"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bosque Profundo"
+          }
+        }
+      }
+    },
+    "biome.name.rocky_plains_01": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rocky Plains"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Llanuras Rocosas"
+          }
+        }
+      }
+    },
+    "archetype.hunter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hunter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cazador"
+          }
+        }
+      }
+    },
+    "archetype.explorer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explorer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explorador"
+          }
+        }
+      }
+    },
+    "archetype.cautious": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cautious"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cauteloso"
+          }
+        }
+      }
+    },
+    "archetype.hardy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hardy"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resistente"
+          }
+        }
+      }
+    },
+    "archetype.daredevil": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daredevil"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intrépido"
+          }
+        }
+      }
+    },
+    "archetype.hermit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hermit"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ermitaño"
+          }
+        }
+      }
+    },
+    "archetype.opportunist": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opportunist"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oportunista"
+          }
+        }
+      }
+    },
+    "archetype.balanced": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balanced"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equilibrado"
+          }
+        }
+      }
+    },
+    "session.agent.default_name_fmt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent %lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agente %lld"
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

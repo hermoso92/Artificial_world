@@ -146,34 +146,38 @@ let package = Package(
 
 ### Test Rápido en el Editor
 
-Crea un archivo temporal `Test.swift` en tu proyecto con esto:
-
-**Módulos SPM** (en un Swift playground del paquete o target que solo importe SwiftAWCore):
+Abre un archivo existente como `V2WorldSession.swift` y verifica que estas líneas compilen:
 
 ```swift
 import AWDomain
 import AWAgent
 
-struct SPMCompilationSmoke {
-    func run() {
-        let vitals = SurvivalVitals(energy: 1.0, hunger: 0.0)
-        let inv = InventoryState(fiberScraps: 0, nutrientPackets: 0)
-        let ctx = UtilityContext(vitals: vitals, presence: .insideRefuge, inventory: inv)
-        _ = UtilitySafetyRules.chooseDirective(context: ctx)
-    }
-}
-```
+// Verifica que los tipos del SPM estén disponibles:
+// - AWDomain: SurvivalVitals, GridCoord, InventoryState, TerrainSquareKind, GridMap, MapGenerator
+// - AWAgent: UtilityContext, UtilitySafetyRules, UtilityScoring, AgentMemory
 
-**Persistencia JSON de la app** (`WorldPersistenceEngine` vive en el target **ArtificialWorldV2**, no en `AWPersistence`):
+// Test rápido en cualquier método:
+let vitals = SurvivalVitals(energy: 1.0, hunger: 0.0)
+let inv = InventoryState(fiberScraps: 0, nutrientPackets: 0)
+let memory = AgentMemory()
+let ctx = UtilityContext(
+    vitals: vitals, 
+    presence: .insideRefuge, 
+    inventory: inv,
+    memory: memory
+)
+let directive = UtilitySafetyRules.chooseDirective(context: ctx)
 
-```swift
-import ArtificialWorldV2
+// Test del sistema de terreno:
+let gridMap = MapGenerator.generate(
+    side: 32, 
+    seed: 12345, 
+    profile: TerrainBiomeCatalog.wildEdge
+)
+let kind = gridMap[GridCoord(x: 0, y: 0)]
 
-struct AppPersistenceSmoke {
-    func run() throws {
-        _ = try WorldPersistenceEngine.listSaves()
-    }
-}
+// Test de persistencia (WorldPersistenceEngine está en el target de la app):
+let saves = try? WorldPersistenceEngine.listSaves()
 ```
 
 Si compila → ✅ Todo bien!  

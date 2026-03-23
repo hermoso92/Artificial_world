@@ -24,6 +24,14 @@ import Testing
     #expect(a == b)
 }
 
+@Test func terrainBiomeCatalogResolvesZoneIDRaw() {
+    #expect(TerrainBiomeCatalog.definition(forZoneIDRaw: nil) == nil)
+    #expect(TerrainBiomeCatalog.definition(forZoneIDRaw: "") == nil)
+    #expect(TerrainBiomeCatalog.definition(forZoneIDRaw: "no_existe") == nil)
+    let woods = TerrainBiomeCatalog.deepWoods
+    #expect(TerrainBiomeCatalog.definition(forZoneIDRaw: woods.zoneID.raw) == woods)
+}
+
 @Test func resourceGatherSkipsBarrenTerrain() {
     var inv = InventoryState()
     var rng = SeededRandomNumberGenerator(seed: 7)

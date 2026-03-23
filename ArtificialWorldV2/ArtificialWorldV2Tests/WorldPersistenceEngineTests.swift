@@ -1,6 +1,6 @@
 import AWAgent
 import AWDomain
-import ArtificialWorldV2
+@testable import ArtificialWorldV2
 import Foundation
 import Testing
 
@@ -19,6 +19,9 @@ struct WorldPersistenceEngineTests {
 
         let map = MapGenerator.generate(side: 12, seed: 3, profile: TerrainBiomeCatalog.wildEdge)
         let agentId = UUID()
+        var mem = AgentMemory()
+        mem.noteEvent(AgentMemory.preferExploreEvent)
+        mem.recordDecision(.explore, at: 5)
         let data = WorldSaveData(
             schemaVersion: 1,
             worldTick: 42,
@@ -33,7 +36,8 @@ struct WorldPersistenceEngineTests {
                     positionY: 3,
                     vitals: SurvivalVitals(energy: 0.5, hunger: 0.5),
                     inventory: InventoryState(fiberScraps: 1, nutrientPackets: 2),
-                    hue: 0.25
+                    hue: 0.25,
+                    memory: mem
                 ),
             ],
             controlledAgentID: agentId,
@@ -49,6 +53,8 @@ struct WorldPersistenceEngineTests {
         #expect(loaded.terrainCellRawValues == map.flattenedTerrainRawValues)
         #expect(loaded.agents.count == 1)
         #expect(loaded.agents[0].displayName == "Test")
+        #expect(loaded.agents[0].memory.prefersExploreFromEvents == true)
+        #expect(loaded.agents[0].memory.lastExploringDirective == .explore)
         #expect(loaded.refugeImprovements.restEfficiencyRank == 1)
         #expect(loaded.rngState == nil)
         #expect(loaded.schemaVersion == 1)
@@ -67,11 +73,13 @@ struct WorldPersistenceEngineTests {
 
         let agentId = UUID()
         let rngState: UInt64 = 0x1234_ABCD_5678_EF01
+        let deepWoodsZone = TerrainBiomeCatalog.deepWoods.zoneID.raw
         let data = WorldSaveData(
             schemaVersion: WorldSaveData.currentSchemaVersion,
             worldTick: 7,
             gridSide: 12,
             worldSeed: 99,
+            terrainBiomeZoneID: deepWoodsZone,
             terrainCellRawValues: nil,
             agents: [
                 AgentSnapshot(
@@ -93,6 +101,9 @@ struct WorldPersistenceEngineTests {
         let loaded = try WorldPersistenceEngine.load(name: "rng")
         #expect(loaded.schemaVersion == WorldSaveData.currentSchemaVersion)
         #expect(loaded.rngState == rngState)
+        #expect(loaded.terrainBiomeZoneID == deepWoodsZone)
+        let session = try V2WorldSession.restored(from: loaded)
+        #expect(session.terrainProfile.zoneID.raw == deepWoodsZone)
     }
 
     @Test

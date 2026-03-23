@@ -28,13 +28,15 @@ public struct PersistableSplitMix64: RandomNumberGenerator, Sendable {
 
 /// Snapshot serializable de una partida completa.
 public struct WorldSaveData: Codable, Sendable {
-    /// Esquema actual al guardar (v2: `rngState` opcional en JSON).
-    public static let currentSchemaVersion: Int = 2
+    /// Esquema actual al guardar (v5: `leisureRefugeTicks` por agente; v4: refugio/mejoras por agente).
+    public static let currentSchemaVersion: Int = 5
 
     public var schemaVersion: Int
     public var worldTick: UInt64
     public var gridSide: Int
     public var worldSeed: UInt64
+    /// `ZoneID.raw` del bioma de terreno (`TerrainBiomeCatalog`); ausente en guardados antiguos → `wildEdge`.
+    public var terrainBiomeZoneID: String?
     /// Terreno en orden fila mayor (y, x); `nil` en guardados v1 → se regenera con `worldSeed`.
     public var terrainCellRawValues: [String]?
     public var agents: [AgentSnapshot]
@@ -46,7 +48,7 @@ public struct WorldSaveData: Codable, Sendable {
     public var rngState: UInt64?
 
     enum CodingKeys: String, CodingKey {
-        case schemaVersion, worldTick, gridSide, worldSeed, terrainCellRawValues
+        case schemaVersion, worldTick, gridSide, worldSeed, terrainBiomeZoneID, terrainCellRawValues
         case agents, controlledAgentID, controlMode, refugeImprovements, savedAt
         case rngState
     }
@@ -56,6 +58,7 @@ public struct WorldSaveData: Codable, Sendable {
         worldTick: UInt64,
         gridSide: Int,
         worldSeed: UInt64,
+        terrainBiomeZoneID: String? = nil,
         terrainCellRawValues: [String]?,
         agents: [AgentSnapshot],
         controlledAgentID: UUID,
@@ -68,6 +71,7 @@ public struct WorldSaveData: Codable, Sendable {
         self.worldTick = worldTick
         self.gridSide = gridSide
         self.worldSeed = worldSeed
+        self.terrainBiomeZoneID = terrainBiomeZoneID
         self.terrainCellRawValues = terrainCellRawValues
         self.agents = agents
         self.controlledAgentID = controlledAgentID
@@ -83,6 +87,7 @@ public struct WorldSaveData: Codable, Sendable {
         worldTick = try c.decode(UInt64.self, forKey: .worldTick)
         gridSide = try c.decode(Int.self, forKey: .gridSide)
         worldSeed = try c.decodeIfPresent(UInt64.self, forKey: .worldSeed) ?? GameWorldBlueprint.defaultWorldSeed
+        terrainBiomeZoneID = try c.decodeIfPresent(String.self, forKey: .terrainBiomeZoneID)
         terrainCellRawValues = try c.decodeIfPresent([String].self, forKey: .terrainCellRawValues)
         agents = try c.decode([AgentSnapshot].self, forKey: .agents)
         controlledAgentID = try c.decode(UUID.self, forKey: .controlledAgentID)
@@ -98,6 +103,7 @@ public struct WorldSaveData: Codable, Sendable {
         try c.encode(worldTick, forKey: .worldTick)
         try c.encode(gridSide, forKey: .gridSide)
         try c.encode(worldSeed, forKey: .worldSeed)
+        try c.encodeIfPresent(terrainBiomeZoneID, forKey: .terrainBiomeZoneID)
         try c.encodeIfPresent(terrainCellRawValues, forKey: .terrainCellRawValues)
         try c.encode(agents, forKey: .agents)
         try c.encode(controlledAgentID, forKey: .controlledAgentID)
@@ -122,26 +128,88 @@ public struct AgentSnapshot: Codable, Sendable, Identifiable {
     public var displayName: String
     public var positionX: Int
     public var positionY: Int
+    /// Celda del refugio propio (v4+); ausente en JSON antiguo → 0,0.
+    public var homeRefugeX: Int
+    public var homeRefugeY: Int
+    /// Mejoras del refugio de este agente (v4+).
+    public var refugeImprovements: RefugeImprovements
     public var vitals: SurvivalVitals
     public var inventory: InventoryState
     public var hue: Double
+    /// Ausente en JSON antiguo → memoria vacía al cargar.
+    public var memory: AgentMemory
+    /// Ausente en JSON antiguo → personalidad neutra al cargar.
+    public var personality: AgentPersonality
+    /// Ticks holgados acumulados en refugio (v5+); ausente → 0.
+    public var leisureRefugeTicks: UInt16
+
+    enum CodingKeys: String, CodingKey {
+        case id, displayName, positionX, positionY, homeRefugeX, homeRefugeY, refugeImprovements
+        case vitals, inventory, hue, memory, personality, leisureRefugeTicks
+    }
 
     public init(
         id: UUID,
         displayName: String,
         positionX: Int,
         positionY: Int,
+        homeRefugeX: Int = 0,
+        homeRefugeY: Int = 0,
+        refugeImprovements: RefugeImprovements = RefugeImprovements(),
         vitals: SurvivalVitals,
         inventory: InventoryState,
-        hue: Double
+        hue: Double,
+        memory: AgentMemory = AgentMemory(),
+        personality: AgentPersonality = .neutral,
+        leisureRefugeTicks: UInt16 = 0
     ) {
         self.id = id
         self.displayName = displayName
         self.positionX = positionX
         self.positionY = positionY
+        self.homeRefugeX = homeRefugeX
+        self.homeRefugeY = homeRefugeY
+        self.refugeImprovements = refugeImprovements
         self.vitals = vitals
         self.inventory = inventory
         self.hue = hue
+        self.memory = memory
+        self.personality = personality
+        self.leisureRefugeTicks = leisureRefugeTicks
+    }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(UUID.self, forKey: .id)
+        displayName = try c.decode(String.self, forKey: .displayName)
+        positionX = try c.decode(Int.self, forKey: .positionX)
+        positionY = try c.decode(Int.self, forKey: .positionY)
+        homeRefugeX = try c.decodeIfPresent(Int.self, forKey: .homeRefugeX) ?? 0
+        homeRefugeY = try c.decodeIfPresent(Int.self, forKey: .homeRefugeY) ?? 0
+        refugeImprovements = try c.decodeIfPresent(RefugeImprovements.self, forKey: .refugeImprovements) ?? RefugeImprovements()
+        vitals = try c.decode(SurvivalVitals.self, forKey: .vitals)
+        inventory = try c.decode(InventoryState.self, forKey: .inventory)
+        hue = try c.decode(Double.self, forKey: .hue)
+        memory = try c.decodeIfPresent(AgentMemory.self, forKey: .memory) ?? AgentMemory()
+        personality = try c.decodeIfPresent(AgentPersonality.self, forKey: .personality) ?? .neutral
+        leisureRefugeTicks = try c.decodeIfPresent(UInt16.self, forKey: .leisureRefugeTicks) ?? 0
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encode(displayName, forKey: .displayName)
+        try c.encode(positionX, forKey: .positionX)
+        try c.encode(positionY, forKey: .positionY)
+        try c.encode(homeRefugeX, forKey: .homeRefugeX)
+        try c.encode(homeRefugeY, forKey: .homeRefugeY)
+        try c.encode(refugeImprovements, forKey: .refugeImprovements)
+        try c.encode(vitals, forKey: .vitals)
+        try c.encode(inventory, forKey: .inventory)
+        try c.encode(hue, forKey: .hue)
+        try c.encode(memory, forKey: .memory)
+        try c.encode(personality, forKey: .personality)
+        try c.encode(leisureRefugeTicks, forKey: .leisureRefugeTicks)
     }
 }
 

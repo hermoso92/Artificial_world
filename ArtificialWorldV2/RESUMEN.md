@@ -3,11 +3,14 @@
 ## Fase 1C (cerrada en repo)
 
 - **Terreno**: `TerrainSquareKind` y `TerrainBiomeCatalog` en `SwiftAWCore/Sources/AWDomain/TerrainCatalog.swift` (terreno por celda; no confundir con `SquareArchetype` de encuentros).
-- **Mapa**: `GridMap` + `MapGenerator` en el mismo paquete; sesión con `gridMap` y semilla estable (`V2WorldSession`).
-- **Visual**: `GridMapCanvas` pinta celdas según `TerrainSquareKind`.
+- **Mapa**: `GridMap` + `MapGenerator` en el mismo paquete; sesión con `gridMap` y semilla estable (`V2WorldSession`); generación usa semilla efectiva si `worldSeed == 0`.
+- **Visual**: `GridMapCanvas` pinta celdas según `TerrainSquareKind`; leyenda y hints de accesibilidad en `V2PlayView`.
 - **Recolección**: `ResourceGatherRules.tryGatherOnEnter` al mover agentes (`V2WorldSession`).
-- **Persistencia app**: `WorldPersistenceEngine` y tipos en `ArtificialWorldV2/WorldPersistence.swift`; `makeSaveData()` y `restored(from:)` en `V2WorldSession+Persistence.swift`; UI en `SaveLoadView` (desde `V2PlayView`); `quickSave` en `RootContentView`.
-- **Tests**: `SwiftAWCore/Tests/AWDomainTests/TerrainGridTests.swift`, tests existentes en `AWDomainTests`, `AWAgentTests`, `AWPersistenceTests`, y `ArtificialWorldV2Tests/WorldPersistenceEngineTests.swift` (roundtrip con terreno).
+- **Memoria por agente (V2)**: `V2GridAgent.memory` (`AgentMemory`) alimenta `UtilityContext`; se actualiza cada tick de IA y al consumir nutriente manual; persiste en `AgentSnapshot.memory` (JSON).
+- **Persistencia app**: `WorldPersistenceEngine` y tipos en `ArtificialWorldV2/WorldPersistence.swift` (`schemaVersion` 3 incluye `terrainBiomeZoneID`, terreno, `rngState`); `makeSaveData()` / `restored(from:)`; `SaveLoadView`; `quickSave` + `autosaveWarning` en `RootContentView`.
+- **Nueva partida / bioma**: toolbar «Nueva partida» → si `worldTick > 0`, diálogo de confirmación; luego `NewGameSheet` elige `TerrainBiomeCatalog`; `V2WorldSession.terrainProfile` alimenta `MapGenerator` y la zona en `UtilityContext`; guardados sin clave siguen usando `wildEdge` al regenerar.
+- **Craft / consumo**: `CraftingRules`, `NutrientConsumeRules` en AWDomain; UI `InventoryRefugeSheet`; directiva `.consumeNutrient` en refugio (IA y manual).
+- **Tests**: paquete `SwiftAWCore` (`swift test`) y `ArtificialWorldV2Tests/WorldPersistenceEngineTests.swift` (roundtrip con terreno, RNG y memoria de agente).
 
 ---
 
@@ -19,7 +22,7 @@ Si aparece “SwiftAWCore already opened” o productos de paquete faltantes:
 - Abrir solo `ArtificialWorldV2.xcodeproj`.
 - File → Packages → Reset Package Caches; Clean Build Folder; Build.
 
-(Detalle ampliado en `SOLUCION_SPM.md` si lo necesitás.)
+(Detalle ampliado en `SOLUCION_SPM.md`.)
 
 ---
 
@@ -28,56 +31,49 @@ Si aparece “SwiftAWCore already opened” o productos de paquete faltantes:
 | Área | Progreso |
 |------|-----------|
 | Fundamentos | 100% |
-| Fase 1C (terreno, mapa, persistencia UI, tests base) | 100% en repo |
-| Motor de utilidad | ~65% |
-| Mundo rico (crafting, consumo UI, bioma elegible) | ~60% |
-| Persistencia (autosave, migraciones) | ~75% |
-| UI/UX pulida | ~55% |
-| Testing / calibración | ~40% |
-| **Total estimado** | **~55%** |
+| Fase 1C (terreno, mapa, persistencia UI, tests base) | 100% |
+| Motor de utilidad (SPM + memoria en partida V2) | ~80% |
+| Mundo rico (crafting, consumo, UI refugio) | ~75% |
+| Persistencia (autosave, RNG, memoria en save) | ~85% |
+| UI/UX pulida | ~60% |
+| Testing / calibración | ~55% |
+| **Total estimado** | **~70%** |
 
 ---
 
 ## Próximos pasos recomendados
 
-1. **Inventario jugable** — consumo de `nutrientPackets` y/o botones que afecten vitales.
-2. **Crafting y refugio** — reglas en dominio + pantalla de mejoras.
-3. **Autosave** — temporizador o cada N ticks; convivencia con `SaveLoadView`.
-4. **Migración de `schemaVersion`** — evolución segura del JSON.
-5. **Tests de integración** — sesión larga, multi-agente, errores de E/S en guardados.
+1. **Multi-agente / personalidad** — pesos distintos por agente y anti-aglomeración (ver `ROADMAP.md` Fase 1).
+2. **Migraciones JSON explícitas** — tabla por `schemaVersion` si el formato crece.
+3. **CI** — `swift test` + `xcodebuild test` en simulador documentado o automatizado.
 
 ---
 
 ## Cómo encajan los componentes (sin código)
 
-- **Utilidad**: `UtilityScoring` / `UtilitySafetyRules` eligen la directiva explorando según contexto (vitales, inventario, distancias).
-- **Encuentros vs terreno**: `BiomeCatalog` y `SquareArchetype` modelan qué puede “aparecer” en una zona; el grid visible usa `TerrainSquareKind`.
-- **Guardado**: `makeSaveData()` serializa tick, lado, semilla, celdas de terreno, agentes, control y mejoras; `restored(from:)` reconstruye la sesión; archivos bajo Documents (extensión `.awsave`, JSON).
+- **Utilidad**: `UtilityScoring` / `UtilitySafetyRules` eligen la directiva según contexto; en V2 el contexto incluye `agent.memory` (rachas, eventos, umbral de huida ampliado bajo estrés). Cada tick, `syncHostileThreatMemoryForAllAgents` mantiene `perceived_threat_stress` si el otro agente está a distancia Manhattan menor que 12 (una sola entrada en `notableEvents`; se quita al alejarse).
+- **Encuentros vs terreno**: `BiomeCatalog` y `SquareArchetype` modelan encuentros por zona; el grid visible usa `TerrainSquareKind`.
+- **Guardado**: `makeSaveData()` serializa tick, lado, semilla, terreno, agentes (incl. `memory`), control, mejoras y `rngState`; `restored(from:)` reconstruye la sesión; `.awsave` en Documents.
 
 ---
 
 ## Estructura relevante
 
 ```
-ArtificialWorldV2/
-├── SwiftAWCore/
+Artificial_world/
+├── SwiftAWCore/                 # Paquete SPM (hermano del .xcodeproj)
 │   ├── Package.swift
-│   ├── Sources/AWDomain/     # TerrainCatalog, GridMap, MapGenerator, vitals, inventario, encuentros…
+│   ├── Sources/AWDomain/
 │   ├── Sources/AWAgent/
 │   ├── Sources/AWPersistence/
-│   └── Tests/                  # Incl. TerrainGridTests, AWDomainTests, AWAgentTests, AWPersistenceTests
-├── ArtificialWorldV2/          # App
-│   ├── V2WorldSession.swift
-│   ├── V2WorldSession+Persistence.swift
-│   ├── WorldPersistence.swift  # WorldSaveData, WorldPersistenceEngine (target app)
-│   ├── SaveLoadView.swift
-│   ├── GridMapCanvas.swift
-│   ├── V2PlayView.swift
-│   └── …
-├── ArtificialWorldV2Tests/
-│   └── WorldPersistenceEngineTests.swift
-├── ROADMAP.md
-└── RESUMEN.md
+│   └── Tests/
+├── ArtificialWorldV2/
+│   ├── ArtificialWorldV2.xcodeproj
+│   ├── ArtificialWorldV2/       # App SwiftUI
+│   ├── WorldPersistence.swift   # WorldSaveData, AgentSnapshot, motor JSON
+│   ├── ArtificialWorldV2Tests/
+│   ├── ROADMAP.md
+│   └── RESUMEN.md
 ```
 
 ---
@@ -86,26 +82,25 @@ ArtificialWorldV2/
 
 - **No compila**: Clean, reset de paquetes, cerrar Xcode, limpiar DerivedData si hace falta.
 - **Agentes quietos**: revisar auto-tick, modo de control y celdas ocupadas.
-- **Refugio**: esquina (0,0); terreno refugio alineado con `TerrainSquareKind.refuge` en generación.
+- **Refugio**: esquina (0,0); craft solo ahí según reglas de dominio.
 
 ---
 
 ## FAQ breve
 
-- **¿Dónde está el terreno?** `TerrainSquareKind` en `TerrainCatalog.swift`; instancia concreta en `GridMap`.
-- **¿Dónde se guarda?** Directorio de documentos de la app; listado vía `WorldPersistenceEngine.listSaves()`.
-- **¿Hay tests?** Sí en el paquete SPM y un test de persistencia en el target de tests de la app.
+- **¿Dónde está el terreno?** `TerrainSquareKind` en `TerrainCatalog.swift`; instancia en `GridMap`.
+- **¿Dónde se guarda?** Documents de la app; `WorldPersistenceEngine.listSaves()`.
+- **¿Hay tests?** Sí: `swift test` en `SwiftAWCore` y tests de app en `ArtificialWorldV2Tests`.
 
 ---
 
 ## Checklist manual de humo
 
 - [ ] La app compila.
-- [ ] Se ven agentes y el grid con colores de terreno.
-- [ ] Refugio reconocible en (0,0).
-- [ ] Tick y vitales / inventario en status.
-- [ ] Guardar y cargar desde `SaveLoadView` conserva mapa y agentes.
-- [ ] `quickSave` no falla en flujo normal.
+- [ ] Grid con colores de terreno y leyenda.
+- [ ] Inventario / craft / consumo desde la hoja y refugio (0,0).
+- [ ] Guardar y cargar conserva mapa, agentes, memoria y RNG (partidas nuevas).
+- [ ] Autosave sin error o aviso visible si falla.
 
 ---
 

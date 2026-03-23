@@ -1,33 +1,36 @@
+import AWDomain
 import Combine
 import SwiftUI
+import UIKit
 
 struct RootContentView: View {
     @State private var session = V2WorldSession()
     private let autosavePulse = Timer.publish(every: 300, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        TabView {
-            NavigationStack {
-                V2PlayView(
-                    session: session,
-                    makeSaveData: { session.makeSaveData() },
-                    onLoadSession: { session = $0 }
-                )
-                .navigationTitle("Partida")
-                .navigationBarTitleDisplayMode(.inline)
-            }
-            .tabItem { Label("Partida", systemImage: "map.fill") }
-
-            AboutV2View()
-                .tabItem { Label("Acerca", systemImage: "info.circle.fill") }
+        NavigationStack {
+            V2PlayView(
+                session: session,
+                makeSaveData: { session.makeSaveData() },
+                onLoadSession: { session = $0 },
+                onStartNewGame: { profile in
+                    session = V2WorldSession(terrainProfile: profile)
+                }
+            )
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
         }
+        .background(Color(uiColor: .systemGroupedBackground))
         .onReceive(autosavePulse) { _ in
             do {
                 try WorldPersistenceEngine.quickSave(session.makeSaveData())
                 session.autosaveWarning = nil
             } catch {
-                session.autosaveWarning =
-                    "Autosave falló: \(error.localizedDescription). Podés usar Guardar / Cargar con nombre."
+                session.autosaveWarning = String(
+                    format: String(localized: "root.autosave_failed_fmt"),
+                    locale: .current,
+                    error.localizedDescription
+                )
             }
         }
     }

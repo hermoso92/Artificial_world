@@ -10,8 +10,8 @@ public struct SurvivalVitals: Equatable, Sendable, Codable {
         self.hunger = max(0, min(1, hunger))
     }
 
-    /// Gasto por unidad de tiempo de exploración (MVP; valores calibrables).
-    public mutating func applyExplorationDrain(deltaTime: TimeInterval, energyRate: Double = 0.08, hungerRate: Double = 0.05) {
+    /// Gasto por unidad de tiempo de exploración (calibrado para que agentes puedan explorar ~15-20 ticks antes de necesitar refugio).
+    public mutating func applyExplorationDrain(deltaTime: TimeInterval, energyRate: Double = 0.025, hungerRate: Double = 0.018) {
         energy = max(0, energy - energyRate * deltaTime)
         hunger = min(1, hunger + hungerRate * deltaTime)
     }
@@ -19,8 +19,8 @@ public struct SurvivalVitals: Equatable, Sendable, Codable {
     /// Recuperación suave en refugio (MVP). `recoveryMultiplier` refleja mejoras del refugio (≥ 1).
     public mutating func applyRefugeRest(
         deltaTime: TimeInterval,
-        energyRecovery: Double = 0.06,
-        hungerRelief: Double = 0.04,
+        energyRecovery: Double = 0.10,
+        hungerRelief: Double = 0.08,
         recoveryMultiplier: Double = 1.0
     ) {
         let m = max(0.25, recoveryMultiplier)
@@ -28,7 +28,8 @@ public struct SurvivalVitals: Equatable, Sendable, Codable {
         hunger = max(0, hunger - hungerRelief * deltaTime * m)
     }
 
+    /// Umbral de emergencia: el agente DEBE volver al refugio (energía crítica o hambre extrema).
     public var needsRefugeSoon: Bool {
-        energy < 0.25 || hunger > 0.85
+        energy < 0.12 || hunger > 0.92
     }
 }

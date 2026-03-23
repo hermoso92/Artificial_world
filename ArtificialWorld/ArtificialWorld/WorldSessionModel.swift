@@ -429,6 +429,12 @@ final class WorldSessionModel {
                     rollSpawnEncounter()
                 }
             }
+        case .consumeNutrient:
+            if case .insideRefuge = presence {
+                if NutrientConsumeRules.consumeNutrient(inventory: &inventory, vitals: &vitals) {
+                    statusBanner = "IA: consumió nutriente"
+                }
+            }
         case .rest, .explore:
             break
         }

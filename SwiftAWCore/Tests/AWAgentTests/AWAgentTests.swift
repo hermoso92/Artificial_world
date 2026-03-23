@@ -150,10 +150,11 @@ import Testing
 @Test func memoryStressExtendsHostileRefugeThreshold() {
     var mem = AgentMemory()
     mem.noteEvent(AgentMemory.perceivedThreatStressEvent)
+    // Con estrés el radio de huida pasa a 4 celdas (× cautela); sin estrés, 2. Distancia 3 queda fuera del umbral calmo pero dentro del estresado.
     let stressed = UtilityContext(
         vitals: SurvivalVitals(energy: 0.5, hunger: 0.75),
         presence: .exploring(zone: ZoneID("z")),
-        nearestHostileDistance: 15,
+        nearestHostileDistance: 3,
         inventory: nil,
         memory: mem
     )
@@ -161,11 +162,24 @@ import Testing
     let calm = UtilityContext(
         vitals: SurvivalVitals(energy: 0.5, hunger: 0.75),
         presence: .exploring(zone: ZoneID("z")),
-        nearestHostileDistance: 15,
+        nearestHostileDistance: 3,
         inventory: nil,
         memory: nil
     )
     #expect(UtilitySafetyRules.chooseDirective(context: calm) == .captureNearest)
+}
+
+@Test func memorySyncPerceivedHostileThreatAddsOnceAndClears() {
+    var mem = AgentMemory()
+    mem.syncPerceivedHostileThreat(isWithinThreatRadius: true)
+    #expect(mem.stressFromPerceivedThreat)
+    let stressCount = mem.summary.notableEvents.filter { $0 == AgentMemory.perceivedThreatStressEvent }.count
+    #expect(stressCount == 1)
+    mem.syncPerceivedHostileThreat(isWithinThreatRadius: true)
+    let stressCount2 = mem.summary.notableEvents.filter { $0 == AgentMemory.perceivedThreatStressEvent }.count
+    #expect(stressCount2 == 1)
+    mem.syncPerceivedHostileThreat(isWithinThreatRadius: false)
+    #expect(!mem.stressFromPerceivedThreat)
 }
 
 @Test func agentMemoryTrimsNotableEvents() {
