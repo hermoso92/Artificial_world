@@ -59,6 +59,8 @@
 - [x] `UtilityScoring` (scoring por directiva, overload con `ExploringUtilityCurves`)
 - [x] Curvas de respuesta — `ResponseCurve`, `ExploringUtilityCurves` (`SwiftAWCore/Sources/AWAgent/ResponseCurves.swift`)
 - [x] Memoria operativa en sesión — `AgentMemory` + peso en scoring y umbral de huida (`SwiftAWCore/Sources/AWAgent/AgentMemory.swift`)
+- [x] **V2**: `V2GridAgent.memory` pasa a `UtilityContext`; se actualiza en cada tick de IA y al consumir nutriente manual; persiste en `AgentSnapshot.memory` (JSON)
+- [x] **V2**: evento `perceived_threat_stress` sincronizado cada tick con distancia Manhattan al otro agente (menor que 12 entra, se limpia al alejarse; sin duplicados en `notableEvents`)
 - [x] Directiva `consumeNutrient` y elección en refugio (`UtilitySafetyRules` + tests AWAgent)
 - [x] Tests de regresión en directivas (exploración vs captura, curvas, memoria, refugio/consumo)
 
@@ -92,7 +94,7 @@
 ### Por implementar
 
 - [ ] **UX refugio / inventario** — leyenda, feedback más rico, accesibilidad y pulido visual (la hoja base ya existe)
-- [ ] **Selector de bioma de terreno** en nueva partida (hoy predominante: `wildEdge` vía perfil fijo en sesión)
+- [x] **Selector de bioma de terreno** en nueva partida (`NewGameSheet` + `terrainBiomeZoneID` en guardado v3)
 - [ ] **Sistema de recursos** más rico (tipos, caps, eventos de UI)
 
 **Archivos**

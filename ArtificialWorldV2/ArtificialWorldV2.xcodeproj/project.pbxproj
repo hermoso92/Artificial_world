@@ -11,6 +11,11 @@
 		BD9EF46A2F7025A900A629EF /* ROADMAP.md in Resources */ = {isa = PBXBuildFile; fileRef = BD9EF4692F7025A900A629EF /* ROADMAP.md */; };
 		BD9EF46C2F7025E900A629EF /* RESUMEN.md in Resources */ = {isa = PBXBuildFile; fileRef = BD9EF46B2F7025E900A629EF /* RESUMEN.md */; };
 		BD9EF46E2F70261F00A629EF /* SOLUCION_SPM.md in Resources */ = {isa = PBXBuildFile; fileRef = BD9EF46D2F70261F00A629EF /* SOLUCION_SPM.md */; };
+		BD9EF4A22F703A1200A629EF /* ESTADO_PROYECTO.md in Resources */ = {isa = PBXBuildFile; fileRef = BD9EF4A12F703A1200A629EF /* ESTADO_PROYECTO.md */; };
+		BD9EF4A42F703A8100A629EF /* CHECKLIST.md in Resources */ = {isa = PBXBuildFile; fileRef = BD9EF4A32F703A8100A629EF /* CHECKLIST.md */; };
+		BD9EF4A62F703B0600A629EF /* AUDITORIA_COMPLETA.md in Resources */ = {isa = PBXBuildFile; fileRef = BD9EF4A52F703B0600A629EF /* AUDITORIA_COMPLETA.md */; };
+		BD9EF4A82F703D6400A629EF /* PROXIMOS_3_PASOS.md in Resources */ = {isa = PBXBuildFile; fileRef = BD9EF4A72F703D6400A629EF /* PROXIMOS_3_PASOS.md */; };
+		BD9EF4AA2F703DB400A629EF /* AgentStatusOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9EF4A92F703DB400A629EF /* AgentStatusOverlay.swift */; };
 		E2D1F00010002A00B000012 /* AWDomain in Frameworks */ = {isa = PBXBuildFile; productRef = E2D1F00010002A00B000016 /* AWDomain */; };
 		E2D1F00010002A00B000013 /* AWAgent in Frameworks */ = {isa = PBXBuildFile; productRef = E2D1F00010002A00B000017 /* AWAgent */; };
 		E2D1F00010002A00B000014 /* AWPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = E2D1F00010002A00B000018 /* AWPersistence */; };
@@ -21,24 +26,21 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = E2D1F00010002A00B000001 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E2D1F00010002A00B000008 /* ArtificialWorldV2 */;
+			remoteGlobalIDString = E2D1F00010002A00B000008;
 			remoteInfo = ArtificialWorldV2;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXTargetDependency section */
-		E2D1F00010002A00B000021 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E2D1F00010002A00B000008 /* ArtificialWorldV2 */;
-			targetProxy = E2D1F00010002A00B000020 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXFileReference section */
 		BD9EF4672F70256600A629EF /* WorldPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldPersistence.swift; sourceTree = "<group>"; };
 		BD9EF4692F7025A900A629EF /* ROADMAP.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ROADMAP.md; sourceTree = "<group>"; };
 		BD9EF46B2F7025E900A629EF /* RESUMEN.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = RESUMEN.md; sourceTree = "<group>"; };
 		BD9EF46D2F70261F00A629EF /* SOLUCION_SPM.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SOLUCION_SPM.md; sourceTree = "<group>"; };
+		BD9EF4A12F703A1200A629EF /* ESTADO_PROYECTO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ESTADO_PROYECTO.md; sourceTree = "<group>"; };
+		BD9EF4A32F703A8100A629EF /* CHECKLIST.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHECKLIST.md; sourceTree = "<group>"; };
+		BD9EF4A52F703B0600A629EF /* AUDITORIA_COMPLETA.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = AUDITORIA_COMPLETA.md; sourceTree = "<group>"; };
+		BD9EF4A72F703D6400A629EF /* PROXIMOS_3_PASOS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = PROXIMOS_3_PASOS.md; sourceTree = "<group>"; };
+		BD9EF4A92F703DB400A629EF /* AgentStatusOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentStatusOverlay.swift; sourceTree = "<group>"; };
 		E2D1F00010002A00B000004 /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
 		E2D1F00010002A00B000006 /* ArtificialWorldV2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArtificialWorldV2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2D1F00010002A00B000022 /* ArtificialWorldV2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArtificialWorldV2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,6 +91,11 @@
 				BD9EF4692F7025A900A629EF /* ROADMAP.md */,
 				BD9EF46B2F7025E900A629EF /* RESUMEN.md */,
 				BD9EF46D2F70261F00A629EF /* SOLUCION_SPM.md */,
+				BD9EF4A12F703A1200A629EF /* ESTADO_PROYECTO.md */,
+				BD9EF4A32F703A8100A629EF /* CHECKLIST.md */,
+				BD9EF4A52F703B0600A629EF /* AUDITORIA_COMPLETA.md */,
+				BD9EF4A72F703D6400A629EF /* PROXIMOS_3_PASOS.md */,
+				BD9EF4A92F703DB400A629EF /* AgentStatusOverlay.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -207,9 +214,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD9EF4A62F703B0600A629EF /* AUDITORIA_COMPLETA.md in Resources */,
 				BD9EF46E2F70261F00A629EF /* SOLUCION_SPM.md in Resources */,
 				BD9EF46A2F7025A900A629EF /* ROADMAP.md in Resources */,
+				BD9EF4A42F703A8100A629EF /* CHECKLIST.md in Resources */,
 				BD9EF46C2F7025E900A629EF /* RESUMEN.md in Resources */,
+				BD9EF4A22F703A1200A629EF /* ESTADO_PROYECTO.md in Resources */,
+				BD9EF4A82F703D6400A629EF /* PROXIMOS_3_PASOS.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +238,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD9EF4AA2F703DB400A629EF /* AgentStatusOverlay.swift in Sources */,
 				BD9EF4682F70256600A629EF /* WorldPersistence.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -239,6 +251,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E2D1F00010002A00B000021 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E2D1F00010002A00B000008 /* ArtificialWorldV2 */;
+			targetProxy = E2D1F00010002A00B000020 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		E2D1F00010002A00B00000D /* Debug */ = {

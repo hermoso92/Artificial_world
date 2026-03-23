@@ -16,43 +16,43 @@ struct SaveLoadView: View {
         NavigationStack {
             List {
                 Section {
-                    TextField("Nombre del archivo", text: $newSaveName)
+                    TextField(String(localized: "save.field.filename"), text: $newSaveName)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                        .accessibilityLabel("Nombre del guardado")
-                        .accessibilityHint("Letras y números; evitá barras y comillas. Se usa como nombre de archivo.")
+                        .accessibilityLabel(String(localized: "save.a11y.filename"))
+                        .accessibilityHint(String(localized: "save.a11y.filename_hint"))
                     Button {
                         performSave(as: sanitizedName(newSaveName))
                     } label: {
-                        Label("Guardar partida", systemImage: "square.and.arrow.down")
+                        Label(String(localized: "save.button.save"), systemImage: "square.and.arrow.down")
                     }
                     .disabled(sanitizedName(newSaveName).isEmpty || isBusy)
-                    .accessibilityHint("Crea o sobrescribe un archivo con el estado actual del mundo.")
+                    .accessibilityHint(String(localized: "save.hint.save"))
                 } header: {
-                    Text("Nuevo guardado")
+                    Text(String(localized: "save.section.new"))
                 } footer: {
-                    Text("El nombre queda en este dispositivo. Podés cargar después desde la misma lista.")
+                    Text(String(localized: "save.footer.new"))
                         .font(.caption)
                 }
 
                 Section {
                     if saveNames.isEmpty {
                         ContentUnavailableView(
-                            "Todavía no hay partidas",
+                            String(localized: "save.empty.title"),
                             systemImage: "tray",
-                            description: Text("Guardá con un nombre descriptivo para retomar el tick, el mapa y los agentes.")
+                            description: Text(String(localized: "save.empty.desc"))
                         )
                         .frame(minHeight: 140)
                         .listRowInsets(EdgeInsets(top: 12, leading: 8, bottom: 12, trailing: 8))
                         .accessibilityElement(children: .ignore)
-                        .accessibilityLabel("Sin archivos guardados. Usá la sección anterior para guardar.")
+                        .accessibilityLabel(String(localized: "save.empty.a11y"))
                     } else {
                         ForEach(saveNames, id: \.self) { name in
                             HStack(alignment: .center, spacing: 12) {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(name)
                                         .font(.body)
-                                    Text("Tocá cargar para reemplazar la partida actual.")
+                                    Text(String(localized: "save.row.load_hint"))
                                         .font(.caption2)
                                         .foregroundStyle(.tertiary)
                                         .accessibilityHidden(true)
@@ -61,12 +61,14 @@ struct SaveLoadView: View {
                                 Button {
                                     load(name: name)
                                 } label: {
-                                    Text("Cargar")
+                                    Text(String(localized: "save.button.load"))
                                 }
                                 .buttonStyle(.bordered)
                                 .disabled(isBusy)
-                                .accessibilityLabel("Cargar partida \(name)")
-                                .accessibilityHint("Cierra esta hoja y restaura el mundo desde el archivo.")
+                                .accessibilityLabel(
+                                    String(format: String(localized: "save.a11y.load_fmt"), locale: .current, name)
+                                )
+                                .accessibilityHint(String(localized: "save.hint.load"))
 
                                 Button {
                                     pendingDeleteName = name
@@ -75,14 +77,16 @@ struct SaveLoadView: View {
                                 }
                                 .tint(.red)
                                 .disabled(isBusy)
-                                .accessibilityLabel("Eliminar \(name)")
-                                .accessibilityHint("Pide confirmación antes de borrar el archivo.")
+                                .accessibilityLabel(
+                                    String(format: String(localized: "save.a11y.delete_fmt"), locale: .current, name)
+                                )
+                                .accessibilityHint(String(localized: "save.hint.delete"))
                             }
                             .accessibilityElement(children: .contain)
                         }
                     }
                 } header: {
-                    Text("Partidas en el dispositivo")
+                    Text(String(localized: "save.section.list"))
                 }
 
                 if !message.isEmpty {
@@ -90,20 +94,22 @@ struct SaveLoadView: View {
                         Text(message)
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                            .accessibilityLabel("Mensaje: \(message)")
+                            .accessibilityLabel(
+                                String(format: String(localized: "save.a11y.message_fmt"), locale: .current, message)
+                            )
                     } header: {
-                        Text("Estado")
+                        Text(String(localized: "save.section.status"))
                     }
                 }
             }
-            .navigationTitle("Guardar / Cargar")
+            .navigationTitle(String(localized: "save.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cerrar") {
+                    Button(String(localized: "Cerrar")) {
                         dismiss()
                     }
-                    .accessibilityHint("Volvé a la partida sin cambios.")
+                    .accessibilityHint(String(localized: "save.close_hint"))
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -111,31 +117,33 @@ struct SaveLoadView: View {
                     } label: {
                         Image(systemName: "arrow.clockwise")
                     }
-                    .accessibilityLabel("Actualizar lista")
-                    .accessibilityHint("Vuelve a leer los archivos guardados en el dispositivo.")
+                    .accessibilityLabel(String(localized: "save.refresh.label"))
+                    .accessibilityHint(String(localized: "save.refresh.hint"))
                     .disabled(isBusy)
                 }
             }
             .confirmationDialog(
-                "¿Eliminar esta partida?",
+                String(localized: "save.delete.title"),
                 isPresented: Binding(
                     get: { pendingDeleteName != nil },
                     set: { if !$0 { pendingDeleteName = nil } }
                 ),
                 titleVisibility: .visible
             ) {
-                Button("Eliminar", role: .destructive) {
+                Button(String(localized: "save.delete.confirm"), role: .destructive) {
                     if let name = pendingDeleteName {
                         delete(name: name)
                     }
                     pendingDeleteName = nil
                 }
-                Button("Cancelar", role: .cancel) {
+                Button(String(localized: "Cancelar"), role: .cancel) {
                     pendingDeleteName = nil
                 }
             } message: {
                 if let name = pendingDeleteName {
-                    Text("Se borrará «\(name)» de forma permanente en este dispositivo.")
+                    Text(
+                        String(format: String(localized: "save.delete.message_fmt"), locale: .current, name)
+                    )
                 }
             }
             .onAppear { refreshList() }
@@ -154,7 +162,11 @@ struct SaveLoadView: View {
             saveNames = try WorldPersistenceEngine.listSaves()
             message = ""
         } catch {
-            message = "No pudimos leer la lista de guardados: \(error.localizedDescription)"
+            message = String(
+                format: String(localized: "save.error.list_fmt"),
+                locale: .current,
+                error.localizedDescription
+            )
         }
     }
 
@@ -164,10 +176,14 @@ struct SaveLoadView: View {
         defer { isBusy = false }
         do {
             try WorldPersistenceEngine.save(makeSaveData(), name: name)
-            message = "Listo: se guardó «\(name)»."
+            message = String(format: String(localized: "save.ok.saved_fmt"), locale: .current, name)
             refreshList()
         } catch {
-            message = "No se pudo guardar: \(error.localizedDescription)"
+            message = String(
+                format: String(localized: "save.error.save_fmt"),
+                locale: .current,
+                error.localizedDescription
+            )
         }
     }
 
@@ -178,10 +194,15 @@ struct SaveLoadView: View {
             let data = try WorldPersistenceEngine.load(name: name)
             let session = try V2WorldSession.restored(from: data)
             onLoadSession(session)
-            message = "Cargando «\(name)»…"
+            message = String(format: String(localized: "save.loading_fmt"), locale: .current, name)
             dismiss()
         } catch {
-            message = "No se pudo cargar «\(name)»: \(error.localizedDescription)"
+            message = String(
+                format: String(localized: "save.error.load_fmt"),
+                locale: .current,
+                name,
+                error.localizedDescription
+            )
         }
     }
 
@@ -190,10 +211,14 @@ struct SaveLoadView: View {
         defer { isBusy = false }
         do {
             try WorldPersistenceEngine.delete(name: name)
-            message = "Se eliminó «\(name)»."
+            message = String(format: String(localized: "save.ok.deleted_fmt"), locale: .current, name)
             refreshList()
         } catch {
-            message = "No se pudo eliminar: \(error.localizedDescription)"
+            message = String(
+                format: String(localized: "save.error.delete_fmt"),
+                locale: .current,
+                error.localizedDescription
+            )
         }
     }
 }

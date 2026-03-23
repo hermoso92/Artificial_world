@@ -48,6 +48,19 @@ public struct AgentMemory: Equatable, Sendable, Codable {
         summary.notableEvents.contains(Self.perceivedThreatStressEvent)
     }
 
+    /// Mantiene el hito `perceived_threat_stress` alineado con la proximidad a un hostil (mismo umbral base que `UtilitySafetyRules` sin estrés: distancia estrictamente menor que 12).
+    /// No apila duplicados; al salir del radio se quita el hito para volver al radio de huida estrecho.
+    public mutating func syncPerceivedHostileThreat(isWithinThreatRadius: Bool) {
+        let key = Self.perceivedThreatStressEvent
+        if isWithinThreatRadius {
+            if !summary.notableEvents.contains(key) {
+                noteEvent(key)
+            }
+        } else {
+            summary.notableEvents.removeAll { $0 == key }
+        }
+    }
+
     /// Registra la directiva ejecutada en `tick` (FSM/simulación). Actualiza rachas de exploración.
     public mutating func recordDecision(_ directive: UtilityDirective, at tick: UInt64) {
         lastDecisionTick = tick

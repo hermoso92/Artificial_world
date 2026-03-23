@@ -6,21 +6,34 @@ struct InventoryRefugeSheet: View {
     @Bindable var session: V2WorldSession
     @Environment(\.dismiss) private var dismiss
 
+    /// Mejoras del refugio del agente controlado (cada personaje tiene el suyo).
+    private var controlledRefugeImprovements: RefugeImprovements {
+        session.controlledAgent?.refugeImprovements ?? RefugeImprovements()
+    }
+
     private var restUpgradeCostLabel: String {
-        Self.costLine(CraftingRules.restEfficiencyUpgradeCost(currentRank: session.refugeImprovements.restEfficiencyRank))
+        Self.costLine(CraftingRules.restEfficiencyUpgradeCost(currentRank: controlledRefugeImprovements.restEfficiencyRank))
     }
 
     private var storageUpgradeCostLabel: String {
-        Self.costLine(CraftingRules.storageUpgradeCost(currentRank: session.refugeImprovements.storageRank))
+        Self.costLine(CraftingRules.storageUpgradeCost(currentRank: controlledRefugeImprovements.storageRank))
     }
 
     /// Texto a partir de tuplas públicas de `CraftingRules` (sin duplicar costes en la vista).
     private static func costLine(_ cost: (fiber: Int, nutrient: Int)) -> String {
-        if cost.fiber == Int.max || cost.nutrient == Int.max { return "máx." }
-        if cost.fiber == 0, cost.nutrient == 0 { return "gratis" }
+        if cost.fiber == Int.max || cost.nutrient == Int.max { return String(localized: "inv.cost.max") }
+        if cost.fiber == 0, cost.nutrient == 0 { return String(localized: "inv.cost.free") }
         var parts: [String] = []
-        if cost.fiber > 0 { parts.append("\(cost.fiber) fibra") }
-        if cost.nutrient > 0 { parts.append("\(cost.nutrient) nut.") }
+        if cost.fiber > 0 {
+            parts.append(
+                String(format: String(localized: "inv.cost.fiber_fmt"), locale: .current, cost.fiber)
+            )
+        }
+        if cost.nutrient > 0 {
+            parts.append(
+                String(format: String(localized: "inv.cost.nut_short_fmt"), locale: .current, cost.nutrient)
+            )
+        }
         return parts.joined(separator: ", ")
     }
 
@@ -29,79 +42,94 @@ struct InventoryRefugeSheet: View {
             Form {
                 Section {
                     if let agent = session.controlledAgent {
-                        LabeledContent("Controlado") {
+                        LabeledContent(String(localized: "inv.field.controlled")) {
                             Text(agent.displayName)
                         }
-                        LabeledContent("Posición") {
+                        LabeledContent(String(localized: "inv.field.position")) {
                             Text("(\(agent.position.x), \(agent.position.y))")
                                 .monospacedDigit()
                         }
-                        LabeledContent("Fibra") {
+                        LabeledContent(String(localized: "inv.field.their_refuge")) {
+                            Text("(\(agent.homeRefuge.x), \(agent.homeRefuge.y))")
+                                .monospacedDigit()
+                        }
+                        LabeledContent(String(localized: "inv.field.fiber")) {
                             Text("\(agent.inventory.fiberScraps)")
                                 .monospacedDigit()
                         }
-                        LabeledContent("Nutrientes") {
+                        LabeledContent(String(localized: "inv.field.nutrients")) {
                             Text("\(agent.inventory.nutrientPackets)")
                                 .monospacedDigit()
                         }
-                        LabeledContent("Energía") {
+                        LabeledContent(String(localized: "inv.field.energy")) {
                             Text(agent.vitals.energy, format: .percent.precision(.fractionLength(0)))
                         }
-                        LabeledContent("Hambre") {
+                        LabeledContent(String(localized: "inv.field.hunger")) {
                             Text(agent.vitals.hunger, format: .percent.precision(.fractionLength(0)))
                         }
                     } else {
                         ContentUnavailableView(
-                            "Sin agente",
+                            String(localized: "inv.no_agent_title"),
                             systemImage: "person.slash",
-                            description: Text("Elegí un agente en el mapa.")
+                            description: Text(String(localized: "inv.no_agent_desc"))
                         )
                     }
                 } header: {
-                    Text("Inventario")
+                    Text(String(localized: "inv.section.inventory"))
                 }
 
                 Section {
-                    LabeledContent("Descanso (rango)") {
-                        Text("\(session.refugeImprovements.restEfficiencyRank) / 3")
+                    LabeledContent(String(localized: "inv.field.rest_rank")) {
+                        Text("\(controlledRefugeImprovements.restEfficiencyRank) / 3")
                             .monospacedDigit()
                     }
-                    LabeledContent("Recuperación en refugio") {
-                        Text(session.refugeImprovements.restRecoveryMultiplier, format: .number.precision(.fractionLength(2)))
+                    LabeledContent(String(localized: "inv.field.refuge_recovery")) {
+                        Text(controlledRefugeImprovements.restRecoveryMultiplier, format: .number.precision(.fractionLength(2)))
                             .monospacedDigit()
                     }
-                    LabeledContent("Almacén (rango)") {
-                        Text("\(session.refugeImprovements.storageRank) / 3")
+                    LabeledContent(String(localized: "inv.field.storage_rank")) {
+                        Text("\(controlledRefugeImprovements.storageRank) / 3")
                             .monospacedDigit()
                     }
                 } header: {
-                    Text("Mejoras del refugio")
+                    Text(String(localized: "inv.section.refuge_upgrades"))
                 } footer: {
-                    Text("El craft usa el inventario del agente controlado y solo en la celda del refugio (0, 0).")
+                    Text(String(localized: "inv.footer.craft_rule"))
                 }
 
                 Section {
-                    Button("Usar 1 nutriente") {
+                    Button(String(localized: "inv.action.use_nutrient")) {
                         _ = session.tryConsumeNutrientForControlled()
                     }
                     .disabled(session.controlledAgent?.inventory.nutrientPackets ?? 0 == 0)
-                    .accessibilityHint("Reduce hambre y gasta un paquete del inventario del controlado.")
+                    .buttonStyle(.borderedProminent)
+                    .accessibilityHint(String(localized: "inv.action.use_nutrient_a11y"))
 
-                    Button("Mejorar eficiencia de descanso (\(restUpgradeCostLabel))") {
+                    Button(
+                        String(
+                            format: String(localized: "inv.action.craft_rest_fmt"),
+                            locale: .current,
+                            restUpgradeCostLabel
+                        )
+                    ) {
                         _ = session.tryCraftRestEfficiencyAtRefugeForControlled()
                     }
                     .disabled(!session.canCraftRestEfficiencyAtRefuge)
 
-                    Button("Mejorar almacén (\(storageUpgradeCostLabel))") {
+                    Button(
+                        String(
+                            format: String(localized: "inv.action.craft_storage_fmt"),
+                            locale: .current,
+                            storageUpgradeCostLabel
+                        )
+                    ) {
                         _ = session.tryCraftStorageAtRefugeForControlled()
                     }
                     .disabled(!session.canCraftStorageAtRefuge)
                 } header: {
-                    Text("Acciones")
+                    Text(String(localized: "inv.section.actions"))
                 } footer: {
-                    if session.controlledAgent?.position != .refugeOrigin {
-                        Text("Acercá al controlado al refugio (0, 0) para craftear.")
-                    }
+                    Text(String(localized: "inv.footer.costs"))
                 }
 
                 if !session.statusMessage.isEmpty {
@@ -110,15 +138,15 @@ struct InventoryRefugeSheet: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     } header: {
-                        Text("Estado")
+                        Text(String(localized: "inv.section.status"))
                     }
                 }
             }
-            .navigationTitle("Inventario y refugio")
+            .navigationTitle(String(localized: "inv.nav_title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cerrar") { dismiss() }
+                    Button(String(localized: "Cerrar")) { dismiss() }
                 }
             }
         }

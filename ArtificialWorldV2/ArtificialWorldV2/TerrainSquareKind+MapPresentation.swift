@@ -8,15 +8,16 @@ extension TerrainSquareKind {
     var mapSwiftUIColor: Color {
         switch self {
         case .refuge:
-            return .green.opacity(0.32)
+            // Mismo tono que el césped bajo la casa en `GridMapCanvas`.
+            return Color(red: 0.32, green: 0.62, blue: 0.32)
         case .wildGrass:
-            return .mint.opacity(0.28)
+            return Color(red: 0.45, green: 0.78, blue: 0.42)
         case .denseForest:
-            return .brown.opacity(0.38)
+            return Color(red: 0.22, green: 0.42, blue: 0.22)
         case .rockOutcrop:
-            return .gray.opacity(0.42)
+            return Color(red: 0.55, green: 0.52, blue: 0.48)
         case .empty:
-            return .gray.opacity(0.12)
+            return Color(red: 0.88, green: 0.88, blue: 0.90)
         }
     }
 
