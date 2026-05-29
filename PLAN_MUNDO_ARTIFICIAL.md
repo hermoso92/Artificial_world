@@ -254,9 +254,10 @@ Preparadas: `EVITAR_ENTIDAD`, `COOPERAR_CON_ENTIDAD`, `SEGUIR_ENTIDAD`, `PRIORIZ
 - [x] Diferencias por rasgo
 
 ### Fase 5 — Relaciones
-- [ ] GestorRelaciones
-- [ ] Actualización por eventos
-- [ ] Impacto en evitar, seguir, compartir, robar
+- [x] GestorRelaciones
+- [x] Actualización por eventos
+- [x] Impacto en evitar, seguir, compartir, robar
+- [x] Persistencia de relaciones (guardar/cargar)
 
 ### Fase 6 — Directivas externas
 - [ ] GestorDirectivas
@@ -280,6 +281,7 @@ Preparadas: `EVITAR_ENTIDAD`, `COOPERAR_CON_ENTIDAD`, `SEGUIR_ENTIDAD`, `PRIORIZ
 - Fase 2: Entidades completas (flujo percibir→memoria→directivas→decidir→ejecutar, AccionMover real, motor utility-based)
 - Fase 3: Supervivencia (hambre, energía, inventario, recoger_comida/material, comer, descansar, ir_refugio)
 - Fase 4: Inteligencia local (modificadores por rasgo social/gato, memoria para movimiento hacia recursos/refugios, riesgo_percibido)
+- Fase 5: Relaciones (GestorRelaciones, confianza/miedo/hostilidad, actualización por eventos en compartir/robar/seguir/atacar, modificador_relaciones en el motor con impacto en evitar/seguir/compartir/robar/huir, persistencia guardar/cargar)
 
 ### Extras implementados (post-auditoría)
 - Panel de control avanzado (pestañas Control/Órdenes/Entidades/Archivo)
@@ -300,13 +302,13 @@ Preparadas: `EVITAR_ENTIDAD`, `COOPERAR_CON_ENTIDAD`, `SEGUIR_ENTIDAD`, `PRIORIZ
 - AccionHuir, AccionEvitar, AccionExplorar: implementadas con movimiento real; motor las genera según riesgo/energía/hambre
 
 ### Pendiente
-- Fases 5–7
+- Fases 6–7
 
 ### Bloqueos
 - Ninguno
 
 ### Próximo paso
-- Fase 5: Relaciones (GestorRelaciones, impacto en evitar, seguir, compartir, robar)
+- Fase 6: Directivas externas (GestorDirectivas, integración en utilidades, aceptación/aplazamiento/rechazo)
 
 ### Documentación
 - Ver `AUDITORIA_FASES_1-4.md` para revisión detallada de lo implementado y lo faltante.

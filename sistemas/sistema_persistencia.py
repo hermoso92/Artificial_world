@@ -197,6 +197,8 @@ class SistemaPersistencia:
             }
             if hasattr(e, "rasgo_principal"):
                 ent_dict["rasgo"] = e.rasgo_principal.name
+            if hasattr(e, "relaciones") and e.relaciones:
+                ent_dict["relaciones"] = e.relaciones.serializar()
             entidades_data.append(ent_dict)
 
         return {
@@ -274,6 +276,8 @@ class SistemaPersistencia:
                     estado_interno=est_interno,
                 )
             ent.posicion_anterior = pos_ant
+            if ent_dict.get("relaciones") and hasattr(ent, "relaciones") and ent.relaciones:
+                ent.relaciones.cargar(ent_dict["relaciones"])
             mapa.colocar_entidad(ent, pos)
             entidades_nuevas.append(ent)
 
