@@ -76,3 +76,16 @@ ArtificialWorldV2/Config/Local.xcconfig
 
 # Agent Teams Lite (orchestrator artifacts)
 .atl/
+
+# Artefactos generados (regenerables desde .tex / .md / código) — no versionar
+*.pdf
+/screenshot_*.png
+app_salida.txt
+data/*.sqlite
+*.sqlite3
+
+# Proyectos de terceros / exports — no vendorizar dentro del repo
+engram-*/
+horizons-export-*/
+IA-Entre-Amigos-*/
+/Repositorios para auditar/
