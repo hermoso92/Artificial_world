@@ -72,3 +72,22 @@ class GestorRelaciones:
             }
             for id_e, rel in self.relaciones_por_entidad.items()
         }
+
+    def cargar(self, datos: dict) -> None:
+        """Restaura las relaciones desde un dict serializado.
+
+        Sobrescribe las relaciones actuales con las almacenadas. Las claves
+        son ids de entidad en formato str (como las produce `serializar`).
+        """
+        self.relaciones_por_entidad.clear()
+        for id_str, valores in datos.items():
+            try:
+                id_e = int(id_str)
+            except (ValueError, TypeError):
+                continue
+            self.relaciones_por_entidad[id_e] = RelacionSocial(
+                confianza=float(valores.get("confianza", 0.0)),
+                miedo=float(valores.get("miedo", 0.0)),
+                hostilidad=float(valores.get("hostilidad", 0.0)),
+                utilidad_percibida=float(valores.get("utilidad_percibida", 0.0)),
+            )

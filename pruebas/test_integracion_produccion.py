@@ -82,6 +82,72 @@ def test_guardar_cargar_estado():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def test_guardar_cargar_relaciones():
+    """Guardar y cargar estado preserva las relaciones sociales (Fase 5)."""
+    import logging
+    logging.disable(logging.CRITICAL)
+    from configuracion import Configuracion
+    from nucleo.simulacion import Simulacion
+
+    tmp = tempfile.mkdtemp()
+    try:
+        cfg = Configuracion()
+        sim = Simulacion(cfg)
+        sim.inicializar()
+        sim.crear_mundo()
+        sim.crear_entidades_iniciales()
+        sim.sistema_persistencia = None
+
+        # Inyectar relaciones conocidas entre dos entidades sociales
+        sociales = [e for e in sim.entidades if hasattr(e, "relaciones") and e.relaciones]
+        assert len(sociales) >= 2, "Se necesitan 2+ entidades sociales para el test"
+        origen, otra = sociales[0], sociales[1]
+        origen.relaciones.ajustar_confianza(otra.id_entidad, 0.65)
+        origen.relaciones.ajustar_hostilidad(otra.id_entidad, 0.30)
+        origen.relaciones.ajustar_miedo(otra.id_entidad, 0.20)
+
+        rel_antes = origen.relaciones.obtener_relacion(otra.id_entidad)
+        esperado = (
+            rel_antes.confianza,
+            rel_antes.hostilidad,
+            rel_antes.miedo,
+            rel_antes.utilidad_percibida,
+        )
+        id_origen, id_otra = origen.id_entidad, otra.id_entidad
+
+        from sistemas.sistema_persistencia import SistemaPersistencia
+        pers = SistemaPersistencia(usar_sqlite=False, auto_guardar_intervalo=999)
+        ruta_json = os.path.join(tmp, "estado_rel_test.json")
+        pers.guardar_estado(sim, ruta_json)
+
+        sim2 = Simulacion(cfg)
+        sim2.inicializar()
+        sim2.crear_mundo()
+        sim2.crear_entidades_iniciales()
+        pers2 = SistemaPersistencia(usar_sqlite=False, auto_guardar_intervalo=999)
+        ok = pers2.cargar_estado(sim2, ruta_json)
+        assert ok
+
+        origen2 = next(e for e in sim2.entidades if e.id_entidad == id_origen)
+        rel_despues = origen2.relaciones.obtener_relacion(id_otra)
+        obtenido = (
+            rel_despues.confianza,
+            rel_despues.hostilidad,
+            rel_despues.miedo,
+            rel_despues.utilidad_percibida,
+        )
+        for val_esp, val_obt in zip(esperado, obtenido):
+            assert abs(val_esp - val_obt) < 1e-6, (
+                f"Relacion no preservada: esperado={esperado} obtenido={obtenido}"
+            )
+        print(
+            f"OK test_guardar_cargar_relaciones: confianza={rel_despues.confianza:.2f} "
+            f"hostilidad={rel_despues.hostilidad:.2f} miedo={rel_despues.miedo:.2f}"
+        )
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def test_modo_sombra_comandos_ejecutan():
     """Comandos sombra producen acciones reales."""
     from configuracion import Configuracion
